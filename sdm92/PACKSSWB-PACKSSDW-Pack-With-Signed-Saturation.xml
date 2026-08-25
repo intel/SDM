@@ -1,0 +1,94 @@
+<instruction name="PACKSSWB/PACKSSDW">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Pack With Signed Saturation</shortdesc>
+ <longdesc><para unique="1091664">
+   <string>Converts packed signed word integers into packed signed byte integers (PACKSSWB) or converts packed signed doubleword integers into packed signed word integers (PACKSSDW), using saturation to handle overflow condi&#173;tions. See </string><link linkend="16953: 05_FigureFrame: Figure 3-6. Operation of the PACKSSDW Instruction."><string>Figure&#160;4&#8209;6</string></link><string> for an example of the packing operation.</string></para>
+  <table>
+   <caption>Figure 4-6.  Operation of the PACKSSDW Instruction Using 64-Bit Operands</caption>
+   <colgroup><col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <td><para unique="1091697" format="TableAnchor">
+       <svg width="1000" height="453.06614777136747" viewBox="0 0 189.81864 86.0004">
+        <defs>
+        <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+          <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
+        </marker>
+      </defs>
+        <rect width="72.0" height="18.0" x="4.36392" y="14.53176" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="40.36392000000001,14.53176 40.36392000000001,32.53176" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="20.697119999999998" y="26.53128" font-size="6">D</text>
+        <text x="55.03032" y="26.274240000000002" font-size="6">C</text>
+        <rect width="72.0" height="18.0" x="55.86336" y="54.03168" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="73.86336,54.03168 73.86336,72.03168" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="91.86336,54.03168 91.86336,72.03168" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="109.86336,54.03168 109.86336,72.03168" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="58.446,32.983200000000004 84.86352000000001,52.03152" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="23.44608,31.98312 66.86352000000001,52.03152" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="129.94559999999998,33.4836 102.86352000000001,52.03152" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="165.4452,33.98328 120.86352000000001,52.03152" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <text x="18.53064" y="10.1988" font-size="6">64-Bit SRC</text>
+        <text x="72.19727999999999" y="81.6156" font-size="6">64-Bit DEST</text>
+        <text x="61.36344" y="66.0312" font-size="6">D&#8217;</text>
+        <text x="79.86312000000001" y="65.77416" font-size="6">C&#8217;</text>
+        <text x="97.36272" y="65.51783999999999" font-size="6">B&#8217;</text>
+        <text x="115.36272" y="66.26016" font-size="6">A&#8217;</text>
+        <text x="128.52936" y="11.670480000000001" font-size="6">64-Bit DEST</text>
+        <rect width="72.0" height="18.0" x="112.5" y="15.50016" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="148.5,15.50016 148.5,33.50016" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="126.49968" y="26.486639999999998" font-size="6">B</text>
+        <text x="163.99944" y="27.728640000000002" font-size="6">A</text>
+        </svg></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  <para unique="1091702">
+   <string>PACKSSWB converts packed signed word integers in the first and second source operands into packed signed byte integers using signed saturation to handle overflow conditions beyond the range of signed byte integers. If the signed word value is beyond the range of a signed byte value (i.e., greater than 7FH or less than 80H), the satu&#173;rated signed byte integer value of 7FH or 80H, respectively, is stored in the destination. PACKSSDW converts packed signed doubleword integers in the first and second source operands into packed signed word integers using signed saturation to handle overflow conditions beyond 7FFFH and 8000H.</string></para>
+  <para unique="1091703">
+   <string>EVEX encoded PACKSSWB: The first source operand is a ZMM/YMM/XMM register. The second source operand is a ZMM/YMM/XMM register or a 512/256/128-bit memory location. The destination operand is a ZMM/YMM/XMM register, updated conditional under the writemask k1.</string></para>
+  <para unique="1091704">
+   <string>EVEX encoded PACKSSDW: The first source operand is a ZMM/YMM/XMM register. The second source operand is a ZMM/YMM/XMM register, a 512/256/128-bit memory location, or a 512/256/128-bit vector broadcasted from a 32-bit memory location. The destination operand is a ZMM/YMM/XMM register, updated conditional under the write&#173;mask k1.</string></para>
+  <para unique="1091705">
+   <string>VEX.256 encoded version: The first source operand is a YMM register. The second source operand is a YMM register or a 256-bit memory location. The destination operand is a YMM register. The upper bits (MAXVL-1:256) of the corresponding ZMM register destination are zeroed. </string></para>
+  <para unique="1091706">
+   <string>VEX.128 encoded version: The first source operand is an XMM register. The second source operand is an XMM register or 128-bit memory location. The destination operand is an XMM register. The upper bits (MAXVL-1:128) of the corresponding ZMM register destination are zeroed.</string></para>
+  <para unique="1091707">
+   <string>128-bit Legacy SSE version: The first source operand is an XMM register. The second operand can be an XMM register or an 128-bit memory location. The destination is not distinct from the first source XMM register and the upper bits (MAXVL-1:128) of the corresponding ZMM destination register destination are unmodified.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalents">
+  <programlisting><string>VPACKSSDW	__m512i _mm512_packs_epi32(__m512i m1, __m512i m2);</string><string>
+</string><string>VPACKSSDW	__m512i _mm512_mask_packs_epi32(__m512i s, __mmask32 k, __m512i m1, __m512i m2);</string><string>
+</string><string>VPACKSSDW	__m512i _mm512_maskz_packs_epi32( __mmask32 k, __m512i m1, __m512i m2);</string><string>
+</string><string>VPACKSSDW	__m256i _mm256_mask_packs_epi32( __m256i s, __mmask16 k, __m256i m1, __m256i m2);</string><string>
+</string><string>VPACKSSDW	__m256i _mm256_maskz_packs_epi32( __mmask16 k, __m256i m1, __m256i m2);</string><string>
+</string><string>VPACKSSDW	__m128i _mm_mask_packs_epi32( __m128i s, __mmask8 k, __m128i m1, __m128i m2);</string><string>
+</string><string>VPACKSSDW	__m128i _mm_maskz_packs_epi32( __mmask8 k, __m128i m1, __m128i m2);</string><string>
+</string><string>VPACKSSWB	__m512i _mm512_packs_epi16(__m512i m1, __m512i m2);</string><string>
+</string><string>VPACKSSWB	__m512i _mm512_mask_packs_epi16(__m512i s, __mmask32 k, __m512i m1, __m512i m2);</string><string>
+</string><string>VPACKSSWB	__m512i _mm512_maskz_packs_epi16( __mmask32 k, __m512i m1, __m512i m2);</string><string>
+</string><string>VPACKSSWB	__m256i _mm256_mask_packs_epi16( __m256i s, __mmask16 k, __m256i m1, __m256i m2);</string><string>
+</string><string>VPACKSSWB	__m256i _mm256_maskz_packs_epi16( __mmask16 k, __m256i m1, __m256i m2);</string><string>
+</string><string>VPACKSSWB	__m128i _mm_mask_packs_epi16( __m128i s, __mmask8 k, __m128i m1, __m128i m2);</string><string>
+</string><string>VPACKSSWB	__m128i _mm_maskz_packs_epi16( __mmask8 k, __m128i m1, __m128i m2);</string><string>
+</string><string>PACKSSWB	 	__m128i _mm_packs_epi16(__m128i m1, __m128i m2)</string><string>
+</string><string>PACKSSDW	 	__m128i _mm_packs_epi32(__m128i m1, __m128i m2)</string><string>
+</string><string>VPACKSSWB	 	__m256i _mm256_packs_epi16(__m256i m1, __m256i m2)</string><string>
+</string><string>VPACKSSDW	 	__m256i _mm256_packs_epi32(__m256i m1, __m256i m2)</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1091994">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1091999" format="xIndent1">
+   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1092003">
+   <string>EVEX-encoded VPACKSSDW, see </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1092007">
+   <string>EVEX-encoded VPACKSSWB, see Exceptions Type E4NF.nb in </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

@@ -1,0 +1,44 @@
+<instruction name="VFIXUPIMMPD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Fix Up Special Packed Float64 Values</shortdesc>
+ <longdesc><para unique="1045980">
+   <string>Perform fix-up of quad-word elements encoded in double precision floating-point format in the first source operand (the second operand) using a 32-bit, two-level look-up table specified in the corresponding quadword element of the second source operand (the third operand) with exception reporting specifier imm8. The elements that are fixed-up are selected by mask bits of 1 specified in the opmask k1. Mask bits of 0 in the opmask k1 or table response action of 0000b preserves the corresponding element of the first operand. The fixed-up elements from the first source operand and the preserved element in the first operand are combined as the final results in the destination operand (the first operand). </string></para>
+  <para unique="1045981">
+   <string>The destination and the first source operands are ZMM/YMM/XMM registers. The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 64-bit memory location.</string></para>
+  <para unique="1045982">
+   <string>The two-level look-up table perform a fix-up of each double precision floating-point input data in the first source operand by decoding the input data encoding into 8 token types. A response table is defined for each token type that converts the input encoding in the first source operand with one of 16 response actions. </string></para>
+  <para unique="1045983">
+   <string>This instruction is specifically intended for use in fixing up the results of arithmetic calculations involving one source so that they match the spec, although it is generally useful for fixing up the results of multiple-instruction sequences to reflect special-number inputs. For example, consider rcp(0). Input 0 to rcp, and you should get INF according to the DX10 spec. However, evaluating rcp via Newton-Raphson, where x=approx(1/0), yields an incor&#173;rect result. To deal with this, VFIXUPIMMPD can be used after the N-R reciprocal sequence to set the result to the correct value (i.e., INF when the input is 0).</string></para>
+  <para unique="1045984">
+   <string>If MXCSR.DAZ is not set, denormal input elements in the first source operand are considered as normal inputs and do not trigger any fixup nor fault reporting.</string></para>
+  <para unique="1045985">
+   <string>Imm8 is used to set the required flags reporting. It supports #ZE and #IE fault reporting (see details below).</string></para>
+  <para unique="1045986">
+   <string>MXCSR mask bits are ignored and are treated as if all mask bits are set to masked response). If any of the imm8 bits is set and the condition met for fault reporting, MXCSR.IE or MXCSR.ZE might be updated.</string></para>
+  <para unique="1045987">
+   <string>This instruction is writemasked, so only those elements with the corresponding bit set in vector mask register k1 are computed and stored into zmm1. Elements in the destination with the corresponding bit clear in k1 retain their previous values or are set to 0.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VFIXUPIMMPD __m512d _mm512_fixupimm_pd( __m512d a, __m512d b, __m512i c, int imm8);</string><string>
+</string><string>VFIXUPIMMPD __m512d _mm512_mask_fixupimm_pd(__m512d a, __mmask8 k, __m512d b, __m512i c, int imm8);</string><string>
+</string><string>VFIXUPIMMPD __m512d _mm512_maskz_fixupimm_pd( __mmask8 k, __m512d a, __m512d b, __m512i c, int imm8);</string><string>
+</string><string>VFIXUPIMMPD __m512d _mm512_fixupimm_round_pd( __m512d a, __m512d b, __m512i c, int imm8, int sae);</string><string>
+</string><string>VFIXUPIMMPD __m512d _mm512_mask_fixupimm_round_pd(__m512d a, __mmask8 k, __m512d b, __m512i c, int imm8, int sae);</string><string>
+</string><string>VFIXUPIMMPD __m512d _mm512_maskz_fixupimm_round_pd( __mmask8 k, __m512d a, __m512d b, __m512i c, int imm8, int sae);</string><string>
+</string><string>VFIXUPIMMPD __m256d _mm256_fixupimm_pd( __m256d a, m256d b, __m256i c, int imm8);</string><string>
+</string><string>VFIXUPIMMPD __m256d _mm256_mask_fixupimm_pd(__m256d a, __mmask8 k, __m256d b, __m256i c, int imm8);</string><string>
+</string><string>VFIXUPIMMPD __m256d _mm256_maskz_fixupimm_pd( __mmask8 k, __m256d a, __m256d b, __m256i c, int imm8);</string><string>
+</string><string>VFIXUPIMMPD __m128d _mm_fixupimm_pd( __m128d a, __m128d b, __m128i c, int imm8);</string><string>
+</string><string>VFIXUPIMMPD __m128d _mm_mask_fixupimm_pd(__m128d a, __mmask8 k, __m128d b, __m128i c, int imm8);</string><string>
+</string><string>VFIXUPIMMPD __m128d _mm_maskz_fixupimm_pd( __mmask8 k, __m128d a, __m128d b, __m128i c, int imm8);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046096">
+   <string>Zero, Invalid.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046101">
+   <string>See </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

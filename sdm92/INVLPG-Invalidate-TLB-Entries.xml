@@ -1,0 +1,69 @@
+<instruction name="INVLPG">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Invalidate TLB Entries</shortdesc>
+ <longdesc><para unique="1261243">
+   <string>Invalidates any translation lookaside buffer (TLB) entries specified with the source operand. The source operand is a memory address. The processor determines the page that contains that address and flushes all TLB entries for that page.</string><footnote><para unique="1261246">
+     <string>If the paging structures map the linear address using a page larger than 4 KBytes and there are multiple TLB entries for that page (see </string><link linkend="87875: 04_Level: 1.10.1.3 Details of TLB Use"><string>Section 5.10.2.3, &#8220;Details of TLB Use,&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A), the instruction invalidates all of them.</string></para>
+    </footnote></para>
+  <para unique="1261250">
+   <string>The INVLPG instruction is a privileged instruction. When the processor is running in protected mode, the CPL must be 0 to execute this instruction.</string></para>
+  <para unique="1261251">
+   <string>The INVLPG instruction normally flushes TLB entries only for the specified page; however, in some cases, it may flush more entries, even the entire TLB. The instruction invalidates TLB entries associated with the current PCID and may or may not do so for TLB entries associated with other PCIDs. (If PCIDs are disabled&#160;&#8212; CR4.PCIDE&#160;= 0&#160;&#8212; the current PCID is 000H.) The instruction also invalidates any global TLB entries for the specified page, regardless of PCID.</string></para>
+  <para unique="1261255">
+   <string>For more details on operations that flush the TLB, see </string><link linkend="42351: 05_Level: MOV&#8212;Move to/from Control Registers"><string>&#8220;MOV&#8212;Move to/from Control Registers&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 2B, and </string><link linkend="33259: 04_Level: 1.9.3.1 Operations that Invalidate TLBs and Paging-Structure Caches"><string>Section 5.10.4.1, &#8220;Operations that Invalidate TLBs and Paging-Structure Caches,&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A.</string></para>
+  <para unique="1261259">
+   <string>This instruction&#8217;s operation is the same in all non-64-bit modes. It also operates the same in 64&#8209;bit mode, except if the memory address is in non-canonical form. In this case, INVLPG is the same as a NOP.</string></para>
+  <section level="7">
+   <title unique="1261260"><string>IA-32 Architecture Compatibility</string></title>
+   <para unique="1261261">
+    <string>The INVLPG instruction is implementation dependent, and its function may be implemented differently on different families of Intel 64 or IA-32 processors. This instruction is not supported on IA-32 processors earlier than the Intel486 processor.</string></para>
+   </section>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1261266">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>Operand is a register.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>Operand is a register.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>The INVLPG instruction cannot be executed at the virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>Operand is a register.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

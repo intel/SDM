@@ -1,0 +1,103 @@
+<instruction name="SETcc">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Set Byte on Condition</shortdesc>
+ <longdesc><para unique="1092152">
+   <string>Sets the destination operand to 0 or 1 depending on the settings of the </string><indexterm><primary>Status flags, EFLAGS register;EFLAGS register:status flags</primary></indexterm><string>status flags (CF, SF, OF, ZF, and PF) in the EFLAGS register. The destination operand points to a byte register or a byte in memory. The condition code suffix (</string><italic><string>cc</string></italic><string>) indicates the condition being tested for. </string></para>
+  <para unique="1092153">
+   <string>The terms &#8220;above&#8221; and &#8220;below&#8221; are associated with the CF flag and refer to the relationship between two unsigned integer values. The terms &#8220;greater&#8221; and &#8220;less&#8221; are associated with the SF and OF flags and refer to the relationship between two signed integer values.</string></para>
+  <para unique="1092154">
+   <string>Many of the SET</string><italic><string>cc</string></italic><string> instruction opcodes have alternate mnemonics. For example, SETG (set byte if greater) and SETNLE (set if not less or equal) have the same opcode and test for the same condition: ZF equals 0 and SF equals OF. These alternate mnemonics are provided to make code more intelligible. </string><link linkend="17542: A1Heading: Appendix D Condition Codes"><string>Appendix B, &#8220;EFLAGS Condition Codes,&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, shows the alternate mnemonics for various test conditions.</string></para>
+  <para unique="1092158">
+   <string>Some languages represent a logical one as an integer with all bits set. This representation can be obtained by choosing the logically opposite condition for the SET</string><italic><string>cc</string></italic><string> instruction, then decrementing the result. For example, to test for overflow, use the SETNO instruction, then decrement the result.</string></para>
+  <para unique="1092159">
+   <string>The reg field of the ModR/M byte is not used for the SETCC instruction and those opcode bits are ignored by the processor.</string></para>
+  <para unique="1092160">
+   <string>In IA-64 mode, the operand size is fixed at 8 bits. Use of REX prefix enable uniform addressing to additional byte registers. Otherwise, this instruction&#8217;s operation is the same as in legacy mode and compatibility mode. </string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1092167">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the destination is located in a non-writable segment.</string></listitem>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1092185" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

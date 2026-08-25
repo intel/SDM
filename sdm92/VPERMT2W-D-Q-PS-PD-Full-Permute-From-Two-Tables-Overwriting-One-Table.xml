@@ -1,0 +1,153 @@
+<instruction name="VPERMT2W/D/Q/PS/PD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Full Permute From Two Tables Overwriting One Table</shortdesc>
+ <longdesc><para unique="1046376">
+   <string>Permutes 16-bit/32-bit/64-bit values in the first operand and the third operand (the second source operand) using indices in the second operand (the first source operand) to select elements from the first and third operands. The selected elements are written to the destination operand (the first operand) according to the writemask k1. </string></para>
+  <para unique="1046377">
+   <string>The first and second operands are ZMM/YMM/XMM registers. The second operand contains input indices to select elements from the two input tables in the 1st and 3rd operands. The first operand is also the destination of the result. </string></para>
+  <para unique="1046378">
+   <string>D/Q/PS/PD element versions: The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 32/64-bit memory location. Broadcast from the low 32/64-bit memory location is performed if EVEX.b and the id bit for table selection are set (selecting table_2).</string></para>
+  <para unique="1046379">
+   <string>Dword/PS versions: The id bit for table selection is bit 4/3/2, depending on VL=512, 256, 128. Bits [3:0]/[2:0]/[1:0] of each element in the input index vector select an element within the two source operands, If the id bit is 0, table_1 (the first source) is selected; otherwise the second source operand is selected.</string></para>
+  <para unique="1046380">
+   <string>Qword/PD versions: The id bit for table selection is bit 3/2/1, and bits [2:0]/[1:0] /bit 0 selects element within each input table.</string></para>
+  <para unique="1046381">
+   <string>Word element versions: The second source operand can be a ZMM/YMM/XMM register, or a 512/256/128-bit memory location. The id bit for table selection is bit 5/4/3, and bits [4:0]/[3:0]/[2:0] selects element within each input table. </string></para>
+  <para unique="1046382">
+   <string>Note that these instructions permit a 16-bit/32-bit/64-bit value in the source operands to be copied to more than one location in the destination operand. Note also that in this case, the same index can be reused for example for a second iteration, while the table elements being permuted are overwritten.</string></para>
+  <para unique="1046383">
+   <string>Bits (MAXVL-1:256/128) of the destination are zeroed for VL=256,128. </string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <para unique="1046484">
+   <string>VPERMT2D __m512i _mm512_permutex2var_epi32(__m512i a, __m512i idx, __m512i b);</string></para>
+  <para unique="1046485">
+   <string>VPERMT2D __m512i _mm512_mask_permutex2var_epi32(__m512i a, __mmask16 k, __m512i idx, __m512i b);</string></para>
+  <para unique="1046486">
+   <string>VPERMT2D __m512i _mm512_mask2_permutex2var_epi32(__m512i a, __m512i idx, __mmask16 k, __m512i b);</string></para>
+  <para unique="1046487">
+   <string>VPERMT2D __m512i _mm512_maskz_permutex2var_epi32(__mmask16 k, __m512i a, __m512i idx, __m512i b);</string></para>
+  <para unique="1046488">
+   <string>VPERMT2D __m256i _mm256_permutex2var_epi32(__m256i a, __m256i idx, __m256i b);</string></para>
+  <para unique="1046489">
+   <string>VPERMT2D __m256i _mm256_mask_permutex2var_epi32(__m256i a, __mmask8 k, __m256i idx, __m256i b);</string></para>
+  <para unique="1046490">
+   <string>VPERMT2D __m256i _mm256_mask2_permutex2var_epi32(__m256i a, __m256i idx, __mmask8 k, __m256i b);</string></para>
+  <para unique="1046491">
+   <string>VPERMT2D __m256i _mm256_maskz_permutex2var_epi32(__mmask8 k, __m256i a, __m256i idx, __m256i b);</string></para>
+  <para unique="1046492">
+   <string>VPERMT2D __m128i _mm_permutex2var_epi32(__m128i a, __m128i idx, __m128i b);</string></para>
+  <para unique="1046493">
+   <string>VPERMT2D __m128i _mm_mask_permutex2var_epi32(__m128i a, __mmask8 k, __m128i idx, __m128i b);</string></para>
+  <para unique="1046494">
+   <string>VPERMT2D __m128i _mm_mask2_permutex2var_epi32(__m128i a, __m128i idx, __mmask8 k, __m128i b);</string></para>
+  <para unique="1046495">
+   <string>VPERMT2D __m128i _mm_maskz_permutex2var_epi32(__mmask8 k, __m128i a, __m128i idx, __m128i b);</string></para>
+  <para unique="1046496">
+   <string>VPERMT2PD __m512d _mm512_permutex2var_pd(__m512d a, __m512i idx, __m512d b);</string></para>
+  <para unique="1046497">
+   <string>VPERMT2PD __m512d _mm512_mask_permutex2var_pd(__m512d a, __mmask8 k, __m512i idx, __m512d b);</string></para>
+  <para unique="1046498">
+   <string>VPERMT2PD __m512d _mm512_mask2_permutex2var_pd(__m512d a, __m512i idx, __mmask8 k, __m512d b);</string></para>
+  <para unique="1046499">
+   <string>VPERMT2PD __m512d _mm512_maskz_permutex2var_pd(__mmask8 k, __m512d a, __m512i idx, __m512d b);</string></para>
+  <para unique="1046500">
+   <string>VPERMT2PD __m256d _mm256_permutex2var_pd(__m256d a, __m256i idx, __m256d b);</string></para>
+  <para unique="1046501">
+   <string>VPERMT2PD __m256d _mm256_mask_permutex2var_pd(__m256d a, __mmask8 k, __m256i idx, __m256d b);</string></para>
+  <para unique="1046502">
+   <string>VPERMT2PD __m256d _mm256_mask2_permutex2var_pd(__m256d a, __m256i idx, __mmask8 k, __m256d b);</string></para>
+  <para unique="1046503">
+   <string>VPERMT2PD __m256d _mm256_maskz_permutex2var_pd(__mmask8 k, __m256d a, __m256i idx, __m256d b);</string></para>
+  <para unique="1046504">
+   <string>VPERMT2PD __m128d _mm_permutex2var_pd(__m128d a, __m128i idx, __m128d b);</string></para>
+  <para unique="1046505">
+   <string>VPERMT2PD __m128d _mm_mask_permutex2var_pd(__m128d a, __mmask8 k, __m128i idx, __m128d b);</string></para>
+  <para unique="1046506">
+   <string>VPERMT2PD __m128d _mm_mask2_permutex2var_pd(__m128d a, __m128i idx, __mmask8 k, __m128d b);</string></para>
+  <para unique="1046507">
+   <string>VPERMT2PD __m128d _mm_maskz_permutex2var_pd(__mmask8 k, __m128d a, __m128i idx, __m128d b);</string></para>
+  <para unique="1046508">
+   <string>VPERMT2PS __m512 _mm512_permutex2var_ps(__m512 a, __m512i idx, __m512 b);</string></para>
+  <para unique="1046509">
+   <string>VPERMT2PS __m512 _mm512_mask_permutex2var_ps(__m512 a, __mmask16 k, __m512i idx, __m512 b);</string></para>
+  <para unique="1046510">
+   <string>VPERMT2PS __m512 _mm512_mask2_permutex2var_ps(__m512 a, __m512i idx, __mmask16 k, __m512 b);</string></para>
+  <para unique="1046511">
+   <string>VPERMT2PS __m512 _mm512_maskz_permutex2var_ps(__mmask16 k, __m512 a, __m512i idx, __m512 b);</string></para>
+  <para unique="1046512">
+   <string>VPERMT2PS __m256 _mm256_permutex2var_ps(__m256 a, __m256i idx, __m256 b);</string></para>
+  <para unique="1046513">
+   <string>VPERMT2PS __m256 _mm256_mask_permutex2var_ps(__m256 a, __mmask8 k, __m256i idx, __m256 b);</string></para>
+  <para unique="1046514">
+   <string>VPERMT2PS __m256 _mm256_mask2_permutex2var_ps(__m256 a, __m256i idx, __mmask8 k, __m256 b);</string></para>
+  <para unique="1046515">
+   <string>VPERMT2PS __m256 _mm256_maskz_permutex2var_ps(__mmask8 k, __m256 a, __m256i idx, __m256 b);</string></para>
+  <para unique="1046516">
+   <string>VPERMT2PS __m128 _mm_permutex2var_ps(__m128 a, __m128i idx, __m128 b);</string></para>
+  <para unique="1046517">
+   <string>VPERMT2PS __m128 _mm_mask_permutex2var_ps(__m128 a, __mmask8 k, __m128i idx, __m128 b);</string></para>
+  <para unique="1046518">
+   <string>VPERMT2PS __m128 _mm_mask2_permutex2var_ps(__m128 a, __m128i idx, __mmask8 k, __m128 b);</string></para>
+  <para unique="1046519">
+   <string>VPERMT2PS __m128 _mm_maskz_permutex2var_ps(__mmask8 k, __m128 a, __m128i idx, __m128 b);</string></para>
+  <para unique="1046520">
+   <string>VPERMT2Q __m512i _mm512_permutex2var_epi64(__m512i a, __m512i idx, __m512i b);</string></para>
+  <para unique="1046521">
+   <string>VPERMT2Q __m512i _mm512_mask_permutex2var_epi64(__m512i a, __mmask8 k, __m512i idx, __m512i b);</string></para>
+  <para unique="1046522">
+   <string>VPERMT2Q __m512i _mm512_mask2_permutex2var_epi64(__m512i a, __m512i idx, __mmask8 k, __m512i b);</string></para>
+  <para unique="1046523">
+   <string>VPERMT2Q __m512i _mm512_maskz_permutex2var_epi64(__mmask8 k, __m512i a, __m512i idx, __m512i b);</string></para>
+  <para unique="1046524">
+   <string>VPERMT2Q __m256i _mm256_permutex2var_epi64(__m256i a, __m256i idx, __m256i b);</string></para>
+  <para unique="1046525">
+   <string>VPERMT2Q __m256i _mm256_mask_permutex2var_epi64(__m256i a, __mmask8 k, __m256i idx, __m256i b);</string></para>
+  <para unique="1046526">
+   <string>VPERMT2Q __m256i _mm256_mask2_permutex2var_epi64(__m256i a, __m256i idx, __mmask8 k, __m256i b);</string></para>
+  <para unique="1046527">
+   <string>VPERMT2Q __m256i _mm256_maskz_permutex2var_epi64(__mmask8 k, __m256i a, __m256i idx, __m256i b);</string></para>
+  <para unique="1046528">
+   <string>VPERMT2Q __m128i _mm_permutex2var_epi64(__m128i a, __m128i idx, __m128i b);</string></para>
+  <para unique="1046529">
+   <string>VPERMT2Q __m128i _mm_mask_permutex2var_epi64(__m128i a, __mmask8 k, __m128i idx, __m128i b);</string></para>
+  <para unique="1046530">
+   <string>VPERMT2Q __m128i _mm_mask2_permutex2var_epi64(__m128i a, __m128i idx, __mmask8 k, __m128i b);</string></para>
+  <para unique="1046531">
+   <string>VPERMT2Q __m128i _mm_maskz_permutex2var_epi64(__mmask8 k, __m128i a, __m128i idx, __m128i b);</string></para>
+  <para unique="1046532">
+   <string>VPERMT2W __m512i _mm512_permutex2var_epi16(__m512i a, __m512i idx, __m512i b);</string></para>
+  <para unique="1046533">
+   <string>VPERMT2W __m512i _mm512_mask_permutex2var_epi16(__m512i a, __mmask32 k, __m512i idx, __m512i b);</string></para>
+  <para unique="1046534">
+   <string>VPERMT2W __m512i _mm512_mask2_permutex2var_epi16(__m512i a, __m512i idx, __mmask32 k, __m512i b);</string></para>
+  <para unique="1046535">
+   <string>VPERMT2W __m512i _mm512_maskz_permutex2var_epi16(__mmask32 k, __m512i a, __m512i idx, __m512i b);</string></para>
+  <para unique="1046536">
+   <string>VPERMT2W __m256i _mm256_permutex2var_epi16(__m256i a, __m256i idx, __m256i b);</string></para>
+  <para unique="1046537">
+   <string>VPERMT2W __m256i _mm256_mask_permutex2var_epi16(__m256i a, __mmask16 k, __m256i idx, __m256i b);</string></para>
+  <para unique="1046538">
+   <string>VPERMT2W __m256i _mm256_mask2_permutex2var_epi16(__m256i a, __m256i idx, __mmask16 k, __m256i b);</string></para>
+  <para unique="1046539">
+   <string>VPERMT2W __m256i _mm256_maskz_permutex2var_epi16(__mmask16 k, __m256i a, __m256i idx, __m256i b);</string></para>
+  <para unique="1046540">
+   <string>VPERMT2W __m128i _mm_permutex2var_epi16(__m128i a, __m128i idx, __m128i b);</string></para>
+  <para unique="1046541">
+   <string>VPERMT2W __m128i _mm_mask_permutex2var_epi16(__m128i a, __mmask8 k, __m128i idx, __m128i b);</string></para>
+  <para unique="1046542">
+   <string>VPERMT2W __m128i _mm_mask2_permutex2var_epi16(__m128i a, __m128i idx, __mmask8 k, __m128i b);</string></para>
+  <para unique="1046543">
+   <string>VPERMT2W __m128i _mm_maskz_permutex2var_epi16(__mmask8 k, __m128i a, __m128i idx, __m128i b);</string></para>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046545">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046550" format="xIndent1">
+   <string>VPERMT2D/Q/PS/PD: See </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046554" format="xIndent1">
+   <string>VPERMT2W: See Exceptions Type E4NF.nb in </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

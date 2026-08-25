@@ -1,0 +1,3229 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="CMPOXADD_MEMu32_GPR32u32_GPR32u32" xed_iform="CMPOXADD_MEMu32_GPR32u32_GPR32u32" encoding="VEX.L0.66.0F38.W0 E0 /r" opcode="e0" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     <code>let cond := 0b0000;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 32);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 32);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPOXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r32<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r32<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b0000</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="CMPccXADD" variant_kind="Standard variant" mnemonic="CMPOXADD">
+  <code>let (cmp_result, carry_out, overflow, alternative_carry) := Subtract(src1, src2);</code>
+  <code></code>
+  <code>RFLAGS.OF := overflow;</code>
+  <code>RFLAGS.SF := cmp_result[operand_size-1];</code>
+  <code>RFLAGS.ZF := if Is_Zero(cmp_result) then 0b1 else 0b0;</code>
+  <code>RFLAGS.AF := alternative_carry;</code>
+  <code>RFLAGS.PF := if Is_Parity_Even(cmp_result[0 +: 8]) then 0b1 else 0b0;</code>
+  <code>RFLAGS.CF := carry_out;</code>
+  <code></code>
+  <code>let result1 := if Condition_Holds(cond) then src1 + src3 else src1;</code>
+  <code>let result2 := src1;</code>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Add</callee>
+  <callee>Std::Bits::Is_Zero</callee>
+  <callee>Std::Bits::Is_Parity_Even</callee>
+  <callee>Condition_Holds</callee>
+  <callee>Subtract</callee>
+  <var-used>RFLAGS</var-used>
+  </operation>
+ <iform-group>
+  <iform name="CMPNOXADD_MEMu32_GPR32u32_GPR32u32" xed_iform="CMPNOXADD_MEMu32_GPR32u32_GPR32u32" encoding="VEX.L0.66.0F38.W0 E1 /r" opcode="e1" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     <code>let cond := 0b0001;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 32);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 32);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPNOXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r32<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r32<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b0001</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPBXADD_MEMu32_GPR32u32_GPR32u32" xed_iform="CMPBXADD_MEMu32_GPR32u32_GPR32u32" encoding="VEX.L0.66.0F38.W0 E2 /r" opcode="e2" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     <code>let cond := 0b0010;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 32);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 32);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPBXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r32<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r32<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b0010</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPNBXADD_MEMu32_GPR32u32_GPR32u32" xed_iform="CMPNBXADD_MEMu32_GPR32u32_GPR32u32" encoding="VEX.L0.66.0F38.W0 E3 /r" opcode="e3" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     <code>let cond := 0b0011;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 32);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 32);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPNBXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r32<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r32<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b0011</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPZXADD_MEMu32_GPR32u32_GPR32u32" xed_iform="CMPZXADD_MEMu32_GPR32u32_GPR32u32" encoding="VEX.L0.66.0F38.W0 E4 /r" opcode="e4" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     <code>let cond := 0b0100;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 32);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 32);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPZXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r32<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r32<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b0100</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPNZXADD_MEMu32_GPR32u32_GPR32u32" xed_iform="CMPNZXADD_MEMu32_GPR32u32_GPR32u32" encoding="VEX.L0.66.0F38.W0 E5 /r" opcode="e5" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     <code>let cond := 0b0101;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 32);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 32);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPNZXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r32<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r32<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b0101</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPBEXADD_MEMu32_GPR32u32_GPR32u32" xed_iform="CMPBEXADD_MEMu32_GPR32u32_GPR32u32" encoding="VEX.L0.66.0F38.W0 E6 /r" opcode="e6" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     <code>let cond := 0b0110;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 32);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 32);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPBEXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r32<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r32<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b0110</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPNBEXADD_MEMu32_GPR32u32_GPR32u32" xed_iform="CMPNBEXADD_MEMu32_GPR32u32_GPR32u32" encoding="VEX.L0.66.0F38.W0 E7 /r" opcode="e7" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     <code>let cond := 0b0111;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 32);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 32);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPNBEXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r32<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r32<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b0111</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPSXADD_MEMu32_GPR32u32_GPR32u32" xed_iform="CMPSXADD_MEMu32_GPR32u32_GPR32u32" encoding="VEX.L0.66.0F38.W0 E8 /r" opcode="e8" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     <code>let cond := 0b1000;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 32);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 32);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPSXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r32<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r32<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b1000</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPNSXADD_MEMu32_GPR32u32_GPR32u32" xed_iform="CMPNSXADD_MEMu32_GPR32u32_GPR32u32" encoding="VEX.L0.66.0F38.W0 E9 /r" opcode="e9" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     <code>let cond := 0b1001;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 32);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 32);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPNSXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r32<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r32<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b1001</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPPXADD_MEMu32_GPR32u32_GPR32u32" xed_iform="CMPPXADD_MEMu32_GPR32u32_GPR32u32" encoding="VEX.L0.66.0F38.W0 EA /r" opcode="ea" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     <code>let cond := 0b1010;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 32);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 32);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPPXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r32<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r32<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b1010</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPNPXADD_MEMu32_GPR32u32_GPR32u32" xed_iform="CMPNPXADD_MEMu32_GPR32u32_GPR32u32" encoding="VEX.L0.66.0F38.W0 EB /r" opcode="eb" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     <code>let cond := 0b1011;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 32);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 32);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPNPXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r32<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r32<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b1011</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPLXADD_MEMu32_GPR32u32_GPR32u32" xed_iform="CMPLXADD_MEMu32_GPR32u32_GPR32u32" encoding="VEX.L0.66.0F38.W0 EC /r" opcode="ec" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     <code>let cond := 0b1100;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 32);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 32);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPLXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r32<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r32<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b1100</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPNLXADD_MEMu32_GPR32u32_GPR32u32" xed_iform="CMPNLXADD_MEMu32_GPR32u32_GPR32u32" encoding="VEX.L0.66.0F38.W0 ED /r" opcode="ed" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     <code>let cond := 0b1101;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 32);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 32);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPNLXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r32<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r32<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b1101</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPLEXADD_MEMu32_GPR32u32_GPR32u32" xed_iform="CMPLEXADD_MEMu32_GPR32u32_GPR32u32" encoding="VEX.L0.66.0F38.W0 EE /r" opcode="ee" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     <code>let cond := 0b1110;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 32);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 32);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPLEXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r32<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r32<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b1110</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPNLEXADD_MEMu32_GPR32u32_GPR32u32" xed_iform="CMPNLEXADD_MEMu32_GPR32u32_GPR32u32" encoding="VEX.L0.66.0F38.W0 EF /r" opcode="ef" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     <code>let cond := 0b1111;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 32);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 32);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPNLEXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r32<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r32<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b1111</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPOXADD_MEMu64_GPR64u64_GPR64u64" xed_iform="CMPOXADD_MEMu64_GPR64u64_GPR64u64" encoding="VEX.L0.66.0F38.W1 E0 /r" opcode="e0" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     <code>let cond := 0b0000;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 64);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 64);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPOXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r64<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r64<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r64<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b0000</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPNOXADD_MEMu64_GPR64u64_GPR64u64" xed_iform="CMPNOXADD_MEMu64_GPR64u64_GPR64u64" encoding="VEX.L0.66.0F38.W1 E1 /r" opcode="e1" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     <code>let cond := 0b0001;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 64);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 64);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPNOXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r64<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r64<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r64<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b0001</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPBXADD_MEMu64_GPR64u64_GPR64u64" xed_iform="CMPBXADD_MEMu64_GPR64u64_GPR64u64" encoding="VEX.L0.66.0F38.W1 E2 /r" opcode="e2" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     <code>let cond := 0b0010;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 64);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 64);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPBXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r64<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r64<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r64<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b0010</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPNBXADD_MEMu64_GPR64u64_GPR64u64" xed_iform="CMPNBXADD_MEMu64_GPR64u64_GPR64u64" encoding="VEX.L0.66.0F38.W1 E3 /r" opcode="e3" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     <code>let cond := 0b0011;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 64);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 64);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPNBXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r64<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r64<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r64<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b0011</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPZXADD_MEMu64_GPR64u64_GPR64u64" xed_iform="CMPZXADD_MEMu64_GPR64u64_GPR64u64" encoding="VEX.L0.66.0F38.W1 E4 /r" opcode="e4" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     <code>let cond := 0b0100;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 64);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 64);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPZXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r64<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r64<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r64<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b0100</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPNZXADD_MEMu64_GPR64u64_GPR64u64" xed_iform="CMPNZXADD_MEMu64_GPR64u64_GPR64u64" encoding="VEX.L0.66.0F38.W1 E5 /r" opcode="e5" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     <code>let cond := 0b0101;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 64);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 64);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPNZXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r64<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r64<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r64<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b0101</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPBEXADD_MEMu64_GPR64u64_GPR64u64" xed_iform="CMPBEXADD_MEMu64_GPR64u64_GPR64u64" encoding="VEX.L0.66.0F38.W1 E6 /r" opcode="e6" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     <code>let cond := 0b0110;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 64);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 64);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPBEXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r64<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r64<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r64<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b0110</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPNBEXADD_MEMu64_GPR64u64_GPR64u64" xed_iform="CMPNBEXADD_MEMu64_GPR64u64_GPR64u64" encoding="VEX.L0.66.0F38.W1 E7 /r" opcode="e7" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     <code>let cond := 0b0111;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 64);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 64);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPNBEXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r64<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r64<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r64<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b0111</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPSXADD_MEMu64_GPR64u64_GPR64u64" xed_iform="CMPSXADD_MEMu64_GPR64u64_GPR64u64" encoding="VEX.L0.66.0F38.W1 E8 /r" opcode="e8" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     <code>let cond := 0b1000;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 64);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 64);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPSXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r64<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r64<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r64<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b1000</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPNSXADD_MEMu64_GPR64u64_GPR64u64" xed_iform="CMPNSXADD_MEMu64_GPR64u64_GPR64u64" encoding="VEX.L0.66.0F38.W1 E9 /r" opcode="e9" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     <code>let cond := 0b1001;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 64);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 64);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPNSXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r64<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r64<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r64<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b1001</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPPXADD_MEMu64_GPR64u64_GPR64u64" xed_iform="CMPPXADD_MEMu64_GPR64u64_GPR64u64" encoding="VEX.L0.66.0F38.W1 EA /r" opcode="ea" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     <code>let cond := 0b1010;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 64);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 64);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPPXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r64<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r64<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r64<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b1010</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPNPXADD_MEMu64_GPR64u64_GPR64u64" xed_iform="CMPNPXADD_MEMu64_GPR64u64_GPR64u64" encoding="VEX.L0.66.0F38.W1 EB /r" opcode="eb" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     <code>let cond := 0b1011;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 64);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 64);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPNPXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r64<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r64<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r64<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b1011</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPLXADD_MEMu64_GPR64u64_GPR64u64" xed_iform="CMPLXADD_MEMu64_GPR64u64_GPR64u64" encoding="VEX.L0.66.0F38.W1 EC /r" opcode="ec" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     <code>let cond := 0b1100;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 64);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 64);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPLXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r64<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r64<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r64<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b1100</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPNLXADD_MEMu64_GPR64u64_GPR64u64" xed_iform="CMPNLXADD_MEMu64_GPR64u64_GPR64u64" encoding="VEX.L0.66.0F38.W1 ED /r" opcode="ed" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     <code>let cond := 0b1101;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 64);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 64);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPNLXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r64<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r64<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r64<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b1101</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPLEXADD_MEMu64_GPR64u64_GPR64u64" xed_iform="CMPLEXADD_MEMu64_GPR64u64_GPR64u64" encoding="VEX.L0.66.0F38.W1 EE /r" opcode="ee" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     <code>let cond := 0b1110;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 64);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 64);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPLEXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r64<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r64<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r64<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b1110</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPNLEXADD_MEMu64_GPR64u64_GPR64u64" xed_iform="CMPNLEXADD_MEMu64_GPR64u64_GPR64u64" encoding="VEX.L0.66.0F38.W1 EF /r" opcode="ef" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPccXADD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     <code>let cond := 0b1111;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src2 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, 64);</code>
+     <code>let src3 := Read_GPR(context.evex_v4 ++ context.vvvv, 64);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result1, result2) := Instr_CMPccXADD(operand_size, cond, src1, src2, src3);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result1, release_lock=&gt;True);</code>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result2);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPNLEXADD">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r64<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r64<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMPCCXADD"><cpuid-flag>CMPCCXADD</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result2</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>vvvv</encoding>
+    <label><varname>r64<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>0b1111</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <category>scalar</category>
+ <category>integer</category>
+ <size name="operand_size"/>
+ <input name="src1"/>
+ <input name="src2"/>
+ <input name="src3"/>
+ <output name="result1"/>
+ <output name="result2"/>
+ <footnote id="l"><para>A locked read-modify-write memory access is performed.</para>
+  </footnote>
+ </instruction>

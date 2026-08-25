@@ -1,0 +1,74 @@
+<instruction name="RDTSC">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Read Time-Stamp Counter</shortdesc>
+ <longdesc><para unique="1091440">
+   <string>Reads the current value of the processor&#8217;s </string><indexterm><primary>Time-stamp counter, reading</primary></indexterm><string>time-stamp counter (a 64-bit MSR) into the EDX:EAX registers. The EDX register is loaded with the high-order 32 bits of the MSR and the EAX register is loaded with the low-order 32 bits. (On processors that support the Intel&#160;64 architecture, the high-order 32 bits of each of RAX and RDX are cleared.)</string></para>
+  <para unique="1091441">
+   <string>The processor monotonically increments the time-stamp counter MSR every clock cycle and resets it to 0 whenever the processor is reset. See &#8220;Time-Stamp Counter&#8221; in </string><link linkend="12383: H1Heading: Chapter 10 Debugging and Performance Monitoring"><string>Chapter 20</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B, for specific details of the time stamp counter behavior.</string></para>
+  <para unique="1091445">
+   <string>The time stamp disable (TSD) flag in register CR4 restricts the use of the RDTSC instruction as follows. When the flag is clear, the RDTSC instruction can be executed at any privilege level; when the flag is set, the instruction can only be executed at privilege level 0.</string></para>
+  <para unique="1091447">
+   <string>The time-stamp counter can also be read with the </string><indexterm><primary>RDMSR instruction</primary></indexterm><string>RDMSR instruction, when executing at privilege level 0.</string></para>
+  <para unique="1091448">
+   <string>The RDTSC instruction is not a serializing instruction. It does not necessarily wait until all previous instructions have been executed before reading the counter. Similarly, subsequent instructions may begin execution before the read operation is performed. The following items may guide software seeking to order executions of RDTSC:</string></para>
+  <itemizedlist><listitem><para unique="1091449">
+     <string>	If software requires RDTSC to be executed only after all previous instructions have executed and all previous loads are globally visible,</string><footnote><para unique="1091452">
+       <string>A load is considered to become globally visible when the value to be loaded is determined.</string></para>
+      </footnote><string> it can execute LFENCE immediately before RDTSC.</string></para>
+    </listitem>
+   <listitem><para unique="1091453">
+     <string>	If software requires RDTSC to be executed only after all previous instructions have executed and all previous loads and stores are globally visible, it can execute the sequence MFENCE;LFENCE immediately before RDTSC.</string></para>
+    </listitem>
+   <listitem><para unique="1091454">
+     <string>	If software requires RDTSC to be executed prior to execution of any subsequent instruction (including any memory accesses), it can execute the sequence LFENCE immediately after RDTSC.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1091455">
+   <string>This instruction was introduced by the Pentium processor.</string></para>
+  <para unique="1091459">
+   <string>See &#8220;Changes to Instruction Behavior in VMX Non-Root Operation&#8221; in </string><link linkend="12383: H1Heading: Chapter 10 Debugging and Performance Monitoring"><string>Chapter 27</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Archi&#173;tectures Software Developer&#8217;s Manual, Volume 3C, for more information about the behavior of this instruction in VMX non-root operation.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1091467">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the TSD flag in register CR4 is set and the CPL is greater than 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the TSD flag in register CR4 is set.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1091477" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <para unique="1091479" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ </instruction>

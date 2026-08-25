@@ -1,0 +1,55 @@
+<instruction name="VREDUCEPS">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Perform Reduction Transformation on Packed Float32 Values</shortdesc>
+ <longdesc><para unique="1046163">
+   <string>Perform reduction transformation of the packed binary encoded single precision floating-point values in the source operand (the second operand) and store the reduced results in binary floating-point format to the destination operand (the first operand) under the writemask k1. </string></para>
+  <para unique="1046164">
+   <string>The reduction transformation subtracts the integer part and the leading M fractional bits from the binary floating-point source value, where M is a unsigned integer specified by imm8[7:4], see </string><link linkend="71477: 05_FigureFrame: Figure 5-41. Imm8 Controls for VREDUCEPD/SD/PS/SS"><string>Figure&#160;5&#8209;28</string></link><string>. Specifically, the reduc&#173;tion transformation can be expressed as:</string></para>
+  <para unique="1046168">
+   <string>dest = src &#8211; (ROUND(2</string><superscript><string>M</string></superscript><string>*src))*2</string><superscript><string>-M</string></superscript><string>;</string></para>
+  <para unique="1046169">
+   <string>where &#8220;Round()&#8221; treats &#8220;src&#8221;, &#8220;2</string><superscript><string>M</string></superscript><string>&#8221;, and their product as binary floating-point numbers with normalized signifi&#173;cand and biased exponents.</string></para>
+  <para unique="1046170">
+   <string>The magnitude of the reduced result can be expressed by considering src= 2</string><superscript><string>p</string></superscript><string>*man2,</string></para>
+  <para unique="1046171">
+   <string>where &#8216;man2&#8217; is the normalized significand and &#8216;p&#8217; is the unbiased exponent </string></para>
+  <para unique="1046172">
+   <string>Then if RC = RNE: 0&lt;=|Reduced Result|&lt;=2</string><superscript><string>p-M-1</string></superscript></para>
+  <para unique="1046173">
+   <string>Then if RC &#8800; RNE: 0&lt;=|Reduced Result|&lt;2</string><superscript><string>p-M</string></superscript></para>
+  <para unique="1046175">
+   <string>This instruction might end up with a precision exception set. However, in case of SPE set (i.e., Suppress Precision Exception, which is imm8[3]=1), no precision exception is reported.</string></para>
+  <para unique="1046176">
+   <string>EVEX.vvvv is reserved and must be 1111b otherwise instructions will #UD.</string></para>
+  <para unique="1046179">
+   <string>Handling of special case of input values are listed in </string><link linkend="49295: 06_Table: Table 5-24. VREDUCEPD Special Cases"><string>Table 5&#8209;27</string></link><string>.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VREDUCEPS __m512 _mm512_mask_reduce_ps( __m512 a, int imm, int sae)</string><string>
+</string><string>VREDUCEPS __m512 _mm512_mask_reduce_ps(__m512 s, __mmask16 k, __m512 a, int imm, int sae)</string><string>
+</string><string>VREDUCEPS __m512 _mm512_maskz_reduce_ps(__mmask16 k, __m512 a, int imm, int sae)</string><string>
+</string><string>VREDUCEPS __m256 _mm256_mask_reduce_ps( __m256 a, int imm)</string><string>
+</string><string>VREDUCEPS __m256 _mm256_mask_reduce_ps(__m256 s, __mmask8 k, __m256 a, int imm)</string><string>
+</string><string>VREDUCEPS __m256 _mm256_maskz_reduce_ps(__mmask8 k, __m256 a, int imm)</string><string>
+</string><string>VREDUCEPS __m128 _mm_mask_reduce_ps( __m128 a, int imm)</string><string>
+</string><string>VREDUCEPS __m128 _mm_mask_reduce_ps(__m128 s, __mmask8 k, __m128 a, int imm)</string><string>
+</string><string>VREDUCEPS __m128 _mm_maskz_reduce_ps(__mmask8 k, __m128 a, int imm)</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046225">
+   <string>Invalid, Precision.</string></para>
+  <para unique="1046226">
+   <string>If SPE is enabled, precision exception is not reported (regardless of MXCSR exception mask).</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046231" format="xIndent1">
+   <string>See </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions&#8221;</string></link><string>; additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>	If EVEX.vvvv != 1111B.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

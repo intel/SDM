@@ -1,0 +1,162 @@
+<instruction name="PSLLW/PSLLD/PSLLQ">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Shift Packed Data Left Logical</shortdesc>
+ <longdesc><para unique="1092108">
+   <string>Shifts the bits in the individual data elements (words, doublewords, or quadword) in the destination operand (first operand) to the left by the number of bits specified in the count operand (second operand). As the bits in the data elements are shifted left, the empty low-order bits are cleared (set to 0). If the value specified by the count operand is greater than 15 (for words), 31&#160;(for doublewords), or 63 (for a quadword), then the destination operand is set to all 0s. </string><link linkend="10295: 05_FigureFrame: Figure 3-11. PSLLW, PSLLD, and PSLLQ Instruction Operation"><string>Figure&#160;4&#8209;17</string></link><string> gives an example of shifting words in a 64-bit operand. </string></para>
+  <table>
+   <caption>Figure 4-17.  PSLLW, PSLLD, and PSLLQ Instruction Operation Using 64-bit Operand</caption>
+   <colgroup><col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <td><para unique="1092152" format="TableAnchor">
+       <svg width="1000" height="266.16065689793385" viewBox="0 0 299.09304 79.6068">
+        <defs>
+        <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+          <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
+        </marker>
+      </defs>
+        <rect width="62.89128" height="18.0" x="40.91904" y="4.5892800000000005" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="62.89128" height="18.0" x="103.81032" y="4.5892800000000005" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="62.89128" height="18.0" x="166.7016" y="4.5892800000000005" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="62.897760000000005" height="18.0" x="229.59288" y="4.5892800000000005" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="37.102320000000006" y="73.53432" font-size="6" text-anchor="end">DEST</text>
+        <rect width="62.89128" height="18.0" x="40.34808" y="57.5892" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="62.89128" height="18.0" x="103.23936" y="57.5892" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="62.89128" height="18.0" x="166.13064" y="57.5892" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="62.897760000000005" height="18.0" x="229.0212" y="57.5892" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="38.13768" y="20.99808" font-size="6" text-anchor="end">DEST</text>
+        <text x="6.28632" y="12.69864" font-size="6">Pre-Shift</text>
+        <text x="1.46448" y="65.55888" font-size="6">Post-Shift</text>
+        <polyline points="267.00264,23.05584 267.00264,37.51992 241.28784000000002,37.51992 241.28784000000002,57.877199999999995" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="84.82248000000001,23.019840000000002 84.82248000000001,37.48464 59.10768,37.48464 59.10768,57.841919999999995" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="148.53744,22.984560000000002 148.53744,37.448640000000005 122.82264,37.448640000000005 122.82264,57.80592" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="205.28712000000002,23.48424 205.28712000000002,37.948319999999995 179.57304,37.948319999999995 179.57304,58.3056" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <text x="37.86552" y="32.16312" font-size="6" text-anchor="end">Shift Left</text>
+        <text x="254.15856000000002" y="16.78752" font-size="6">X0</text>
+        <text x="232.72992" y="70.54056" font-size="6">X0 &lt;&lt; COUNT</text>
+        <text x="67.15728" y="16.78752" font-size="6">X3</text>
+        <text x="130.87224" y="16.78752" font-size="6">X2</text>
+        <text x="191.90807999999998" y="16.78752" font-size="6">X1</text>
+        <text x="172.15776" y="70.54056" font-size="6">X1 &lt;&lt; COUNT</text>
+        <text x="108.90719999999999" y="70.54056" font-size="6">X2 &lt;&lt; COUNT</text>
+        <text x="45.120960000000004" y="70.54056" font-size="6">X3 &lt;&lt; COUNT</text>
+        <text x="37.86552" y="39.96936" font-size="6" text-anchor="end">with Zero</text>
+        <text x="37.86552" y="47.7756" font-size="6" text-anchor="end">Extension</text>
+        </svg></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  <para unique="1092157">
+   <string>The (V)PSLLW instruction shifts each of the words in the destination operand to the left by the number of bits spec&#173;ified in the count operand; the (V)PSLLD instruction shifts each of the doublewords in the destination operand; and the (V)PSLLQ instruction shifts the quadword (or quadwords) in the destination operand.</string></para>
+  <para unique="1092158">
+   <string>In 64-bit mode and not encoded with VEX/EVEX, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).</string></para>
+  <para unique="1092159">
+   <string>Legacy SSE instructions 64-bit operand: The destination operand is an MMX technology register; the count operand can be either an MMX technology register or an 64-bit memory location.</string></para>
+  <para unique="1092160">
+   <string>128-bit Legacy SSE version: The destination and first source operands are XMM registers. Bits (MAXVL-1:128) of the corresponding YMM destination register remain unchanged. The count operand can be either an XMM register or a 128-bit memory location or an 8-bit immediate. If the count operand is a memory address, 128 bits are loaded but the upper 64 bits are ignored.</string></para>
+  <para unique="1092161">
+   <string>VEX.128 encoded version: The destination and first source operands are XMM registers. Bits (MAXVL-1:128) of the destination YMM register are zeroed. The count operand can be either an XMM register or a 128-bit memory loca&#173;tion or an 8-bit immediate. If the count operand is a memory address, 128 bits are loaded but the upper 64 bits are ignored.</string></para>
+  <para unique="1092162">
+   <string>VEX.256 encoded version: The destination operand is a YMM register. The source operand is a YMM register or a memory location. The count operand can come either from an XMM register or a memory location or an 8-bit immediate. Bits (MAXVL-1:256) of the corresponding ZMM register are zeroed.</string></para>
+  <para unique="1092163">
+   <string>EVEX encoded versions: The destination operand is a ZMM register updated according to the writemask. The count operand is either an 8-bit immediate (the immediate count version) or an 8-bit value from an XMM register or a memory location (the variable count version). For the immediate count version, the source operand (the second operand) can be a ZMM register, a 512-bit memory location or a 512-bit vector broadcasted from a 32/64-bit memory location. For the variable count version, the first source operand (the second operand) is a ZMM register, the second source operand (the third operand, 8-bit variable count) can be an XMM register or a memory location.</string></para>
+  <para unique="1092164">
+   <string>Note: In VEX/EVEX encoded versions of shifts with an immediate count, vvvv of VEX/EVEX encode the destination register, and VEX.B/EVEX.B + ModRM.r/m encodes the source register.</string></para>
+  <para unique="1092165">
+   <string>Note: For shifts with an immediate count (VEX.128.66.0F 71-73 /6, or EVEX.128.66.0F 71-73 /6), VEX.vvvv/EVEX.vvvv encodes the destination register. </string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalents">
+  <programlisting><string>VPSLLD __m512i _mm512_slli_epi32(__m512i a, unsigned int imm);</string><string>
+</string><string>VPSLLD __m512i _mm512_mask_slli_epi32(__m512i s, __mmask16 k, __m512i a, unsigned int imm);</string><string>
+</string><string>VPSLLD __m512i _mm512_maskz_slli_epi32( __mmask16 k, __m512i a, unsigned int imm);</string><string>
+</string><string>VPSLLD __m256i _mm256_mask_slli_epi32(__m256i s, __mmask8 k, __m256i a, unsigned int imm);</string><string>
+</string><string>VPSLLD __m256i _mm256_maskz_slli_epi32( __mmask8 k, __m256i a, unsigned int imm);</string><string>
+</string><string>VPSLLD __m128i _mm_mask_slli_epi32(__m128i s, __mmask8 k, __m128i a, unsigned int imm);</string><string>
+</string><string>VPSLLD __m128i _mm_maskz_slli_epi32( __mmask8 k, __m128i a, unsigned int imm);</string><string>
+</string><string>VPSLLD __m512i _mm512_sll_epi32(__m512i a, __m128i cnt);</string><string>
+</string><string>VPSLLD __m512i _mm512_mask_sll_epi32(__m512i s, __mmask16 k, __m512i a, __m128i cnt);</string><string>
+</string><string>VPSLLD __m512i _mm512_maskz_sll_epi32( __mmask16 k, __m512i a, __m128i cnt);</string><string>
+</string><string>VPSLLD __m256i _mm256_mask_sll_epi32(__m256i s, __mmask8 k, __m256i a, __m128i cnt);</string><string>
+</string><string>VPSLLD __m256i _mm256_maskz_sll_epi32( __mmask8 k, __m256i a, __m128i cnt);</string><string>
+</string><string>VPSLLD __m128i _mm_mask_sll_epi32(__m128i s, __mmask8 k, __m128i a, __m128i cnt);</string><string>
+</string><string>VPSLLD __m128i _mm_maskz_sll_epi32( __mmask8 k, __m128i a, __m128i cnt);</string><string>
+</string><string>VPSLLQ __m512i _mm512_mask_slli_epi64(__m512i a, unsigned int imm);</string><string>
+</string><string>VPSLLQ __m512i _mm512_mask_slli_epi64(__m512i s, __mmask8 k, __m512i a, unsigned int imm);</string><string>
+</string><string>VPSLLQ __m512i _mm512_maskz_slli_epi64( __mmask8 k, __m512i a, unsigned int imm);</string><string>
+</string><string>VPSLLQ __m256i _mm256_mask_slli_epi64(__m256i s, __mmask8 k, __m256i a, unsigned int imm);</string><string>
+</string><string>VPSLLQ __m256i _mm256_maskz_slli_epi64( __mmask8 k, __m256i a, unsigned int imm);</string><string>
+</string><string>VPSLLQ __m128i _mm_mask_slli_epi64(__m128i s, __mmask8 k, __m128i a, unsigned int imm);</string><string>
+</string><string>VPSLLQ __m128i _mm_maskz_slli_epi64( __mmask8 k, __m128i a, unsigned int imm);</string><string>
+</string><string>VPSLLQ __m512i _mm512_mask_sll_epi64(__m512i a, __m128i cnt);</string><string>
+</string><string>VPSLLQ __m512i _mm512_mask_sll_epi64(__m512i s, __mmask8 k, __m512i a, __m128i cnt);</string><string>
+</string><string>VPSLLQ __m512i _mm512_maskz_sll_epi64( __mmask8 k, __m512i a, __m128i cnt);</string><string>
+</string><string>VPSLLQ __m256i _mm256_mask_sll_epi64(__m256i s, __mmask8 k, __m256i a, __m128i cnt);</string><string>
+</string><string>VPSLLQ __m256i _mm256_maskz_sll_epi64( __mmask8 k, __m256i a, __m128i cnt);</string><string>
+</string><string>VPSLLQ __m128i _mm_mask_sll_epi64(__m128i s, __mmask8 k, __m128i a, __m128i cnt);</string><string>
+</string><string>VPSLLQ __m128i _mm_maskz_sll_epi64( __mmask8 k, __m128i a, __m128i cnt);</string><string>
+</string><string>VPSLLW __m512i _mm512_slli_epi16(__m512i a, unsigned int imm);</string><string>
+</string><string>VPSLLW __m512i _mm512_mask_slli_epi16(__m512i s, __mmask32 k, __m512i a, unsigned int imm);</string><string>
+</string><string>VPSLLW __m512i _mm512_maskz_slli_epi16( __mmask32 k, __m512i a, unsigned int imm);</string><string>
+</string><string>VPSLLW __m256i _mm256_mask_slli_epi16(__m256i s, __mmask16 k, __m256i a, unsigned int imm);</string><string>
+</string><string>VPSLLW __m256i _mm256_maskz_slli_epi16( __mmask16 k, __m256i a, unsigned int imm);</string><string>
+</string><string>VPSLLW __m128i _mm_mask_slli_epi16(__m128i s, __mmask8 k, __m128i a, unsigned int imm);</string><string>
+</string><string>VPSLLW __m128i _mm_maskz_slli_epi16( __mmask8 k, __m128i a, unsigned int imm);</string><string>
+</string><string>VPSLLW __m512i _mm512_sll_epi16(__m512i a, __m128i cnt);</string><string>
+</string><string>VPSLLW __m512i _mm512_mask_sll_epi16(__m512i s, __mmask32 k, __m512i a, __m128i cnt);</string><string>
+</string><string>VPSLLW __m512i _mm512_maskz_sll_epi16( __mmask32 k, __m512i a, __m128i cnt);</string><string>
+</string><string>VPSLLW __m256i _mm256_mask_sll_epi16(__m256i s, __mmask16 k, __m256i a, __m128i cnt);</string><string>
+</string><string>VPSLLW __m256i _mm256_maskz_sll_epi16( __mmask16 k, __m256i a, __m128i cnt);</string><string>
+</string><string>VPSLLW __m128i _mm_mask_sll_epi16(__m128i s, __mmask8 k, __m128i a, __m128i cnt);</string><string>
+</string><string>VPSLLW __m128i _mm_maskz_sll_epi16( __mmask8 k, __m128i a, __m128i cnt);</string><string>
+</string><string>PSLLW 	__m64 _mm_slli_pi16 (__m64 m, int count)</string><string>
+</string><string>PSLLW 	__m64 _mm_sll_pi16(__m64 m, __m64 count)</string><string>
+</string><string>(V)PSLLW 	__m128i _mm_slli_epi16(__m64 m, int count)</string><string>
+</string><string>(V)PSLLW 	__m128i _mm_sll_epi16(__m128i m, __m128i count)</string><string>
+</string><string>VPSLLW 	__m256i _mm256_slli_epi16 (__m256i m, int count)</string><string>
+</string><string>VPSLLW 	__m256i _mm256_sll_epi16 (__m256i m, __m128i count)</string><string>
+</string><string>PSLLD 	__m64 _mm_slli_pi32(__m64 m, int count)</string><string>
+</string><string>PSLLD 	__m64 _mm_sll_pi32(__m64 m, __m64 count)</string><string>
+</string><string>(V)PSLLD 	__m128i _mm_slli_epi32(__m128i m, int count)</string><string>
+</string><string>(V)PSLLD 	__m128i _mm_sll_epi32(__m128i m, __m128i count)</string><string>
+</string><string>VPSLLD 	__m256i _mm256_slli_epi32 (__m256i m, int count)</string><string>
+</string><string>VPSLLD 	__m256i _mm256_sll_epi32 (__m256i m, __m128i count)</string><string>
+</string><string>PSLLQ 	__m64 _mm_slli_si64(__m64 m, int count)</string><string>
+</string><string>PSLLQ 	__m64 _mm_sll_si64(__m64 m, __m64 count)</string><string>
+</string><string>(V)PSLLQ 	__m128i _mm_slli_epi64(__m128i m, int count)</string><string>
+</string><string>(V)PSLLQ 	__m128i _mm_sll_epi64(__m128i m, __m128i count)</string><string>
+</string><string>VPSLLQ 	__m256i _mm256_slli_epi64 (__m256i m, int count)</string><string>
+</string><string>VPSLLQ 	__m256i _mm256_sll_epi64 (__m256i m, __m128i count)</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Flags Affected">
+  <para unique="1092557">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Numeric Exceptions">
+  <para unique="1092559">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <itemizedlist><listitem><para unique="1092561">
+     <string>VEX-encoded instructions:</string></para>
+    </listitem>
+   </itemizedlist><para unique="1092564" format="ListEmDash">
+   <string>Syntax with RM/RVM operand encoding (A/C in the operand encoding table), see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  <itemizedlist><listitem><para unique="1092568">
+     <string>Syntax with MI/VMI operand encoding (B/D in the operand encoding table), see </string><link linkend="94725: 06_Table: Table 2-14. Type 7 Class Exception Conditions"><string>Table&#160;2&#8209;24, &#8220;Type 7 Class Exception Conditions.&#8221;</string></link></para>
+    </listitem>
+   </itemizedlist><para unique="1092572" format="ListBulletBig">
+   <string>EVEX-encoded VPSLLW (E in the operand encoding table), see Exceptions Type E4NF.nb in </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  <itemizedlist><listitem><para unique="1092574">
+     <string>EVEX-encoded VPSLLD/Q:</string></para>
+    </listitem>
+   </itemizedlist><para unique="1092575" format="ListEmDash">
+   <string>Syntax with Mem128 tuple type (G in the operand encoding table), see Exceptions Type E4NF.nb in </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  <itemizedlist><listitem><para unique="1092581">
+     <string>Syntax with Full tuple type (F in the operand encoding table), see </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+    </listitem>
+   </itemizedlist></subsection>
+ </instruction>

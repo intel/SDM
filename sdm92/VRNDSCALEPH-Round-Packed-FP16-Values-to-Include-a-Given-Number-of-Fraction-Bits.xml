@@ -1,0 +1,179 @@
+<instruction name="VRNDSCALEPH">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Round Packed FP16 Values to Include a Given Number of Fraction Bits</shortdesc>
+ <longdesc><para unique="1046155">
+   <string>This instruction rounds the FP16 values in the source operand by the rounding mode specified in the immediate operand (see </string><link linkend="17025: 06_Table: Table 2-6. VRCPPH/VRCPSH Special Cases"><string>Table 5&#8209;30</string></link><string>) and places the result in the destination operand. The destination operand is conditionally updated according to the writemask.</string></para>
+  <para unique="1046159">
+   <string>The rounding process rounds the input to an integral value, plus number bits of fraction that are specified by imm8[7:4] (to be included in the result), and returns the result as an FP16 value.</string></para>
+  <para unique="1046160">
+   <string>Note that no overflow is induced while executing this instruction (although the source is scaled by the imm8[7:4] value).</string></para>
+  <para unique="1046161">
+   <string>The immediate operand also specifies control fields for the rounding operation. Three bit fields are defined and shown in </string><link linkend="17025: 06_Table: Table 2-6. VRCPPH/VRCPSH Special Cases"><string>Table&#160;5&#8209;30, &#8220;Imm8 Controls for VRNDSCALEPH/VRNDSCALESH.&#8221;</string></link><string> Bit 3 of the immediate byte controls the processor behavior for a precision exception, bit 2 selects the source of rounding mode control, and bits 1:0 specify a non-sticky rounding-mode value.</string></para>
+  <para unique="1046165">
+   <string>The Precision Floating-Point Exception is signaled according to the immediate operand. If any source operand is an SNaN then it will be converted to a QNaN.</string></para>
+  <para unique="1046168">
+   <string>The sign of the result of this instruction is preserved, including the sign of zero. Special cases are described in </string><link linkend="41038: 06_Table: Table 2-7. VRNDSCALEPH/VRNDSCALESH Special Cases"><string>Table 5&#8209;31</string></link><string>.</string></para>
+  <para unique="1046170">
+   <string>The formula of the operation on each data element for VRNDSCALEPH is </string></para>
+  <para unique="1046171">
+   <string>	ROUND(x) = 2</string><superscript><string>&#8722;M</string></superscript><string> *Round_to_INT(x * 2</string><superscript><string>M</string></superscript><string>, round_ctrl),</string></para>
+  <para unique="1046172">
+   <string>	round_ctrl = imm[3:0];</string></para>
+  <para unique="1046173">
+   <string>	M=imm[7:4];</string></para>
+  <para unique="1046174">
+   <string>The operation of x * 2</string><superscript><string>M</string></superscript><string> is computed as if the exponent range is unlimited (i.e., no overflow ever occurs).</string></para>
+  <para unique="1046175">
+   <string>If this instruction encoding&#8217;s SPE bit (bit 3) in the immediate operand is 1, VRNDSCALEPH can set MXCSR.UE without MXCSR.PE.</string></para>
+  <para unique="1046176">
+   <string>EVEX.vvvv is reserved and must be 1111b, otherwise instructions will #UD.</string></para>
+  <table>
+   <caption>Table 5-30.  Imm8 Controls for VRNDSCALEPH/VRNDSCALESH</caption>
+   <colgroup><col align="leftright"/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1046185" format="CellRowHeadL">
+       <string>Imm8 Bits</string></para>
+      </th>
+     <th><para unique="1046187" format="CellRowHeadL">
+       <string>Description</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1046189" format="CellBodyL">
+       <string>imm8[7:4]</string></para>
+      </td>
+     <td><para unique="1046191" format="CellBodyL">
+       <string>Number of fixed points to preserve.</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046193" format="CellBodyL">
+       <string>imm8[3]</string></para>
+      </td>
+     <td><para unique="1046195" format="CellBodyL">
+       <string>Suppress Precision Exception (SPE)</string></para>
+      <para unique="1046196" format="CellBodyL">
+       <string>0b00: Implies use of MXCSR exception mask.</string></para>
+      <para unique="1046197" format="CellBodyL">
+       <string>0b01: Implies suppress.</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046199" format="CellBodyL">
+       <string>imm8[2]</string></para>
+      </td>
+     <td><para unique="1046201" format="CellBodyL">
+       <string>Round Select (RS)</string></para>
+      <para unique="1046202" format="CellBodyL">
+       <string>0b00: Implies use of imm8[1:0].</string></para>
+      <para unique="1046203" format="CellBodyL">
+       <string>0b01: Implies use of MXCSR.</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046205" format="CellBodyL">
+       <string>imm8[1:0]</string></para>
+      </td>
+     <td><para unique="1046207" format="CellBodyL">
+       <string>Round Control Override:</string></para>
+      <para unique="1046208" format="CellBodyL">
+       <string>0b00: Round nearest even.</string></para>
+      <para unique="1046209" format="CellBodyL">
+       <string>0b01: Round down.</string></para>
+      <para unique="1046210" format="CellBodyL">
+       <string>0b10: Round up.</string></para>
+      <para unique="1046211" format="CellBodyL">
+       <string>0b11: Truncate.</string></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  <table>
+   <caption>Table 5-31.  VRNDSCALEPH/VRNDSCALESH Special Cases</caption>
+   <colgroup><col align="leftright"/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1046220" format="CellRowHeadL">
+       <string>Input Value</string></para>
+      </th>
+     <th><para unique="1046222" format="CellRowHeadL">
+       <string>Returned Value</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1046224" format="CellBodyL">
+       <string>Src1 = </string><string>&#177;&#8734;</string></para>
+      </td>
+     <td><para unique="1046226" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046228" format="CellBodyL">
+       <string>Src1 = </string><string>&#177;NaN</string></para>
+      </td>
+     <td><para unique="1046230" format="CellBodyL">
+       <string>Src1 converted to QNaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046232" format="CellBodyL">
+       <string>Src1 = </string><string>&#177;0</string></para>
+      </td>
+     <td><para unique="1046234" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <para unique="1046279">
+   <string>VRNDSCALEPH __m128h _mm_mask_roundscale_ph (__m128h src, __mmask8 k, __m128h a, int imm8);</string></para>
+  <para unique="1046280">
+   <string>VRNDSCALEPH __m128h _mm_maskz_roundscale_ph (__mmask8 k, __m128h a, int imm8);</string></para>
+  <para unique="1046281">
+   <string>VRNDSCALEPH __m128h _mm_roundscale_ph (__m128h a, int imm8);</string></para>
+  <para unique="1046282">
+   <string>VRNDSCALEPH __m256h _mm256_mask_roundscale_ph (__m256h src, __mmask16 k, __m256h a, int imm8);</string></para>
+  <para unique="1046283">
+   <string>VRNDSCALEPH __m256h _mm256_maskz_roundscale_ph (__mmask16 k, __m256h a, int imm8);</string></para>
+  <para unique="1046284">
+   <string>VRNDSCALEPH __m256h _mm256_roundscale_ph (__m256h a, int imm8);</string></para>
+  <para unique="1046285">
+   <string>VRNDSCALEPH __m512h _mm512_mask_roundscale_ph (__m512h src, __mmask32 k, __m512h a, int imm8);</string></para>
+  <para unique="1046286">
+   <string>VRNDSCALEPH __m512h _mm512_maskz_roundscale_ph (__mmask32 k, __m512h a, int imm8);</string></para>
+  <para unique="1046287">
+   <string>VRNDSCALEPH __m512h _mm512_roundscale_ph (__m512h a, int imm8);</string></para>
+  <para unique="1046288">
+   <string>VRNDSCALEPH __m512h _mm512_mask_roundscale_round_ph (__m512h src, __mmask32 k, __m512h a, int imm8, const int sae);</string></para>
+  <para unique="1046289">
+   <string>VRNDSCALEPH __m512h _mm512_maskz_roundscale_round_ph (__mmask32 k, __m512h a, int imm8, const int sae);</string></para>
+  <para unique="1046290">
+   <string>VRNDSCALEPH __m512h _mm512_roundscale_round_ph (__m512h a, int imm8, const int sae);</string></para>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046292">
+   <string>Invalid, Underflow, Precision.</string></para>
+  <para unique="1046789">
+   <string>If SPE is enabled, precision exception is not reported (regardless of MXCSR exception mask).</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046297" format="xIndent1">
+   <string>EVEX-encoded instruction, see </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

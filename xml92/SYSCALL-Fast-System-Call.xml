@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="SYSCALL" xed_iform="SYSCALL" encoding="0F 05" opcode="05" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_SYSCALL</callee>
+   <var-used>CR4</var-used>
+   <var-used>IA32_EFER</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not ((Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>NotMode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_FRED_0_EFER_SCE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_SYSCALL?();</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SYSCALL">
+    </assembly-syntax>
+   <cpuid-group name="LONGMODE"><cpuid-flag>INTEL64</cpuid-flag></cpuid-group>
+   </iform>
+  </iform-group>
+ <operation name="SYSCALL" variant_kind="Standard variant" mnemonic="SYSCALL">
+  <code>if CR4.FRED == 0b1 then</code>
+  <code>    FRED::Event_Delivery?(Other_Event, 0, Zero(32), Next_IP, from_syscall=&gt;True);</code>
+  <code>    return;</code>
+  <code>endif;</code>
+  <code></code>
+  <code>var new_cs : Segment;</code>
+  <code></code>
+  <code>new_cs.selector := IA32_STAR[47:32];</code>
+  <code>new_cs.selector.RPL := 0b00;</code>
+  <code></code>
+  <code>new_cs := Set_Segment_Base(Zero(64), new_cs);</code>
+  <code>new_cs.descriptor.Limit := All_Ones(20);</code>
+  <code></code>
+  <code>new_cs.descriptor.A := 0b1;</code>
+  <code>new_cs.descriptor.R := 0b1;</code>
+  <code>new_cs.descriptor.Conforming := 0b0;</code>
+  <code>new_cs.descriptor.Code := 0b1;</code>
+  <code></code>
+  <code>new_cs.descriptor.S := 0b1;</code>
+  <code>new_cs.descriptor.DPL := 0b00;</code>
+  <code>new_cs.descriptor.P := 0b1;</code>
+  <code>new_cs.descriptor.L := 0b1;</code>
+  <code>new_cs.descriptor.D := 0b0;</code>
+  <code>new_cs.descriptor.G := 0b1;</code>
+  <code></code>
+  <code>new_cs.descriptor_valid := True;</code>
+  <code></code>
+  <code>if CET::Is_Shadow_Stack_Enabled(CPL) then</code>
+  <code>    IA32_PL3_SSP := Set_Canonical_Wrt_Paging_Mode(SSP);</code>
+  <code>endif;</code>
+  <code></code>
+  <code>RCX := Next_IP;</code>
+  <code>GPR[11] := RFLAGS;</code>
+  <code>RFLAGS := RFLAGS and not IA32_FMASK;</code>
+  <code>Branch_Far(new_cs, IA32_LSTAR); // RIP = IA32_LSTAR</code>
+  <code></code>
+  <code>if CET::Is_Shadow_Stack_Enabled(CPL) then</code>
+  <code>    SSP := Zero(64);</code>
+  <code>endif;</code>
+  <code></code>
+  <code>if Is_End_Branch_Enabled(CPL) then</code>
+  <code>    IA32_S_CET.TRACKER := 0b1; // WAIT_FOR_ENDBRANCH</code>
+  <code>    IA32_S_CET.SUPPRESS := 0b0;</code>
+  <code>endif;</code>
+  <code></code>
+  <code>SS.selector := IA32_STAR[47:32] + 8; // SS just above CS</code>
+  <code></code>
+  <code>SS.descriptor := Zero(64);</code>
+  <code>SS := Set_Segment_Base(Zero(64), SS);</code>
+  <code>SS.descriptor.Limit := All_Ones(20);</code>
+  <code></code>
+  <code>SS.descriptor.A := 0b1;</code>
+  <code>SS.descriptor.W := 0b1;</code>
+  <code>SS.descriptor.ExpandDown := 0b0;</code>
+  <code>SS.descriptor.Code := 0b0;</code>
+  <code></code>
+  <code>SS.descriptor.S := 0b1;</code>
+  <code>SS.descriptor.DPL := 0b00;</code>
+  <code>SS.descriptor.P := 0b1;</code>
+  <code>SS.descriptor.Big := 0b1;</code>
+  <code>SS.descriptor.G := 0b1;</code>
+  <code></code>
+  <code>SS.descriptor_valid := True;</code>
+  <callee>Std::Bits::Add_int</callee>
+  <callee>Std::Bits::And</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Not</callee>
+  <callee>Std::Bits::All_Ones</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>Branch_Far</callee>
+  <callee>CET::Is_Shadow_Stack_Enabled</callee>
+  <callee>FRED::Event_Delivery</callee>
+  <callee>Is_End_Branch_Enabled</callee>
+  <callee>Set_Canonical_Wrt_Paging_Mode</callee>
+  <callee>Set_Segment_Base</callee>
+  <callee>RCX_write</callee>
+  <var-used>True</var-used>
+  <var-used>False</var-used>
+  <var-used>CPL</var-used>
+  <var-used>SSP</var-used>
+  <var-used>CR4</var-used>
+  <var-used>RFLAGS</var-used>
+  <var-used>SS</var-used>
+  <var-used>IA32_STAR</var-used>
+  <var-used>IA32_PL3_SSP</var-used>
+  <var-used>IA32_S_CET</var-used>
+  <var-used>Next_IP</var-used>
+  <var-used>GPR</var-used>
+  <var-used>Other_Event</var-used>
+  <var-used>IA32_FMASK</var-used>
+  <var-used>IA32_LSTAR</var-used>
+  </operation>
+ <category>misc</category>
+ </instruction>

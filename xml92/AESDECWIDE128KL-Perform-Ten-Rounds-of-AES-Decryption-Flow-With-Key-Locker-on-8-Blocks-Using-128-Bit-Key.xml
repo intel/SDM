@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="AESDECWIDE128KL_MEMu8" xed_iform="AESDECWIDE128KL_MEMu8" encoding="F3 0F 38 D8 /1" opcode="d8" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_AESDECWIDE128KL</callee>
+   <var-used>False</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>CPUID_KEY_LOCKER</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>FEATURE_CONFIG</var-used>
+   <var-used>CPUID_AES_WIDE</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rep_prefix == Unsigned(0xF3))) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPUID(KEY_LOCKER)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPUID(AES_WIDE)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_EM_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSFXSR_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_KL_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>AES_Disabled_In_MSR</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src := Logical_Mem_Read?(segment, effective_address, 384);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_AESDECWIDE128KL(src);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="AESDECWIDE128KL">
+    <asm-operand><varname>m384</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="KEYLOCKER_WIDE"><cpuid-flag>KLSUPPORTED</cpuid-flag><cpuid-flag>KLENABLED</cpuid-flag><cpuid-flag>KLWIDE</cpuid-flag></cpuid-group>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m384</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="AESDECWIDE128KL" variant_kind="Standard variant" mnemonic="AESDECWIDE128KL">
+  <code>let handle : AES_Handle_384_Type := src;</code>
+  <code></code>
+  <code>let illegal_handle :=</code>
+  <code>    not Is_Zero(handle.RESERVED)</code>
+  <code>    or (handle.Not_Usable_If_CPL_GT_0 == 0b1 and CPL != 0)</code>
+  <code>    or handle.Not_Usable_For_Decryption == 0b1</code>
+  <code>    or handle.Key_Type != 0b0000; // HANDLE_KEY_TYPE_AES128</code>
+  <code></code>
+  <code>if illegal_handle then</code>
+  <code>    RFLAGS.ZF := 0b1;</code>
+  <code>else</code>
+  <code>    let (unwrapped_key, authentic) := AES::Unwrap_Key_And_Authenticate_384(handle, IWKey);</code>
+  <code>    if not authentic then</code>
+  <code>        RFLAGS.ZF := 0b1;</code>
+  <code>    else</code>
+  <code>        AES::Key_Expansion_128(unwrapped_key);</code>
+  <code>        XMM[0] := AES::Decrypt_128(XMM[0]);</code>
+  <code>        XMM[1] := AES::Decrypt_128(XMM[1]);</code>
+  <code>        XMM[2] := AES::Decrypt_128(XMM[2]);</code>
+  <code>        XMM[3] := AES::Decrypt_128(XMM[3]);</code>
+  <code>        XMM[4] := AES::Decrypt_128(XMM[4]);</code>
+  <code>        XMM[5] := AES::Decrypt_128(XMM[5]);</code>
+  <code>        XMM[6] := AES::Decrypt_128(XMM[6]);</code>
+  <code>        XMM[7] := AES::Decrypt_128(XMM[7]);</code>
+  <code>        RFLAGS.ZF := 0b0;</code>
+  <code>    endif;</code>
+  <code>endif;</code>
+  <code></code>
+  <code>RFLAGS.OF := 0b0;</code>
+  <code>RFLAGS.SF := 0b0;</code>
+  <code>RFLAGS.AF := 0b0;</code>
+  <code>RFLAGS.PF := 0b0;</code>
+  <code>RFLAGS.CF := 0b0;</code>
+  <callee>Std::Boolean::Not</callee>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Boolean::Strict_Or</callee>
+  <callee>Std::Integer::Add</callee>
+  <callee>Std::Integer::Ne</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Is_Zero</callee>
+  <callee>Std::Bits::Ne</callee>
+  <callee>AES::Decrypt_128</callee>
+  <callee>AES::Key_Expansion_128</callee>
+  <callee>AES::Unwrap_Key_And_Authenticate_384</callee>
+  <callee>XMM</callee>
+  <callee>XMM_write</callee>
+  <var-used>CPL</var-used>
+  <var-used>RFLAGS</var-used>
+  <var-used>IWKey</var-used>
+  </operation>
+ <category>cryptography/aes/keylocker</category>
+ <input name="src"/>
+ </instruction>

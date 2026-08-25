@@ -1,0 +1,116 @@
+<instruction name="CMOVcc">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Conditional Move</shortdesc>
+ <longdesc><para unique="1262335">
+   <string>Each of the CMOVcc instructions performs a move operation if the </string><indexterm><primary>Status flags, EFLAGS register;EFLAGS register:condition codes</primary></indexterm><string>status flags in the EFLAGS register (CF, OF, PF, SF, and ZF) are in a specified state (or condition). A condition code (</string><italic><string>cc</string></italic><string>) is associated with each instruction to indi&#173;cate the condition being tested for. If the condition is not satisfied, a move is not performed and execution continues with the instruction following the CMOV</string><italic><string>cc</string></italic><string> instruction.</string></para>
+  <para unique="1262336">
+   <string>Specifically, CMOVcc loads data from its source operand into a temporary register unconditionally (regardless of the condition code and the status flags in the EFLAGS register). If the condition code associated with the instruction (cc) is satisfied, the data in the temporary register is then copied into the instruction's destination operand.</string></para>
+  <para unique="1262337">
+   <string>These instructions can move 16-bit, 32-bit or 64-bit values from memory to a general-purpose register or from one general-purpose register to another. Conditional moves of 8-bit register operands are not supported.</string></para>
+  <para unique="1262338">
+   <string>The condition for each CMOV</string><italic><string>cc</string></italic><string> mnemonic is given in the description column of the above table. The terms &#8220;less&#8221; and &#8220;greater&#8221; are used for comparisons of signed integers and the terms &#8220;above&#8221; and &#8220;below&#8221; are used for unsigned integers.</string></para>
+  <para unique="1262339">
+   <string>Because a particular state of the status flags can sometimes be interpreted in two ways, two mnemonics are defined for some opcodes. For example, the CMOVA (conditional move if above) instruction and the CMOVNBE (conditional move if not below or equal) instruction are alternate mnemonics for the opcode 0F 47H. </string></para>
+  <para unique="1262340">
+   <string>The CMOV</string><italic><string>cc</string></italic><string> instructions were introduced in P6 family processors; however, these instructions may not be supported by all IA-32 processors. Software can determine if the CMOV</string><italic><string>cc</string></italic><string> instructions are supported by checking the processor&#8217;s feature information with the CPUID instruction (see </string><link linkend="42531: 05_Level: CPUID&#8212;CPU Identification"><string>&#8220;CPUID&#8212;CPU Identification&#8221;</string></link><string> in this chapter).</string></para>
+  <para unique="1262344">
+   <string>In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1262353">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1262372" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

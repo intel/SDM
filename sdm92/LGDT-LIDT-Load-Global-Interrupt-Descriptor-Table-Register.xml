@@ -1,0 +1,92 @@
+<instruction name="LGDT/LIDT">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Load Global/Interrupt Descriptor Table Register</shortdesc>
+ <longdesc><para unique="1261279">
+   <string>Loads the values in the source operand into the </string><indexterm><primary>GDTR (global descriptor table register)</primary></indexterm><string>global descriptor table register (GDTR) or the </string><indexterm><primary>IDTR (interrupt descriptor table register)</primary></indexterm><string>interrupt descriptor table register (IDTR). The source operand specifies a 6-byte memory location that contains the base address (a linear address) and the limit (size of table in bytes) of the </string><indexterm><primary>GDT (global descriptor table)</primary></indexterm><string>global descriptor table (GDT) or the </string><indexterm><primary>IDT (interrupt descriptor table)</primary></indexterm><string>interrupt descriptor table (IDT). If operand-size attribute is 32 bits, a 16-bit limit (lower 2 bytes of the 6-byte data operand) and a 32-bit base address (upper 4 bytes of the data operand) are loaded into the register. If the operand-size attribute is 16&#160;bits, a 16-bit limit (lower 2 bytes) and a 24-bit base address (third, fourth, and fifth byte) are loaded. Here, the high-order byte of the operand is not used and the high-order byte of the base address in the GDTR or IDTR is filled with zeros.</string></para>
+  <para unique="1261282">
+   <string>The LGDT and LIDT instructions are used only in operating-system software; they are not used in application programs. They are the only instructions that directly load a linear address (that is, not a segment-relative address) and a limit in protected mode. They are commonly executed in real-address mode to allow processor initialization prior to switching to protected mode.</string></para>
+  <para unique="1261283">
+   <string>In 64-bit mode, the instruction&#8217;s operand size is fixed at 8+2 bytes (an 8-byte base and a 2-byte limit). See the summary chart at the beginning of this section for encoding data and limits.</string></para>
+  <para unique="1261290">
+   <string>See </string><link linkend="51351: 05_Level: SGDT/SIDT&#8212;Store Global/Interrupt Descriptor Table Register"><string>&#8220;SGDT&#8212;Store Global Descriptor Table Register&#8221;</string></link><string> in </string><link linkend="63695: 01_Level: Chapter 4 Instruction Set Reference, M-Z"><string>Chapter 4</string></link><string>, of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Soft&#173;ware Developer&#8217;s Manual, Volume 2B, for information on storing the contents of the GDTR and IDTR.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1261327">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <listitem><string>If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261343" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

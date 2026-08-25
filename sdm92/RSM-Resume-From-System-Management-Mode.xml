@@ -1,0 +1,69 @@
+<instruction name="RSM">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Resume From System Management Mode</shortdesc>
+ <longdesc><para unique="1091439">
+   <string>Returns program control from system management mode (SMM) to the application program or operating-system procedure that was interrupted when the processor received an SMM interrupt. The processor&#8217;s state is restored from the dump created upon entering SMM. If the processor detects invalid state information during state resto&#173;ration, it enters the shutdown state. The following invalid information can cause a shutdown:</string></para>
+  <itemizedlist><listitem><para unique="1091440">
+     <string>Any reserved bit of CR4 is set to 1.</string></para>
+    </listitem>
+   <listitem><para unique="1091441">
+     <string>Any illegal combination of bits in CR0, such as (PG</string><string>=1 and PE</string><string>=0) or (NW</string><string>=1 and CD</string><string>=0).</string></para>
+    </listitem>
+   <listitem><para unique="1091442">
+     <string>(Intel Pentium and Intel486&#8482; processors only.) The value stored in the state dump base field is not a 32&#8209;KByte aligned address.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1091443">
+   <string>The contents of the model-specific registers are not affected by a return from SMM.</string></para>
+  <para unique="1091444">
+   <string>The SMM state map used by RSM supports resuming processor context for non-64&#8209;bit modes and 64-bit mode. </string></para>
+  <para unique="1091448">
+   <string>See </string><link linkend="31615: H1Heading: Chapter 9 System-Management Mode (SMM)"><string>Chapter 34, &#8220;System Management Mode,&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3C, for more information about SMM and the behavior of the RSM instruction.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1091458">
+   <string>All.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If an attempt is made to execute this instruction when the processor is not in SMM.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If CPL &gt; 0 and IA32_CORE_CAPABILITIES.RSM_IN_CPL0_ONLY[bit 3] = 1. </string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If an attempt is made to execute this instruction when the processor is not in SMM. </string></listitem>
+    <listitem><string>If the LOCK prefix is used. </string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If an attempt is made to execute this instruction when the processor is not in SMM.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If IA32_CORE_CAPABILITIES.RSM_IN_CPL0_ONLY[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1091467" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <para unique="1091469" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ </instruction>

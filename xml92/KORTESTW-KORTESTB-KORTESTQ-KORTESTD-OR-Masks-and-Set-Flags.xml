@@ -1,0 +1,283 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="KORTESTB_MASKmskw_MASKmskw_AVX512" xed_iform="KORTESTB_MASKmskw_MASKmskw_AVX512" encoding="VEX.L0.66.0F.W0 98 /r" opcode="98" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_K</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_KORTEST</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_K(reg);</code>
+     <code>let src2 := Read_K(rm);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_KORTEST(element_size, src1, src2);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KORTESTB">
+    <asm-operand><varname>k<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>k<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512DQ_KOPB"><cpuid-flag>AVX512DQ</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512DQ_KOPB_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>k<subscript>2</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="KORTEST" variant_kind="Standard variant" mnemonic="KORTESTB">
+  <code>let tmp := src1[0 +: element_size] or src2[0 +: element_size];</code>
+  <code>RFLAGS.OF := 0b0;</code>
+  <code>RFLAGS.SF := 0b0;</code>
+  <code>RFLAGS.ZF := if Is_Zero(tmp) then 0b1 else 0b0;</code>
+  <code>RFLAGS.AF := 0b0;</code>
+  <code>RFLAGS.PF := 0b0;</code>
+  <code>RFLAGS.CF := if Is_All_Ones(tmp) then 0b1 else 0b0;</code>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Bits::Is_All_Ones</callee>
+  <callee>Std::Bits::Is_Zero</callee>
+  <callee>Std::Bits::Or</callee>
+  <var-used>RFLAGS</var-used>
+  </operation>
+ <iform-group>
+  <iform name="KORTESTD_MASKmskw_MASKmskw_AVX512" xed_iform="KORTESTD_MASKmskw_MASKmskw_AVX512" encoding="VEX.L0.66.0F.W1 98 /r" opcode="98" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_K</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_KORTEST</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_K(reg);</code>
+     <code>let src2 := Read_K(rm);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_KORTEST(element_size, src1, src2);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KORTESTD">
+    <asm-operand><varname>k<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>k<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512BW_KOPD"><cpuid-flag>AVX512BW</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512BW_KOPD_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>k<subscript>2</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="KORTESTW_MASKmskw_MASKmskw_AVX512" xed_iform="KORTESTW_MASKmskw_MASKmskw_AVX512" encoding="VEX.L0.NP.0F.W0 98 /r" opcode="98" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_K</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_KORTEST</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let element_size := 16;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_K(reg);</code>
+     <code>let src2 := Read_K(rm);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_KORTEST(element_size, src1, src2);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KORTESTW">
+    <asm-operand><varname>k<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>k<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512F_KOPW"><cpuid-flag>AVX512F</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512F_KOPW_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="16"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>k<subscript>2</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="KORTESTQ_MASKmskw_MASKmskw_AVX512" xed_iform="KORTESTQ_MASKmskw_MASKmskw_AVX512" encoding="VEX.L0.NP.0F.W1 98 /r" opcode="98" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_K</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_KORTEST</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let element_size := 64;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_K(reg);</code>
+     <code>let src2 := Read_K(rm);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_KORTEST(element_size, src1, src2);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KORTESTQ">
+    <asm-operand><varname>k<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>k<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512BW_KOPQ"><cpuid-flag>AVX512BW</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512BW_KOPQ_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>k<subscript>2</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <category>vector/mask</category>
+ <size name="element_size"/>
+ <input name="src1"/>
+ <input name="src2"/>
+ </instruction>

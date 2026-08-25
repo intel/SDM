@@ -1,0 +1,690 @@
+<instruction name="PCONFIG">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Platform Configuration</shortdesc>
+ <longdesc><para unique="1091446">
+   <string>The PCONFIG instruction allows software to configure certain platform features. It supports these features with multiple leaf functions, selecting a leaf function using the value in EAX.</string></para>
+  <para unique="1091447">
+   <string>Depending on the leaf function, the registers RBX, RCX, and RDX may be used to provide input information or for the instruction to report output information. Addresses and operands are 32 bits outside 64-bit mode and are 64 bits in 64-bit mode. The value of CS.D does not affect operand size or address size.</string></para>
+  <para unique="1091448">
+   <string>Executions of PCONFIG may fail for platform-specific reasons. An execution reports failure by setting the ZF flag and loading EAX with a non-zero failure reason; a successful execution clears ZF and EAX.</string></para>
+  <para unique="1091449">
+   <string>Each PCONFIG leaf function applies to a specific hardware block called a PCONFIG target. The leaf function is supported only if the processor supports that target. Each target is associated with a numerical target identifier, and CPUID leaf 1BH (PCONFIG information) enumerates the identifiers of the supported targets. An attempt to execute an undefined leaf function, or a leaf function that applies to an unsupported target identifier, results in a general-protection exception (#GP).</string></para>
+  <section level="7">
+   <title unique="1091450"><string>Leaf Function MKTME_KEY_PROGRAM</string></title>
+   <para unique="1091451">
+    <string>PCONFIG leaf function 0 (selected by loading EAX with value 0) is used for key programming for total memory encryption-multi-key (TME&#8209;MK).</string><footnote><para unique="1091454">
+      <string>Further details on TME&#8209;MK can be found here:</string></para>
+     <para unique="1091456">
+      <string>	</string><anchor id="message URL https://software.intel.com/sites/default/files/managed/a5/16/Multi-Key-Total-Memory-Encryption-Spec.pdf"/><underline><string>https://software.intel.com/sites/default/files/managed/a5/16/Multi-Key-Total-Memory-Encryption-Spec.pdf</string></underline><string> </string></para>
+     </footnote><string> This leaf function is called MKTME_KEY_PROGRAM and it pertains to the TME&#8209;MK target, which has target identifier 1. The leaf function uses the EBX (or RBX) register for additional input informa&#173;tion.</string></para>
+   <para unique="1091457">
+    <string>Software uses this leaf function to manage the encryption key associated with a particular key identifier (KeyID). The leaf function uses a data structure called the </string><bold><string>TME&#8209;MK key programming structure</string></bold><string> (MKTME_KEY_PRO&#173;GRAM_STRUCT). Software provides the address of the structure (as an offset in the DS segment) in EBX (or RBX). The format of the structure is given in </string><link linkend="76158: 06_Table: Table 2-3. PCONFIG Leaves"><string>Table 4&#8209;16</string></link><string>.</string></para>
+   <table>
+    <caption>Table 4-16.  MKTME_KEY_PROGRAM_STRUCT Format</caption>
+    <colgroup><col align="left"/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     </colgroup>
+    <thead><tr>
+      <th><para unique="1091472" format="CellRowHeadL">
+        <string>Field</string></para>
+       </th>
+      <th><para unique="1091474" format="CellRowHeadL">
+        <string>Offset (bytes)</string></para>
+       </th>
+      <th><para unique="1091476" format="CellRowHeadL">
+        <string>Size (bytes)</string></para>
+       </th>
+      <th><para unique="1091478" format="CellRowHeadL">
+        <string>Comments</string></para>
+       </th>
+      </tr>
+     </thead><tbody>
+     <tr>
+      <td><para unique="1091480" format="CellBodyL">
+        <string>KEYID</string></para>
+       </td>
+      <td><para unique="1091482" format="CellBodyL">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1091484" format="CellBodyL">
+        <string>2</string></para>
+       </td>
+      <td><para unique="1091486" format="CellBodyL">
+        <string>Key Identifier.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1091488" format="CellBodyL">
+        <string>KEYID_CTRL</string></para>
+       </td>
+      <td><para unique="1091490" format="CellBodyL">
+        <string>2</string></para>
+       </td>
+      <td><para unique="1091492" format="CellBodyL">
+        <string>4</string></para>
+       </td>
+      <td><para unique="1091494" format="CellBodyL">
+        <string>KeyID control:</string></para>
+       <para unique="1091495" format="CellBodyL_Bulleted">
+        <string>Bits 7:0: key-programming command (COMMAND)</string></para>
+       <para unique="1091496" format="CellBodyL_Bulleted">
+        <string>Bits 23:8: encryption algorithm (ENC_ALG)</string></para>
+       <para unique="1091497" format="CellBodyL_Bulleted">
+        <string>Bits 31:24: Reserved, must be zero (RSVD)</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1091499" format="CellBodyL">
+        <string>Ignored</string></para>
+       </td>
+      <td><para unique="1091501" format="CellBodyL">
+        <string>6</string></para>
+       </td>
+      <td><para unique="1091503" format="CellBodyL">
+        <string>58</string></para>
+       </td>
+      <td><para unique="1091505" format="CellBodyL">
+        <string>Not used.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1091507" format="CellBodyL">
+        <string>KEY_FIELD_1</string></para>
+       </td>
+      <td><para unique="1091509" format="CellBodyL">
+        <string>64</string></para>
+       </td>
+      <td><para unique="1091511" format="CellBodyL">
+        <string>64</string></para>
+       </td>
+      <td><para unique="1091513" format="CellBodyL">
+        <string>Software supplied data key or entropy for data key.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1091515" format="CellBodyL">
+        <string>KEY_FIELD_2</string></para>
+       </td>
+      <td><para unique="1091517" format="CellBodyL">
+        <string>128</string></para>
+       </td>
+      <td><para unique="1091519" format="CellBodyL">
+        <string>64</string></para>
+       </td>
+      <td><para unique="1091521" format="CellBodyL">
+        <string>Software supplied tweak key or entropy for tweak key.</string></para>
+       </td>
+      </tr>
+     </tbody>
+    </table>
+   <para unique="1091523">
+    <string>A description of each of the fields in MKTME_KEY_PROGRAM_STRUCT is provided below:</string></para>
+   <itemizedlist><listitem><para unique="1092596">
+      <bold><string>KEYID: </string></bold><string>The key identifier (KeyID) being programmed to the TME-MK engine. This leaf function causes a general-protection exception (#GP) if the KeyID is zero. KeyID zero always uses the current behavior configured for TME (total memory encryption), either to encrypt with platform TME key or to bypass TME encryption. This leaf function also causes a #GP if the KeyID exceeds the maximum enumerated 
+IA32_TME_CAPABILITY.MK_TME_MAX_KEYS[50:36] or configured by the setting of 
+IA32_TME_ACTIVATE.MK_TME_KEYID_BITS[39:32].</string></para>
+     </listitem>
+    </itemizedlist><para unique="1094145" format="ListEmDash">
+    <string>If IA32_TME_ACTIVATE.MK_TME_KEYID_BITS[35:32]&#160;= </string><italic><string>k</string></italic><string>, KEYID[15:</string><italic><string>k</string></italic><string>] must be zero.</string></para>
+   <itemizedlist><listitem><para unique="1094149">
+      <string>If the logical processor is outside secure arbitration mode (SEAM; see </string><link linkend="41478: H1Heading: Chapter 9 Processor Identification and Feature Determination"><string>Chapter 35</string></link><string>) and IA32_TME_ACTIVATE.TDX_RESERVED_KEYID_BITS[39:36]&#160;= </string><italic><string>p</string></italic><string>&#160;&gt; 0, KEYID[</string><italic><string>k</string></italic><string>&#8211;1:</string><italic><string>k</string></italic><string>&#8211;</string><italic><string>p</string></italic><string>] must also be zero. (Note that </string><italic><string>p</string></italic><string> will never exceed </string><italic><string>k</string></italic><string>.)</string></para>
+     </listitem>
+    </itemizedlist><para unique="1094150" format="ListBulletBigContinue">
+    <string>If either is not true, the leaf function causes #GP.</string></para>
+   <itemizedlist><listitem><para unique="1091525">
+      <bold><string>KEYID_CTRL: </string></bold><string>The KEYID_CTRL field comprises two sub-fields used by software to control the encryption performed for the selected KeyID:</string></para>
+     </listitem>
+    </itemizedlist><para unique="1091526" format="ListEmDash">
+    <string>Key-programming command (COMMAND; bits&#160;7:0). This 8-bit field should contain one of the following values:</string></para>
+   <itemizedlist><listitem><para unique="1091527">
+      <string>KEYID_SET_KEY_DIRECT (value 0). With this command, software programs directly the encryption key to be used for the selected KeyID.</string></para>
+     </listitem>
+    <listitem><para unique="1091528">
+      <string>KEYID_SET_KEY_RANDOM (value 1). With this command, software has the CPU generate and assign an encryption key to be used for the selected KeyID using a hardware random-number generator.</string></para>
+     </listitem>
+    </itemizedlist><para unique="1091529" format="ListBulletSmallCont">
+    <string>If this command is used and there is insufficient entropy for the random-number generator, the leaf function will fail and report the failure by loading EAX with value 2 (ENTROPY_ERROR).</string></para>
+   <para unique="1091530" format="ListBulletSmallCont">
+    <string>Because the keys programed by this leaf function are discarded on reset and software cannot read the programmed keys, the keys programmed with this command are ephemeral.</string></para>
+   <itemizedlist><listitem><para unique="1091531">
+      <string>KEYID_CLEAR_KEY (value 2). With this command, software indicates that the selected KeyID should use the current behavior configured for TME (see above).</string></para>
+     </listitem>
+    <listitem><para unique="1091532">
+      <string>KEYID_NO_ENCRYPT (value 3). With this command, software indicates that no encryption should be used for the selected KeyID.</string></para>
+     </listitem>
+    </itemizedlist><para unique="1091533" format="ListEmDashCont">
+    <string>If any other value is used, the leaf function causes a #GP.</string></para>
+   <itemizedlist><listitem><para unique="1091534">
+      <string>Encryption algorithm (ENC_ALG, bits&#160;23:8). Bits&#160;63:48 of the IA32_TME_ACTIVATE MSR (MSR index 982H) indicate which encryption algorithms are supported by the platform. The 16-bit ENC_ALG field should specify one of the algorithms indicated in IA32_TME_ACTIVATE. This leaf function causes a #GP if ENC_ALG does not set exactly one bit or if it sets a bit whose corresponding bit is not set in IA32_TME_AC&#173;TIVATE[63:48].</string></para>
+     </listitem>
+    </itemizedlist><para unique="1091535" format="ListBulletBig">
+    <bold><string>KEY_FIELD_1:</string></bold><string> Use of this field depends upon selected key-programming command:</string></para>
+   <itemizedlist><listitem><para unique="1091536">
+      <string>If the direct key-programming command is used (KEYID_SET_KEY_DIRECT), this field carries the software supplied data key to be used for the KeyID.</string></para>
+     </listitem>
+    <listitem><para unique="1091537">
+      <string>If the random key-programming command is used (KEYID_SET_KEY_RANDOM), this field carries the software supplied entropy to be mixed in the CPU generated random data key.</string></para>
+     </listitem>
+    <listitem><para unique="1091538">
+      <string>This field is ignored when one of the other key-programming commands is used.</string></para>
+     </listitem>
+    </itemizedlist><para unique="1091539" format="ListBulletBigContinue">
+    <string>It is software&#8217;s responsibility to ensure that the key supplied for the direct key-programming option or the entropy supplied for the random key-programming option does not result in weak keys. There are no explicit checks in the instruction to detect or prevent weak keys.</string></para>
+   <itemizedlist><listitem><para unique="1091540">
+      <bold><string>KEY_FIELD_2:</string></bold><string> Use of this field depends upon selected key-programming command:</string></para>
+     </listitem>
+    </itemizedlist><para unique="1091541" format="ListEmDash">
+    <string>If the direct key-programming command is used (KEYID_SET_KEY_DIRECT), this field carries the software supplied tweak key to be used for the KeyID.</string></para>
+   <itemizedlist><listitem><para unique="1091542">
+      <string>If the random key-programming command is used (KEYID_SET_KEY_RANDOM), this field carries the software supplied entropy to be mixed in the CPU generated random tweak key.</string></para>
+     </listitem>
+    <listitem><para unique="1091543">
+      <string>This field is ignored when one of the other key-programming commands is used.</string></para>
+     </listitem>
+    </itemizedlist><para unique="1091544" format="ListBulletBigContinue">
+    <string>It is software&#8217;s responsibility to ensure that the key supplied for the direct key-programming option or the entropy supplied for the random key-programming option does not result in weak keys. There are no explicit checks in the instruction to detect or prevent weak keys.</string></para>
+   <para unique="1091545">
+    <string>All KeyIDs default to TME behavior (encrypt with TME key or bypass encryption) on activation of TME&#8209;MK. Software can at any point decide to change the key for a KeyID using this leaf function. Changing the key for a KeyID does </string><bold><string>not</string></bold><string> change the state of the TLB caches or memory pipeline. Software is responsible for taking appropriate actions to ensure correct behavior.</string></para>
+   <para unique="1091546">
+    <string>The key table used by TME&#8209;MK is shared by all logical processors in a platform. For this reason, execution of the MKTME_KEY_PROGRAM leaf function must gain exclusive access to the key table before updating it. The leaf func&#173;tion does this by acquiring lock (implemented in the platform) and retaining that lock until the execution completes. An execution of the leaf function may fail to acquire the lock if it is already in use. In this situation, the leaf function will load EAX with failure reason 5 (DEVICE_BUSY) indicating that software must retry. When this happens, the key table is not updated, and software should retry execution of PCONFIG.</string></para>
+   </section>
+  <section level="7">
+   <title unique="1093192"><string>Leaf Function TSE_KEY_PROGRAM</string></title>
+   <para unique="1093193">
+    <string>PCONFIG leaf function 1(selected by loading EAX with value 1) is used for direct key programming for total storage encryption (TSE). This leaf function is called TSE_KEY_PROGRAM and it pertains to the TSE target, which has target identifier 2. The leaf function can be used only in 64-bit mode. It uses the RBX register for additional input information.</string></para>
+   <para unique="1093194">
+    <string>Software uses this leaf function to manage the encryption key associated with a particular key identifier (KeyID). The leaf function uses a data structure called the </string><bold><string>TSE key programming structure</string></bold><string> (TSE_KEY_PROGRAM_&#173;STRUCT). Software provides the linear address of the structure in RBX. The format of the structure is given in </string><link linkend="74742: 06_Table: Table 2-3. TSE_KEY_PROGRAM_STRUCT Format"><string>Table 4&#8209;17</string></link><string>.</string></para>
+   <table>
+    <caption>Table 4-17.  TSE_KEY_PROGRAM_STRUCT Format</caption>
+    <colgroup><col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     </colgroup>
+    <thead><tr>
+      <th><para unique="1093209" format="CellRowHeadL">
+        <string>Field</string></para>
+       </th>
+      <th><para unique="1093211" format="CellRowHeadL">
+        <string>Offset (bytes)</string></para>
+       </th>
+      <th><para unique="1093213" format="CellRowHeadL">
+        <string>Size (bytes)</string></para>
+       </th>
+      <th><para unique="1093215" format="CellRowHeadL">
+        <string>Comments</string></para>
+       </th>
+      </tr>
+     </thead><tbody>
+     <tr>
+      <td><para unique="1093217" format="CellBodyL">
+        <string>KEYID</string></para>
+       </td>
+      <td><para unique="1093219" format="CellBodyL">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1093221" format="CellBodyL">
+        <string>2</string></para>
+       </td>
+      <td><para unique="1093223" format="CellBodyL">
+        <string>Key Identifier.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1093225" format="CellBodyL">
+        <string>KEYID_CTRL</string></para>
+       </td>
+      <td><para unique="1093227" format="CellBodyL">
+        <string>2</string></para>
+       </td>
+      <td><para unique="1093229" format="CellBodyL">
+        <string>4</string></para>
+       </td>
+      <td><para unique="1093231" format="CellBodyL">
+        <string>KeyID control:</string></para>
+       <para unique="1093232" format="CellBodyL_Bulleted">
+        <string>Bits 7:0: key-programming command (COMMAND)</string></para>
+       <para unique="1093233" format="CellBodyL_Bulleted">
+        <string>Bits 23:8: encryption algorithm (ENC_ALG)</string></para>
+       <para unique="1093234" format="CellBodyL_Bulleted">
+        <string>Bits 31:24: Reserved, must be zero (RSVD)</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1093236" format="CellBodyL">
+        <string>Ignored</string></para>
+       </td>
+      <td><para unique="1093238" format="CellBodyL">
+        <string>6</string></para>
+       </td>
+      <td><para unique="1093240" format="CellBodyL">
+        <string>58</string></para>
+       </td>
+      <td><para unique="1093242" format="CellBodyL">
+        <string>Not used.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1093244" format="CellBodyL">
+        <string>KEY_FIELD_1</string></para>
+       </td>
+      <td><para unique="1093246" format="CellBodyL">
+        <string>64</string></para>
+       </td>
+      <td><para unique="1093248" format="CellBodyL">
+        <string>64</string></para>
+       </td>
+      <td><para unique="1093250" format="CellBodyL">
+        <string>Software supplied data key.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1093252" format="CellBodyL">
+        <string>KEY_FIELD_2</string></para>
+       </td>
+      <td><para unique="1093254" format="CellBodyL">
+        <string>128</string></para>
+       </td>
+      <td><para unique="1093256" format="CellBodyL">
+        <string>64</string></para>
+       </td>
+      <td><para unique="1093258" format="CellBodyL">
+        <string>Software supplied tweak key.</string></para>
+       </td>
+      </tr>
+     </tbody>
+    </table>
+   <para unique="1093260">
+    <string>A description of each of the fields in MKTME_KEY_PROGRAM_STRUCT is provided below:</string></para>
+   <itemizedlist><listitem><para unique="1093261">
+      <bold><string>KEYID: </string></bold><string>The key identifier (KeyID) being programmed to the TSE engine. The leaf function causes a general-protection exception (#GP) if the KeyID exceeds the maximum enumerated in the TSE_MAX_KEYS field (bits&#160;50:36) of the IA32_TSE_CAPABILITY MSR (MSR index 9F1H).</string></para>
+     </listitem>
+    <listitem><para unique="1093262">
+      <bold><string>KEYID_CTRL: </string></bold><string>The KEYID_CTRL field comprises two sub-fields used by software to control the encryption performed for the selected KeyID:</string></para>
+     </listitem>
+    </itemizedlist><para unique="1093263" format="ListEmDash">
+    <string>Key-programming command (COMMAND; bits&#160;7:0). This 8-bit field should contain one of the following values:</string></para>
+   <itemizedlist><listitem><para unique="1093264">
+      <string>TSE_SET_KEY_DIRECT (value 0). With this command, software programs directly the encryption key to be used for the selected KeyID.</string></para>
+     </listitem>
+    <listitem><para unique="1093265">
+      <string>TSE_NO_ENCRYPT (value 1). With this command, software indicates that no encryption should be used for the selected KeyID.</string></para>
+     </listitem>
+    </itemizedlist><para unique="1093266" format="ListEmDashCont">
+    <string>If any other value is used, the leaf function causes a #GP.</string></para>
+   <itemizedlist><listitem><para unique="1093267">
+      <string>Encryption algorithm (ENC_ALG, bits&#160;23:8). IA32_TSE_CAPABILITY[15:0] indicates which encryption algorithms are supported by the platform. The 16-bit ENC_ALG field should specify one of the algorithms indicated in IA32_TSE_CAPABILITY. The leaf function causes a #GP if ENC_ALG does not set exactly one bit or if it sets a bit whose corresponding bit is not set in IA32_TSE_CAPABILITY.</string></para>
+     </listitem>
+    </itemizedlist><para unique="1093268" format="ListBulletBig">
+    <bold><string>KEY_FIELD_1:</string></bold><string> If the direct key-programming command is used (TSE_SET_KEY_DIRECT), this field carries the software supplied data key to be used for the KeyID. Otherwise, the field is ignored.</string></para>
+   <itemizedlist><listitem><para unique="1093269">
+      <bold><string>KEY_FIELD_2:</string></bold><string> If the direct key-programming command is used (TSE_SET_KEY_DIRECT), this field carries the software supplied tweak key to be used for the KeyID. Otherwise, the field is ignored.</string></para>
+     </listitem>
+    </itemizedlist><para unique="1093270">
+    <string>The TSE key table is shared by all logical processors in a platform. For this reason, execution of this leaf function must gain exclusive access to the key table before updating it. The leaf function does this by acquiring a lock (implemented in the platform) and retaining that lock until the execution completes. An execution of the leaf func&#173;tion may fail to acquire the lock if it is already in use. In this situation, the leaf function will load EAX with failure reason 5 (DEVICE_BUSY). When this happens, the key table is not updated, and software should retry execution of PCONFIG.</string></para>
+   <note unique="1094219"><string>Earlier versions of this manual specified that bytes&#160;63:6 of MKTME_KEY_PROGRAM_STRUCT were reserved and that leaf function MKTME_PROGRAM would cause a #GP if they were not all zero. This is not the case. As indicated in </string><link linkend="76158: 06_Table: Table 2-3. PCONFIG Leaves"><string>Table 4&#8209;16</string></link><string>, PCONFIG ignores those bytes.</string></note><note unique="1094223"><string>They also specified that leaf function would cause a #GP if the upper 48 bytes of each of the 64-byte key fields were not all 0. This is not the case. From each of these fields, the leaf function uses the number of bytes required by the selected encryption algorithm (e.g., 32 bytes for AES-XTS 256) and ignores the upper bytes.</string></note><note unique="1094224"><string>They also specified that the leaf function would complete and report a failure reason in EAX if the structure specified an incorrect KeyID, and unsupported key-programming command, or an incorrect selection of an encryption algorithm. This is not the case. As indicated above (and in the Operation section), those conditions cause #GP.</string></note></section>
+  <section level="7">
+   <title unique="1093296"><string>Leaf Function TSE_KEY_PROGRAM_WRAPPED</string></title>
+   <para unique="1093297">
+    <string>PCONFIG leaf function 2 (selected by loading EAX with value 2) is used for wrapped key programming for total storage encryption (TSE). This leaf function is called TSE_KEY_PROGRAM_WRAPPED and it pertains to the TSE target, which has target identifier 2. The leaf function can be used only in 64-bit mode. It uses the RBX and RCX registers for additional input information.</string></para>
+   <para unique="1093298">
+    <string>Software uses this leaf function to manage the encryption key associated with a particular key identifier (KeyID). The leaf function uses control input provided in RBX. The format of that input is given in </string><link linkend="26475: 06_Table: Table 2-4. TSE_KEY_PROGRAM_WRAPPED Control Input"><string>Table 4&#8209;18</string></link><string>.</string></para>
+   <table>
+    <caption>Table 4-18.  TSE_KEY_PROGRAM_WRAPPED Control Input</caption>
+    <colgroup><col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     </colgroup>
+    <thead><tr>
+      <th><para unique="1093311" format="CellRowHeadL">
+        <string>Field</string></para>
+       </th>
+      <th><para unique="1093313" format="CellRowHeadL">
+        <string>Bit Positions</string></para>
+       </th>
+      <th><para unique="1093315" format="CellRowHeadL">
+        <string>Comments</string></para>
+       </th>
+      </tr>
+     </thead><tbody>
+     <tr>
+      <td><para unique="1093317" format="CellBodyL">
+        <string>KEYID</string></para>
+       </td>
+      <td><para unique="1093319" format="CellBodyL">
+        <string>15:0</string></para>
+       </td>
+      <td><para unique="1093321" format="CellBodyL">
+        <string>Key identifier.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1093323" format="CellBodyL">
+        <string>Reserved</string></para>
+       </td>
+      <td><para unique="1093325" format="CellBodyL">
+        <string>23:16</string></para>
+       </td>
+      <td><para unique="1093327" format="CellBodyL">
+        <string>Reserved, must be zero.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1093329" format="CellBodyL">
+        <string>ENC_ALG</string></para>
+       </td>
+      <td><para unique="1093331" format="CellBodyL">
+        <string>39:24</string></para>
+       </td>
+      <td><para unique="1093333" format="CellBodyL">
+        <string>Encryption algorithm.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1093335" format="CellBodyL">
+        <string>Ignored</string></para>
+       </td>
+      <td><para unique="1093337" format="CellBodyL">
+        <string>63:40</string></para>
+       </td>
+      <td><para unique="1093339" format="CellBodyL">
+        <string>Not used.</string></para>
+       </td>
+      </tr>
+     </tbody>
+    </table>
+   <para unique="1093341">
+    <string>A description of each of the fields in the control input is provided below:</string></para>
+   <itemizedlist><listitem><para unique="1093342">
+      <bold><string>KEYID: </string></bold><string>The key identifier (KeyID) being programmed to the TSE engine. The leaf function causes a general-protection exception (#GP) if the KeyID exceeds the maximum enumerated in the TSE_MAX_KEYs field (bits&#160;50:36) of the IA32_TSE_CAPABILITY MSR (MSR index 9F1H).</string></para>
+     </listitem>
+    <listitem><para unique="1093343">
+      <bold><string>ENC_ALG:</string></bold><string> The encryption algorithm selected for the KeyID. IA32_TSE_CAPABILITY[15:0] indicates which encryption algorithms are supported by the platform. The 16-bit ENC_ALG field should specify one of the algorithms indicated in IA32_TSE_CAPABILITY. The leaf function causes a #GP if ENC_ALG does not set exactly one bit or if it sets a bit whose corresponding bit is not set in IA32_TSE_CAPABILITY.</string></para>
+     </listitem>
+    </itemizedlist><para unique="1093344">
+    <string>The leaf function also uses a 256-byte data structure called the </string><bold><string>bind structure</string></bold><string>. This structure should be the output of the PBNDKB instruction, subsequently modified by software (see below). Software provides the linear address of the structure in RCX. The format of the structure is given in </string><link linkend="40324: 06_Table: Table 2-5. Bind Structure Format"><string>Table 4&#8209;19</string></link><string>.</string></para>
+   <table>
+    <caption>Table 4-19.  Bind Structure Format</caption>
+    <colgroup><col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     </colgroup>
+    <thead><tr>
+      <th><para unique="1093359" format="CellRowHeadL">
+        <string>Field</string></para>
+       </th>
+      <th><para unique="1093361" format="CellRowHeadL">
+        <string>Offset (bytes)</string></para>
+       </th>
+      <th><para unique="1093363" format="CellRowHeadL">
+        <string>Size (bytes)</string></para>
+       </th>
+      <th><para unique="1093365" format="CellRowHeadL">
+        <string>Comments</string></para>
+       </th>
+      </tr>
+     </thead><tbody>
+     <tr>
+      <td><para unique="1093367" format="CellBodyL">
+        <string>MAC</string></para>
+       </td>
+      <td><para unique="1093369" format="CellBodyL">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1093371" format="CellBodyL">
+        <string>16</string></para>
+       </td>
+      <td><para unique="1093373" format="CellBodyL">
+        <string>MAC produced by PBNDKB of its input bind structure </string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1093375" format="CellBodyL">
+        <string>Reserved</string></para>
+       </td>
+      <td><para unique="1093377" format="CellBodyL">
+        <string>16</string></para>
+       </td>
+      <td><para unique="1093379" format="CellBodyL">
+        <string>8</string></para>
+       </td>
+      <td><para unique="1093381" format="CellBodyL">
+        <string>Reserved, must be zero.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1093383" format="CellBodyL">
+        <string>IV</string></para>
+       </td>
+      <td><para unique="1093385" format="CellBodyL">
+        <string>24</string></para>
+       </td>
+      <td><para unique="1093387" format="CellBodyL">
+        <string>12</string></para>
+       </td>
+      <td><para unique="1093389" format="CellBodyL">
+        <string>Initialization vector.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1093391" format="CellBodyL">
+        <string>Reserved</string></para>
+       </td>
+      <td><para unique="1093393" format="CellBodyL">
+        <string>36</string></para>
+       </td>
+      <td><para unique="1093395" format="CellBodyL">
+        <string>28</string></para>
+       </td>
+      <td><para unique="1093397" format="CellBodyL">
+        <string>Reserved, must be zero.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1093399" format="CellBodyL">
+        <string>BTENCDATA</string></para>
+       </td>
+      <td><para unique="1093401" format="CellBodyL">
+        <string>64</string></para>
+       </td>
+      <td><para unique="1093403" format="CellBodyL">
+        <string>64</string></para>
+       </td>
+      <td><para unique="1093405" format="CellBodyL">
+        <string>Encrypted data (data key and tweak key)</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1093407" format="CellBodyL">
+        <string>BTDATA</string></para>
+       </td>
+      <td><para unique="1093409" format="CellBodyL">
+        <string>128</string></para>
+       </td>
+      <td><para unique="1093411" format="CellBodyL">
+        <string>128</string></para>
+       </td>
+      <td><para unique="1093413" format="CellBodyL">
+        <string>Additional control and data (not encrypted)</string></para>
+       </td>
+      </tr>
+     </tbody>
+    </table>
+   <para unique="1093415">
+    <string>A description of each of the fields in TSE_BIND_STRUCT is provided below:</string></para>
+   <itemizedlist><listitem><para unique="1093416">
+      <bold><string>MAC: </string></bold><string>A MAC produced by PBNDKB of its input bind structure. The PCONFIG leaf function will recompute the MAC and confirm that it matches this value.</string></para>
+     </listitem>
+    <listitem><para unique="1093417">
+      <bold><string>IV:</string></bold><string> The initialization vector that PBNDKB used for encryption. The PCONFIG leaf function will use this in its decryption of encrypted data and computation of the MAC.</string></para>
+     </listitem>
+    <listitem><para unique="1093418">
+      <bold><string>BTENCDATA:</string></bold><string> Data which had been encrypted by PBNDKB, containing the data and tweak keys to be used by TSE.</string></para>
+     </listitem>
+    <listitem><para unique="1093419">
+      <bold><string>BTDATA:</string></bold><string> Data that was input to PBNDKB that was output without encryption. It has the following format:</string></para>
+     </listitem>
+    </itemizedlist><para unique="1093420" format="ListEmDash">
+    <bold><string>USER_SUPP_CHALLENGE </string></bold><string>(bytes 31:0): PBNDKB uses a value provided by software in its input bind structure but writes zero to this field in the output bind structure to be used by PCONFIG. Software should configure this field with the proper value before executing this PCONFIG leaf function.</string></para>
+   <itemizedlist><listitem><para unique="1093421">
+      <bold><string>KEY_GENERATION_CTRL</string></bold><string> (byte 32): PBNDKB uses this value to determine whether to generate random keys. The PCONFIG leaf function does not use this field.</string></para>
+     </listitem>
+    <listitem><para unique="1093422">
+      <string>The remaining 95 bytes are reserved and must be zero.</string></para>
+     </listitem>
+    </itemizedlist><para unique="1093423" format="ListBulletCONT">
+    <string>The leaf function uses the entire BTDATA field when it computes the MAC.</string></para>
+   <para unique="1093424">
+    <string>The leaf function determines a 256-bit </string><bold><string>wrapping key</string></bold><string> by computing an HMAC based on SHA-256 using 256-bit platform-specific key and the USER_SUPP_CHALLENGE in the BTDATA field of the TSE_BIND_STRUCT.</string></para>
+   <para unique="1093425">
+    <string>Using the wrapping key, the leaf function uses an AES GCM authenticated decryption function to decrypt BTENC&#173;DATA and compute a MAC. The decryption function uses the following inputs:</string></para>
+   <itemizedlist><listitem><para unique="1093426">
+      <string>The 64-byte BTENCDATA from TSE_BIND_STRUCT to be decrypted.</string></para>
+     </listitem>
+    <listitem><para unique="1093427">
+      <string>The 256-bit wrapping key.</string></para>
+     </listitem>
+    <listitem><para unique="1093428">
+      <string>The 96-bit IV from TSE_BIND_STRUCT.</string></para>
+     </listitem>
+    <listitem><para unique="1093429">
+      <string>Additional authenticated data that is the concatenation of bytes 63:16 and bytes 255:128 of the TSE_BIND_&#173;STRUCT. These 176 bytes will comprise 8 bytes of zeroes, the 12-byte IV, 28 bytes of zeroes, and 128 bytes of BTDATA of which the upper 95 bytes are zero).</string></para>
+     </listitem>
+    <listitem><para unique="1093430">
+      <string>The length of the additional authenticated data (176).</string></para>
+     </listitem>
+    </itemizedlist><para unique="1093431">
+    <string>The decryption function produces a structure with a 64 bytes of decrypted data and a 16-byte MAC. The decrypted data comprises a 256-bit data key and a 256-bit tweak key.</string></para>
+   <para unique="1093432">
+    <string>If the MAC produced by the decryption function differs from that provided in the TSE_BIND_STRUCT, the leaf func&#173;tion will load EAX with failure reason 7 (UNWRAP_FAILURE). Otherwise, the leaf function will attempt to program the TSE key table for the selected KeyID with the keys contained in the decrypted data.</string></para>
+   <para unique="1093433">
+    <string>The TSE key table is shared by all logical processors in a platform. For this reason, execution of this leaf function must gain exclusive access to the key table before updating it. The leaf function does this by acquiring a lock (implemented in the platform) and retaining that lock until the execution completes. An execution of the leaf func&#173;tion may fail to acquire the lock if it is already in use. In this situation, the leaf function will load EAX with failure reason 5 (DEVICE_BUSY). When this happens, the key table is not updated, and software should retry execution of PCONFIG.</string></para>
+   </section>
+  </longdesc>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0) </string></term>
+    <listitem><string>If input value in EAX encodes an unsupported leaf function.</string></listitem>
+    <listitem><string>If a memory operand effective address is outside the relevant segment limit.</string></listitem>
+    <listitem><string></string><bold><string>MKTME_KEY_PROGRAM leaf function:</string></bold></listitem>
+    <listitem><string>If CPUID function 1BH does not enumerate support for the TME&#8209;MK target (value 1).</string></listitem>
+    <listitem><string>If IA32_TME_ACTIVATE MSR is not locked.</string></listitem>
+    <listitem><string>If hardware encryption and TME&#8209;MK capability are not enabled in IA32_TME_ACTIVATE MSR.</string></listitem>
+    <listitem><string>If the memory operand is not 256B aligned.</string></listitem>
+    <listitem><string>If any of the reserved bits in the KEYID_CTRL field of the MKTME_KEY_PROGRAM_STRUCT are set or that field indicates an unsupported KeyID, key-programming command, or encryption algorithm.</string></listitem>
+    <listitem><string>TSE_KEY_PROGRAM leaf function:</string></listitem>
+    <listitem><string>The TSE_KEY_PROGRAM leaf function is not supported in protected mode.</string></listitem>
+    <listitem><string>TSE_KEY_PROGRAM_WRAPPED leaf function:</string></listitem>
+    <listitem><string>The TSE_KEY_PROGRAM_WRAPPED leaf function is not supported in protected mode.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code) </string></term>
+    <listitem><string>If a page fault occurs in accessing memory operands.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix are used. </string></listitem>
+    <listitem><string>If current privilege level is not 0.</string></listitem>
+    <listitem><string>If CPUID.07H.00H:EDX.PCONFIG[18] = 0</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <para unique="1091678">
+   <string>#GP 	If input value in EAX encodes an unsupported leaf function.</string></para>
+  <para unique="1091679">
+   <string>	</string><bold><string>MKTME_KEY_PROGRAM leaf function:</string></bold></para>
+  <para unique="1093771">
+   <string>		If CPUID function 1BH does not enumerate support for the TME&#8209;MK target (value 1).</string></para>
+  <para unique="1091680">
+   <string>	If IA32_TME_ACTIVATE MSR is not locked.</string></para>
+  <para unique="1091681">
+   <string>	If hardware encryption and TME&#8209;MK capability are not enabled in IA32_TME_ACTIVATE MSR.</string></para>
+  <para unique="1091682">
+   <string>	If a memory operand is not 256B aligned.</string></para>
+  <para unique="1091683">
+   <string>	If any of the reserved bits in the KEYID_CTRL field of the MKTME_KEY_PROGRAM_STRUCT are set or that field indicates an unsupported KeyID, key-programming command, or encryption algorithm.</string></para>
+  <para unique="1093789">
+   <string>	TSE_KEY_PROGRAM leaf function:</string></para>
+  <para unique="1093790">
+   <string>	The TSE_KEY_PROGRAM leaf function is not supported in real-address mode.</string></para>
+  <para unique="1093791">
+   <string>	TSE_KEY_PROGRAM_WRAPPED leaf function:</string></para>
+  <para unique="1093792">
+   <string>	The TSE_KEY_PROGRAM_WRAPPED leaf function is not supported in real-address mode.</string></para>
+  <para unique="1091684">
+   <string>#UD 	If the LOCK prefix are used. </string></para>
+  <para unique="1091686">
+   <anchor id="+325355"/><string>	If CPUID.07H.00H:EDX.PCONFIG[18] = 0 </string></para>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>PCONFIG instruction is not recognized in virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1091690">
+   <string>Same exceptions as in protected mode. </string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If input value in EAX encodes an unsupported leaf function.</string></listitem>
+    <listitem><string>If a memory operand is non-canonical form.</string></listitem>
+    <listitem><string></string><bold><string>MKTME_KEY_PROGRAM leaf function:</string></bold></listitem>
+    <listitem><string>If CPUID function 1BH does not enumerate support for the TME&#8209;MK target (value 1).</string></listitem>
+    <listitem><string>If IA32_TME_ACTIVATE MSR is not locked.</string></listitem>
+    <listitem><string>If hardware encryption and TME&#8209;MK capability are not enabled in IA32_TME_ACTIVATE MSR.</string></listitem>
+    <listitem><string>If a memory operand is not 256B aligned.</string></listitem>
+    <listitem><string>If any of the reserved bits in the KEYID_CTRL field of the MKTME_KEY_PROGRAM_STRUCT are set or that field indicates an unsupported KeyID, key-programming command, or encryption algorithm.</string></listitem>
+    <listitem><string>TSE_KEY_PROGRAM leaf function:</string></listitem>
+    <listitem><string>IF CPUID function 1BH does not enumerate support for the TSE target (value 2).</string></listitem>
+    <listitem><string>If RBX is not 256-byte aligned.</string></listitem>
+    <listitem><string>If any of the reserved bits in the KEYID_CTRL field of the TMP_KEY_STRUCT are set or that field indicates an unsupported KeyID, key-programming command, or encryption algorithm.</string></listitem>
+    <listitem><string>TSE_KEY_PROGRAM_WRAPPED leaf function:</string></listitem>
+    <listitem><string>IF CPUID function 1BH does not enumerate support for the TSE target (value 2).</string></listitem>
+    <listitem><string>If RCX is not 256-byte aligned.</string></listitem>
+    <listitem><string>If any of the reserved bits in RBX are set or that register indicates an unsupported KeyID or encryption algorithm.</string></listitem>
+    <listitem><string>If any of the reserved bytes in the TSE_BIND_STRUCT are set (including bytes in BTDATA).</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code) </string></term>
+    <listitem><string>If a page fault occurs in accessing memory operands.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix are used. </string></listitem>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    <listitem><string>If CPUID.07H.00H:EDX.PCONFIG[18] = 0.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

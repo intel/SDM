@@ -1,0 +1,56 @@
+<instruction name="PREFETCHh">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Prefetch Data Into Caches</shortdesc>
+ <longdesc><para unique="1091475">
+   <string>Fetches the line of data or code (instructions&#8217; bytes) from memory that contains the byte specified with the source operand to a location in the cache hierarchy specified by a locality hint:</string></para>
+  <itemizedlist><listitem><para unique="1091476">
+     <string>T0 (temporal data)&#8212;prefetch data into all levels of the cache hierarchy.</string></para>
+    </listitem>
+   <listitem><para unique="1091477">
+     <string>T1 (temporal data with respect to first level cache misses)&#8212;prefetch data into level 2 cache and higher.</string></para>
+    </listitem>
+   <listitem><para unique="1091478">
+     <string>T2 (temporal data with respect to second level cache misses)&#8212;prefetch data into level 3 cache and higher, or an implementation-specific choice.</string></para>
+    </listitem>
+   <listitem><para unique="1091479">
+     <string>NTA (non-temporal data with respect to all cache levels)&#8212;prefetch data into non-temporal cache structure and into a location close to the processor, minimizing cache pollution.</string></para>
+    </listitem>
+   <listitem><para unique="1091807">
+     <string>IT0 (temporal code)&#8212;prefetch code into all levels of the cache hierarchy.</string></para>
+    </listitem>
+   <listitem><para unique="1091808">
+     <string>IT1 (temporal code with respect to first level cache misses)&#8212;prefetch code into all but the first-level of the cache hierarchy.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1091480">
+   <string>The source operand is a byte memory location. (The locality hints are encoded into the machine level instruction using bits 3 through 5 of the ModR/M byte.) Some locality hints may prefetch only for RIP-relative memory addresses; see additional details below. The address to prefetch is NextRIP + 32-bit displacement, where NextRIP is the first byte of the instruction that follows the prefetch instruction itself.</string></para>
+  <para unique="1091481">
+   <string>If the line selected is already present in the cache hierarchy at a level closer to the processor, no data movement occurs. Prefetches from uncacheable or WC memory are ignored.</string></para>
+  <para unique="1091482">
+   <string>The PREFETCH</string><italic><string>h</string></italic><string> instruction is merely a hint and does not affect program behavior. If executed, this instruction moves data closer to the processor in anticipation of future use.</string></para>
+  <para unique="1091483">
+   <string>The implementation of prefetch locality hints is implementation-dependent, and can be overloaded or ignored by a processor implementation. The amount of data or code lines prefetched is also processor implementation-depen&#173;dent. It will, however, be a minimum of 32 bytes. Additional details of the implementation-dependent locality hints are described in Section 7.4 of Intel&#174; 64 and IA&#8209;32 Architectures Optimization Reference Manual.</string></para>
+  <para unique="1091484">
+   <string>It should be noted that processors are free to speculatively fetch and cache data from system memory regions that are assigned a memory-type that permits speculative reads (that is, the WB, WC, and WT memory types). A PREFETCH</string><italic><string>h</string></italic><string> instruction is considered a hint to this speculative behavior. Because this speculative fetching can occur at any time and is not tied to instruction execution, a PREFETCH</string><italic><string>h</string></italic><string> instruction is not ordered with respect to the fence instructions (MFENCE, SFENCE, and LFENCE) or locked memory references. A PREFETCH</string><italic><string>h</string></italic><string> instruction is also unordered with respect to CLFLUSH and CLFLUSHOPT instructions, other PREFETCH</string><italic><string>h </string></italic><string>instructions, or any other general instruction. It is ordered with respect to serializing instructions such as CPUID, WRMSR, OUT, and MOV CR.</string></para>
+  <para unique="1091872">
+   <string>PREFETCHIT0/1 can be used in 64-bit mode with RIP-relative addressing; they remain NOPs otherwise. For optimal performance, the addresses used with these instructions should be the starting byte of a real instruction.</string></para>
+  <para unique="1091873">
+   <string>PREFETCHIT0/1 instructions are enumerated by CPUID.07H.01H:EDX.PREFETCHI[14].The encodings remain NOPs in processors that do not enumerate these instructions.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>void _mm_prefetch(char </string><string>*p, int i)</string><string>
+</string><string>The argument &#8220;*p&#8221; gives the address of the byte (and corresponding cache line) to be prefetched. The value &#8220;i&#8221; gives a constant (_MM_HINT_T0, _MM_HINT_T1, _MM_HINT_T2, _MM_HINT_NTA</string><string>, _MM_HINT_IT0, or _MM_HINT_IT1) that specifies the type of prefetch operation to be performed.</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Numeric Exceptions">
+  <para unique="1091492">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Exceptions (All Operating Modes)">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

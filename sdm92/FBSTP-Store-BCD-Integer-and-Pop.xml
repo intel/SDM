@@ -1,0 +1,266 @@
+<instruction name="FBSTP">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Store BCD Integer and Pop</shortdesc>
+ <longdesc><para unique="1261215">
+   <string>Converts the value in the ST(0) register to an 18-digit packed BCD integer, stores the result in the destination operand, and pops the register stack. If the source value is a non-integral value, it is rounded to an integer value, according to rounding mode specified by the RC field of the FPU control word. To pop the register stack, the processor marks the ST(0) register as empty and increments the stack pointer (TOP) by 1.</string></para>
+  <para unique="1261216">
+   <string>The destination operand specifies the address where the first byte destination value is to be stored. The BCD value (including its sign bit) requires 10 bytes of space in memory. </string></para>
+  <para unique="1261217">
+   <string>The following table shows the results obtained when storing various classes of numbers in packed BCD format.</string></para>
+  <table>
+   <caption>Table 3-21.  FBSTP Results</caption>
+   <colgroup><col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1261224" format="CellColHead">
+       <string>ST(0)</string></para>
+      </th>
+     <th><para unique="1261226" format="CellColHead">
+       <string>DEST</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1261228" format="CellBodyC">
+       <string>&#8722; </string><string>&#8734; </string><sans><string>or Value Too Large for DEST Format</string></sans></para>
+      </td>
+     <td><para unique="1261230" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261232" format="CellBodyC">
+       <sans><string>F</string></sans><string> </string><string>&#8804;</string><string> </string><string>&#8722; </string><sans><string>1</string></sans></para>
+      </td>
+     <td><para unique="1261234" format="CellBodyC">
+       <string>&#8722; </string><sans><string>D</string></sans></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261236" format="CellBodyC">
+       <string>&#8722;</string><sans><string>1</string></sans><string> </string><string>&lt;</string><sans><string> F</string></sans><string> </string><string>&lt;</string><string> -</string><sans><string>0</string></sans></para>
+      </td>
+     <td><para unique="1261238" format="CellBodyC">
+       <string>**</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261240" format="CellBodyC">
+       <string>&#8722;</string><sans><string> 0</string></sans></para>
+      </td>
+     <td><para unique="1261242" format="CellBodyC">
+       <string>&#8722; </string><sans><string>0</string></sans></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261244" format="CellBodyC">
+       <string>+ </string><sans><string>0</string></sans></para>
+      </td>
+     <td><para unique="1261246" format="CellBodyC">
+       <string>+ </string><sans><string>0</string></sans></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261248" format="CellBodyC">
+       <string>+</string><sans><string> 0</string></sans><string> </string><string>&lt; </string><sans><string>F</string></sans><string> </string><string>&lt; </string><string>+</string><sans><string>1</string></sans></para>
+      </td>
+     <td><para unique="1261250" format="CellBodyC">
+       <string>**</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261252" format="CellBodyC">
+       <sans><string>F</string></sans><string> </string><string>&#8293; </string><string>+</string><sans><string>1</string></sans></para>
+      </td>
+     <td><para unique="1261254" format="CellBodyC">
+       <string>+ </string><sans><string>D</string></sans></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261256" format="CellBodyC">
+       <string>+ &#8734; </string><sans><string>or Value Too Large for DEST Format</string></sans></para>
+      </td>
+     <td><para unique="1261258" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261260" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261262" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     </tr>
+    </tbody>
+   <tfoot><tr>
+     <td colspan="2"><para unique="1261264" format="TableFootnoteBLUE">
+       <string>NOTES:</string></para>
+      <para unique="1261265" format="TableFootnote">
+       <string>F	Means finite floating-point value.</string></para>
+      <para unique="1261266" format="TableFootnote">
+       <string>D	Means packed-BCD number.</string></para>
+      <para unique="1261267" format="TableFootnote">
+       <string>*	Indicates floating-point invalid-operation (#IA) exception.</string></para>
+      <para unique="1261268" format="TableFootnote">
+       <string>**	</string><string>&#177;0 or </string><string>&#177;1, depending on the rounding mode.</string></para>
+      </td>
+     </tr>
+    </tfoot></table>
+  <para unique="1261272">
+   <string>If the converted value is too large for the destination format, or if the source operand is an </string><string>&#8734;, SNaN, QNAN, or is in an unsupported format, an invalid-arithmetic-operand condition is signaled. If the invalid-operation exception is not masked, an invalid-arithmetic-operand exception (#IA) is generated and no value is stored in the destination operand. If the invalid-operation exception is masked, the packed BCD indefinite value is stored in memory.</string></para>
+  <para unique="1261273">
+   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+  </longdesc>
+ <subsection title="FPU Flags Affected">
+  <variablelist>
+   <variablelistentry>
+    <term><string>C1</string></term>
+    <listitem><string>Set to 0 if stack underflow occurred.</string></listitem>
+    <listitem><string>Set if result was rounded up; cleared otherwise.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>C0, C2, C3 </string></term>
+    <listitem><string>Undefined.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Floating-Point Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#IS</string></term>
+    <listitem><string>Stack underflow occurred.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#IA</string></term>
+    <listitem><string>Converted value that exceeds 18 BCD digits in length.</string></listitem>
+    <listitem><string>Source operand is an SNaN, QNaN, </string><string>&#177;&#8734;, or in an unsupported format.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#P</string></term>
+    <listitem><string>Value cannot be represented exactly in destination format.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a segment register is being loaded with a segment selector that points to a non-writable segment.</string></listitem>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261308" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#MF </string></term>
+    <listitem><string>If there is a pending x87 FPU exception.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

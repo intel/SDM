@@ -1,0 +1,144 @@
+<instruction name="FSAVE/FNSAVE">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Store x87 FPU State</shortdesc>
+ <longdesc><para unique="1261228">
+   <string>Stores the current FPU state (operating environment and register stack) at the specified destination in memory, and then re-initializes the FPU. The FSAVE instruction checks for and handles pending unmasked floating-point exceptions before storing the FPU state; the FNSAVE instruction does not.</string></para>
+  <para unique="1261231">
+   <string>The FPU operating environment consists of the </string><indexterm><primary>x87 FPU instruction pointer;x87 FPU data pointer;x87 FPU last opcode</primary></indexterm><indexterm><primary>x87 FPU control word:saving;x87 FPU status word:saving;x87 FPU tag word</primary></indexterm><string>FPU control word, status word, tag word, instruction pointer, data pointer, and last opcode. Figures </string><string>8-9</string><string> through </string><string>8-12</string><string> in the </string><string>Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, show the layout in memory of the stored environment, depending on the operating mode of the processor (protected or real) and the current operand-size attribute (16-bit or 32-bit). In virtual-8086 mode, the real mode layouts are used. The contents of the FPU register stack are stored in the 80 bytes immediately follow the operating environment image.</string></para>
+  <para unique="1261238">
+   <string>The saved image reflects the state of the FPU after all floating-point instructions preceding the FSAVE/FNSAVE instruction in the instruction stream have been executed.</string></para>
+  <para unique="1261240">
+   <string>After the FPU state has been saved, the FPU is reset to the same default values it is set to with the </string><indexterm><primary>FINIT/FNINIT instructions</primary></indexterm><string>FINIT/FNINIT instructions (see </string><link linkend="13699: H5Heading: FINIT/FNINIT&#8212;Initialize Floating-Point Unit"><string>&#8220;FINIT/FNINIT&#8212;Initialize Floating-Point Unit&#8221;</string></link><string> in this chapter).</string></para>
+  <para unique="1261244">
+   <string>The FSAVE/FNSAVE instructions are typically used when the operating system needs to perform a context switch, an exception handler needs to use the FPU, or an application program needs to pass a &#8220;clean&#8221; FPU to a procedure.</string></para>
+  <para unique="1261245">
+   <string>The assembler issues two instructions for the FSAVE instruction (an FWAIT instruction followed by an FNSAVE instruction), and the processor executes each of these instructions separately. If an exception is generated for either of these instructions, the save EIP points to the instruction that caused the exception.</string></para>
+  <para unique="1261246">
+   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+  <section level="7">
+   <title unique="1261247"><string>IA-32 Architecture Compatibility</string></title>
+   <para unique="1261248">
+    <string>For Intel math coprocessors and FPUs prior to the Intel Pentium processor, an FWAIT instruction should be executed before attempting to read from the memory image stored with a prior FSAVE/FNSAVE instruction. This FWAIT instruction helps ensure that the storage operation has been completed.</string></para>
+   <para unique="1261249">
+    <string>When operating a Pentium or Intel486 processor in MS-DOS compatibility mode, it is possible (under unusual circumstances) for an FNSAVE instruction to be interrupted prior to being executed to handle a pending FPU excep&#173;tion. See the section titled </string><string>&#8220;No-Wait FPU Instructions Can Get FPU Interrupt in Window&#8221;</string><string> in </string><link linkend="13453: 01_Level: APPENDIX A SOFTWARE AND HARDWARE CONSIDERATIONS FOR FPU EXCEPTION HANDLERS FOR INTEL"><string>Appendix D</string></link><string> of the </string><string>Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for a description of these circumstances. An FNSAVE instruction cannot be interrupted in this way on later Intel processors, except for the Intel Quark</string><superscript><string>TM</string></superscript><string> X1000 processor.</string></para>
+   </section>
+  </longdesc>
+ <subsection title="FPU Flags Affected">
+  <para unique="1261280">
+   <string>The C0, C1, C2, and C3 flags are saved and then cleared.</string></para>
+  </subsection>
+ <subsection title="Floating-Point Exceptions">
+  <para unique="1261282">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If destination is located in a non-writable segment.</string></listitem>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <listitem><string>If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261305" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#MF </string></term>
+    <listitem><string>If there is a pending x87 FPU exception.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

@@ -1,0 +1,86 @@
+<instruction name="WRMSRNS">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Non-Serializing Write to Model Specific Register</shortdesc>
+ <longdesc><para unique="1013009">
+   <string>WRMSRNS is an instruction that behaves like WRMSR except that it is not a serializing instruction by default. It can be executed only at privilege level 0 or in real-address mode; otherwise, a general protection exception #GP(0) is generated. WRMSRNS has an </string><bold><string>implicit</string></bold><string> form and an </string><bold><string>immediate</string></bold><string> form. </string></para>
+  <para unique="1013010">
+   <string>The implicit form writes the contents of registers EDX:EAX into the 64-bit model specific register (MSR) specified in the ECX register. The contents of the EDX register are copied to the high-order 32 bits of the selected MSR and the contents of the EAX register are copied to the low-order 32 bits of the MSR. The high-order 32 bits of RAX, RCX, and RDX are ignored.</string></para>
+  <para unique="1014435">
+   <string>The immediate form writes the contents of operand 2 into the 64-bit MSR specified by operand 1. Operand 2 is a general-purpose register, while operand 1 is an immediate. The immediate form can be used only in 64-bit mode; otherwise, an invalid-opcode exception (#UD) will be generated.</string></para>
+  <para unique="1013015">
+   <string>Unlike WRMSR, WRMSRNS is not defined as a serializing instruction (see </string><link linkend="_Toc496356485"><string>Section 11.7.10, &#8220;Serializing Instructions&#8221;</string></link><string> of the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A). This means that software should not rely on it to drain all buffered writes to memory before the next instruction is fetched and executed. For implementation reasons, some processors may serialize when writing certain MSRs, even though that is not guar&#173;anteed.</string></para>
+  <para unique="1013019">
+   <string>Like WRMSR, WRMSRNS will ensure that all operations before it do not use the new MSR value and that all opera&#173;tions after the WRMSRNS do use the new value. An exception to this rule is certain store related performance-monitor events that only count stores when they are drained to memory. Since WRMSRNS is not a serializing instruction, if software uses WRMSRNS to change the controls for such performance-monitor events, stores issued before WRMSRMS may be counted based on the controls established by WRMSRNS. Software can insert the SERIALIZE instruction before the WRMSRNS if so desired.</string></para>
+  <para unique="1013020">
+   <string>Those MSRs that cause a TLB invalidation when they are written via WRMSR (e.g., MTRRs) will also cause the same TLB invalidation when written by WRMSRNS.</string></para>
+  <para unique="1013021">
+   <string>In order to improve performance, software may replace WRMSR with WRMSRNS. In places where WRMSR is being used as a proxy for a serializing instruction, a different serializing instruction can be used (e.g., SERIALIZE).</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1013029">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0) </string></term>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    <listitem><string>If the specified MSR address is reserved or unimplemented MSR.</string></listitem>
+    <listitem><string>If the source data sets bits that are reserved in the specified MSR.</string></listitem>
+    <listitem><string>If the source data contains a non-canonical address and the specified MSR is one of the following: IA32_BNDCFGS, IA32_DS_AREA, IA32_FS_BASE, IA32_GS_BASE, IA32_INTERRUPT_SSP_TABLE_ADDR, IA32_KERNEL_GS_BASE, IA32_LSTAR, IA32_PL0_SSP, IA32_PL1_SSP, IA32_PL2_SSP, IA32_PL3_SSP, IA32_RTIT_ADDR0_A, IA32_RTIT_ADDR0_B, IA32_RTIT_ADDR1_A, IA32_RTIT_ADDR1_B, IA32_RTIT_ADDR2_A, IA32_RTIT_ADDR2_B, IA32_RTIT_ADDR3_A, IA32_RTIT_ADDR3_B, IA32_S_CET, IA32_SYSENTER_EIP, IA32_SYSENTER_ESP, IA32_UINTR_HANDLER, IA32_UINTR_PD, IA32_UINTR_STACKADJUST, IA32_U_CET, and IA32_UINTR_TT.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If the immediate form is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0) </string></term>
+    <listitem><string>If the specified MSR address is reserved or unimplemented MSR.</string></listitem>
+    <listitem><string>If the source data sets bits that are reserved in the specified MSR.</string></listitem>
+    <listitem><string>If the source data contains a non-canonical address and the specified MSR is one of the following: IA32_BNDCFGS, IA32_DS_AREA, IA32_FS_BASE, IA32_GS_BASE, IA32_INTERRUPT_SSP_TABLE_ADDR, IA32_KERNEL_GS_BASE, IA32_LSTAR, IA32_PL0_SSP, IA32_PL1_SSP, IA32_PL2_SSP, IA32_PL3_SSP, IA32_RTIT_ADDR0_A, IA32_RTIT_ADDR0_B, IA32_RTIT_ADDR1_A, IA32_RTIT_ADDR1_B, IA32_RTIT_ADDR2_A, IA32_RTIT_ADDR2_B, IA32_RTIT_ADDR3_A, IA32_RTIT_ADDR3_B, IA32_S_CET, IA32_SYSENTER_EIP, IA32_SYSENTER_ESP, IA32_UINTR_HANDLER, IA32_UINTR_PD, IA32_UINTR_STACKADJUST, IA32_U_CET, and IA32_UINTR_TT.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If the immediate form is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>For the implicit form, the WRMSRNS instruction is not recognized in virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>For the immediate form, the WRMSRNS instruction is not recognized in virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1013047" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0) </string></term>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    <listitem><string>If the specified MSR address is reserved or unimplemented MSR.</string></listitem>
+    <listitem><string>If the source data sets bits that are reserved in the specified MSR.</string></listitem>
+    <listitem><string>If the source data contains a non-canonical address and the specified MSR is one of the following: IA32_BNDCFGS, IA32_DS_AREA, IA32_FS_BASE, IA32_GS_BASE, IA32_INTERRUPT_SSP_TABLE_ADDR, IA32_KERNEL_GS_BASE, IA32_LSTAR, IA32_PL0_SSP, IA32_PL1_SSP, IA32_PL2_SSP, IA32_PL3_SSP, IA32_RTIT_ADDR0_A, IA32_RTIT_ADDR0_B, IA32_RTIT_ADDR1_A, IA32_RTIT_ADDR1_B, IA32_RTIT_ADDR2_A, IA32_RTIT_ADDR2_B, IA32_RTIT_ADDR3_A, IA32_RTIT_ADDR3_B, IA32_S_CET, IA32_SYSENTER_EIP, IA32_SYSENTER_ESP, IA32_UINTR_HANDLER, IA32_UINTR_PD, IA32_UINTR_STACKADJUST, IA32_U_CET, and IA32_UINTR_TT.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If the immediate form is used and CPUID.07H.01H:ECX.MSR_IMM[5] = 0.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

@@ -1,0 +1,441 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="POP_ES" xed_iform="POP_ES" encoding="07" opcode="07" valid32="V" valid64="N.E.">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Load_Data_Segment</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Update_Stack_Pointer</callee>
+   <callee>Instr_POP_SEG</callee>
+   <var-used>False</var-used>
+   <var-used>RFLAGS</var-used>
+   <var-used>SS</var-used>
+   <var-used>ES</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not ((Data_Size_Of_Current_Mode() != 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Mode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result, new_rsp) := Instr_POP_SEG?(operand_size);</code>
+     </execute>
+    <post_execute>
+     <code>ES := Load_Data_Segment?(result[0 +: 16], ES, RFLAGS);</code>
+     <code>Update_Stack_Pointer(SS, new_rsp);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="POP">
+    <asm-operand><varname>ES</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding/>
+    <label><varname>ES</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="POP_SEG" variant_kind="Segment" mnemonic="POP">
+  <code>let (result, new_rsp) := Pop_Stack?(SS, RSP, 16, operand_size);</code>
+  <code>// Updating the segment register may cause a fault and must be done before updating RSP</code>
+  <callee>Pop_Stack</callee>
+  <callee>RSP</callee>
+  <var-used>SS</var-used>
+  </operation>
+ <iform-group>
+  <iform name="POP_SS" xed_iform="POP_SS" encoding="17" opcode="17" valid32="V" valid64="N.E.">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Load_Stack_Segment</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Update_Stack_Pointer</callee>
+   <callee>Instr_POP_SEG</callee>
+   <var-used>True</var-used>
+   <var-used>CPL</var-used>
+   <var-used>RFLAGS</var-used>
+   <var-used>SS</var-used>
+   <var-used>Event_Blocked</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not ((Data_Size_Of_Current_Mode() != 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Mode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result, new_rsp) := Instr_POP_SEG?(operand_size);</code>
+     </execute>
+    <post_execute>
+     <code>SS := Load_Stack_Segment?(result[0 +: 16], SS, CPL, RFLAGS, True);</code>
+     <code>Event_Blocked.MOVSS_BLOCKING := True;</code>
+     <code>Update_Stack_Pointer(SS, new_rsp);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="POP">
+    <asm-operand><varname>SS</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding/>
+    <label><varname>SS</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="POP_DS" xed_iform="POP_DS" encoding="1F" opcode="1f" valid32="V" valid64="N.E.">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Load_Data_Segment</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Update_Stack_Pointer</callee>
+   <callee>Instr_POP_SEG</callee>
+   <var-used>False</var-used>
+   <var-used>RFLAGS</var-used>
+   <var-used>SS</var-used>
+   <var-used>DS</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not ((Data_Size_Of_Current_Mode() != 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Mode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result, new_rsp) := Instr_POP_SEG?(operand_size);</code>
+     </execute>
+    <post_execute>
+     <code>DS := Load_Data_Segment?(result[0 +: 16], DS, RFLAGS);</code>
+     <code>Update_Stack_Pointer(SS, new_rsp);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="POP">
+    <asm-operand><varname>DS</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding/>
+    <label><varname>DS</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="POP_FS" xed_iform="POP_FS" encoding="0F A1" opcode="a1" valid32="V" valid64="V">
+   <callee>Load_Data_Segment</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Update_Stack_Pointer</callee>
+   <callee>Instr_POP_SEG</callee>
+   <var-used>False</var-used>
+   <var-used>RFLAGS</var-used>
+   <var-used>SS</var-used>
+   <var-used>FS</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result, new_rsp) := Instr_POP_SEG?(operand_size);</code>
+     </execute>
+    <post_execute>
+     <code>FS := Load_Data_Segment?(result[0 +: 16], FS, RFLAGS);</code>
+     <code>Update_Stack_Pointer(SS, new_rsp);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="POP">
+    <asm-operand><varname>FS</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding/>
+    <label><varname>FS</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="POP_GS" xed_iform="POP_GS" encoding="0F A9" opcode="a9" valid32="V" valid64="V">
+   <callee>Load_Data_Segment</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Update_Stack_Pointer</callee>
+   <callee>Instr_POP_SEG</callee>
+   <var-used>False</var-used>
+   <var-used>RFLAGS</var-used>
+   <var-used>SS</var-used>
+   <var-used>GS</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result, new_rsp) := Instr_POP_SEG?(operand_size);</code>
+     </execute>
+    <post_execute>
+     <code>GS := Load_Data_Segment?(result[0 +: 16], GS, RFLAGS);</code>
+     <code>Update_Stack_Pointer(SS, new_rsp);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="POP">
+    <asm-operand><varname>GS</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding/>
+    <label><varname>GS</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="POP_GPRv_58_0" xed_iform="POP_GPRv_58" encoding="58+r" opcode="58" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_POP</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_POP?(operand_size);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_b4 ++ context.rex_b3 ++ opcode[2:0], result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="POP">
+    <asm-operand><varname>rv</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>opcode[2:0]</encoding>
+    <label><varname>rv</varname></label>
+    </operand>
+   </iform>
+  <iform name="POP_GPRv_58_1" xed_iform="POP_GPRv_58" encoding="58+r" opcode="58" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_POP</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_POP?(operand_size);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_b4 ++ context.rex_b3 ++ opcode[2:0], result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="POP">
+    <asm-operand><varname>rv</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>opcode[2:0]</encoding>
+    <label><varname>rv</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="POP" variant_kind="Standard variant" mnemonic="POP">
+  <code>let (result, new_rsp) := Pop_Stack?(SS, RSP, operand_size, operand_size);</code>
+  <code>RSP := new_rsp;</code>
+  <callee>Pop_Stack</callee>
+  <callee>RSP</callee>
+  <callee>RSP_write</callee>
+  <var-used>SS</var-used>
+  <other-copy>POPP/PUSHP</other-copy>
+  </operation>
+ <iform-group>
+  <iform name="POP_GPRv_8F" xed_iform="POP_GPRv_8F" encoding="8F /0" opcode="8f" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_POP</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_POP?(operand_size);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="POP">
+    <asm-operand><varname>rv</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv</varname></label>
+    </operand>
+   </iform>
+  <iform name="POP_MEMv" xed_iform="POP_MEMv" encoding="8F /0" opcode="8f" valid32="V" valid64="V">
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_POP</callee>
+   <var-used>False</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_POP?(operand_size);</code>
+     </execute>
+    <post_execute>
+     <code>let (pop_ea_offset, pop_ea_segment, pop_ip, pop_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let pop_ea := Handle_RIP_Relative_Address(address_size, pop_rip_relative, pop_ea_offset, pop_ip);</code>
+     <code>Logical_Mem_Write?(pop_ea_segment, pop_ea, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="POP">
+    <asm-operand><varname>mv</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <category>memory/stack</category>
+ <size name="operand_size"/>
+ <output name="result"/>
+ <output name="new_rsp"/>
+ </instruction>

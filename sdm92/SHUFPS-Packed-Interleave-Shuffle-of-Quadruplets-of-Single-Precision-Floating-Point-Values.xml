@@ -1,0 +1,115 @@
+<instruction name="SHUFPS">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Packed Interleave Shuffle of Quadruplets of Single Precision Floating-Point Values</shortdesc>
+ <longdesc><para unique="1091551">
+   <string>Selects a single precision floating-point value of an input quadruplet using a two-bit control and move to a desig&#173;nated element of the destination operand. Each 64-bit element-pair of a 128-bit lane of the destination operand is interleaved between the corresponding lane of the first source operand and the second source operand at the gran&#173;ularity 128 bits. Each two bits in the imm8 byte, starting from bit 0, is the select control of the corresponding element of a 128-bit lane of the destination to received the shuffled result of an input quadruplet. The two lower elements of a 128-bit lane in the destination receives shuffle results from the quadruple of the first source operand. The next two elements of the destination receives shuffle results from the quadruple of the second source operand. </string></para>
+  <para unique="1091552">
+   <string>EVEX encoded versions: The first source operand is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 32-bit memory location. The destination operand is a ZMM/YMM/XMM register updated according to the writemask. imm8[7:0] provides 4 select controls for each applicable 128-bit lane of the destination.</string></para>
+  <para unique="1091553">
+   <string>VEX.256 encoded version: The first source operand is a YMM register. The second source operand can be a YMM register or a 256-bit memory location. The destination operand is a YMM register. Imm8[7:0] provides 4 select controls for the high and low 128-bit of the destination.</string></para>
+  <para unique="1091554">
+   <string>VEX.128 encoded version: The first source operand is a XMM register. The second source operand can be a XMM register or a 128-bit memory location. The destination operand is a XMM register. The upper bits (MAXVL-1:128) of the corresponding ZMM register destination are zeroed. Imm8[7:0] provides 4 select controls for each element of the destination.</string></para>
+  <para unique="1091555">
+   <string>128-bit Legacy SSE version: The source can be an XMM register or an 128-bit memory location. The destination is not distinct from the first source XMM register and the upper bits (MAXVL-1:128) of the corresponding ZMM register destination are unmodified. Imm8[7:0] provides 4 select controls for each element of the destination.</string></para>
+  <table>
+   <caption>Figure 4-26.  256-bit VSHUFPS Operation of Selection from Input Quadruplet and Pair-wise Interleaved Result</caption>
+   <colgroup><col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <td><para unique="1091621" format="05_FigureGraphic">
+       <svg width="1000" height="282.7435450986365" viewBox="0 0 416.00016 117.62136">
+        <defs>
+        <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+          <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
+        </marker>
+      </defs>
+        <rect width="37.12464" height="13.5" x="57.45816" y="84.49992" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="60.83352000000001" y="93.03551999999999" font-size="6">Y7 .. Y4</text>
+        <rect width="37.12464" height="13.5" x="131.70816" y="84.49992" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="138.45816" y="93.03551999999999" font-size="6">X7 .. X4</text>
+        <rect width="37.12464" height="13.5" x="205.95816" y="84.49992" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="209.33352" y="93.03551999999999" font-size="6">Y3 ..Y0</text>
+        <rect width="37.12464" height="13.5" x="280.20815999999996" y="84.49992" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="283.58352" y="94.6584" font-size="6">X3 .. X0</text>
+        <text x="37.20816" y="93.03551999999999" font-size="6">DEST</text>
+        <text x="37.46736" y="27.1584" font-size="6">SRC1</text>
+        <polyline points="280.20815999999996,60.87456 226.20816,84.49992" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <rect width="37.12464" height="13.5" x="317.33351999999996" y="16.99992" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="328.41576" y="25.535519999999998" font-size="6">X0</text>
+        <polyline points="280.20815999999996,30.49992 334.20815999999996,84.49992" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <text x="37.20816" y="57.53376" font-size="6">SRC2</text>
+        <polyline points="280.20815999999996,30.49992 297.08351999999996,84.49992" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="280.20815999999996,60.87456 259.95815999999996,84.49992" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <rect width="37.12464" height="13.5" x="280.20815999999996" y="16.99992" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="291.29112" y="25.535519999999998" font-size="6">X1</text>
+        <rect width="37.12464" height="13.5" x="243.08352" y="16.99992" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="254.16575999999998" y="25.535519999999998" font-size="6">X2</text>
+        <rect width="37.12464" height="13.5" x="205.95816" y="16.99992" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="217.04112" y="25.535519999999998" font-size="6">X3</text>
+        <rect width="37.12464" height="13.5" x="168.83352" y="16.99992" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="179.91575999999998" y="25.535519999999998" font-size="6">X4</text>
+        <rect width="37.12464" height="13.5" x="131.70816" y="16.99992" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="142.79112" y="25.535519999999998" font-size="6">X5</text>
+        <rect width="37.12464" height="13.5" x="94.58352000000001" y="16.99992" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="105.66576" y="25.535519999999998" font-size="6">X6</text>
+        <rect width="37.12464" height="13.5" x="57.45816" y="16.99992" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="68.54112" y="25.535519999999998" font-size="6">X7</text>
+        <rect width="37.12464" height="13.5" x="317.33351999999996" y="47.37456" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="328.41576" y="55.910160000000005" font-size="6">Y0</text>
+        <rect width="37.12464" height="13.5" x="280.20815999999996" y="47.37456" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="291.29112" y="55.910160000000005" font-size="6">Y1</text>
+        <rect width="37.12464" height="13.5" x="243.08352" y="47.37456" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="254.16575999999998" y="55.910160000000005" font-size="6">Y2</text>
+        <rect width="37.12464" height="13.5" x="205.95816" y="47.37456" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="217.04112" y="55.910160000000005" font-size="6">Y3</text>
+        <rect width="37.12464" height="13.5" x="168.83352" y="47.37456" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="179.91575999999998" y="55.910160000000005" font-size="6">Y4</text>
+        <rect width="37.12464" height="13.5" x="131.70816" y="47.37456" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="142.79112" y="55.910160000000005" font-size="6">Y5</text>
+        <rect width="37.12464" height="13.5" x="94.58352000000001" y="47.37456" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="105.66576" y="55.910160000000005" font-size="6">Y6</text>
+        <rect width="37.12464" height="13.5" x="57.45816" y="47.37456" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="68.54112" y="55.910160000000005" font-size="6">Y7</text>
+        <rect width="37.12464" height="13.5" x="317.33351999999996" y="84.49992" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="320.70815999999996" y="94.6584" font-size="6">X3 .. X0</text>
+        <rect width="37.12464" height="13.5" x="94.58352000000001" y="84.49992" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="97.95816" y="93.03551999999999" font-size="6">Y7 .. Y4</text>
+        <rect width="37.12464" height="13.5" x="168.83352" y="84.49992" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="175.58352" y="93.03551999999999" font-size="6">X7 .. X4</text>
+        <rect width="37.12464" height="13.5" x="243.08352" y="84.49992" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="246.45816" y="93.03551999999999" font-size="6">Y3 ..Y0</text>
+        <polyline points="131.70816,60.87456 77.70816,84.49992" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="131.70816,30.49992 185.70816,84.49992" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="131.70816,30.49992 148.58352,84.49992" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="131.70816,60.87456 111.45816,84.49992" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        </svg></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VSHUFPS __m512 _mm512_shuffle_ps(__m512 a, __m512 b, int imm);</string><string>
+</string><string>VSHUFPS __m512 _mm512_mask_shuffle_ps(__m512 s, __mmask16 k, __m512 a, __m512 b, int imm);</string><string>
+</string><string>VSHUFPS __m512 _mm512_maskz_shuffle_ps(__mmask16 k, __m512 a, __m512 b, int imm);</string><string>
+</string><string>VSHUFPS __m256 _mm256_shuffle_ps (__m256 a, __m256 b, const int select);</string><string>
+</string><string>VSHUFPS __m256 _mm256_mask_shuffle_ps(__m256 s, __mmask8 k, __m256 a, __m256 b, int imm);</string><string>
+</string><string>VSHUFPS __m256 _mm256_maskz_shuffle_ps(__mmask8 k, __m256 a, __m256 b, int imm);</string><string>
+</string><string>SHUFPS __m128 _mm_shuffle_ps (__m128 a, __m128 b, const int select);</string><string>
+</string><string>VSHUFPS __m128 _mm_mask_shuffle_ps(__m128 s, __mmask8 k, __m128 a, __m128 b, int imm);</string><string>
+</string><string>VSHUFPS __m128 _mm_maskz_shuffle_ps(__mmask8 k, __m128 a, __m128 b, int imm);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1091751">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1091756" format="xIndent1">
+   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091760" format="xIndent1">
+   <string>EVEX-encoded instruction, see </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

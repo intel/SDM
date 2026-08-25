@@ -1,0 +1,81 @@
+<instruction name="MOV">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Move to/from Debug Registers</shortdesc>
+ <longdesc><para unique="1091492">
+   <string>Moves the contents of a </string><indexterm><primary>Debug registers, moving value to and from</primary></indexterm><string>debug register (DR0, DR1, DR2, DR3, DR4, DR5, DR6, or DR7) to a general-purpose register or vice versa. The operand size for these instructions is always 32 bits in non-64-bit modes, regardless of the operand-size attribute. (See </string><link linkend="25534: 02_Level: 10.2. Debug Registers"><string>Section 20.2, &#8220;Debug Registers&#8221;</string></link><string>, of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Soft&#173;ware Developer&#8217;s Manual, Volume 3A, for a detailed description of the flags and fields in the debug registers.)</string></para>
+  <para unique="1091496">
+   <string>The instructions must be executed at privilege level 0 or in real-address mode.</string></para>
+  <para unique="1091497">
+   <string>When the debug extension (DE) flag in register CR4 is clear, these instructions operate on debug registers in a manner that is compatible with Intel386 and Intel486 processors. In this mode, references to DR4 and DR5 refer to DR6 and DR7, respectively. When the DE flag in CR4 is set, attempts to reference DR4 and DR5 result in an undefined opcode (#UD) exception. (The CR4 register was added to the IA-32 Architecture beginning with the Pentium processor.)</string></para>
+  <para unique="1091498">
+   <string>At the opcode level, the </string><italic><string>reg</string></italic><string> field within the ModR/M byte specifies which of the debug registers is loaded or read. The two bits in the </string><italic><string>mod </string></italic><string>field are ignored. The </string><italic><string>r/m</string></italic><string> field specifies the general-purpose register loaded or read.</string></para>
+  <para unique="1091499">
+   <string>In 64-bit mode, the instruction&#8217;s default operation size is 64 bits. Use of the REX.B prefix permits access to addi&#173;tional registers (R8&#8211;R15). Use of the REX.W or 66H prefix is ignored. Use of the REX.R prefix causes an invalid-opcode exception. See the summary chart at the beginning of this section for encoding data and limits. </string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1091504">
+   <string>The OF, SF, ZF, AF, PF, and CF flags are undefined.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If CR4.DE[bit 3] = 1 (debug extensions) and a MOV instruction is executed involving DR4 or DR5.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#DB</string></term>
+    <listitem><string>If any debug register is accessed while the DR7.GD[bit 13] = 1.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If CR4.DE[bit 3] = 1 (debug extensions) and a MOV instruction is executed involving DR4 or DR5. </string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#DB</string></term>
+    <listitem><string>If any debug register is accessed while the DR7.GD[bit 13] = 1.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>The debug registers cannot be loaded or read when in virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1091517" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    <listitem><string>If an attempt is made to write a 1 to any of bits 63:32 in DR6.</string></listitem>
+    <listitem><string>If an attempt is made to write a 1 to any of bits 63:32 in DR7.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If CR4.DE[bit 3] = 1 (debug extensions) and a MOV instruction is executed involving DR4 or DR5.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If the REX.R prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#DB</string></term>
+    <listitem><string>If any debug register is accessed while the DR7.GD[bit 13] = 1.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

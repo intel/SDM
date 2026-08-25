@@ -1,0 +1,64 @@
+<instruction name="LOADIWKEY">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Load Internal Wrapping Key With Key Locker</shortdesc>
+ <longdesc><para unique="1261251">
+   <string>The LOADIWKEY</string><footnote><para unique="1261248">
+     <string>Further details on Key Locker and usage of this instruction can be found here:</string></para>
+    <para unique="1261250">
+     <string>	</string><anchor id="message URL https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html"/><underline><string>https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html</string></underline><string>.</string></para>
+    </footnote><string> instruction writes the Key Locker internal wrapping key, which is called IWKey. This IWKey is used by the ENCODEKEY* instructions to wrap keys into handles. Conversely, the AESENC/DEC*KL instructions use IWKey to unwrap those keys from the handles and help verify the handle integrity. For security reasons, no instruction is designed to allow software to directly read the IWKey value.</string></para>
+  <para unique="1261252">
+   <string>IWKey includes two cryptographic keys as well as metadata. The two cryptographic keys are loaded from register sources so that LOADIWKEY can be executed without the keys ever being in memory.</string></para>
+  <para unique="1261253">
+   <string>The key input operands are:</string></para>
+  <itemizedlist><listitem><para unique="1261254">
+     <string>The 256-bit encryption key is loaded from the two explicit operands.</string></para>
+    </listitem>
+   <listitem><para unique="1261255">
+     <string>The 128-bit integrity key is loaded from the implicit operand XMM0.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1261256">
+   <string>The implicit operand EAX specifies the KeySource and whether backing up the key is permitted:</string></para>
+  <itemizedlist><listitem><para unique="1261257">
+     <string>EAX[0] &#8211; When set, the wrapping key being initialized is not permitted to be backed up to platform-scoped storage.</string></para>
+    </listitem>
+   <listitem><para unique="1261258">
+     <string>EAX[4:1] &#8211; This specifies the KeySource, which is the type of key. Currently only two encodings are supported. A KeySource of 0 indicates that the key input operands described above should be directly stored as the internal wrapping keys. LOADIWKEY with a KeySource of 1 will have random numbers from the on-chip random number generator XORed with the source registers (including XMM0) so that the software that executes the LOADIWKEY does not know the actual IWKey encryption and integrity keys. Software can choose to put additional random data into the source registers so that other sources of random data are combined with the hardware random number generator supplied value. Software should always check ZF after executing LOADIWKEY with KeySource of 1 as this operation may fail due to it being unable to get sufficient full-entropy data from the on-chip random number generator. Both KeySource of 0 and 1 specify that IWKey be used with the AES-GCM-SIV algorithm. CPUID.19H:ECX[1] enumerates support for KeySource of 1. All other KeySource encodings are reserved.</string></para>
+    </listitem>
+   <listitem><para unique="1261259">
+     <string>EAX[31:5] &#8211; Reserved.</string></para>
+    </listitem>
+   </itemizedlist></longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1261295">
+   <string>ZF is set to 0 if the operation succeeded and set to 1 if the operation failed due to full-entropy random data not being received from RDSEED. The other arithmetic flags (OF, SF, AF, PF, CF) are cleared to 0.</string></para>
+  </subsection>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>LOADIWKEY					void _mm_loadiwkey(unsigned int ctl, __m128i intkey, __m128i enkey_lo, __m128i enkey_hi);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Exceptions (All Operating Modes)">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP </string></term>
+    <listitem><string>If CPL &gt; 0. (Does not apply in real-address mode.)</string></listitem>
+    <listitem><string>If EAX[4:1] &gt; 1.</string></listitem>
+    <listitem><string>If EAX[31:5] != 0.</string></listitem>
+    <listitem><string>If (EAX[0] == 1) AND (CPUID.19H:ECX[0] == 0).</string></listitem>
+    <listitem><string>If (EAX[4:1] == 1) AND (CPUID.19H:ECX[1] == 0).</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If CPUID.07H.00H:ECX.KEY_LOCKER[23] = 0.</string></listitem>
+    <listitem><string>If CR4.KL = 0.</string></listitem>
+    <listitem><string>If CR0.EM = 1.</string></listitem>
+    <listitem><string>If CR4.OSFXSR = 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM </string></term>
+    <listitem><string>If CR0.TS = 1.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

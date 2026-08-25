@@ -1,0 +1,510 @@
+<instruction name="FDIV/FDIVP/FIDIV">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Divide</shortdesc>
+ <longdesc><para unique="1261285">
+   <string>Divides the destination operand by the source operand and stores the result in the destination location. The desti&#173;nation operand (dividend) is always in an FPU register; the source operand (divisor) can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format, word or doubleword integer format.</string></para>
+  <para unique="1261286">
+   <string>The no-operand version of the instruction divides the contents of the ST(1) register by the contents of the ST(0) register. The one-operand version divides the contents of the ST(0) register by the contents of a memory location (either a floating-point or an integer value). The two-operand version, divides the contents of the ST(0) register by the contents of the ST(i) register or vice versa.</string></para>
+  <para unique="1261287">
+   <string>The FDIVP instructions perform the additional operation of popping the FPU register stack after storing the result. To pop the register stack, the processor marks the ST(0) register as empty and increments the stack pointer (TOP) by 1. The no-operand version of the floating-point divide instructions always results in the register stack being popped. In some assemblers, the mnemonic for this instruction is FDIV rather than FDIVP.</string></para>
+  <para unique="1261288">
+   <string>The FIDIV instructions convert an integer source operand to double extended-precision floating-point format before performing the division. When the source operand is an integer 0, it is treated as a </string><string>+0.</string></para>
+  <para unique="1261289">
+   <string>If an unmasked divide-by-zero exception (#Z) is generated, no result is stored; if the exception is masked, an </string><string>&#8734; of the appropriate sign is stored in the destination operand.</string></para>
+  <para unique="1261290">
+   <string>The following table shows the results obtained when dividing various classes of numbers, assuming that neither overflow nor underflow occurs.</string></para>
+  <table>
+   <caption>Table 3-26.  FDIV/FDIVP/FIDIV Results</caption>
+   <colgroup><col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <td><para unique="1261311" format="CellBodyL">
+       </para>
+      </td>
+     <th colspan="8"><para unique="1261313" format="CellRowHeadC">
+       <string>DEST</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1261329" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1261331" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1261333" format="CellBodyL">
+       <string>&#8722; </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261335" format="CellBodyL">
+       <string>&#8722; F</string></para>
+      </td>
+     <td><para unique="1261337" format="CellBodyL">
+       <string>&#8722; 0</string></para>
+      </td>
+     <td><para unique="1261339" format="CellBodyL">
+       <string>+ 0</string></para>
+      </td>
+     <td><para unique="1261341" format="CellBodyL">
+       <string>+ F</string></para>
+      </td>
+     <td><para unique="1261343" format="CellBodyL">
+       <string>+ </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261345" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261347" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1261349" format="CellBodyL">
+       <string>&#8722; </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261351" format="CellBodyL">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261353" format="CellBodyL">
+       <string>+ 0</string></para>
+      </td>
+     <td><para unique="1261355" format="CellBodyL">
+       <string>+ 0</string></para>
+      </td>
+     <td><para unique="1261357" format="CellBodyL">
+       <string>&#8722; 0</string></para>
+      </td>
+     <td><para unique="1261359" format="CellBodyL">
+       <string>&#8722; 0</string></para>
+      </td>
+     <td><para unique="1261361" format="CellBodyL">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261363" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261365" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1261367" format="CellBodyL">
+       <string>&#8722; F</string></para>
+      </td>
+     <td><para unique="1261369" format="CellBodyL">
+       <string>+ </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261371" format="CellBodyL">
+       <string>+ F</string></para>
+      </td>
+     <td><para unique="1261373" format="CellBodyL">
+       <string>+ 0</string></para>
+      </td>
+     <td><para unique="1261375" format="CellBodyL">
+       <string>&#8722; 0</string></para>
+      </td>
+     <td><para unique="1261377" format="CellBodyL">
+       <string>&#8722; F</string></para>
+      </td>
+     <td><para unique="1261379" format="CellBodyL">
+       <string>&#8722; </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261381" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261383" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1261385" format="CellBodyL">
+       <string>&#8722; I</string></para>
+      </td>
+     <td><para unique="1261387" format="CellBodyL">
+       <string>+ </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261389" format="CellBodyL">
+       <string>+ F</string></para>
+      </td>
+     <td><para unique="1261391" format="CellBodyL">
+       <string>+ 0</string></para>
+      </td>
+     <td><para unique="1261393" format="CellBodyL">
+       <string>&#8722; 0</string></para>
+      </td>
+     <td><para unique="1261395" format="CellBodyL">
+       <string>&#8722; F</string></para>
+      </td>
+     <td><para unique="1261397" format="CellBodyL">
+       <string>&#8722; </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261399" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <th><para unique="1261401" format="CellRowHeadC">
+       <string>SRC</string></para>
+      </th>
+     <td><para unique="1261403" format="CellBodyL">
+       <string>&#8722; 0</string></para>
+      </td>
+     <td><para unique="1261405" format="CellBodyL">
+       <string>+ </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261407" format="CellBodyL">
+       <string>**</string></para>
+      </td>
+     <td><para unique="1261409" format="CellBodyL">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261411" format="CellBodyL">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261413" format="CellBodyL">
+       <string>**</string></para>
+      </td>
+     <td><para unique="1261415" format="CellBodyL">
+       <string>&#8722; </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261417" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261419" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1261421" format="CellBodyL">
+       <string>+ 0</string></para>
+      </td>
+     <td><para unique="1261423" format="CellBodyL">
+       <string>&#8722; </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261425" format="CellBodyL">
+       <string>**</string></para>
+      </td>
+     <td><para unique="1261427" format="CellBodyL">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261429" format="CellBodyL">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261431" format="CellBodyL">
+       <string>**</string></para>
+      </td>
+     <td><para unique="1261433" format="CellBodyL">
+       <string>+ </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261435" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261437" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1261439" format="CellBodyL">
+       <string>+ I</string></para>
+      </td>
+     <td><para unique="1261441" format="CellBodyL">
+       <string>&#8722; </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261443" format="CellBodyL">
+       <string>&#8722; F</string></para>
+      </td>
+     <td><para unique="1261445" format="CellBodyL">
+       <string>&#8722; 0</string></para>
+      </td>
+     <td><para unique="1261447" format="CellBodyL">
+       <string>+ 0</string></para>
+      </td>
+     <td><para unique="1261449" format="CellBodyL">
+       <string>+ F</string></para>
+      </td>
+     <td><para unique="1261451" format="CellBodyL">
+       <string>+ </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261453" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261455" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1261457" format="CellBodyL">
+       <string>+ F</string></para>
+      </td>
+     <td><para unique="1261459" format="CellBodyL">
+       <string>&#8722; </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261461" format="CellBodyL">
+       <string>&#8722; F</string></para>
+      </td>
+     <td><para unique="1261463" format="CellBodyL">
+       <string>&#8722; 0</string></para>
+      </td>
+     <td><para unique="1261465" format="CellBodyL">
+       <string>+ 0</string></para>
+      </td>
+     <td><para unique="1261467" format="CellBodyL">
+       <string>+ F</string></para>
+      </td>
+     <td><para unique="1261469" format="CellBodyL">
+       <string>+ </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261471" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261473" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1261475" format="CellBodyL">
+       <string>+ </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261477" format="CellBodyL">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261479" format="CellBodyL">
+       <string>&#8722; 0</string></para>
+      </td>
+     <td><para unique="1261481" format="CellBodyL">
+       <string>&#8722; 0</string></para>
+      </td>
+     <td><para unique="1261483" format="CellBodyL">
+       <string>+ 0</string></para>
+      </td>
+     <td><para unique="1261485" format="CellBodyL">
+       <string>+ 0</string></para>
+      </td>
+     <td><para unique="1261487" format="CellBodyL">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261489" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261491" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1261493" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261495" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261497" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261499" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261501" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261503" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261505" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261507" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    </tbody>
+   <tfoot><tr>
+     <td colspan="9"><para unique="1261509" format="TableFootnoteBLUE">
+       <string>NOTES:</string></para>
+      <para unique="1261510" format="TableFootnote">
+       <string>F	Means finite floating-point value.</string></para>
+      <para unique="1261511" format="TableFootnote">
+       <string>I	Means integer.</string></para>
+      <para unique="1261512" format="TableFootnote">
+       <string>*	Indicates floating-point invalid-arithmetic-operand (#IA) exception.</string></para>
+      <para unique="1261513" format="TableFootnote">
+       <string>**	Indicates floating-point zero-divide (#Z) exception.</string></para>
+      </td>
+     </tr>
+    </tfoot></table>
+  <para unique="1261531">
+   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+  </longdesc>
+ <subsection title="FPU Flags Affected">
+  <variablelist>
+   <variablelistentry>
+    <term><string>C1</string></term>
+    <listitem><string>Set to 0 if stack underflow occurred.</string></listitem>
+    <listitem><string>Set if result was rounded up; cleared otherwise.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>C0, C2, C3 </string></term>
+    <listitem><string>Undefined.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Floating-Point Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#IS</string></term>
+    <listitem><string>Stack underflow occurred.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#IA</string></term>
+    <listitem><string>Operand is an SNaN value or unsupported format.</string></listitem>
+    <listitem><string></string><string>&#177;&#8734; / &#177;&#8734;; </string><string>&#177;0 / </string><string>&#177;0</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#D</string></term>
+    <listitem><string>Source is a denormal value.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#Z</string></term>
+    <listitem><string>DEST / </string><string>&#177;0, where DEST is not equal to </string><string>&#177;0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#U</string></term>
+    <listitem><string>Result is too small for destination format.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#O</string></term>
+    <listitem><string>Result is too large for destination format.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#P</string></term>
+    <listitem><string>Value cannot be represented exactly in destination format.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261582" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#MF </string></term>
+    <listitem><string>If there is a pending x87 FPU exception.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

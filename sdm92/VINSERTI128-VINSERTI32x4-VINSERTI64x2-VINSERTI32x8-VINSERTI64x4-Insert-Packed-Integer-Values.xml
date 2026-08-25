@@ -1,0 +1,53 @@
+<instruction name="VINSERTI128/VINSERTI32x4/VINSERTI64x2/VINSERTI32x8/VINSERTI64x4">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Insert Packed Integer Values</shortdesc>
+ <longdesc><para unique="1046065">
+   <string>VINSERTI32x4 and VINSERTI64x2 inserts 128-bits of packed integer values from the second source operand (the third operand) into the destination operand (the first operand) at an 128-bit granular offset multiplied by imm8[0] (256-bit) or imm8[1:0]. The remaining portions of the destination are copied from the corresponding fields of the first source operand (the second operand). The second source operand can be either an XMM register or a 128-bit memory location. The high 6/7bits of the immediate are ignored. The destination operand is a ZMM/YMM register and updated at 32 and 64-bit granularity according to the writemask.</string></para>
+  <para unique="1046066">
+   <string>VINSERTI32x8 and VINSERTI64x4 inserts 256-bits of packed integer values from the second source operand (the third operand) into the destination operand (the first operand) at a 256-bit granular offset multiplied by imm8[0]. The remaining portions of the destination are copied from the corresponding fields of the first source operand (the second operand). The second source operand can be either an YMM register or a 256-bit memory location. The upper bits of the immediate are ignored. The destination operand is a ZMM register and updated at 32 and 64-bit granularity according to the writemask.</string></para>
+  <para unique="1046067">
+   <string>VINSERTI128 inserts 128-bits of packed integer data from the second source operand (the third operand) into the destination operand (the first operand) at a 128-bit granular offset multiplied by imm8[0]. The remaining portions of the destination are copied from the corresponding fields of the first source operand (the second operand). The second source operand can be either an XMM register or a 128-bit memory location. The high 7 bits of the imme&#173;diate are ignored. VEX.L must be 1, otherwise attempt to execute this instruction with VEX.L=0 will cause #UD.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VINSERTI32x4 _mm512i _inserti32x4( __m512i a, __m128i b, int imm);</string><string>
+</string><string>VINSERTI32x4 _mm512i _mask_inserti32x4(__m512i s, __mmask16 k, __m512i a, __m128i b, int imm);</string><string>
+</string><string>VINSERTI32x4 _mm512i _maskz_inserti32x4( __mmask16 k, __m512i a, __m128i b, int imm);</string><string>
+</string><string>VINSERTI32x4 __m256i _mm256_inserti32x4( __m256i a, __m128i b, int imm);</string><string>
+</string><string>VINSERTI32x4 __m256i _mm256_mask_inserti32x4(__m256i s, __mmask8 k, __m256i a, __m128i b, int imm);</string><string>
+</string><string>VINSERTI32x4 __m256i _mm256_maskz_inserti32x4( __mmask8 k, __m256i a, __m128i b, int imm);</string><string>
+</string><string>VINSERTI32x8 __m512i _mm512_inserti32x8( __m512i a, __m256i b, int imm);</string><string>
+</string><string>VINSERTI32x8 __m512i _mm512_mask_inserti32x8(__m512i s, __mmask16 k, __m512i a, __m256i b, int imm);</string><string>
+</string><string>VINSERTI32x8 __m512i _mm512_maskz_inserti32x8( __mmask16 k, __m512i a, __m256i b, int imm);</string><string>
+</string><string>VINSERTI64x2 __m512i _mm512_inserti64x2( __m512i a, __m128i b, int imm);</string><string>
+</string><string>VINSERTI64x2 __m512i _mm512_mask_inserti64x2(__m512i s, __mmask8 k, __m512i a, __m128i b, int imm);</string><string>
+</string><string>VINSERTI64x2 __m512i _mm512_maskz_inserti64x2( __mmask8 k, __m512i a, __m128i b, int imm);</string><string>
+</string><string>VINSERTI64x2 __m256i _mm256_inserti64x2( __m256i a, __m128i b, int imm);</string><string>
+</string><string>VINSERTI64x2 __m256i _mm256_mask_inserti64x2(__m256i s, __mmask8 k, __m256i a, __m128i b, int imm);</string><string>
+</string><string>VINSERTI64x2 __m256i _mm256_maskz_inserti64x2( __mmask8 k, __m256i a, __m128i b, int imm);</string><string>
+</string><string>VINSERTI64x4 _mm512_inserti64x4( __m512i a, __m256i b, int imm);</string><string>
+</string><string>VINSERTI64x4 _mm512_mask_inserti64x4(__m512i s, __mmask8 k, __m512i a, __m256i b, int imm);</string><string>
+</string><string>VINSERTI64x4 _mm512_maskz_inserti64x4( __mmask m, __m512i a, __m256i b, int imm);</string><string>
+</string><string>VINSERTI128 __m256i _mm256_insertf128_si256 (__m256i a, __m128i b, int offset);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046201">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046206" format="xIndent1">
+   <string>VEX-encoded instruction, see </string><link linkend="57777: 06_Table: Table 2-23. Type 6 Class Exception Conditions"><string>Table&#160;2&#8209;23, &#8220;Type 6 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046207" format="xIndent1">
+   <string>Additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If VEX.L = 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>EVEX-encoded instruction, see </string></term>
+    <listitem><link linkend="46133: 06_Table: Table 2-54. Type E6NF Class Exception Conditions"><string>Table&#160;2&#8209;56, &#8220;Type E6NF Class Exception Conditions.&#8221;</string></link></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

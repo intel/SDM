@@ -1,0 +1,508 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="LSS_GPRv_MEMp2" xed_iform="LSS_GPRv_MEMp2" encoding="0F B2 /r" opcode="b2" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_LSS</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let offset := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>let segment_selector := Logical_Mem_Read?(segment, effective_address + ((operand_size) / 8), 16);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_LSS?(operand_size, offset, segment_selector);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="LSS">
+    <asm-operand><varname>rv</varname></asm-operand>
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>m16</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>offset</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>segment_selector</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m16</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="LSS" variant_kind="Standard variant" mnemonic="LSS">
+  <code>let ss_selector : Segment_Selector := segment_selector;</code>
+  <code>let mode := Current_Mode();</code>
+  <code></code>
+  <code>if mode in { Real_Address_Mode, Virtual_8086_Mode } then</code>
+  <code>    SS := Load_Real_Or_VM86_Segment(mode, ss_selector, SS);</code>
+  <code>else</code>
+  <code>    if In_64Bit_Mode() then</code>
+  <code>        if Is_Null_Segment_Selector(ss_selector) then</code>
+  <code>            if Unsigned(ss_selector.RPL) == 3 or Unsigned(ss_selector.RPL) != CPL then</code>
+  <code>                Report_General_Protection_Exception!(Zero(32));</code>
+  <code>            endif;</code>
+  <code>        endif;</code>
+  <code>    else // protected mode</code>
+  <code>        if Is_Null_Segment_Selector(ss_selector) then</code>
+  <code>            Report_General_Protection_Exception!(Zero(32));</code>
+  <code>        endif;</code>
+  <code>    endif;</code>
+  <code></code>
+  <code>    if Unsigned(ss_selector.RPL) != CPL then</code>
+  <code>        Report_General_Protection_Exception!(Get_Error_Code_From_Selector(ss_selector));</code>
+  <code>    endif;</code>
+  <code></code>
+  <code>    var new_ss  := Load_Segment_Descriptor?(ss_selector, SS);</code>
+  <code></code>
+  <code>    if Unsigned(new_ss.descriptor.DPL) != CPL</code>
+  <code>        or not Is_Data_Segment(new_ss)</code>
+  <code>        or new_ss.descriptor.W == 0b0</code>
+  <code>    then</code>
+  <code>        Report_General_Protection_Exception!(Get_Error_Code_From_Selector(ss_selector));</code>
+  <code>    endif;</code>
+  <code></code>
+  <code>    if new_ss.descriptor.P == 0b0 then</code>
+  <code>        Report_Stack_Fault!(Get_Error_Code_From_Selector(ss_selector));</code>
+  <code>    endif;</code>
+  <code></code>
+  <code>    if new_ss.descriptor.A == 0b0 then</code>
+  <code>        new_ss := Set_Segment_Access_Bit?(new_ss);</code>
+  <code>    endif;</code>
+  <code></code>
+  <code>    SS := new_ss;</code>
+  <code>endif;</code>
+  <code></code>
+  <code>let result := offset;</code>
+  <callee>Std::Boolean::Not</callee>
+  <callee>Std::Boolean::Strict_Or</callee>
+  <callee>Std::Integer::Eq</callee>
+  <callee>Std::Integer::Ne</callee>
+  <callee>Std::Bits::Unsigned</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>Current_Mode</callee>
+  <callee>Get_Error_Code_From_Selector</callee>
+  <callee>In_64Bit_Mode</callee>
+  <callee>Is_Data_Segment</callee>
+  <callee>Is_Null_Segment_Selector</callee>
+  <callee>Load_Real_Or_VM86_Segment</callee>
+  <callee>Load_Segment_Descriptor</callee>
+  <callee>Report_General_Protection_Exception</callee>
+  <callee>Report_Stack_Fault</callee>
+  <callee>Set_Segment_Access_Bit</callee>
+  <var-used>False</var-used>
+  <var-used>Real_Address_Mode</var-used>
+  <var-used>CPL</var-used>
+  <var-used>Virtual_8086_Mode</var-used>
+  <var-used>SS</var-used>
+  </operation>
+ <iform-group>
+  <iform name="LFS_GPRv_MEMp2" xed_iform="LFS_GPRv_MEMp2" encoding="0F B4 /r" opcode="b4" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_LOAD_FARPTR</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>Seg_Reg_FS</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let seg_reg := Seg_Reg_FS;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let offset := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>let segment_selector := Logical_Mem_Read?(segment, effective_address + ((operand_size) / 8), 16);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_LOAD_FARPTR?(operand_size, seg_reg, offset, segment_selector);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="LFS">
+    <asm-operand><varname>rv</varname></asm-operand>
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>m16</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>offset</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>segment_selector</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m16</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>seg_reg</name>
+    <label><literal>Seg_Reg_FS</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="LOAD_FARPTR" variant_kind="Standard variant" mnemonic="LFS">
+  <code>let mode := Current_Mode(); // todo: this intermediate assigment is needed because of a limitation of the C code generator</code>
+  <code>case mode of</code>
+  <code>    when Real_Address_Mode =&gt;</code>
+  <code>        Segment_Register[seg_reg] := Load_Real_Or_VM86_Segment(Real_Address_Mode, segment_selector, Segment_Register[seg_reg]);</code>
+  <code></code>
+  <code>    when Virtual_8086_Mode =&gt;</code>
+  <code>        Segment_Register[seg_reg] := Load_Real_Or_VM86_Segment(Virtual_8086_Mode, segment_selector, Segment_Register[seg_reg]);</code>
+  <code></code>
+  <code>    when IA32e_Mode if In_64Bit_Mode() =&gt;</code>
+  <code>        case seg_reg of</code>
+  <code>            when Seg_Reg_DS, Seg_Reg_ES =&gt;</code>
+  <code>                Report_Invalid_Opcode!();</code>
+  <code>            when Seg_Reg_FS, Seg_Reg_GS =&gt;</code>
+  <code>                Segment_Register[seg_reg] := Load_Data_Segment?(segment_selector, Segment_Register[seg_reg], RFLAGS);</code>
+  <code>            otherwise =&gt;</code>
+  <code>                Std::Unreachable();</code>
+  <code>        endcase;</code>
+  <code></code>
+  <code>    otherwise =&gt; // Protected or compatibility mode</code>
+  <code>        Segment_Register[seg_reg] := Load_Data_Segment?(segment_selector, Segment_Register[seg_reg], RFLAGS);</code>
+  <code>endcase;</code>
+  <code></code>
+  <code>let result := offset;</code>
+  <callee>Std::Unreachable</callee>
+  <callee>Current_Mode</callee>
+  <callee>In_64Bit_Mode</callee>
+  <callee>Load_Data_Segment</callee>
+  <callee>Load_Real_Or_VM86_Segment</callee>
+  <callee>Report_Invalid_Opcode</callee>
+  <callee>Segment_Register</callee>
+  <callee>Segment_Register_write</callee>
+  <var-used>False</var-used>
+  <var-used>Real_Address_Mode</var-used>
+  <var-used>Virtual_8086_Mode</var-used>
+  <var-used>RFLAGS</var-used>
+  <var-used>IA32e_Mode</var-used>
+  <var-used>Seg_Reg_DS</var-used>
+  <var-used>Seg_Reg_ES</var-used>
+  <var-used>Seg_Reg_FS</var-used>
+  <var-used>Seg_Reg_GS</var-used>
+  </operation>
+ <iform-group>
+  <iform name="LGS_GPRv_MEMp2" xed_iform="LGS_GPRv_MEMp2" encoding="0F B5 /r" opcode="b5" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_LOAD_FARPTR</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>Seg_Reg_GS</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let seg_reg := Seg_Reg_GS;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let offset := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>let segment_selector := Logical_Mem_Read?(segment, effective_address + ((operand_size) / 8), 16);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_LOAD_FARPTR?(operand_size, seg_reg, offset, segment_selector);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="LGS">
+    <asm-operand><varname>rv</varname></asm-operand>
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>m16</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>offset</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>segment_selector</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m16</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>seg_reg</name>
+    <label><literal>Seg_Reg_GS</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="LES_GPRz_MEMp" xed_iform="LES_GPRz_MEMp" encoding="C4 /r" opcode="c4" valid32="V" valid64="N.E.">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Min</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_LOAD_FARPTR</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>Seg_Reg_ES</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let seg_reg := Seg_Reg_ES;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((Data_Size_Of_Current_Mode() != 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Mode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let offset := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>let segment_selector := Logical_Mem_Read?(segment, effective_address + ((Min(operand_size, 32)) / 8), 16);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_LOAD_FARPTR?(operand_size, seg_reg, offset, segment_selector);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="LES">
+    <asm-operand><varname>rz</varname></asm-operand>
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>m16</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16/32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rz</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>offset</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>segment_selector</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m16</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>seg_reg</name>
+    <label><literal>Seg_Reg_ES</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="LDS_GPRz_MEMp" xed_iform="LDS_GPRz_MEMp" encoding="C5 /r" opcode="c5" valid32="V" valid64="N.E.">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Min</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_LOAD_FARPTR</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>Seg_Reg_DS</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let seg_reg := Seg_Reg_DS;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((Data_Size_Of_Current_Mode() != 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Mode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let offset := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>let segment_selector := Logical_Mem_Read?(segment, effective_address + ((Min(operand_size, 32)) / 8), 16);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_LOAD_FARPTR?(operand_size, seg_reg, offset, segment_selector);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="LDS">
+    <asm-operand><varname>rz</varname></asm-operand>
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>m16</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16/32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rz</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>offset</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>segment_selector</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m16</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>seg_reg</name>
+    <label><literal>Seg_Reg_DS</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <category>segments</category>
+ <size name="operand_size"/>
+ <input name="offset"/>
+ <input name="segment_selector"/>
+ <input name="seg_reg"/>
+ <output name="result"/>
+ </instruction>

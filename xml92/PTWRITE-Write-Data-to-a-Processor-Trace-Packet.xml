@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="PTWRITE_GPRy" xed_iform="PTWRITE_GPRy" encoding="F3 0F AE /4" opcode="ae" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_PTWRITE</callee>
+   <var-used>Next_IP</var-used>
+   <var-used>CPUID_PTWRITE</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr><code>let src := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     </read_instr><decode_checks>
+     <code>if not (not context.osz_prefix_present) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPUID(PTWRITE)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_PTWRITE(operand_size, src);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="PTWRITE">
+    <asm-operand><varname>ry</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="PTWRITE"><cpuid-flag>INTELPT</cpuid-flag><cpuid-flag>PTWRITE</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32/64"/>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>ry</varname></label>
+    </operand>
+   </iform>
+  <iform name="PTWRITE_MEMy" xed_iform="PTWRITE_MEMy" encoding="F3 0F AE /4" opcode="ae" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_PTWRITE</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>CPUID_PTWRITE</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not (not context.osz_prefix_present) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPUID(PTWRITE)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_PTWRITE(operand_size, src);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="PTWRITE">
+    <asm-operand><varname>mv</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="PTWRITE"><cpuid-flag>INTELPT</cpuid-flag><cpuid-flag>PTWRITE</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="32/64"/>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="PTWRITE" variant_kind="Standard variant" mnemonic="PTWRITE">
+  <code>if IA32_RTIT_STATUS.TRIGGER_EN == 0b1</code>
+  <code>    and IA32_RTIT_STATUS.CONTEXT_EN == 0b1</code>
+  <code>    and IA32_RTIT_STATUS.FILTER_EN == 0b1</code>
+  <code>    and IA32_RTIT_CTL.PTW_EN == 0b1 then</code>
+  <code></code>
+  <code>    PT::Write_PTW_Packet(Zero_Extend(src, 64), operand_size);</code>
+  <code></code>
+  <code>    if IA32_RTIT_CTL.FUP_ON_PTW == 0b1 then</code>
+  <code>        PT::Write_FUP_Packet(RIP, 64);</code>
+  <code>    endif;</code>
+  <code>endif;</code>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Zero_Extend</callee>
+  <callee>PT::Write_FUP_Packet</callee>
+  <callee>PT::Write_PTW_Packet</callee>
+  <var-used>RIP</var-used>
+  <var-used>IA32_RTIT_CTL</var-used>
+  <var-used>IA32_RTIT_STATUS</var-used>
+  </operation>
+ <category>trace</category>
+ <size name="operand_size"/>
+ <input name="src"/>
+ </instruction>

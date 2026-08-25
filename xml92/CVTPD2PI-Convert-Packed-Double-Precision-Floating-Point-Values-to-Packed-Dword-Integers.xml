@@ -1,0 +1,230 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="CVTPD2PI_MMXq_MEMpd" xed_iform="CVTPD2PI_MMXq_MEMpd" encoding="66 0F 2D /r" opcode="2d" valid32="V" valid64="V">
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Effective_Address</callee>
+   <callee>FP87::Check_For_Pending_Unmasked_Floating_Point_Exceptions</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_MMX</callee>
+   <callee>Instr_CVTPg2i</callee>
+   <var-used>False</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Explicitly_Aligned</var-used>
+   <var-used>FP87_Tag_Word</var-used>
+   <var-used>FP87_Status</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let result_size := 64;</code>
+     <code>let element_size := 64;</code>
+     <code>let result_element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>REP_Not0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSFXSR_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_EM_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><exception_check><exception_condition>TRUE</exception_condition>
+     <exception_fault>CHECK_X87</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src := Logical_Mem_Read?(segment, effective_address, register_size, alignment_type=&gt;Explicitly_Aligned);</code>
+     <code>FP87_Status.TOP := 0b000;</code>
+     <code>FP87_Tag_Word := Zero(16);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CVTPg2i?(element_size, register_size, result_element_size, result_size, src, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_MMX(reg, result);</code>
+     <code>FP87_Tag_Word := Zero(16);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CVTPD2PI">
+    <asm-operand><varname>mmx</varname></asm-operand>
+    <asm-operand><varname>m128</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="SSE2"><cpuid-flag>SSE2</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="64"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="result_element_size" size="32"/>
+   <encoding-size name="result_size" size="64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>mmx</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m128</varname><footnoteref linkend="a"/></label>
+    </operand>
+   </iform>
+  <iform name="CVTPD2PI_MMXq_XMMpd" xed_iform="CVTPD2PI_MMXq_XMMpd" encoding="66 0F 2D /r" opcode="2d" valid32="V" valid64="V">
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Calculate_RM</callee>
+   <callee>FP87::Check_For_Pending_Unmasked_Floating_Point_Exceptions</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_MMX</callee>
+   <callee>Instr_CVTPg2i</callee>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>FP87_Tag_Word</var-used>
+   <var-used>FP87_Status</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let result_size := 64;</code>
+     <code>let element_size := 64;</code>
+     <code>let result_element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_XMM(Calculate_RM(mod, rm, context), register_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>REP_Not0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSFXSR_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_EM_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><exception_check><exception_condition>TRUE</exception_condition>
+     <exception_fault>CHECK_X87</exception_fault>
+     </exception_check><pre_execute>
+     <code>FP87_Status.TOP := 0b000;</code>
+     <code>FP87_Tag_Word := Zero(16);</code>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CVTPg2i?(element_size, register_size, result_element_size, result_size, src, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_MMX(reg, result);</code>
+     <code>FP87_Tag_Word := Zero(16);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CVTPD2PI">
+    <asm-operand><varname>mmx</varname></asm-operand>
+    <asm-operand><varname>xmm</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="SSE2"><cpuid-flag>SSE2</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="64"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="result_element_size" size="32"/>
+   <encoding-size name="result_size" size="64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>mmx</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="CVTPg2i" variant_kind="Standard variant" mnemonic="CVTPD2PI">
+  <code>let elements := register_size / element_size;</code>
+  <code>let denormals_are_zeros := FP::Get_DAZ(element_size);</code>
+  <code>let exception_masks := MXCSR.Exception_Masks;</code>
+  <code>let suppress_all_exceptions := (context.evex_b == 0b1) and (mod == 0b11);</code>
+  <code>let rc := if (context.evex_b == 0b1) and (mod == 0b11) then context.evex_LLRC else MXCSR.RC;</code>
+  <code>let rounding_mode := FP::Decode_Rounding_Mode(rc);</code>
+  <code>var all_exceptions := Zero(6);</code>
+  <code>var result := Zero(result_size);</code>
+  <code>for i := 0 to elements-1 do</code>
+  <code>    let op := src[i *: element_size];</code>
+  <code>    let (r, exceptions) := FP::To_Int(op, True, result_element_size, denormals_are_zeros, rounding_mode);</code>
+  <code>    all_exceptions := all_exceptions or exceptions;</code>
+  <code>    result[i *: result_element_size] := r;</code>
+  <code>endfor;</code>
+  <code>let reported_exceptions := if suppress_all_exceptions then Zero(6) else all_exceptions;</code>
+  <code>FP::Check_Exceptions?(reported_exceptions, exception_masks);</code>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Multiply</callee>
+  <callee>Std::Integer::Positive_Divide</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Or</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>FP::Check_Exceptions</callee>
+  <callee>FP::Decode_Rounding_Mode</callee>
+  <callee>FP::Get_DAZ</callee>
+  <callee>FP::To_Int</callee>
+  <var-used>True</var-used>
+  <var-used>False</var-used>
+  <var-used>MXCSR</var-used>
+  <other-copy>CVTPD2DQ</other-copy>
+  </operation>
+ <category>vector</category>
+ <category>fp/conversion</category>
+ <category>integer/conversion</category>
+ <size name="element_size"/>
+ <size name="register_size"/>
+ <size name="result_element_size"/>
+ <size name="result_size"/>
+ <input name="src"/>
+ <output name="result"/>
+ <footnote id="a"><para>An explicitly-aligned memory access is performed.</para>
+  </footnote>
+ </instruction>

@@ -1,0 +1,67 @@
+<instruction name="VEXTRACTI128/VEXTRACTI32x4/VEXTRACTI64x2/VEXTRACTI32x8/VEXTRACTI64x4">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Extract Packed Integer Values</shortdesc>
+ <longdesc><para unique="1046065">
+   <string>VEXTRACTI128/VEXTRACTI32x4 and VEXTRACTI64x2 extract 128-bits of doubleword integer values from the source operand (the second operand) and store to the low 128-bit of the destination operand (the first operand). The 128-bit data extraction occurs at an 128-bit granular offset specified by imm8[0] (256-bit) or imm8[1:0] as the multiply factor. The destination may be either a vector register or an 128-bit memory location.</string></para>
+  <para unique="1046066">
+   <string>VEXTRACTI32x4: The low 128-bit of the destination operand is updated at 32-bit granularity according to the writemask.</string></para>
+  <para unique="1046067">
+   <string>VEXTRACTI64x2: The low 128-bit of the destination operand is updated at 64-bit granularity according to the writemask.</string></para>
+  <para unique="1046068">
+   <string>VEXTRACTI32x8 and VEXTRACTI64x4 extract 256-bits of quadword integer values from the source operand (the second operand) and store to the low 256-bit of the destination operand (the first operand). The 256-bit data extraction occurs at an 256-bit granular offset specified by imm8[0] (256-bit) or imm8[0] as the multiply factor The destination may be either a vector register or a 256-bit memory location.</string></para>
+  <para unique="1046069">
+   <string>VEXTRACTI32x8: The low 256-bit of the destination operand is updated at 32-bit granularity according to the writemask.</string></para>
+  <para unique="1046070">
+   <string>VEXTRACTI64x4: The low 256-bit of the destination operand is updated at 64-bit granularity according to the writemask.</string></para>
+  <para unique="1046071">
+   <string>VEX.vvvv and EVEX.vvvv are reserved and must be 1111b otherwise instructions will #UD.</string></para>
+  <para unique="1046072">
+   <string>The high 7 bits (6 bits in EVEX.512) of the immediate are ignored.</string></para>
+  <para unique="1046073">
+   <string>If VEXTRACTI128 is encoded with VEX.L= 0, an attempt to execute the instruction encoded with VEX.L= 0 will cause an #UD exception.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VEXTRACTI32x4 __m128i _mm512_extracti32x4_epi32(__m512i a, const int nidx);</string><string>
+</string><string>VEXTRACTI32x4 __m128i _mm512_mask_extracti32x4_epi32(__m128i s, __mmask8 k, __m512i a, const int nidx);</string><string>
+</string><string>VEXTRACTI32x4 __m128i _mm512_maskz_extracti32x4_epi32( __mmask8 k, __m512i a, const int nidx);</string><string>
+</string><string>VEXTRACTI32x4 __m128i _mm256_extracti32x4_epi32(__m256i a, const int nidx);</string><string>
+</string><string>VEXTRACTI32x4 __m128i _mm256_mask_extracti32x4_epi32(__m128i s, __mmask8 k, __m256i a, const int nidx);</string><string>
+</string><string>VEXTRACTI32x4 __m128i _mm256_maskz_extracti32x4_epi32( __mmask8 k, __m256i a, const int nidx);</string><string>
+</string><string>VEXTRACTI32x8 __m256i _mm512_extracti32x8_epi32(__m512i a, const int nidx);</string><string>
+</string><string>VEXTRACTI32x8 __m256i _mm512_mask_extracti32x8_epi32(__m256i s, __mmask8 k, __m512i a, const int nidx);</string><string>
+</string><string>VEXTRACTI32x8 __m256i _mm512_maskz_extracti32x8_epi32( __mmask8 k, __m512i a, const int nidx);</string><string>
+</string><string>VEXTRACTI64x2 __m128i _mm512_extracti64x2_epi64(__m512i a, const int nidx);</string><string>
+</string><string>VEXTRACTI64x2 __m128i _mm512_mask_extracti64x2_epi64(__m128i s, __mmask8 k, __m512i a, const int nidx);</string><string>
+</string><string>VEXTRACTI64x2 __m128i _mm512_maskz_extracti64x2_epi64( __mmask8 k, __m512i a, const int nidx);</string><string>
+</string><string>VEXTRACTI64x2 __m128i _mm256_extracti64x2_epi64(__m256i a, const int nidx);</string><string>
+</string><string>VEXTRACTI64x2 __m128i _mm256_mask_extracti64x2_epi64(__m128i s, __mmask8 k, __m256i a, const int nidx);</string><string>
+</string><string>VEXTRACTI64x2 __m128i _mm256_maskz_extracti64x2_epi64( __mmask8 k, __m256i a, const int nidx);</string><string>
+</string><string>VEXTRACTI64x4 __m256i _mm512_extracti64x4_epi64(__m512i a, const int nidx);</string><string>
+</string><string>VEXTRACTI64x4 __m256i _mm512_mask_extracti64x4_epi64(__m256i s, __mmask8 k, __m512i a, const int nidx);</string><string>
+</string><string>VEXTRACTI64x4 __m256i _mm512_maskz_extracti64x4_epi64( __mmask8 k, __m512i a, const int nidx);</string><string>
+</string><string>VEXTRACTI128 __m128i _mm256_extracti128_si256(__m256i a, int offset);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046288">
+   <string>None</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046293" format="xIndent1">
+   <string>VEX-encoded instructions, see </string><link linkend="57777: 06_Table: Table 2-23. Type 6 Class Exception Conditions"><string>Table&#160;2&#8209;23, &#8220;Type 6 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046297" format="xIndent1">
+   <string>EVEX-encoded instructions, see </string><link linkend="46133: 06_Table: Table 2-54. Type E6NF Class Exception Conditions"><string>Table&#160;2&#8209;56, &#8220;Type E6NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046298" format="xIndent1">
+   <string>Additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>IF VEX.L = 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If VEX.vvvv != 1111B or EVEX.vvvv != 1111B.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

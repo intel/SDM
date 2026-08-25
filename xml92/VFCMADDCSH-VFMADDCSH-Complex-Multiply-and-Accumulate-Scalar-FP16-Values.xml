@@ -1,0 +1,3629 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="VFCMADDCPH_XMM2f16_MASKmskw_XMM2f16_MEM2f16_AVX512_MASK" xed_iform="VFCMADDCPH_XMM2f16_MASKmskw_XMM2f16_MEM2f16_AVX512" encoding="EVEX.L0.F2.MAP6.W0 56 /r" opcode="56" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Masked_Vector_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCPf_m</callee>
+   <var-used>True</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := if context.evex_b == 0b1 then element_size / 8 else 16;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src3 := Masked_Vector_Mem_Read?(register_size, element_size, context.evex_b == 0b1, k, segment, effective_address, fault_suppression=&gt;True);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCPf_m(element_size, register_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCPH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m128<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_128"><cpuid-flag>AVX512_FP16</cpuid-flag><cpuid-flag>AVX512VL</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_128_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m128<subscript>3</subscript></varname><footnoteref linkend="b"/><footnoteref linkend="f"/></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCPH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512_MASK" xed_iform="VFCMADDCPH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512" encoding="EVEX.L0.F2.MAP6.W0 56 /r" opcode="56" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCPf_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src3 := Read_XMM(Calculate_RM(mod, rm, context), register_size);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCPf_m(element_size, register_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCPH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_128"><cpuid-flag>AVX512_FP16</cpuid-flag><cpuid-flag>AVX512VL</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_128_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCPH_XMM2f16_MASKmskw_XMM2f16_MEM2f16_AVX512_ZERO" xed_iform="VFCMADDCPH_XMM2f16_MASKmskw_XMM2f16_MEM2f16_AVX512" encoding="EVEX.L0.F2.MAP6.W0 56 /r" opcode="56" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Masked_Vector_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCPf_z</callee>
+   <var-used>True</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := if context.evex_b == 0b1 then element_size / 8 else 16;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src3 := Masked_Vector_Mem_Read?(register_size, element_size, context.evex_b == 0b1, k, segment, effective_address, fault_suppression=&gt;True);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCPf_z(element_size, register_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCPH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m128<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_128"><cpuid-flag>AVX512_FP16</cpuid-flag><cpuid-flag>AVX512VL</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_128_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m128<subscript>3</subscript></varname><footnoteref linkend="b"/><footnoteref linkend="f"/></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCPH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512_ZERO" xed_iform="VFCMADDCPH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512" encoding="EVEX.L0.F2.MAP6.W0 56 /r" opcode="56" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCPf_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src3 := Read_XMM(Calculate_RM(mod, rm, context), register_size);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCPf_z(element_size, register_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCPH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_128"><cpuid-flag>AVX512_FP16</cpuid-flag><cpuid-flag>AVX512VL</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_128_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="FMADDCPf_m" variant_kind="Masking variant" mnemonic="VFCMADDCPH">
+  <code>let elements := register_size / element_size;</code>
+  <code>let is_conjugate := True;</code>
+  <code>let denormals_are_zeros := FP::Get_DAZ(element_size/2);</code>
+  <code>let flush_subnormals := FP::Get_FTZ(element_size/2);</code>
+  <code>let suppress_all_exceptions := (context.evex_b == 0b1) and (mod == 0b11);</code>
+  <code>let exception_masks := All_Ones(6);</code>
+  <code>let rc := if (context.evex_b == 0b1) and (mod == 0b11) then context.evex_LLRC else MXCSR.RC;</code>
+  <code>let rounding_mode := FP::Decode_Rounding_Mode(rc);</code>
+  <code>let old := src1;</code>
+  <code>var result := Zero(register_size);</code>
+  <code>for i := 0 to elements-1 do</code>
+  <code>    if k[i] == 0b1 then</code>
+  <code>        let op1 := src1[i *: element_size];</code>
+  <code>        let op2 := src2[i *: element_size];</code>
+  <code>        let op3 := src3[i *: element_size];</code>
+  <code>        let op1_real := op1[0 *: element_size/2];</code>
+  <code>        let op1_imag := op1[1 *: element_size/2];</code>
+  <code>        let op2_real := op2[0 *: element_size/2];</code>
+  <code>        let op2_imag := op2[1 *: element_size/2];</code>
+  <code>        let op3_real := op3[0 *: element_size/2];</code>
+  <code>        let op3_imag := op3[1 *: element_size/2];</code>
+  <code>        // Computes op1 + op2 * conj(op3) for conjugate, op1 + op2 * op3 for non-conjugate.</code>
+  <code>        // op2_* (VVVV register) is kept as the first arg in ALL four FMAs to match Intel</code>
+  <code>        // hardware NaN priority: NaN from op2 takes precedence over NaN from op3.</code>
+  <code>        // The sign for conjugation is expressed via is_negate on the second arg (op3_imag),</code>
+  <code>        // so that NaN sign of op3_imag is also preserved (negating y doesn't flip its NaN sign</code>
+  <code>        // because FP::FMA's NaN priority check uses the pre-negate value uyy).</code>
+  <code>        // conjugate:     r_real = op2_imag * op3_imag + tmp_real     (is_negate=False)</code>
+  <code>        //                r_imag = op2_real * (-op3_imag) + tmp_imag  (is_negate=True)</code>
+  <code>        // non-conjugate: r_real = op2_imag * (-op3_imag) + tmp_real  (is_negate=True)</code>
+  <code>        //                r_imag = op2_real * op3_imag + tmp_imag     (is_negate=False)</code>
+  <code>        let (tmp_real, exceptions1) := FP::FMA(op2_real, op3_real, op1_real, denormals_are_zeros, rounding_mode, flush_subnormals);</code>
+  <code>        let (tmp_imag, exceptions2) := FP::FMA(op2_imag, op3_real, op1_imag, denormals_are_zeros, rounding_mode, flush_subnormals);</code>
+  <code>        // FMA3/FMA4 use intermediate values (tmp_real, tmp_imag) as the addend.</code>
+  <code>        // These intermediates must not have DAZ applied (they are not architectural inputs).</code>
+  <code>        // Pass denormals_are_zeros=False so the subnormal intermediate is preserved.</code>
+  <code>        let (r_real, exceptions3) := FP::FMA(op2_imag, op3_imag, tmp_real, False, rounding_mode, flush_subnormals, False, not True);</code>
+  <code>        let (r_imag, exceptions4) := FP::FMA(op2_real, op3_imag, tmp_imag, False, rounding_mode, flush_subnormals, False, True);</code>
+  <code>        let r := (r_imag ++ r_real);</code>
+  <code>        let exceptions := exceptions1 or exceptions2 or exceptions3 or exceptions4;</code>
+  <code>        if not suppress_all_exceptions then</code>
+  <code>            MXCSR.Exception_Flags := MXCSR.Exception_Flags or FP::Prioritize_Exceptions(exceptions, exception_masks);</code>
+  <code>        endif;</code>
+  <code>        result[i *: element_size] := r;</code>
+  <code>    else</code>
+  <code>        result[i *: element_size] := old[i *: element_size];</code>
+  <code>    endif;</code>
+  <code>endfor;</code>
+  <callee>Std::Boolean::Not</callee>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Integer::Add</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Multiply</callee>
+  <callee>Std::Integer::Positive_Divide</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Append</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::All_Ones</callee>
+  <callee>Std::Bits::Or</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>FP::Decode_Rounding_Mode</callee>
+  <callee>FP::FMA</callee>
+  <callee>FP::Get_DAZ</callee>
+  <callee>FP::Get_FTZ</callee>
+  <callee>FP::Prioritize_Exceptions</callee>
+  <var-used>True</var-used>
+  <var-used>False</var-used>
+  <var-used>MXCSR</var-used>
+  </operation>
+ <operation name="FMADDCPf_z" variant_kind="Zeroing variant" mnemonic="VFCMADDCPH">
+  <code>let elements := register_size / element_size;</code>
+  <code>let is_conjugate := True;</code>
+  <code>let denormals_are_zeros := FP::Get_DAZ(element_size/2);</code>
+  <code>let flush_subnormals := FP::Get_FTZ(element_size/2);</code>
+  <code>let suppress_all_exceptions := (context.evex_b == 0b1) and (mod == 0b11);</code>
+  <code>let exception_masks := All_Ones(6);</code>
+  <code>let rc := if (context.evex_b == 0b1) and (mod == 0b11) then context.evex_LLRC else MXCSR.RC;</code>
+  <code>let rounding_mode := FP::Decode_Rounding_Mode(rc);</code>
+  <code>var result := Zero(register_size);</code>
+  <code>for i := 0 to elements-1 do</code>
+  <code>    if k[i] == 0b1 then</code>
+  <code>        let op1 := src1[i *: element_size];</code>
+  <code>        let op2 := src2[i *: element_size];</code>
+  <code>        let op3 := src3[i *: element_size];</code>
+  <code>        let op1_real := op1[0 *: element_size/2];</code>
+  <code>        let op1_imag := op1[1 *: element_size/2];</code>
+  <code>        let op2_real := op2[0 *: element_size/2];</code>
+  <code>        let op2_imag := op2[1 *: element_size/2];</code>
+  <code>        let op3_real := op3[0 *: element_size/2];</code>
+  <code>        let op3_imag := op3[1 *: element_size/2];</code>
+  <code>        // Computes op1 + op2 * conj(op3) for conjugate, op1 + op2 * op3 for non-conjugate.</code>
+  <code>        // op2_* (VVVV register) is kept as the first arg in ALL four FMAs to match Intel</code>
+  <code>        // hardware NaN priority: NaN from op2 takes precedence over NaN from op3.</code>
+  <code>        // The sign for conjugation is expressed via is_negate on the second arg (op3_imag),</code>
+  <code>        // so that NaN sign of op3_imag is also preserved (negating y doesn't flip its NaN sign</code>
+  <code>        // because FP::FMA's NaN priority check uses the pre-negate value uyy).</code>
+  <code>        // conjugate:     r_real = op2_imag * op3_imag + tmp_real     (is_negate=False)</code>
+  <code>        //                r_imag = op2_real * (-op3_imag) + tmp_imag  (is_negate=True)</code>
+  <code>        // non-conjugate: r_real = op2_imag * (-op3_imag) + tmp_real  (is_negate=True)</code>
+  <code>        //                r_imag = op2_real * op3_imag + tmp_imag     (is_negate=False)</code>
+  <code>        let (tmp_real, exceptions1) := FP::FMA(op2_real, op3_real, op1_real, denormals_are_zeros, rounding_mode, flush_subnormals);</code>
+  <code>        let (tmp_imag, exceptions2) := FP::FMA(op2_imag, op3_real, op1_imag, denormals_are_zeros, rounding_mode, flush_subnormals);</code>
+  <code>        // FMA3/FMA4 use intermediate values (tmp_real, tmp_imag) as the addend.</code>
+  <code>        // These intermediates must not have DAZ applied (they are not architectural inputs).</code>
+  <code>        // Pass denormals_are_zeros=False so the subnormal intermediate is preserved.</code>
+  <code>        let (r_real, exceptions3) := FP::FMA(op2_imag, op3_imag, tmp_real, False, rounding_mode, flush_subnormals, False, not True);</code>
+  <code>        let (r_imag, exceptions4) := FP::FMA(op2_real, op3_imag, tmp_imag, False, rounding_mode, flush_subnormals, False, True);</code>
+  <code>        let r := (r_imag ++ r_real);</code>
+  <code>        let exceptions := exceptions1 or exceptions2 or exceptions3 or exceptions4;</code>
+  <code>        if not suppress_all_exceptions then</code>
+  <code>            MXCSR.Exception_Flags := MXCSR.Exception_Flags or FP::Prioritize_Exceptions(exceptions, exception_masks);</code>
+  <code>        endif;</code>
+  <code>        result[i *: element_size] := r;</code>
+  <code>    else</code>
+  <code>        result[i *: element_size] := Zero(element_size);</code>
+  <code>    endif;</code>
+  <code>endfor;</code>
+  <callee>Std::Boolean::Not</callee>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Integer::Add</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Multiply</callee>
+  <callee>Std::Integer::Positive_Divide</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Append</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::All_Ones</callee>
+  <callee>Std::Bits::Or</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>FP::Decode_Rounding_Mode</callee>
+  <callee>FP::FMA</callee>
+  <callee>FP::Get_DAZ</callee>
+  <callee>FP::Get_FTZ</callee>
+  <callee>FP::Prioritize_Exceptions</callee>
+  <var-used>True</var-used>
+  <var-used>False</var-used>
+  <var-used>MXCSR</var-used>
+  </operation>
+ <iform-group>
+  <iform name="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_MEM2f16_AVX512_MASK" xed_iform="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_MEM2f16_AVX512" encoding="EVEX.128.F2.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_m</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 32;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := element_size / 8;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src3 :=</code>
+     <code>    if k[0] == 0b1 then</code>
+     <code>        Logical_Mem_Read?(segment, effective_address, src_size)</code>
+     <code>    else</code>
+     <code>        Zero(src_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_m(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCSH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m32<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m32<subscript>3</subscript></varname><footnoteref linkend="c"/></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_MEM2f16_AVX512_MASK" xed_iform="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_MEM2f16_AVX512" encoding="EVEX.128.F2.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_m</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 32;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := element_size / 8;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src3 :=</code>
+     <code>    if k[0] == 0b1 then</code>
+     <code>        Logical_Mem_Read?(segment, effective_address, src_size)</code>
+     <code>    else</code>
+     <code>        Zero(src_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_m(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCSH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m32<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m32<subscript>3</subscript></varname><footnoteref linkend="c"/></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512_MASK_0" xed_iform="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512" encoding="EVEX.128.F2.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src3 := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_m(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCSH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="128"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512_MASK_0" xed_iform="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512" encoding="EVEX.128.F2.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src3 := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_m(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCSH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="128"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_MEM2f16_AVX512_ZERO" xed_iform="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_MEM2f16_AVX512" encoding="EVEX.128.F2.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_z</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 32;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := element_size / 8;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src3 :=</code>
+     <code>    if k[0] == 0b1 then</code>
+     <code>        Logical_Mem_Read?(segment, effective_address, src_size)</code>
+     <code>    else</code>
+     <code>        Zero(src_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_z(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCSH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m32<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m32<subscript>3</subscript></varname><footnoteref linkend="c"/></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_MEM2f16_AVX512_ZERO" xed_iform="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_MEM2f16_AVX512" encoding="EVEX.128.F2.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_z</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 32;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := element_size / 8;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src3 :=</code>
+     <code>    if k[0] == 0b1 then</code>
+     <code>        Logical_Mem_Read?(segment, effective_address, src_size)</code>
+     <code>    else</code>
+     <code>        Zero(src_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_z(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCSH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m32<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m32<subscript>3</subscript></varname><footnoteref linkend="c"/></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512_ZERO_0" xed_iform="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512" encoding="EVEX.128.F2.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src3 := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_z(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCSH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="128"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512_ZERO_0" xed_iform="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512" encoding="EVEX.128.F2.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src3 := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_z(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCSH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="128"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="FMADDCSf_m" variant_kind="Masking variant" mnemonic="VFCMADDCSH">
+  <code>let is_conjugate := True;</code>
+  <code>let denormals_are_zeros := FP::Get_DAZ(element_size/2);</code>
+  <code>let flush_subnormals := FP::Get_FTZ(element_size/2);</code>
+  <code>let suppress_all_exceptions := (context.evex_b == 0b1) and (mod == 0b11);</code>
+  <code>let exception_masks := All_Ones(6);</code>
+  <code>let rc := if (context.evex_b == 0b1) and (mod == 0b11) then context.evex_LLRC else MXCSR.RC;</code>
+  <code>let rounding_mode := FP::Decode_Rounding_Mode(rc);</code>
+  <code>let old := src1;</code>
+  <code>var result := Zero(register_size);</code>
+  <code>if k[0] == 0b1 then</code>
+  <code>    let op1 := src1[0 +: element_size];</code>
+  <code>    let op2 := src2[0 +: element_size];</code>
+  <code>    let op3 := src3[0 +: element_size];</code>
+  <code>    let op1_real := op1[0 *: element_size/2];</code>
+  <code>    let op1_imag := op1[1 *: element_size/2];</code>
+  <code>    let op2_real := op2[0 *: element_size/2];</code>
+  <code>    let op2_imag := op2[1 *: element_size/2];</code>
+  <code>    let op3_real := op3[0 *: element_size/2];</code>
+  <code>    let op3_imag := op3[1 *: element_size/2];</code>
+  <code>    // Computes op1 + op2 * conj(op3) for conjugate, op1 + op2 * op3 for non-conjugate.</code>
+  <code>    // op2_* (VVVV register) is kept as the first arg in ALL four FMAs to match Intel</code>
+  <code>    // hardware NaN priority: NaN from op2 takes precedence over NaN from op3.</code>
+  <code>    // The sign for conjugation is expressed via is_negate on the second arg (op3_imag),</code>
+  <code>    // so that NaN sign of op3_imag is also preserved (negating y doesn't flip its NaN sign</code>
+  <code>    // because FP::FMA's NaN priority check uses the pre-negate value uyy).</code>
+  <code>    // conjugate:     r_real = op2_imag * op3_imag + tmp_real     (is_negate=False)</code>
+  <code>    //                r_imag = op2_real * (-op3_imag) + tmp_imag  (is_negate=True)</code>
+  <code>    // non-conjugate: r_real = op2_imag * (-op3_imag) + tmp_real  (is_negate=True)</code>
+  <code>    //                r_imag = op2_real * op3_imag + tmp_imag     (is_negate=False)</code>
+  <code>    let (tmp_real, exceptions1) := FP::FMA(op2_real, op3_real, op1_real, denormals_are_zeros, rounding_mode, flush_subnormals);</code>
+  <code>    let (tmp_imag, exceptions2) := FP::FMA(op2_imag, op3_real, op1_imag, denormals_are_zeros, rounding_mode, flush_subnormals);</code>
+  <code>    // FMA3/FMA4 use intermediate values (tmp_real, tmp_imag) as the addend.</code>
+  <code>    // These intermediates must not have DAZ applied (they are not architectural inputs).</code>
+  <code>    // Pass denormals_are_zeros=False so the subnormal intermediate is preserved.</code>
+  <code>    let (r_real, exceptions3) := FP::FMA(op2_imag, op3_imag, tmp_real, False, rounding_mode, flush_subnormals, False, not True);</code>
+  <code>    let (r_imag, exceptions4) := FP::FMA(op2_real, op3_imag, tmp_imag, False, rounding_mode, flush_subnormals, False, True);</code>
+  <code>    let r := (r_imag ++ r_real);</code>
+  <code>    let exceptions := exceptions1 or exceptions2 or exceptions3 or exceptions4;</code>
+  <code>    if not suppress_all_exceptions then</code>
+  <code>        MXCSR.Exception_Flags := MXCSR.Exception_Flags or FP::Prioritize_Exceptions(exceptions, exception_masks);</code>
+  <code>    endif;</code>
+  <code>    result[0 +: element_size] := r;</code>
+  <code>else</code>
+  <code>    result[0 +: element_size] := old[0 +: element_size];</code>
+  <code>endif;</code>
+  <code>result[register_size-1 : element_size] := src2[register_size-1 : element_size];</code>
+  <callee>Std::Boolean::Not</callee>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Integer::Add</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Multiply</callee>
+  <callee>Std::Integer::Positive_Divide</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Append</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::All_Ones</callee>
+  <callee>Std::Bits::Or</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>FP::Decode_Rounding_Mode</callee>
+  <callee>FP::FMA</callee>
+  <callee>FP::Get_DAZ</callee>
+  <callee>FP::Get_FTZ</callee>
+  <callee>FP::Prioritize_Exceptions</callee>
+  <var-used>True</var-used>
+  <var-used>False</var-used>
+  <var-used>MXCSR</var-used>
+  </operation>
+ <operation name="FMADDCSf_z" variant_kind="Zeroing variant" mnemonic="VFCMADDCSH">
+  <code>let is_conjugate := True;</code>
+  <code>let denormals_are_zeros := FP::Get_DAZ(element_size/2);</code>
+  <code>let flush_subnormals := FP::Get_FTZ(element_size/2);</code>
+  <code>let suppress_all_exceptions := (context.evex_b == 0b1) and (mod == 0b11);</code>
+  <code>let exception_masks := All_Ones(6);</code>
+  <code>let rc := if (context.evex_b == 0b1) and (mod == 0b11) then context.evex_LLRC else MXCSR.RC;</code>
+  <code>let rounding_mode := FP::Decode_Rounding_Mode(rc);</code>
+  <code>var result := Zero(register_size);</code>
+  <code>if k[0] == 0b1 then</code>
+  <code>    let op1 := src1[0 +: element_size];</code>
+  <code>    let op2 := src2[0 +: element_size];</code>
+  <code>    let op3 := src3[0 +: element_size];</code>
+  <code>    let op1_real := op1[0 *: element_size/2];</code>
+  <code>    let op1_imag := op1[1 *: element_size/2];</code>
+  <code>    let op2_real := op2[0 *: element_size/2];</code>
+  <code>    let op2_imag := op2[1 *: element_size/2];</code>
+  <code>    let op3_real := op3[0 *: element_size/2];</code>
+  <code>    let op3_imag := op3[1 *: element_size/2];</code>
+  <code>    // Computes op1 + op2 * conj(op3) for conjugate, op1 + op2 * op3 for non-conjugate.</code>
+  <code>    // op2_* (VVVV register) is kept as the first arg in ALL four FMAs to match Intel</code>
+  <code>    // hardware NaN priority: NaN from op2 takes precedence over NaN from op3.</code>
+  <code>    // The sign for conjugation is expressed via is_negate on the second arg (op3_imag),</code>
+  <code>    // so that NaN sign of op3_imag is also preserved (negating y doesn't flip its NaN sign</code>
+  <code>    // because FP::FMA's NaN priority check uses the pre-negate value uyy).</code>
+  <code>    // conjugate:     r_real = op2_imag * op3_imag + tmp_real     (is_negate=False)</code>
+  <code>    //                r_imag = op2_real * (-op3_imag) + tmp_imag  (is_negate=True)</code>
+  <code>    // non-conjugate: r_real = op2_imag * (-op3_imag) + tmp_real  (is_negate=True)</code>
+  <code>    //                r_imag = op2_real * op3_imag + tmp_imag     (is_negate=False)</code>
+  <code>    let (tmp_real, exceptions1) := FP::FMA(op2_real, op3_real, op1_real, denormals_are_zeros, rounding_mode, flush_subnormals);</code>
+  <code>    let (tmp_imag, exceptions2) := FP::FMA(op2_imag, op3_real, op1_imag, denormals_are_zeros, rounding_mode, flush_subnormals);</code>
+  <code>    // FMA3/FMA4 use intermediate values (tmp_real, tmp_imag) as the addend.</code>
+  <code>    // These intermediates must not have DAZ applied (they are not architectural inputs).</code>
+  <code>    // Pass denormals_are_zeros=False so the subnormal intermediate is preserved.</code>
+  <code>    let (r_real, exceptions3) := FP::FMA(op2_imag, op3_imag, tmp_real, False, rounding_mode, flush_subnormals, False, not True);</code>
+  <code>    let (r_imag, exceptions4) := FP::FMA(op2_real, op3_imag, tmp_imag, False, rounding_mode, flush_subnormals, False, True);</code>
+  <code>    let r := (r_imag ++ r_real);</code>
+  <code>    let exceptions := exceptions1 or exceptions2 or exceptions3 or exceptions4;</code>
+  <code>    if not suppress_all_exceptions then</code>
+  <code>        MXCSR.Exception_Flags := MXCSR.Exception_Flags or FP::Prioritize_Exceptions(exceptions, exception_masks);</code>
+  <code>    endif;</code>
+  <code>    result[0 +: element_size] := r;</code>
+  <code>else</code>
+  <code>    result[0 +: element_size] := Zero(element_size);</code>
+  <code>endif;</code>
+  <code>result[register_size-1 : element_size] := src2[register_size-1 : element_size];</code>
+  <callee>Std::Boolean::Not</callee>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Integer::Add</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Multiply</callee>
+  <callee>Std::Integer::Positive_Divide</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Append</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::All_Ones</callee>
+  <callee>Std::Bits::Or</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>FP::Decode_Rounding_Mode</callee>
+  <callee>FP::FMA</callee>
+  <callee>FP::Get_DAZ</callee>
+  <callee>FP::Get_FTZ</callee>
+  <callee>FP::Prioritize_Exceptions</callee>
+  <var-used>True</var-used>
+  <var-used>False</var-used>
+  <var-used>MXCSR</var-used>
+  </operation>
+ <iform-group>
+  <iform name="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512_MASK_1" xed_iform="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512" encoding="EVEX.128.F2.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src3 := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_m(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCSH">
+    <asm-modifier priority="2">{er}</asm-modifier>
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="128"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512_MASK_1" xed_iform="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512" encoding="EVEX.128.F2.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src3 := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_m(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCSH">
+    <asm-modifier priority="2">{er}</asm-modifier>
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="128"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512_ZERO_1" xed_iform="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512" encoding="EVEX.128.F2.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src3 := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_z(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCSH">
+    <asm-modifier priority="2">{er}</asm-modifier>
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="128"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512_ZERO_1" xed_iform="VFCMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512" encoding="EVEX.128.F2.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src3 := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_z(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCSH">
+    <asm-modifier priority="2">{er}</asm-modifier>
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="128"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="VFMADDCSH_XMM2f16_MASKmskw_XMM2f16_MEM2f16_AVX512_MASK" xed_iform="VFMADDCSH_XMM2f16_MASKmskw_XMM2f16_MEM2f16_AVX512" encoding="EVEX.128.F3.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_nc_m</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 32;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := element_size / 8;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src3 :=</code>
+     <code>    if k[0] == 0b1 then</code>
+     <code>        Logical_Mem_Read?(segment, effective_address, src_size)</code>
+     <code>    else</code>
+     <code>        Zero(src_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_nc_m(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFMADDCSH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m32<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m32<subscript>3</subscript></varname><footnoteref linkend="c"/></label>
+    </operand>
+   </iform>
+  <iform name="VFMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512_MASK_0" xed_iform="VFMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512" encoding="EVEX.128.F3.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_nc_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src3 := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_nc_m(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFMADDCSH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="128"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="VFMADDCSH_XMM2f16_MASKmskw_XMM2f16_MEM2f16_AVX512_ZERO" xed_iform="VFMADDCSH_XMM2f16_MASKmskw_XMM2f16_MEM2f16_AVX512" encoding="EVEX.128.F3.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_nc_z</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 32;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := element_size / 8;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src3 :=</code>
+     <code>    if k[0] == 0b1 then</code>
+     <code>        Logical_Mem_Read?(segment, effective_address, src_size)</code>
+     <code>    else</code>
+     <code>        Zero(src_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_nc_z(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFMADDCSH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m32<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="32"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m32<subscript>3</subscript></varname><footnoteref linkend="c"/></label>
+    </operand>
+   </iform>
+  <iform name="VFMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512_ZERO_0" xed_iform="VFMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512" encoding="EVEX.128.F3.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_nc_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src3 := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_nc_z(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFMADDCSH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="128"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="FMADDCSf_nc_m" variant_kind="Masking variant" mnemonic="VFMADDCSH">
+  <code>let is_conjugate := False;</code>
+  <code>let denormals_are_zeros := FP::Get_DAZ(element_size/2);</code>
+  <code>let flush_subnormals := FP::Get_FTZ(element_size/2);</code>
+  <code>let suppress_all_exceptions := (context.evex_b == 0b1) and (mod == 0b11);</code>
+  <code>let exception_masks := All_Ones(6);</code>
+  <code>let rc := if (context.evex_b == 0b1) and (mod == 0b11) then context.evex_LLRC else MXCSR.RC;</code>
+  <code>let rounding_mode := FP::Decode_Rounding_Mode(rc);</code>
+  <code>let old := src1;</code>
+  <code>var result := Zero(register_size);</code>
+  <code>if k[0] == 0b1 then</code>
+  <code>    let op1 := src1[0 +: element_size];</code>
+  <code>    let op2 := src2[0 +: element_size];</code>
+  <code>    let op3 := src3[0 +: element_size];</code>
+  <code>    let op1_real := op1[0 *: element_size/2];</code>
+  <code>    let op1_imag := op1[1 *: element_size/2];</code>
+  <code>    let op2_real := op2[0 *: element_size/2];</code>
+  <code>    let op2_imag := op2[1 *: element_size/2];</code>
+  <code>    let op3_real := op3[0 *: element_size/2];</code>
+  <code>    let op3_imag := op3[1 *: element_size/2];</code>
+  <code>    // Computes op1 + op2 * conj(op3) for conjugate, op1 + op2 * op3 for non-conjugate.</code>
+  <code>    // op2_* (VVVV register) is kept as the first arg in ALL four FMAs to match Intel</code>
+  <code>    // hardware NaN priority: NaN from op2 takes precedence over NaN from op3.</code>
+  <code>    // The sign for conjugation is expressed via is_negate on the second arg (op3_imag),</code>
+  <code>    // so that NaN sign of op3_imag is also preserved (negating y doesn't flip its NaN sign</code>
+  <code>    // because FP::FMA's NaN priority check uses the pre-negate value uyy).</code>
+  <code>    // conjugate:     r_real = op2_imag * op3_imag + tmp_real     (is_negate=False)</code>
+  <code>    //                r_imag = op2_real * (-op3_imag) + tmp_imag  (is_negate=True)</code>
+  <code>    // non-conjugate: r_real = op2_imag * (-op3_imag) + tmp_real  (is_negate=True)</code>
+  <code>    //                r_imag = op2_real * op3_imag + tmp_imag     (is_negate=False)</code>
+  <code>    let (tmp_real, exceptions1) := FP::FMA(op2_real, op3_real, op1_real, denormals_are_zeros, rounding_mode, flush_subnormals);</code>
+  <code>    let (tmp_imag, exceptions2) := FP::FMA(op2_imag, op3_real, op1_imag, denormals_are_zeros, rounding_mode, flush_subnormals);</code>
+  <code>    // FMA3/FMA4 use intermediate values (tmp_real, tmp_imag) as the addend.</code>
+  <code>    // These intermediates must not have DAZ applied (they are not architectural inputs).</code>
+  <code>    // Pass denormals_are_zeros=False so the subnormal intermediate is preserved.</code>
+  <code>    let (r_real, exceptions3) := FP::FMA(op2_imag, op3_imag, tmp_real, False, rounding_mode, flush_subnormals, False, not False);</code>
+  <code>    let (r_imag, exceptions4) := FP::FMA(op2_real, op3_imag, tmp_imag, False, rounding_mode, flush_subnormals, False, False);</code>
+  <code>    let r := (r_imag ++ r_real);</code>
+  <code>    let exceptions := exceptions1 or exceptions2 or exceptions3 or exceptions4;</code>
+  <code>    if not suppress_all_exceptions then</code>
+  <code>        MXCSR.Exception_Flags := MXCSR.Exception_Flags or FP::Prioritize_Exceptions(exceptions, exception_masks);</code>
+  <code>    endif;</code>
+  <code>    result[0 +: element_size] := r;</code>
+  <code>else</code>
+  <code>    result[0 +: element_size] := old[0 +: element_size];</code>
+  <code>endif;</code>
+  <code>result[register_size-1 : element_size] := src2[register_size-1 : element_size];</code>
+  <callee>Std::Boolean::Not</callee>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Integer::Add</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Multiply</callee>
+  <callee>Std::Integer::Positive_Divide</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Append</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::All_Ones</callee>
+  <callee>Std::Bits::Or</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>FP::Decode_Rounding_Mode</callee>
+  <callee>FP::FMA</callee>
+  <callee>FP::Get_DAZ</callee>
+  <callee>FP::Get_FTZ</callee>
+  <callee>FP::Prioritize_Exceptions</callee>
+  <var-used>False</var-used>
+  <var-used>MXCSR</var-used>
+  </operation>
+ <operation name="FMADDCSf_nc_z" variant_kind="Zeroing variant" mnemonic="VFMADDCSH">
+  <code>let is_conjugate := False;</code>
+  <code>let denormals_are_zeros := FP::Get_DAZ(element_size/2);</code>
+  <code>let flush_subnormals := FP::Get_FTZ(element_size/2);</code>
+  <code>let suppress_all_exceptions := (context.evex_b == 0b1) and (mod == 0b11);</code>
+  <code>let exception_masks := All_Ones(6);</code>
+  <code>let rc := if (context.evex_b == 0b1) and (mod == 0b11) then context.evex_LLRC else MXCSR.RC;</code>
+  <code>let rounding_mode := FP::Decode_Rounding_Mode(rc);</code>
+  <code>var result := Zero(register_size);</code>
+  <code>if k[0] == 0b1 then</code>
+  <code>    let op1 := src1[0 +: element_size];</code>
+  <code>    let op2 := src2[0 +: element_size];</code>
+  <code>    let op3 := src3[0 +: element_size];</code>
+  <code>    let op1_real := op1[0 *: element_size/2];</code>
+  <code>    let op1_imag := op1[1 *: element_size/2];</code>
+  <code>    let op2_real := op2[0 *: element_size/2];</code>
+  <code>    let op2_imag := op2[1 *: element_size/2];</code>
+  <code>    let op3_real := op3[0 *: element_size/2];</code>
+  <code>    let op3_imag := op3[1 *: element_size/2];</code>
+  <code>    // Computes op1 + op2 * conj(op3) for conjugate, op1 + op2 * op3 for non-conjugate.</code>
+  <code>    // op2_* (VVVV register) is kept as the first arg in ALL four FMAs to match Intel</code>
+  <code>    // hardware NaN priority: NaN from op2 takes precedence over NaN from op3.</code>
+  <code>    // The sign for conjugation is expressed via is_negate on the second arg (op3_imag),</code>
+  <code>    // so that NaN sign of op3_imag is also preserved (negating y doesn't flip its NaN sign</code>
+  <code>    // because FP::FMA's NaN priority check uses the pre-negate value uyy).</code>
+  <code>    // conjugate:     r_real = op2_imag * op3_imag + tmp_real     (is_negate=False)</code>
+  <code>    //                r_imag = op2_real * (-op3_imag) + tmp_imag  (is_negate=True)</code>
+  <code>    // non-conjugate: r_real = op2_imag * (-op3_imag) + tmp_real  (is_negate=True)</code>
+  <code>    //                r_imag = op2_real * op3_imag + tmp_imag     (is_negate=False)</code>
+  <code>    let (tmp_real, exceptions1) := FP::FMA(op2_real, op3_real, op1_real, denormals_are_zeros, rounding_mode, flush_subnormals);</code>
+  <code>    let (tmp_imag, exceptions2) := FP::FMA(op2_imag, op3_real, op1_imag, denormals_are_zeros, rounding_mode, flush_subnormals);</code>
+  <code>    // FMA3/FMA4 use intermediate values (tmp_real, tmp_imag) as the addend.</code>
+  <code>    // These intermediates must not have DAZ applied (they are not architectural inputs).</code>
+  <code>    // Pass denormals_are_zeros=False so the subnormal intermediate is preserved.</code>
+  <code>    let (r_real, exceptions3) := FP::FMA(op2_imag, op3_imag, tmp_real, False, rounding_mode, flush_subnormals, False, not False);</code>
+  <code>    let (r_imag, exceptions4) := FP::FMA(op2_real, op3_imag, tmp_imag, False, rounding_mode, flush_subnormals, False, False);</code>
+  <code>    let r := (r_imag ++ r_real);</code>
+  <code>    let exceptions := exceptions1 or exceptions2 or exceptions3 or exceptions4;</code>
+  <code>    if not suppress_all_exceptions then</code>
+  <code>        MXCSR.Exception_Flags := MXCSR.Exception_Flags or FP::Prioritize_Exceptions(exceptions, exception_masks);</code>
+  <code>    endif;</code>
+  <code>    result[0 +: element_size] := r;</code>
+  <code>else</code>
+  <code>    result[0 +: element_size] := Zero(element_size);</code>
+  <code>endif;</code>
+  <code>result[register_size-1 : element_size] := src2[register_size-1 : element_size];</code>
+  <callee>Std::Boolean::Not</callee>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Integer::Add</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Multiply</callee>
+  <callee>Std::Integer::Positive_Divide</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Append</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::All_Ones</callee>
+  <callee>Std::Bits::Or</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>FP::Decode_Rounding_Mode</callee>
+  <callee>FP::FMA</callee>
+  <callee>FP::Get_DAZ</callee>
+  <callee>FP::Get_FTZ</callee>
+  <callee>FP::Prioritize_Exceptions</callee>
+  <var-used>False</var-used>
+  <var-used>MXCSR</var-used>
+  </operation>
+ <iform-group>
+  <iform name="VFMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512_MASK_1" xed_iform="VFMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512" encoding="EVEX.128.F3.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_nc_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src3 := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_nc_m(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFMADDCSH">
+    <asm-modifier priority="2">{er}</asm-modifier>
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="128"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="VFMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512_ZERO_1" xed_iform="VFMADDCSH_XMM2f16_MASKmskw_XMM2f16_XMM2f16_AVX512" encoding="EVEX.128.F3.MAP6.W0 57 /r" opcode="57" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_FMADDCSf_nc_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src3 := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCSf_nc_z(element_size, register_size, src_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFMADDCSH">
+    <asm-modifier priority="2">{er}</asm-modifier>
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_SCALAR"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="128"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="VFCMADDCPH_YMM2f16_MASKmskw_YMM2f16_MEM2f16_AVX512_MASK" xed_iform="VFCMADDCPH_YMM2f16_MASKmskw_YMM2f16_MEM2f16_AVX512" encoding="EVEX.L1.F2.MAP6.W0 56 /r" opcode="56" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Masked_Vector_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_YMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_YMM</callee>
+   <callee>Instr_FMADDCPf_m</callee>
+   <var-used>True</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 256;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := if context.evex_b == 0b1 then element_size / 8 else 32;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_YMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_YMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src3 := Masked_Vector_Mem_Read?(register_size, element_size, context.evex_b == 0b1, k, segment, effective_address, fault_suppression=&gt;True);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCPf_m(element_size, register_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_YMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCPH">
+    <asm-operand><varname>ymm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>ymm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m256<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_256"><cpuid-flag>AVX512_FP16</cpuid-flag><cpuid-flag>AVX512VL</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_256_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="256"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>ymm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>ymm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>ymm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m256<subscript>3</subscript></varname><footnoteref linkend="b"/><footnoteref linkend="f"/></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCPH_YMM2f16_MASKmskw_YMM2f16_YMM2f16_AVX512_MASK" xed_iform="VFCMADDCPH_YMM2f16_MASKmskw_YMM2f16_YMM2f16_AVX512" encoding="EVEX.L1.F2.MAP6.W0 56 /r" opcode="56" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_YMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_YMM</callee>
+   <callee>Instr_FMADDCPf_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 256;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_YMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_YMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let src3 := Read_YMM(Calculate_RM(mod, rm, context));</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCPf_m(element_size, register_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_YMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCPH">
+    <asm-operand><varname>ymm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>ymm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>ymm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_256"><cpuid-flag>AVX512_FP16</cpuid-flag><cpuid-flag>AVX512VL</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_256_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="256"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>ymm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>ymm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>ymm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>ymm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCPH_YMM2f16_MASKmskw_YMM2f16_MEM2f16_AVX512_ZERO" xed_iform="VFCMADDCPH_YMM2f16_MASKmskw_YMM2f16_MEM2f16_AVX512" encoding="EVEX.L1.F2.MAP6.W0 56 /r" opcode="56" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Masked_Vector_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_YMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_YMM</callee>
+   <callee>Instr_FMADDCPf_z</callee>
+   <var-used>True</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 256;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := if context.evex_b == 0b1 then element_size / 8 else 32;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_YMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_YMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src3 := Masked_Vector_Mem_Read?(register_size, element_size, context.evex_b == 0b1, k, segment, effective_address, fault_suppression=&gt;True);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCPf_z(element_size, register_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_YMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCPH">
+    <asm-operand><varname>ymm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>ymm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m256<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_256"><cpuid-flag>AVX512_FP16</cpuid-flag><cpuid-flag>AVX512VL</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_256_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="256"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>ymm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>ymm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>ymm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m256<subscript>3</subscript></varname><footnoteref linkend="b"/><footnoteref linkend="f"/></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCPH_YMM2f16_MASKmskw_YMM2f16_YMM2f16_AVX512_ZERO" xed_iform="VFCMADDCPH_YMM2f16_MASKmskw_YMM2f16_YMM2f16_AVX512" encoding="EVEX.L1.F2.MAP6.W0 56 /r" opcode="56" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_YMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_YMM</callee>
+   <callee>Instr_FMADDCPf_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 256;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_YMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_YMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let src3 := Read_YMM(Calculate_RM(mod, rm, context));</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCPf_z(element_size, register_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_YMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCPH">
+    <asm-operand><varname>ymm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>ymm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>ymm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_256"><cpuid-flag>AVX512_FP16</cpuid-flag><cpuid-flag>AVX512VL</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_256_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="256"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>ymm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>ymm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>ymm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>ymm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="VFCMADDCPH_ZMM2f16_MASKmskw_ZMM2f16_ZMM2f16_AVX512_MASK_1" xed_iform="VFCMADDCPH_ZMM2f16_MASKmskw_ZMM2f16_ZMM2f16_AVX512" encoding="EVEX.512.F2.MAP6.W0 56 /r" opcode="56" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_ZMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_ZMM</callee>
+   <callee>Instr_FMADDCPf_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 512;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_ZMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let src3 := Read_ZMM(Calculate_RM(mod, rm, context));</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCPf_m(element_size, register_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCPH">
+    <asm-modifier priority="2">{er}</asm-modifier>
+    <asm-operand><varname>zmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>zmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>zmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_512"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="512"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>zmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>zmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCPH_ZMM2f16_MASKmskw_ZMM2f16_ZMM2f16_AVX512_ZERO_1" xed_iform="VFCMADDCPH_ZMM2f16_MASKmskw_ZMM2f16_ZMM2f16_AVX512" encoding="EVEX.512.F2.MAP6.W0 56 /r" opcode="56" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_ZMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_ZMM</callee>
+   <callee>Instr_FMADDCPf_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 512;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_ZMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let src3 := Read_ZMM(Calculate_RM(mod, rm, context));</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCPf_z(element_size, register_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCPH">
+    <asm-modifier priority="2">{er}</asm-modifier>
+    <asm-operand><varname>zmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>zmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>zmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_512"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="512"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>zmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>zmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="VFCMADDCPH_ZMM2f16_MASKmskw_ZMM2f16_MEM2f16_AVX512_MASK" xed_iform="VFCMADDCPH_ZMM2f16_MASKmskw_ZMM2f16_MEM2f16_AVX512" encoding="EVEX.L2.F2.MAP6.W0 56 /r" opcode="56" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Masked_Vector_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_ZMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_ZMM</callee>
+   <callee>Instr_FMADDCPf_m</callee>
+   <var-used>True</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 512;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := if context.evex_b == 0b1 then element_size / 8 else 64;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_ZMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src3 := Masked_Vector_Mem_Read?(register_size, element_size, context.evex_b == 0b1, k, segment, effective_address, fault_suppression=&gt;True);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCPf_m(element_size, register_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCPH">
+    <asm-operand><varname>zmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>zmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m512<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_512"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="512"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>zmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m512<subscript>3</subscript></varname><footnoteref linkend="b"/><footnoteref linkend="f"/></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCPH_ZMM2f16_MASKmskw_ZMM2f16_ZMM2f16_AVX512_MASK_0" xed_iform="VFCMADDCPH_ZMM2f16_MASKmskw_ZMM2f16_ZMM2f16_AVX512" encoding="EVEX.L2.F2.MAP6.W0 56 /r" opcode="56" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_ZMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_ZMM</callee>
+   <callee>Instr_FMADDCPf_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 512;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_ZMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let src3 := Read_ZMM(Calculate_RM(mod, rm, context));</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCPf_m(element_size, register_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCPH">
+    <asm-operand><varname>zmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>zmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>zmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_512"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="512"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>zmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>zmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCPH_ZMM2f16_MASKmskw_ZMM2f16_MEM2f16_AVX512_ZERO" xed_iform="VFCMADDCPH_ZMM2f16_MASKmskw_ZMM2f16_MEM2f16_AVX512" encoding="EVEX.L2.F2.MAP6.W0 56 /r" opcode="56" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Masked_Vector_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_ZMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_ZMM</callee>
+   <callee>Instr_FMADDCPf_z</callee>
+   <var-used>True</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 512;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := if context.evex_b == 0b1 then element_size / 8 else 64;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_ZMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src3 := Masked_Vector_Mem_Read?(register_size, element_size, context.evex_b == 0b1, k, segment, effective_address, fault_suppression=&gt;True);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCPf_z(element_size, register_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCPH">
+    <asm-operand><varname>zmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>zmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m512<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_512"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="512"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>zmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m512<subscript>3</subscript></varname><footnoteref linkend="b"/><footnoteref linkend="f"/></label>
+    </operand>
+   </iform>
+  <iform name="VFCMADDCPH_ZMM2f16_MASKmskw_ZMM2f16_ZMM2f16_AVX512_ZERO_0" xed_iform="VFCMADDCPH_ZMM2f16_MASKmskw_ZMM2f16_ZMM2f16_AVX512" encoding="EVEX.L2.F2.MAP6.W0 56 /r" opcode="56" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_ZMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_ZMM</callee>
+   <callee>Instr_FMADDCPf_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 512;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src2 := Read_ZMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let src3 := Read_ZMM(Calculate_RM(mod, rm, context));</code>
+     <code>let dest_reg := context.rex_r4 ++ context.rex_r3 ++ reg;</code>
+     <code>let src1_reg := context.evex_v4 ++ context.vvvv;</code>
+     <code>let src2_reg := Calculate_RM(mod, rm, context);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Eq_dest_src2</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_FMADDCPf_z(element_size, register_size, src1, k, src2, src3, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VFCMADDCPH">
+    <asm-operand><varname>zmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>zmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>zmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512_FP16_512"><cpuid-flag>AVX512_FP16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512_FP16_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="512"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>vvvv</encoding>
+    <label><varname>zmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src3</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>zmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <category>vector</category>
+ <category>fp/complex</category>
+ <size name="element_size"/>
+ <size name="register_size"/>
+ <size name="src_size"/>
+ <input name="src1"/>
+ <input name="src2"/>
+ <input name="src3"/>
+ <output name="result"/>
+ <footnote id="b"><para>If EVEX.b == 0b1, a single element is read from memory and broadcast across the vector.</para>
+  </footnote>
+ <footnote id="c"><para>Operand is only read if Check_Mask_Scalar</para>
+  </footnote>
+ <footnote id="f"><para>Memory faults while reading inactive elements are suppressed.</para>
+  </footnote>
+ <footnote id="o"><para>If EVEX.z == 0b0, the previous value of the result is read into `old` and the masking variant of the operation is used; if EVEX.z == 0b1, the zeroing variant of the operation is used.</para>
+  </footnote>
+ </instruction>

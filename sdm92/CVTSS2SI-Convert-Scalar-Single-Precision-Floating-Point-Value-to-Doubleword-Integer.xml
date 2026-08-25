@@ -1,0 +1,46 @@
+<instruction name="CVTSS2SI">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Convert Scalar Single Precision Floating-Point Value to Signed Integer</shortdesc>
+ <longdesc><para unique="1261341">
+   <string>Converts a single precision floating-point value in the source operand (the second operand) to a signed integer in the destination operand (the first operand). The source operand can be an XMM register or a memory location. The destination operand is a general-purpose register. When the source operand is an XMM register, the single precision floating-point value is contained in the low doubleword of the register.</string></para>
+  <para unique="1261342">
+   <string>When a conversion is inexact, the value returned is rounded according to the rounding control bits in the MXCSR register or the embedded rounding control bits. </string></para>
+  <para unique="1262177">
+   <string>If a converted result exceeds the range limits of signed doubleword integer (in non-64-bit modes or 64-bit mode with REX.W/VEX.W/EVEX.W=0), the floating-point invalid exception is raised, and if this exception is masked, the indefinite integer value 80000000H is returned. </string></para>
+  <para unique="1262180">
+   <string>If a converted result exceeds the range limits of signed quadword integer (in 64-bit mode and REX.W/VEX.W/EVEX.W = 1), the floating-point invalid exception is raised, and if this exception is masked, the indefinite integer value 80000000_00000000H is returned.</string></para>
+  <para unique="1261343">
+   <string>Legacy SSE instructions: In 64-bit mode, Use of the REX.W prefix promotes the instruction to produce 64-bit data. See the summary chart at the beginning of this section for encoding data and limits.</string></para>
+  <para unique="1261344">
+   <string>VEX.W1 and EVEX.W1 versions: promotes the instruction to produce 64-bit data in 64-bit mode.</string></para>
+  <para unique="1261345">
+   <string>Note: VEX.vvvv and EVEX.vvvv are reserved and must be 1111b, otherwise instructions will #UD.</string></para>
+  <para unique="1261346">
+   <string>Software should ensure VCVTSS2SI is encoded with VEX.L=0. Encoding VCVTSS2SI with VEX.L=1 may encounter unpredictable behavior across different processor generations.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VCVTSS2SI int _mm_cvtss_i32( __m128 a);</string><string>
+</string><string>VCVTSS2SI int _mm_cvt_roundss_i32( __m128 a, int r);</string><string>
+</string><string>VCVTSS2SI __int64 _mm_cvtss_i64( __m128 a);</string><string>
+</string><string>VCVTSS2SI __int64 _mm_cvt_roundss_i64( __m128 a, int r);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1261375">
+   <string>Invalid, Precision.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1261380" format="xIndent1">
+   <string>VEX-encoded instructions, see </string><link linkend="35386: 06_Table: Table 2-20. Type 3 Class Exception Conditions"><string>Table&#160;2&#8209;20, &#8220;Type 3 Class Exception Conditions,&#8221;</string></link><string> additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If VEX.vvvv != 1111B.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>EVEX-encoded instructions, see </string></term>
+    <listitem><link linkend="71006: 06_Table: Table 2-48. Type E3NF Class Exception Conditions"><string>Table&#160;2&#8209;50, &#8220;Type E3NF Class Exception Conditions.&#8221;</string></link></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

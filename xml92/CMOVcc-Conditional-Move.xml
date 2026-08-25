@@ -1,0 +1,2039 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="CMOVO_GPRv_GPRv" xed_iform="CMOVO_GPRv_GPRv" encoding="0F 40 /r" opcode="40" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVO">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMOVO_GPRv_MEMv" xed_iform="CMOVO_GPRv_MEMv" encoding="0F 40 /r" opcode="40" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVO">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>mv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="CMOVcc" variant_kind="Standard variant" mnemonic="CMOVO">
+  <code>let result := if Condition_Holds(cond) then src2 else src1;</code>
+  <callee>Condition_Holds</callee>
+  </operation>
+ <iform-group>
+  <iform name="CMOVNO_GPRv_GPRv" xed_iform="CMOVNO_GPRv_GPRv" encoding="0F 41 /r" opcode="41" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVNO">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMOVNO_GPRv_MEMv" xed_iform="CMOVNO_GPRv_MEMv" encoding="0F 41 /r" opcode="41" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVNO">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>mv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMOVB_GPRv_GPRv" xed_iform="CMOVB_GPRv_GPRv" encoding="0F 42 /r" opcode="42" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVB">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMOVB_GPRv_MEMv" xed_iform="CMOVB_GPRv_MEMv" encoding="0F 42 /r" opcode="42" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVB">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>mv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMOVNB_GPRv_GPRv" xed_iform="CMOVNB_GPRv_GPRv" encoding="0F 43 /r" opcode="43" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVNB">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMOVNB_GPRv_MEMv" xed_iform="CMOVNB_GPRv_MEMv" encoding="0F 43 /r" opcode="43" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVNB">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>mv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMOVZ_GPRv_GPRv" xed_iform="CMOVZ_GPRv_GPRv" encoding="0F 44 /r" opcode="44" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVZ">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMOVZ_GPRv_MEMv" xed_iform="CMOVZ_GPRv_MEMv" encoding="0F 44 /r" opcode="44" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVZ">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>mv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMOVNZ_GPRv_GPRv" xed_iform="CMOVNZ_GPRv_GPRv" encoding="0F 45 /r" opcode="45" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVNZ">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMOVNZ_GPRv_MEMv" xed_iform="CMOVNZ_GPRv_MEMv" encoding="0F 45 /r" opcode="45" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVNZ">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>mv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMOVBE_GPRv_GPRv" xed_iform="CMOVBE_GPRv_GPRv" encoding="0F 46 /r" opcode="46" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVBE">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMOVBE_GPRv_MEMv" xed_iform="CMOVBE_GPRv_MEMv" encoding="0F 46 /r" opcode="46" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVBE">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>mv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMOVNBE_GPRv_GPRv" xed_iform="CMOVNBE_GPRv_GPRv" encoding="0F 47 /r" opcode="47" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVNBE">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMOVNBE_GPRv_MEMv" xed_iform="CMOVNBE_GPRv_MEMv" encoding="0F 47 /r" opcode="47" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVNBE">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>mv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMOVS_GPRv_GPRv" xed_iform="CMOVS_GPRv_GPRv" encoding="0F 48 /r" opcode="48" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVS">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMOVS_GPRv_MEMv" xed_iform="CMOVS_GPRv_MEMv" encoding="0F 48 /r" opcode="48" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVS">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>mv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMOVNS_GPRv_GPRv" xed_iform="CMOVNS_GPRv_GPRv" encoding="0F 49 /r" opcode="49" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVNS">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMOVNS_GPRv_MEMv" xed_iform="CMOVNS_GPRv_MEMv" encoding="0F 49 /r" opcode="49" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVNS">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>mv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMOVP_GPRv_GPRv" xed_iform="CMOVP_GPRv_GPRv" encoding="0F 4A /r" opcode="4a" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVP">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMOVP_GPRv_MEMv" xed_iform="CMOVP_GPRv_MEMv" encoding="0F 4A /r" opcode="4a" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVP">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>mv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMOVNP_GPRv_GPRv" xed_iform="CMOVNP_GPRv_GPRv" encoding="0F 4B /r" opcode="4b" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVNP">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMOVNP_GPRv_MEMv" xed_iform="CMOVNP_GPRv_MEMv" encoding="0F 4B /r" opcode="4b" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVNP">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>mv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMOVL_GPRv_GPRv" xed_iform="CMOVL_GPRv_GPRv" encoding="0F 4C /r" opcode="4c" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVL">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMOVL_GPRv_MEMv" xed_iform="CMOVL_GPRv_MEMv" encoding="0F 4C /r" opcode="4c" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVL">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>mv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMOVNL_GPRv_GPRv" xed_iform="CMOVNL_GPRv_GPRv" encoding="0F 4D /r" opcode="4d" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVNL">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMOVNL_GPRv_MEMv" xed_iform="CMOVNL_GPRv_MEMv" encoding="0F 4D /r" opcode="4d" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVNL">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>mv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMOVLE_GPRv_GPRv" xed_iform="CMOVLE_GPRv_GPRv" encoding="0F 4E /r" opcode="4e" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVLE">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMOVLE_GPRv_MEMv" xed_iform="CMOVLE_GPRv_MEMv" encoding="0F 4E /r" opcode="4e" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVLE">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>mv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMOVNLE_GPRv_GPRv" xed_iform="CMOVNLE_GPRv_GPRv" encoding="0F 4F /r" opcode="4f" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVNLE">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMOVNLE_GPRv_MEMv" xed_iform="CMOVNLE_GPRv_MEMv" encoding="0F 4F /r" opcode="4f" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMOVcc</callee>
+   <var-used>False</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, operand_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CMOVcc(operand_size, src1, src2, cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMOVNLE">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>mv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CMOV"><cpuid-flag>CMOV</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <category>scalar</category>
+ <category>integer/data_transfer</category>
+ <size name="operand_size"/>
+ <input name="src1"/>
+ <input name="src2"/>
+ <output name="result"/>
+ </instruction>

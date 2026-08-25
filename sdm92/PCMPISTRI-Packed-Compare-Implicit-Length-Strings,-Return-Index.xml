@@ -1,0 +1,122 @@
+<instruction name="PCMPISTRI">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Packed Compare Implicit Length Strings, Return Index</shortdesc>
+ <longdesc><para unique="1091455">
+   <string>The instruction compares data from two strings based on the encoded value in the imm8 control byte (see </string><link linkend="83691: 02_Level: 5.3 Imm8 Control Byte Operation for PCMPESTRI / PCMPESTRM / PCMPISTRI / PCMPISTRM\x0d "><string>Section 4.1, &#8220;Imm8 Control Byte Operation for PCMPESTRI / PCMPESTRM / PCMPISTRI / PCMPISTRM&#8221;</string></link><string>), and generates an index stored to ECX.</string></para>
+  <para unique="1091457">
+   <string>Each string is represented by a single value. The value is an xmm (or possibly m128 for the second operand) which contains the data elements of the string (byte or word data). Each input byte/word is augmented with a valid/invalid tag. A byte/word is considered valid only if it has a lower index than the least significant null byte/word. (The least significant null byte/word is also considered invalid.) </string></para>
+  <para unique="1091458">
+   <string>The comparison and aggregation operations are performed according to the encoded value of imm8 bit fields (see </string><link linkend="83691: 02_Level: 5.3 Imm8 Control Byte Operation for PCMPESTRI / PCMPESTRM / PCMPISTRI / PCMPISTRM\x0d "><string>Section 4.1</string></link><string>). The index of the first (or last, according to imm8[6]) set bit of IntRes2 is returned in ECX. If no bits are set in IntRes2, ECX is set to 16 (8).</string></para>
+  <para unique="1091462">
+   <string>Note that the Arithmetic Flags are written in a non-standard manner in order to supply the most relevant informa&#173;tion:</string></para>
+  <programlisting><string>	CFlag &#8211; Reset if IntRes2 is equal to zero, set otherwise</string><string>
+</string><string>	ZFlag &#8211; Set if any byte/word of xmm2/mem128 is null, reset otherwise</string><string>
+</string><string>	SFlag &#8211; Set if any byte/word of xmm1 is null, reset otherwise</string><string>
+</string><string>	OFlag &#8211;IntRes2[0]</string><string>
+</string><string>	AFlag &#8211; Reset</string><string>
+</string><string>	PFlag &#8211; Reset</string><string>
+</string></programlisting>
+  <para unique="1091469">
+   <string>Note: In VEX.128 encoded version, VEX.vvvv is reserved and must be 1111b, VEX.L must be 0, otherwise the instruction will #UD.</string></para>
+  <section level="7">
+   <title unique="1091503"><string>Effective Operand Size</string></title>
+   <table>
+    <colgroup><col align="leftright"/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     </colgroup>
+    <tbody>
+     <tr>
+      <th><para unique="1091472" format="CellColHeadL">
+        <string>Operating mode/size</string></para>
+       </th>
+      <th><para unique="1091474" format="CellColHeadL">
+        <string>Operand 1</string></para>
+       </th>
+      <th><para unique="1091476" format="CellColHeadL">
+        <string>Operand 2</string></para>
+       </th>
+      <th><para unique="1091478" format="CellColHeadL">
+        <string>Result</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td><para unique="1091480" format="CellBodyL">
+        <string>16 bit</string></para>
+       </td>
+      <td><para unique="1091482" format="CellBodyL">
+        <string>xmm</string></para>
+       </td>
+      <td><para unique="1091484" format="CellBodyL">
+        <string>xmm/m128</string></para>
+       </td>
+      <td><para unique="1091486" format="CellBodyL">
+        <string>ECX</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1091488" format="CellBodyL">
+        <string>32 bit</string></para>
+       </td>
+      <td><para unique="1091490" format="CellBodyL">
+        <string>xmm</string></para>
+       </td>
+      <td><para unique="1091492" format="CellBodyL">
+        <string>xmm/m128</string></para>
+       </td>
+      <td><para unique="1091494" format="CellBodyL">
+        <string>ECX</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1091496" format="CellBodyL">
+        <string>64 bit</string></para>
+       </td>
+      <td><para unique="1091498" format="CellBodyL">
+        <string>xmm</string></para>
+       </td>
+      <td><para unique="1091500" format="CellBodyL">
+        <string>xmm/m128</string></para>
+       </td>
+      <td><para unique="1091502" format="CellBodyL">
+        <string>ECX</string></para>
+       </td>
+      </tr>
+     </tbody>
+    </table>
+   </section>
+  <section level="7">
+   <title unique="1091505"><string>Intel C/C++ Compiler Intrinsic Equivalent For Returning Index</string></title>
+   <programlisting><string>int _mm_cmpistri (__m128i a, __m128i b, const int mode);</string><string>
+</string></programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091507"><string>Intel C/C++ Compiler Intrinsics For Reading EFlag Results</string></title>
+   <programlisting><string>int _mm_cmpistra (__m128i a, __m128i b, const int mode);</string><string>
+</string><string>int _mm_cmpistrc (__m128i a, __m128i b, const int mode);</string><string>
+</string><string>int _mm_cmpistro (__m128i a, __m128i b, const int mode);</string><string>
+</string><string>int _mm_cmpistrs (__m128i a, __m128i b, const int mode);</string><string>
+</string><string>int _mm_cmpistrz (__m128i a, __m128i b, const int mode);</string><string>
+</string></programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091513"><string>SIMD Floating-Point Exceptions</string></title>
+   <para unique="1091514">
+    <string>None.</string></para>
+   </section>
+  <section level="7">
+   <title unique="1091515"><string>Other Exceptions</string></title>
+   <para unique="1091519" format="xIndent1">
+    <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions,&#8221;</string></link><string> additionally, this instruction does not cause #GP if the memory operand is not aligned to 16 Byte boundary, and:</string></para>
+   <variablelist>
+    <variablelistentry>
+     <term><string>#UD</string></term>
+     <listitem><string>If VEX.L = 1.</string></listitem>
+     <listitem><string>If VEX.vvvv &#8800; 1111B.</string></listitem>
+     </variablelistentry>
+    </variablelist>
+   </section>
+  </longdesc>
+ </instruction>

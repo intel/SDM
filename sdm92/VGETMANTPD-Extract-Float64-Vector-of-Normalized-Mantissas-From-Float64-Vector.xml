@@ -1,0 +1,190 @@
+<instruction name="VGETMANTPD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Extract Float64 Vector of Normalized Mantissas From Float64 Vector</shortdesc>
+ <longdesc><para unique="1045980">
+   <string>Convert double precision floating values in the source operand (the second operand) to double precision floating-point values with the mantissa normalization and sign control specified by the imm8 byte, see </string><link linkend="55949: 05_FigureFrame: Figure 5-25. Imm8 Controls for VGETMANTPD/SD/PS/SS"><string>Figure&#160;5&#8209;15</string></link><string>. The converted results are written to the destination operand (the first operand) using writemask k1. The normalized mantissa is specified by interv (imm8[1:0]) and the sign control (sc) is specified by bits 3:2 of the immediate byte. </string></para>
+  <para unique="1045984">
+   <string>The destination operand is a ZMM/YMM/XMM register updated under the writemask. The source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location, or a 512/256/128-bit vector broadcasted from a 64-bit memory location.</string></para>
+  <table>
+   <caption>Figure 5-15.  Imm8 Controls for VGETMANTPD/SD/PS/SS</caption>
+   <colgroup><col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <td><svg width="676.3723239898682" height="143.65" viewBox="0 0 676.3723239898682 143.65" name="imm8" shortdesc="Imm8 Controls for VGETMANTPD/SD/PS/SS">
+       <defs><marker id="arrow" viewBox="0 0 10 6" refX="7" refY="3" markerWidth="10" markerHeight="6" style="fill: dimgray;" orient="auto-start-reverse"><path d="M 0 0 L 10 3 L 0 6 L 2 3 z"/></marker></defs>
+       <rect x="36.372323989868164" y="8.25" width="320" height="15" fill="lightgray" stroke="dimgray"/>
+       <text x="196.37232398986816" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">Reserved</text>
+       <line x1="36.372323989868164" y1="8.25" x2="36.372323989868164" y2="0" stroke="gray"/><line x1="356.37232398986816" y1="8.25" x2="356.37232398986816" y2="0" stroke="gray"/><text x="38.372323989868164" y="6.25" font-family="Verdana" font-size="7.5" fill="gray">7</text>
+       <text x="354.37232398986816" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="end">4</text>
+       <rect x="356.37232398986816" y="8.25" width="160" height="15" fill="whitesmoke" stroke="dimgray"/>
+       <text x="436.37232398986816" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">SC</text>
+       <line x1="356.37232398986816" y1="8.25" x2="356.37232398986816" y2="0" stroke="gray"/><line x1="516.3723239898682" y1="8.25" x2="516.3723239898682" y2="0" stroke="gray"/><text x="358.37232398986816" y="6.25" font-family="Verdana" font-size="7.5" fill="gray">3</text>
+       <text x="514.3723239898682" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="end">2</text>
+       <rect x="516.3723239898682" y="8.25" width="160" height="15" fill="whitesmoke" stroke="dimgray"/>
+       <text x="596.3723239898682" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">Normalization Interval</text>
+       <line x1="516.3723239898682" y1="8.25" x2="516.3723239898682" y2="0" stroke="gray"/><line x1="676.3723239898682" y1="8.25" x2="676.3723239898682" y2="0" stroke="gray"/><text x="518.3723239898682" y="6.25" font-family="Verdana" font-size="7.5" fill="gray">1</text>
+       <text x="674.3723239898682" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="end">0</text>
+       <text x="3" y="8.25" font-family="Verdana" font-size="9.9" fill="black"><tspan x="3" dy="11.88" font-family="Verdana" text-anchor="start">imm8</tspan></text>
+       <text x="128.0077428817749" y="53" font-family="Verdana" font-size="9.9" fill="black"><tspan x="128.0077428817749" dy="11.88" font-family="Verdana" text-anchor="start">Sign Control (SC)</tspan><tspan x="128.0077428817749" dy="11.88" font-family="Verdana" text-anchor="start">imm8[3:2] = 0b00 : sign(src)</tspan><tspan x="128.0077428817749" dy="11.88" font-family="Verdana" text-anchor="start">imm8[3:2] = 0b01 : 0</tspan><tspan x="128.0077428817749" dy="11.88" font-family="Verdana" text-anchor="start">imm8[3:2] = 0b1x : qNan_Indefinite if sign(src) != 0</tspan></text>
+       <text x="411.3592138290405" y="53" font-family="Verdana" font-size="9.9" fill="black"><tspan x="411.3592138290405" dy="11.88" font-family="Verdana" text-anchor="start">Normalization Interval</tspan><tspan x="411.3592138290405" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b00 : Interval is [1,2)</tspan><tspan x="411.3592138290405" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b01 : Interval is [1/2, 2)</tspan><tspan x="411.3592138290405" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b10 : Interval is [1/2, 1)</tspan><tspan x="411.3592138290405" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b11 : Interval is [3/4, 3/2)</tspan></text>
+       <line x1="436.37232398986816" y1="23.25" x2="154.74288997650146" y2="53" stroke="white" stroke-width="2.7" opacity="70%"/><line x1="436.37232398986816" y1="23.25" x2="154.74288997650146" y2="53" stroke="dimgray" stroke-width="0.7" fill="transparent"/><line x1="596.3723239898682" y1="23.25" x2="432.3342153549194" y2="53" stroke="white" stroke-width="2.7" opacity="70%"/><line x1="596.3723239898682" y1="23.25" x2="432.3342153549194" y2="53" stroke="dimgray" stroke-width="0.7" fill="transparent"/></svg></td>
+     </tr>
+    </tbody>
+   </table>
+  <para unique="1046024">
+   <string>For each input double precision floating-point value x, The conversion operation is:</string></para>
+  <para unique="1046025">
+   <string>	GetMant(x) = &#177;2</string><superscript><string>k</string></superscript><string>|x.significand|</string></para>
+  <para unique="1046026">
+   <string>where:</string></para>
+  <para unique="1046027">
+   <string>	1 &lt;= |x.significand| &lt; 2</string></para>
+  <para unique="1046029">
+   <string>Unbiased exponent k can be either 0 or -1, depending on the interval range defined by interv, the range of the significand and whether the exponent of the source is even or odd. The sign of the final result is determined by sc and the source sign. The encoded value of imm8[1:0] and sign control are shown in </string><link linkend="55949: 05_FigureFrame: Figure 5-25. Imm8 Controls for VGETMANTPD/SD/PS/SS"><string>Figure&#160;5&#8209;15</string></link><string>.</string></para>
+  <para unique="1046033">
+   <string>Each converted double precision floating-point result is encoded according to the sign control, the unbiased expo&#173;nent k (adding bias) and a mantissa normalized to the range specified by interv.</string></para>
+  <para unique="1046036">
+   <string>The GetMant() function follows </string><link linkend="81073: 06_Table: Table 5-16. GetMant() Special Float Values Behavior"><string>Table 5&#8209;16</string></link><string> when dealing with floating-point special numbers.</string></para>
+  <para unique="1046038">
+   <string>This instruction is writemasked, so only those elements with the corresponding bit set in vector mask register k1 are computed and stored into the destination. Elements in zmm1 with the corresponding bit clear in k1 retain their previous values.</string></para>
+  <para unique="1046039">
+   <string>&#160;Note: EVEX.vvvv is reserved and must be 1111b; otherwise instructions will #UD.</string></para>
+  <table>
+   <caption>Table 5-16.  GetMant() Special Float Values Behavior</caption>
+   <colgroup><col align="leftright"/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1046049" format="CellRowHeadL">
+       <string>Input</string></para>
+      </th>
+     <th><para unique="1046051" format="CellRowHeadL">
+       <string>Result</string></para>
+      </th>
+     <th><para unique="1046053" format="CellRowHeadL">
+       <string>Exceptions / Comments</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1046055" format="CellBodyL">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1046057" format="CellBodyL">
+       <string>QNaN(SRC)</string></para>
+      </td>
+     <td><para unique="1046059" format="CellBodyL">
+       <string>Ignore </string><italic><string>interv</string></italic></para>
+      <para unique="1046060" format="CellBodyL">
+       <string>If (SRC = SNaN) then #IE</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046062" format="CellBodyL">
+       <string>+&#8734;</string></para>
+      </td>
+     <td><para unique="1046064" format="CellBodyL">
+       <string>1.0</string></para>
+      </td>
+     <td><para unique="1046066" format="CellBodyL">
+       <string>Ignore </string><italic><string>interv</string></italic></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046068" format="CellBodyL">
+       <string>+0</string></para>
+      </td>
+     <td><para unique="1046070" format="CellBodyL">
+       <string>1.0 </string></para>
+      </td>
+     <td><para unique="1046072" format="CellBodyL">
+       <string>Ignore </string><italic><string>interv</string></italic></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046074" format="CellBodyL">
+       <string>-0</string></para>
+      </td>
+     <td><para unique="1046076" format="CellBodyL">
+       <string>IF (SC[0]) THEN +1.0</string></para>
+      <para unique="1046077" format="CellBodyL">
+       <string>                  ELSE -1.0</string></para>
+      </td>
+     <td><para unique="1046079" format="CellBodyL">
+       <string>Ignore </string><italic><string>interv</string></italic></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046081" format="CellBodyL">
+       <string>-&#8734;</string></para>
+      </td>
+     <td><para unique="1046083" format="CellBodyL">
+       <string>IF (SC[1]) THEN {QNaN_Indefinite} </string></para>
+      <para unique="1046084" format="CellBodyL">
+       <string>ELSE {</string></para>
+      <para unique="1046085" format="CellBodyL">
+       <string>   IF (SC[0]) THEN +1.0</string></para>
+      <para unique="1046086" format="CellBodyL">
+       <string>                     ELSE -1.0</string></para>
+      </td>
+     <td><para unique="1046088" format="CellBodyL">
+       <string>Ignore </string><italic><string>interv</string></italic></para>
+      <para unique="1046089" format="CellBodyL">
+       <string>If (SC[1]) then #IE</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046091" format="CellBodyL">
+       <string>negative</string></para>
+      </td>
+     <td><para unique="1046096" format="CellBodyL">
+       <string>SC[1] ? QNaN_Indefinite : Getmant(SRC)</string><footnote><para unique="1046095" format="TableFootnote">
+         <string>In case SC[1]==0, the sign of Getmant(SRC) is declared according to SC[0].</string></para>
+        </footnote></para>
+      </td>
+     <td><para unique="1046098" format="CellBodyL">
+       <string>If (SC[1]) then #IE</string></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VGETMANTPD __m512d _mm512_getmant_pd( __m512d a, enum intv, enum sgn);</string><string>
+</string><string>VGETMANTPD __m512d _mm512_mask_getmant_pd(__m512d s, __mmask8 k, __m512d a, enum intv, enum sgn);</string><string>
+</string><string>VGETMANTPD __m512d _mm512_maskz_getmant_pd( __mmask8 k, __m512d a, enum intv, enum sgn);</string><string>
+</string><string>VGETMANTPD __m512d _mm512_getmant_round_pd( __m512d a, enum intv, enum sgn, int r);</string><string>
+</string><string>VGETMANTPD __m512d _mm512_mask_getmant_round_pd(__m512d s, __mmask8 k, __m512d a, enum intv, enum sgn, int r);</string><string>
+</string><string>VGETMANTPD __m512d _mm512_maskz_getmant_round_pd( __mmask8 k, __m512d a, enum intv, enum sgn, int r);</string><string>
+</string><string>VGETMANTPD __m256d _mm256_getmant_pd( __m256d a, enum intv, enum sgn);</string><string>
+</string><string>VGETMANTPD __m256d _mm256_mask_getmant_pd(__m256d s, __mmask8 k, __m256d a, enum intv, enum sgn);</string><string>
+</string><string>VGETMANTPD __m256d _mm256_maskz_getmant_pd( __mmask8 k, __m256d a, enum intv, enum sgn);</string><string>
+</string><string>VGETMANTPD __m128d _mm_getmant_pd( __m128d a, enum intv, enum sgn);</string><string>
+</string><string>VGETMANTPD __m128d _mm_mask_getmant_pd(__m128d s, __mmask8 k, __m128d a, enum intv, enum sgn);</string><string>
+</string><string>VGETMANTPD __m128d _mm_maskz_getmant_pd( __mmask8 k, __m128d a, enum intv, enum sgn);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046189">
+   <string>Denormal, Invalid.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046194" format="xIndent1">
+   <string>See </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046195" format="xIndent1">
+   <string>Additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If EVEX.vvvv != 1111B.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

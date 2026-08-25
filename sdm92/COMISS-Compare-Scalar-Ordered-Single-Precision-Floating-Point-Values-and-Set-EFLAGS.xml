@@ -1,0 +1,45 @@
+<instruction name="COMISS">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Compare Scalar Ordered Single Precision Floating-Point Values and Set EFLAGS</shortdesc>
+ <longdesc><para unique="1261291">
+   <string>Compares the single precision floating-point values in the low quadwords of operand 1 (first operand) and operand 2 (second operand), and sets the ZF, PF, and CF flags in the EFLAGS register according to the result (unordered, greater than, less than, or equal). The OF, SF, and AF flags in the EFLAGS register are set to 0. The unordered result is returned if either source operand is a NaN (QNaN or SNaN).</string></para>
+  <para unique="1261292">
+   <string>Operand 1 is an XMM register; operand 2 can be an XMM register or a 32 bit memory location. </string></para>
+  <para unique="1261293">
+   <string>The COMISS instruction differs from the UCOMISS instruction in that it signals a SIMD floating-point invalid opera&#173;tion exception (#I) when a source operand is either a QNaN or SNaN. The UCOMISS instruction signals an invalid operation exception only if a source operand is an SNaN.</string></para>
+  <para unique="1261294">
+   <string>The EFLAGS register is not updated if an unmasked SIMD floating-point exception is generated.</string></para>
+  <para unique="1261295">
+   <string>VEX.vvvv and EVEX.vvvv are reserved and must be 1111b, otherwise instructions will #UD.</string></para>
+  <para unique="1261296">
+   <string>Software should ensure VCOMISS is encoded with VEX.L=0. Encoding VCOMISS with VEX.L=1 may encounter unpredictable behavior across different processor generations.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VCOMISS int _mm_comi_round_ss(__m128 a, __m128 b, int imm, int sae); </string><string>
+</string><string>VCOMISS int _mm_comieq_ss (__m128 a, __m128 b)</string><string>
+</string><string>VCOMISS int _mm_comilt_ss (__m128 a, __m128 b)</string><string>
+</string><string>VCOMISS int _mm_comile_ss (__m128 a, __m128 b)</string><string>
+</string><string>VCOMISS int _mm_comigt_ss (__m128 a, __m128 b)</string><string>
+</string><string>VCOMISS int _mm_comige_ss (__m128 a, __m128 b)</string><string>
+</string><string>VCOMISS int _mm_comineq_ss (__m128 a, __m128 b)</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1261316">
+   <string>Invalid (if SNaN or QNaN operands), Denormal.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1261321" format="xIndent1">
+   <string>VEX-encoded instructions, see </string><link linkend="35386: 06_Table: Table 2-20. Type 3 Class Exception Conditions"><string>Table&#160;2&#8209;20, &#8220;Type 3 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1261325">
+   <string>EVEX-encoded instructions, see </string><link linkend="71006: 06_Table: Table 2-48. Type E3NF Class Exception Conditions"><string>Table&#160;2&#8209;50, &#8220;Type E3NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1261326">
+   <string>Additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If VEX.vvvv != 1111B or EVEX.vvvv != 1111B.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

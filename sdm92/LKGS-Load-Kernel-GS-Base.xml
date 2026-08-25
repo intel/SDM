@@ -1,0 +1,76 @@
+<instruction name="LKGS">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Load Kernel GS Base</shortdesc>
+ <longdesc><para unique="1271500">
+   <string>LKGS operates in the same way as MOV to GS except that the descriptor&#8217;s base address is loaded into the IA32_KERNEL_GS_BASE MSR instead of the GS segment&#8217;s descriptor cache.</string></para>
+  <para unique="1271501">
+   <string>LKGS takes a single (source) operand, which can be a general-purpose register or a memory location.</string><indexterm><primary>Task switch:return from nested task, IRET instruction</primary></indexterm><string> The operand must be a valid segment selector. The instruction loads the segment descriptor referenced by that segment selector into the GS descriptor cache, with the exception of the base address. The base address in the GS descriptor cache is not modified; the base address from the segment descriptor is loaded into the
+IA32_KERNEL_GS_BASE MSR. (Since the base address in the descriptor is only 32 bits, the upper 32 bits of the MSR are cleared.)</string></para>
+  <para unique="1271503">
+   <string>A null segment selector (values 0000-0003) can be loaded without causing an exception. However, any subsequent attempt to reference GS outside 64-bit mode causes a general protection exception (#GP) and no memory refer&#173;ence occurs. LKGS with a null segment selector loads zero into IA32_KERNEL_GS_BASE.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1271528">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The LKGS instruction is not recognized in protected mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The LKGS instruction is not recognized in real-address mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The LKGS instruction is not recognized in virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The LKGS instruction is not recognized in compatibility mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If CPL &gt; 0.</string></listitem>
+    <listitem><string>If CPUID.07H.01H:EAX.LKGS[18] is not 1.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(selector)</string></term>
+    <listitem><string>If segment selector index is outside descriptor table limits.</string></listitem>
+    <listitem><string>If the memory access to the descriptor table is non-canonical.</string></listitem>
+    <listitem><string>If the referenced descriptor is not for a data or readable code segment or the selector RPL is greater than the descriptor DPL.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

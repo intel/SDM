@@ -1,0 +1,74 @@
+<instruction name="XACQUIRE/XRELEASE">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Hardware Lock Elision Prefix Hints</shortdesc>
+ <longdesc><para unique="1012579">
+   <string>The XACQUIRE prefix is a hint to start lock elision on the memory address specified by the instruction and the XRELEASE prefix is a hint to end lock elision on the memory address specified by the instruction.</string></para>
+  <para unique="1012580">
+   <string>The XACQUIRE prefix hint can only be used with the following instructions (these instructions are also referred to as XACQUIRE-enabled when used with the XACQUIRE prefix):</string></para>
+  <itemizedlist><listitem><para unique="1012581">
+     <string>Instructions with an explicit LOCK prefix (F0H) prepended to forms of the instruction where the destination operand is a memory operand: ADD, ADC, AND, BTC, BTR, BTS, CMPXCHG, CMPXCHG8B, DEC, INC, NEG, NOT, OR, SBB, SUB, XOR, XADD, and XCHG. </string></para>
+    </listitem>
+   <listitem><para unique="1012582">
+     <string>The XCHG instruction either with or without the presence of the LOCK prefix. </string></para>
+    </listitem>
+   </itemizedlist><para unique="1012583">
+   <string>The XRELEASE prefix hint can only be used with the following instructions (also referred to as XRELEASE-enabled when used with the XRELEASE prefix):</string></para>
+  <itemizedlist><listitem><para unique="1012584">
+     <string>Instructions with an explicit LOCK prefix (F0H) prepended to forms of the instruction where the destination operand is a memory operand: ADD, ADC, AND, BTC, BTR, BTS, CMPXCHG, CMPXCHG8B, DEC, INC, NEG, NOT, OR, SBB, SUB, XOR, XADD, and XCHG. </string></para>
+    </listitem>
+   <listitem><para unique="1012585">
+     <string>The XCHG instruction either with or without the presence of the LOCK prefix. </string></para>
+    </listitem>
+   <listitem><para unique="1012586">
+     <string>The &#8220;MOV mem, reg&#8221; (Opcode 88H/89H) and &#8220;MOV mem, imm&#8221; (Opcode C6H/C7H) instructions. In these cases, the XRELEASE is recognized without the presence of the LOCK prefix.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1012587">
+   <string>The lock variables must satisfy the guidelines described in Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, Section 16.3.3, for elision to be successful, otherwise an HLE abort may be signaled.</string></para>
+  <para unique="1012588">
+   <string>If an encoded byte sequence that meets XACQUIRE/XRELEASE requirements includes both prefixes, then the HLE semantic is determined by the prefix byte that is placed closest to the instruction opcode. For example, an F3F2C6 will not be treated as a XRELEASE-enabled instruction since the F2H (XACQUIRE) is closest to the instruction opcode C6. Similarly, an F2F3F0 prefixed instruction will be treated as a XRELEASE-enabled instruction since F3H (XRELEASE) is closest to the instruction opcode.</string></para>
+  <para unique="1012589">
+   <string>Intel 64 and IA-32 Compatibility</string></para>
+  <para unique="1012590">
+   <string>The effect of the XACQUIRE/XRELEASE prefix hint is the same in non-64-bit modes and in 64-bit mode.</string></para>
+  <para unique="1012591">
+   <string>For instructions that do not support the XACQUIRE hint, the presence of the F2H prefix behaves the same way as prior hardware, according to</string></para>
+  <itemizedlist><listitem><para unique="1012592">
+     <string>REPNE/REPNZ semantics for string instructions,</string></para>
+    </listitem>
+   <listitem><para unique="1012593">
+     <string>Serve as SIMD prefix for legacy SIMD instructions operating on XMM register</string></para>
+    </listitem>
+   <listitem><para unique="1012594">
+     <string>Cause #UD if prepending the VEX prefix.</string></para>
+    </listitem>
+   <listitem><para unique="1012595">
+     <string>Undefined for non-string instructions or other situations.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1012596">
+   <string>For instructions that do not support the XRELEASE hint, the presence of the F3H prefix behaves the same way as in prior hardware, according to</string></para>
+  <itemizedlist><listitem><para unique="1012597">
+     <string>REP/REPE/REPZ semantics for string instructions,</string></para>
+    </listitem>
+   <listitem><para unique="1012598">
+     <string>Serve as SIMD prefix for legacy SIMD instructions operating on XMM register</string></para>
+    </listitem>
+   <listitem><para unique="1012599">
+     <string>Cause #UD if prepending the VEX prefix.</string></para>
+    </listitem>
+   <listitem><para unique="1012600">
+     <string>Undefined for non-string instructions or other situations.</string></para>
+    </listitem>
+   </itemizedlist></longdesc>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1012681">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the use of prefix causes instruction length to exceed 15 bytes.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

@@ -1,0 +1,159 @@
+<instruction name="FTST">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>TEST</shortdesc>
+ <longdesc><para unique="1261217">
+   <string>Compares the value in the ST(0) register with 0.0 and sets the condition code flags C0, C2, and C3 in the FPU status word according to the results (see table below).</string></para>
+  <table>
+   <caption>Table 3-42.  FTST Results</caption>
+   <colgroup><col align="center"/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <thead><tr>
+     <th><para unique="1261229" format="CellColHead">
+       <string>Condition</string></para>
+      </th>
+     <th><para unique="1261231" format="CellColHead">
+       <string>C3</string></para>
+      </th>
+     <th><para unique="1261233" format="CellColHead">
+       <string>C2</string></para>
+      </th>
+     <th><para unique="1261235" format="CellColHead">
+       <string>C0</string></para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1261237" format="CellBodyC">
+       <string>ST(0) </string><string>&gt; 0.0</string></para>
+      </td>
+     <td><para unique="1261239" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261241" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261243" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261245" format="CellBodyC">
+       <string>ST(0) </string><string>&lt; 0.0</string></para>
+      </td>
+     <td><para unique="1261247" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261249" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261251" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261253" format="CellBodyC">
+       <string>ST(0) </string><string>= 0.0</string></para>
+      </td>
+     <td><para unique="1261255" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     <td><para unique="1261257" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261259" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261261" format="CellBodyC">
+       <string>Unordered</string></para>
+      </td>
+     <td><para unique="1261263" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     <td><para unique="1261265" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     <td><para unique="1261267" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  <para unique="1261269">
+   <string>This instruction performs an &#8220;unordered comparison.&#8221; An unordered comparison also checks the class of the numbers being compared (see </string><link linkend="21127: H5Heading: FXAM&#8212;Examine"><string>&#8220;FXAM&#8212;Examine Floating-Point&#8221;</string></link><string> in this chapter). If the value in register ST(0) is a </string><indexterm><primary>NaN. testing for</primary></indexterm><string>NaN or is in an </string><indexterm><primary>Undefined, format opcodes</primary></indexterm><string>undefined format, the condition flags are set to &#8220;unordered&#8221; and the invalid operation exception is generated.</string></para>
+  <para unique="1261275">
+   <string>The sign of zero is ignored, so that (&#8211; 0.0</string><string> </string><sans><string>:= </string></sans><string>+0.0).</string></para>
+  <para unique="1261276">
+   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+  </longdesc>
+ <subsection title="FPU Flags Affected">
+  <variablelist>
+   <variablelistentry>
+    <term><string>C1</string></term>
+    <listitem><string>Set to 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>C0, C2, C3</string></term>
+    <listitem><string>See </string><link linkend="28140: 06_Table: Table 3-43. FTST Results"><string>Table 3&#8209;42</string></link><string>.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Floating-Point Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#IS</string></term>
+    <listitem><string>Stack underflow occurred.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#IA</string></term>
+    <listitem><string>The source operand is a NaN value or is in an unsupported format.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#D</string></term>
+    <listitem><string>The source operand is a denormal value.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#MF </string></term>
+    <listitem><string>If there is a pending x87 FPU exception.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <para unique="1261299" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <para unique="1261301" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261303" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <para unique="1261305" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ </instruction>

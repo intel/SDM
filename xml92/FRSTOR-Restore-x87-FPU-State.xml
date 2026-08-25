@@ -1,0 +1,429 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="FRSTOR_MEMmem108_0" xed_iform="FRSTOR_MEMmem108" encoding="DD /4" opcode="dd" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Effective_Address</callee>
+   <callee>FP87::Check_For_Pending_Unmasked_Floating_Point_Exceptions</callee>
+   <callee>FP87::Is_Enabled</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_FRSTOR</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>X87FPDisabled</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><exception_check><exception_condition>TRUE</exception_condition>
+     <exception_fault>CHECK_X87</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_FRSTOR?(operand_size, address_size, segment, effective_address);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="FRSTOR">
+    <asm-operand><varname>mem</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="32"/>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>logical_address</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mem</varname></label>
+    </operand>
+   </iform>
+  <iform name="FRSTOR_MEMmem108_1" xed_iform="FRSTOR_MEMmem108" encoding="DD /4" opcode="dd" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Effective_Address</callee>
+   <callee>FP87::Check_For_Pending_Unmasked_Floating_Point_Exceptions</callee>
+   <callee>FP87::Is_Enabled</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_FRSTOR</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>X87FPDisabled</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><exception_check><exception_condition>TRUE</exception_condition>
+     <exception_fault>CHECK_X87</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_FRSTOR?(operand_size, address_size, segment, effective_address);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="FRSTOR">
+    <asm-operand><varname>mem</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="32"/>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>logical_address</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mem</varname></label>
+    </operand>
+   </iform>
+  <iform name="FRSTOR_MEMmem108_2" xed_iform="FRSTOR_MEMmem108" encoding="DD /4" opcode="dd" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Effective_Address</callee>
+   <callee>FP87::Check_For_Pending_Unmasked_Floating_Point_Exceptions</callee>
+   <callee>FP87::Is_Enabled</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_FRSTOR</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>X87FPDisabled</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><exception_check><exception_condition>TRUE</exception_condition>
+     <exception_fault>CHECK_X87</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_FRSTOR?(operand_size, address_size, segment, effective_address);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="FRSTOR">
+    <asm-operand><varname>mem</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="64"/>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>logical_address</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mem</varname></label>
+    </operand>
+   </iform>
+  <iform name="FRSTOR_MEMmem108_3" xed_iform="FRSTOR_MEMmem108" encoding="DD /4" opcode="dd" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Effective_Address</callee>
+   <callee>FP87::Check_For_Pending_Unmasked_Floating_Point_Exceptions</callee>
+   <callee>FP87::Is_Enabled</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_FRSTOR</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>X87FPDisabled</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><exception_check><exception_condition>TRUE</exception_condition>
+     <exception_fault>CHECK_X87</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_FRSTOR?(operand_size, address_size, segment, effective_address);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="FRSTOR">
+    <asm-operand><varname>mem</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="32"/>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>logical_address</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mem</varname></label>
+    </operand>
+   </iform>
+  <iform name="FRSTOR_MEMmem94_0" xed_iform="FRSTOR_MEMmem94" encoding="DD /4" opcode="dd" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Effective_Address</callee>
+   <callee>FP87::Check_For_Pending_Unmasked_Floating_Point_Exceptions</callee>
+   <callee>FP87::Is_Enabled</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_FRSTOR</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 16;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>X87FPDisabled</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><exception_check><exception_condition>TRUE</exception_condition>
+     <exception_fault>CHECK_X87</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_FRSTOR?(operand_size, address_size, segment, effective_address);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="FRSTOR">
+    <asm-operand><varname>mem</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16"/>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>logical_address</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mem</varname></label>
+    </operand>
+   </iform>
+  <iform name="FRSTOR_MEMmem94_1" xed_iform="FRSTOR_MEMmem94" encoding="DD /4" opcode="dd" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Effective_Address</callee>
+   <callee>FP87::Check_For_Pending_Unmasked_Floating_Point_Exceptions</callee>
+   <callee>FP87::Is_Enabled</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_FRSTOR</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 16;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>X87FPDisabled</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><exception_check><exception_condition>TRUE</exception_condition>
+     <exception_fault>CHECK_X87</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_FRSTOR?(operand_size, address_size, segment, effective_address);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="FRSTOR">
+    <asm-operand><varname>mem</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16"/>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>logical_address</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mem</varname></label>
+    </operand>
+   </iform>
+  <iform name="FRSTOR_MEMmem94_2" xed_iform="FRSTOR_MEMmem94" encoding="DD /4" opcode="dd" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Effective_Address</callee>
+   <callee>FP87::Check_For_Pending_Unmasked_Floating_Point_Exceptions</callee>
+   <callee>FP87::Is_Enabled</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_FRSTOR</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 16;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>X87FPDisabled</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><exception_check><exception_condition>TRUE</exception_condition>
+     <exception_fault>CHECK_X87</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_FRSTOR?(operand_size, address_size, segment, effective_address);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="FRSTOR">
+    <asm-operand><varname>mem</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16"/>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>logical_address</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mem</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="FRSTOR" variant_kind="Standard variant" mnemonic="FRSTOR">
+  <code>// check readability of the first byte</code>
+  <code>Check_Logical_Address_Is_Readable?(segment, effective_address, 8);</code>
+  <code>// check readability of the last byte</code>
+  <code>let fp_image_size := if operand_size == 16 then 94 else 108;</code>
+  <code>Check_Logical_Address_Is_Readable?(segment, effective_address + fp_image_size, 8);</code>
+  <code></code>
+  <code>let (control, status, tag_word, fip, fcs, fop, fdp, fds) := FP87::Load_Environment?(segment, effective_address, operand_size, address_size);</code>
+  <code></code>
+  <code>FP87_Control := control;</code>
+  <code>FP87_Status := status;</code>
+  <code>FP87_FDP := fdp;</code>
+  <code>FP87_FDS := fds;</code>
+  <code>FP87_FIP := fip;</code>
+  <code>FP87_FCS := fcs;</code>
+  <code>FP87_FOP := fop;</code>
+  <code></code>
+  <code>// FP registers</code>
+  <code>let fp_offset := if operand_size == 16 then 14 else 28;</code>
+  <code>for i := 0 to 7 do</code>
+  <code>    let offset := Calculate_Offset(effective_address, fp_offset + (i * 10), address_size);</code>
+  <code>    ST[i] := Logical_Mem_Read?(segment, offset, 80);</code>
+  <code>endfor;</code>
+  <code></code>
+  <code>// now that FP regsister are loaded, update tag word information</code>
+  <code>FP87_Tag_Word := tag_word;</code>
+  <code>FP87_Tag_Word := FP87::Expand_Abridged_Tag_Word(FP87::Calculate_Abridged_Tag_Word());</code>
+  <callee>Std::Integer::Add</callee>
+  <callee>Std::Integer::Eq</callee>
+  <callee>Std::Integer::Multiply</callee>
+  <callee>Std::Bits::Add_int</callee>
+  <callee>Calculate_Offset</callee>
+  <callee>Check_Logical_Address_Is_Readable</callee>
+  <callee>FP87::Calculate_Abridged_Tag_Word</callee>
+  <callee>FP87::Expand_Abridged_Tag_Word</callee>
+  <callee>FP87::Load_Environment</callee>
+  <callee>Logical_Mem_Read</callee>
+  <callee>ST_write</callee>
+  <var-used>False</var-used>
+  <var-used>Memory_Read</var-used>
+  <var-used>Normal_Alignment</var-used>
+  <var-used>FP87_Control</var-used>
+  <var-used>FP87_Tag_Word</var-used>
+  <var-used>FP87_Status</var-used>
+  <var-used>FP87_FCS</var-used>
+  <var-used>FP87_FDS</var-used>
+  <var-used>FP87_FIP</var-used>
+  <var-used>FP87_FDP</var-used>
+  <var-used>FP87_FOP</var-used>
+  </operation>
+ <category>fp/x87/control</category>
+ <size name="operand_size"/>
+ <size name="address_size"/>
+ <input name="logical_address"/>
+ </instruction>

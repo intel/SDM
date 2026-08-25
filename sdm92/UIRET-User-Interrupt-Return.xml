@@ -1,0 +1,76 @@
+<instruction name="UIRET">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>User-Interrupt Return</shortdesc>
+ <longdesc><para unique="1091445">
+   <string>UIRET returns from the handling of a user interrupt. It can be executed regardless of CPL.</string></para>
+  <para unique="1091446">
+   <string>Execution of UIRET inside a transactional region causes a transactional abort; the abort loads EAX as it would have had it been due to an execution of IRET.</string></para>
+  <para unique="1091447">
+   <string>UIRET can be tracked by Architectural Last Branch Records (LBRs), Intel Processor Trace (Intel PT), and Perfor&#173;mance Monitoring. For both Intel PT and LBRs, UIRET is recorded in precisely the same manner as IRET. Hence for LBRs, UIRETs fall into the OTHER_BRANCH category, which implies that IA32_LBR_CTL.OTHER_BRANCH[bit 22] must be set to record user-interrupt delivery, and that the IA32_LBR_x_INFO.BR_TYPE field will indicate OTHER_BRANCH for any recorded user interrupt. For Intel PT, control flow tracing must be enabled by setting IA32_RTIT_CTL.BranchEn[bit 13].</string></para>
+  <para unique="1091448">
+   <string>UIRET will also increment performance counters for which counting BR_INST_RETIRED.FAR_BRANCH is enabled.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1091470" format="xIndent1">
+   <string>See the Operation section.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The UIRET instruction is not recognized in protected mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The UIRET instruction is not recognized in real-address mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The UIRET instruction is not recognized in virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1091478">
+   <string>#UD	The UIRET instruction is not recognized in compatibility mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0) </string></term>
+    <listitem><string>If the return instruction pointer is non-canonical.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0) </string></term>
+    <listitem><string>If an attempt to pop a value off the stack causes a non-canonical address to be referenced.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code) </string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3. </string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#CP</string></term>
+    <listitem><string>If return instruction pointer from stack and shadow stack do not match.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If executed inside an enclave.</string></listitem>
+    <listitem><string>If CR4.UINTR = 0.</string></listitem>
+    <listitem><string>If CPUID.07H.00H:EDX.UINTR[5] = 0.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

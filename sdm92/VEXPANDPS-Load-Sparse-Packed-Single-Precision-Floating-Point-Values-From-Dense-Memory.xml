@@ -1,0 +1,46 @@
+<instruction name="VEXPANDPS">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Load Sparse Packed Single Precision Floating-Point Values From Dense Memory</shortdesc>
+ <longdesc><para unique="1045977">
+   <string>Expand (load) up to 16/8/4, contiguous, single precision floating-point values of the input vector in the source operand (the second operand) to sparse elements of the destination operand (the first operand) selected by the writemask k1. </string></para>
+  <para unique="1045978">
+   <string>The destination operand is a ZMM/YMM/XMM register, the source operand can be a ZMM/YMM/XMM register or a 512/256/128-bit memory location.</string></para>
+  <para unique="1045979">
+   <string>The input vector starts from the lowest element in the source operand. The writemask k1 selects the destination elements (a partial vector or sparse elements if less than 16 elements) to be replaced by the ascending elements in the input vector. Destination elements not selected by the writemask k1 are either unmodified or zeroed, depending on EVEX.z.</string></para>
+  <para unique="1045980">
+   <string>EVEX.vvvv is reserved and must be 1111b otherwise instructions will #UD.</string></para>
+  <para unique="1045981">
+   <string>Note that the compressed displacement assumes a pre-scaling (N) corresponding to the size of one single element instead of the size of the full vector.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VEXPANDPS __m512 _mm512_mask_expand_ps( __m512 s, __mmask16 k, __m512 a);</string><string>
+</string><string>VEXPANDPS __m512 _mm512_maskz_expand_ps( __mmask16 k, __m512 a);</string><string>
+</string><string>VEXPANDPS __m512 _mm512_mask_expandloadu_ps( __m512 s, __mmask16 k, void * a);</string><string>
+</string><string>VEXPANDPS __m512 _mm512_maskz_expandloadu_ps( __mmask16 k, void * a);</string><string>
+</string><string>VEXPANDPD __m256 _mm256_mask_expand_ps( __m256 s, __mmask8 k, __m256 a);</string><string>
+</string><string>VEXPANDPD __m256 _mm256_maskz_expand_ps( __mmask8 k, __m256 a);</string><string>
+</string><string>VEXPANDPD __m256 _mm256_mask_expandloadu_ps( __m256 s, __mmask8 k, void * a);</string><string>
+</string><string>VEXPANDPD __m256 _mm256_maskz_expandloadu_ps( __mmask8 k, void * a);</string><string>
+</string><string>VEXPANDPD __m128 _mm_mask_expand_ps( __m128 s, __mmask8 k, __m128 a);</string><string>
+</string><string>VEXPANDPD __m128 _mm_maskz_expand_ps( __mmask8 k, __m128 a);</string><string>
+</string><string>VEXPANDPD __m128 _mm_mask_expandloadu_ps( __m128 s, __mmask8 k, void * a);</string><string>
+</string><string>VEXPANDPD __m128 _mm_maskz_expandloadu_ps( __mmask8 k, void * a);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046015">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046020" format="xIndent1">
+   <string>See Exceptions Type E4.nb in </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046021" format="xIndent1">
+   <string>Additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If EVEX.vvvv != 1111B.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

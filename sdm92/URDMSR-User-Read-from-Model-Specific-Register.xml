@@ -1,0 +1,65 @@
+<instruction name="URDMSR">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>User Read from Model-Specific Register</shortdesc>
+ <longdesc><para unique="1092337">
+   <string>URDMSR reads the contents of a 64-bit MSR specified in operand 2 into operand 1. Operand 1 is a general-purpose register, while operand 2 may be either a general-purpose register or an immediate. URDMSR reads the indicated MSR in the same manner as RDMSR.</string></para>
+  <para unique="1092338">
+   <string>MSRs readable by RDMSR with CPL = 0 can be read by URDMSR at any privilege level but under OS control. The OS controls what MSRs can be read by the URDMSR and UWRMSR instructions with a 4-KByte </string><bold><string>user-MSR bitmap</string></bold><string> located at an aligned linear address in the IA32_USER_MSR_CTL MSR (address 1CH). The URDMSR instruction is enabled only if bit 0 of this MSR is 1.</string></para>
+  <para unique="1092339">
+   <string>The low 2 KBytes of the bitmap control URDMSR (they compose the URDMSR bitmap); these 2 KBytes include one bit for each MSR address in the range 0H&#8211;3FFFH. URDMSR may read an MSR only if the bit corresponding to the MSR has value 1; otherwise (or if the MSR address is outside that range) URDMSR causes a general-protection exception (#GP).</string></para>
+  <para unique="1092340">
+   <string>The URDMSR accesses to these bitmaps are implicit supervisor-mode accesses, which means they use supervisor privilege regardless of CPL. </string><anchor id="+314073"/></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1092386">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The URDMSR instruction is not recognized outside 64-bit mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The URDMSR instruction is not recognized outside 64-bit mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The URDMSR instruction is not recognized outside 64-bit mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The URDMSR instruction is not recognized outside 64-bit mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If MSR_address[63:14] is not all zero.</string></listitem>
+    <listitem><string>If the MSR address is in the range 0</string><string>&#8722;3FFH and bit n in the URDMSR bitmap is 0, where n is the MSR address.</string></listitem>
+    <listitem><string>If RDMSR from the specified MSR would result in a #GP(0) exception due to the MSR not being accessible.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If CPUID.07H.01H:EDX.USER_MSR[15] = 0.</string></listitem>
+    <listitem><string>If IA32_USER_MSR_CTL.ENABLE = 0.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

@@ -1,0 +1,63 @@
+<instruction name="MOVAPD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Move Aligned Packed Double Precision Floating-Point Values</shortdesc>
+ <longdesc><para unique="1091659">
+   <string>Moves 2, 4 or 8 double precision floating-point values from the source operand (second operand) to the destination operand (first operand). This instruction can be used to load an XMM, YMM or ZMM register from an 128-bit, 256-bit or 512-bit memory location, to store the contents of an XMM, YMM or ZMM register into a 128-bit, 256-bit or 512-bit memory location, or to move data between two XMM, two YMM or two ZMM registers. </string></para>
+  <para unique="1091660">
+   <string>When the source or destination operand is a memory operand, the operand must be aligned on a 16-byte (128-bit versions), 32-byte (256-bit version) or 64-byte (EVEX.512 encoded version) boundary or a general-protection exception (#GP) will be generated. For EVEX encoded versions, the operand must be aligned to the size of the memory operand. To move double precision floating-point values to and from unaligned memory locations, use the VMOVUPD instruction.</string></para>
+  <para unique="1091661">
+   <string>Note: VEX.vvvv and EVEX.vvvv are reserved and must be 1111b otherwise instructions will #UD.</string></para>
+  <para unique="1091662">
+   <string>EVEX.512 encoded version:</string></para>
+  <para unique="1091663">
+   <string>Moves 512 bits of packed double precision floating-point values from the source operand (second operand) to the destination operand (first operand). This instruction can be used to load a ZMM register from a 512-bit float64 memory location, to store the contents of a ZMM register into a 512-bit float64 memory location, or to move data between two ZMM registers. When the source or destination operand is a memory operand, the operand must be aligned on a 64-byte boundary or a general-protection exception (#GP) will be generated. To move single precision floating-point values to and from unaligned memory locations, use the VMOVUPD instruction.</string></para>
+  <para unique="1091664">
+   <string>VEX.256 and EVEX.256 encoded versions:</string></para>
+  <para unique="1091665">
+   <string>Moves 256 bits of packed double precision floating-point values from the source operand (second operand) to the destination operand (first operand). This instruction can be used to load a YMM register from a 256-bit memory location, to store the contents of a YMM register into a 256-bit memory location, or to move data between two YMM registers. When the source or destination operand is a memory operand, the operand must be aligned on a 32-byte boundary or a general-protection exception (#GP) will be generated. To move double precision floating-point values to and from unaligned memory locations, use the VMOVUPD instruction.</string></para>
+  <para unique="1091666">
+   <string>128-bit versions:</string></para>
+  <para unique="1091667">
+   <string>Moves 128 bits of packed double precision floating-point values from the source operand (second operand) to the destination operand (first operand). This instruction can be used to load an XMM register from a 128-bit memory location, to store the contents of an XMM register into a 128-bit memory location, or to move data between two XMM registers. When the source or destination operand is a memory operand, the operand must be aligned on a 16-byte boundary or a general-protection exception (#GP) will be generated. To move single precision floating-point values to and from unaligned memory locations, use the VMOVUPD instruction.</string></para>
+  <para unique="1091668">
+   <string>128-bit Legacy SSE version: Bits (MAXVL-1:128) of the corresponding ZMM destination register remain unchanged. </string></para>
+  <para unique="1091669">
+   <string>(E)VEX.128 encoded version: Bits (MAXVL-1:128) of the destination ZMM register destination are zeroed. </string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VMOVAPD __m512d _mm512_load_pd( void * m);</string><string>
+</string><string>VMOVAPD __m512d _mm512_mask_load_pd(__m512d s, __mmask8 k, void * m);</string><string>
+</string><string>VMOVAPD __m512d _mm512_maskz_load_pd( __mmask8 k, void * m);</string><string>
+</string><string>VMOVAPD void _mm512_store_pd( void * d, __m512d a);</string><string>
+</string><string>VMOVAPD void _mm512_mask_store_pd( void * d, __mmask8 k, __m512d a);</string><string>
+</string><string>VMOVAPD __m256d _mm256_mask_load_pd(__m256d s, __mmask8 k, void * m);</string><string>
+</string><string>VMOVAPD __m256d _mm256_maskz_load_pd( __mmask8 k, void * m);</string><string>
+</string><string>VMOVAPD void _mm256_mask_store_pd( void * d, __mmask8 k, __m256d a);</string><string>
+</string><string>VMOVAPD __m128d _mm_mask_load_pd(__m128d s, __mmask8 k, void * m);</string><string>
+</string><string>VMOVAPD __m128d _mm_maskz_load_pd( __mmask8 k, void * m);</string><string>
+</string><string>VMOVAPD void _mm_mask_store_pd( void * d, __mmask8 k, __m128d a);</string><string>
+</string><string>MOVAPD __m256d _mm256_load_pd (double * p);</string><string>
+</string><string>MOVAPD void _mm256_store_pd(double * p, __m256d a);</string><string>
+</string><string>MOVAPD __m128d _mm_load_pd (double * p);</string><string>
+</string><string>MOVAPD void _mm_store_pd(double * p, __m128d a);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1091747">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1091752" format="xIndent1">
+   <string>Non-EVEX-encoded instruction, see Exceptions Type1.SSE2 in </string><link linkend="11555: 06_Table: Table 2-8. Type 1 Class Exception Conditions"><string>Table&#160;2&#8209;18, &#8220;Type 1 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091756" format="xIndent1">
+   <string>EVEX-encoded instruction, see </string><link linkend="75930: 06_Table: Table 2-44. Type E1 Class Exception Conditions\x11 "><string>Table&#160;2&#8209;46, &#8220;Type E1 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091757" format="xIndent1">
+   <string>Additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If EVEX.vvvv != 1111B or VEX.vvvv != 1111B.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

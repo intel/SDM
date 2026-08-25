@@ -1,0 +1,111 @@
+<instruction name="BNDSTX">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Store Extended Bounds Using Address Translation</shortdesc>
+ <longdesc><para unique="1261238">
+   <string>BNDSTX uses the linear address constructed from the displacement and base register of the SIB-addressing form of the memory operand (mib) to perform address translation to store to a bound table entry. The bounds in the source operand bnd are written to the lower and upper bounds in the BTE. The content of the index register of mib is written to the pointer value field in the BTE. </string></para>
+  <para unique="1261239">
+   <string>This instruction does not cause memory access to the linear address of mib nor the effective address referenced by the base, and does not read or write any flags. </string></para>
+  <para unique="1261240">
+   <string>Segment overrides apply to the linear address computation with the base of mib, and are used during address translation to generate the address of the bound table entry. By default, the address of the BTE is assumed to be linear address. There are no segmentation checks performed on the base of mib. </string></para>
+  <para unique="1261241">
+   <string>The base of mib will not be checked for canonical address violation as it does not access memory. </string></para>
+  <para unique="1261242">
+   <string>Any encoding of this instruction that does not specify base or index register will treat those registers as zero (constant). The reg-reg form of this instruction will remain a NOP.</string></para>
+  <para unique="1261243">
+   <string>The scale field of the SIB byte has no effect on these instructions and is ignored.</string></para>
+  <para unique="1261244">
+   <string>The bound register may be partially updated on memory faults. The order in which memory operands are loaded is implementation specific.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>BNDSTX: _bnd_store_ptr_bounds(const void **ptr_addr, const void *ptr_val); </string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Flags Affected">
+  <para unique="1261281">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#BR</string></term>
+    <listitem><string>If the bound directory entry is invalid.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If ModRM.r/m encodes BND4-BND7 when Intel MPX is enabled.</string></listitem>
+    <listitem><string>If 67H prefix is not used and CS.D=0.</string></listitem>
+    <listitem><string>If 67H prefix is used and CS.D=1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a destination effective address of the Bound Table entry is outside the DS segment limit.</string></listitem>
+    <listitem><string>If DS register contains a NULL segment selector.</string></listitem>
+    <listitem><string>If the destination operand points to a non-writable segment</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If ModRM.r/m encodes BND4-BND7 when Intel MPX is enabled.</string></listitem>
+    <listitem><string>If 16-bit addressing is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a destination effective address of the Bound Table entry is outside the DS segment limit.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If ModRM.r/m encodes BND4-BND7 when Intel MPX is enabled.</string></listitem>
+    <listitem><string>If 16-bit addressing is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a destination effective address of the Bound Table entry is outside the DS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261304" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#BR</string></term>
+    <listitem><string>If the bound directory entry is invalid.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If ModRM is RIP relative.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If ModRM.r/m and REX encodes BND4-BND15 when Intel MPX is enabled.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the memory address (A_BDE or A_BTE) is in a non-canonical form.</string></listitem>
+    <listitem><string>If the destination operand points to a non-writable segment</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

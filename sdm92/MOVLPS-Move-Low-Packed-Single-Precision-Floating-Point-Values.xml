@@ -1,0 +1,46 @@
+<instruction name="MOVLPS">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Move Low Packed Single Precision Floating-Point Values</shortdesc>
+ <longdesc><para unique="1091570">
+   <string>This instruction cannot be used for register to register or memory to memory moves.</string></para>
+  <para unique="1091571">
+   <string>128-bit Legacy SSE load:</string></para>
+  <para unique="1091572">
+   <string>Moves two packed single precision floating-point values from the source 64-bit memory operand and stores them in the low 64-bits of the destination XMM register. The upper 64bits of the XMM register are preserved. Bits (MAXVL-1:128) of the corresponding destination register are preserved.</string></para>
+  <para unique="1091573">
+   <string>VEX.128 &amp; EVEX encoded load:</string></para>
+  <para unique="1091574">
+   <string>Loads two packed single precision floating-point values from the source 64-bit memory operand (the third operand), merges them with the upper 64-bits of the first source operand (the second operand), and stores them in the low 128-bits of the destination register (the first operand). Bits (MAXVL-1:128) of the corresponding desti&#173;nation register are zeroed.</string></para>
+  <para unique="1091575">
+   <string>128-bit store:</string></para>
+  <para unique="1091576">
+   <string>Loads two packed single precision floating-point values from the low 64-bits of the XMM register source (second operand) to the 64-bit memory location (first operand).</string></para>
+  <para unique="1091577">
+   <string>Note: VMOVLPS (store) (VEX.128.0F 13 /r) is legal and has the same behavior as the existing 0F 13 store. For VMOVLPS (store) VEX.vvvv and EVEX.vvvv are reserved and must be 1111b otherwise instruction will #UD.</string></para>
+  <para unique="1091579">
+   <string>If VMOVLPS is encoded with VEX.L or EVEX.L&#8217;L= 1, an attempt to execute the instruction encoded with VEX.L or EVEX.L&#8217;L= 1 will cause an #UD exception.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>MOVLPS __m128 _mm_loadl_pi ( __m128 a, __m64 *p)</string><string>
+</string><string>MOVLPS void _mm_storel_pi (__m64 *p, __m128 a)</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1091596">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1091601" format="xIndent1">
+   <string>Non-EVEX-encoded instruction, see </string><link linkend="48385: 06_Table: Table 2-22. Type 5 Class Exception Conditions"><string>Table&#160;2&#8209;22, &#8220;Type 5 Class Exception Conditions,&#8221;</string></link><string> additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If VEX.L = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>EVEX-encoded instruction, see </string></term>
+    <listitem><link linkend="32485: 06_Table: Table 2-57. Type E9NF Class Exception Conditions"><string>Table&#160;2&#8209;59, &#8220;Type E9NF Class Exception Conditions.&#8221;</string></link></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

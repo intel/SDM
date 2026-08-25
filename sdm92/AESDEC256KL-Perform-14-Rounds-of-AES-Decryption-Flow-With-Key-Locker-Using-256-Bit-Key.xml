@@ -1,0 +1,51 @@
+<instruction name="AESDEC256KL">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Perform 14 Rounds of AES Decryption Flow With Key Locker Using 256-Bit Key</shortdesc>
+ <longdesc><para unique="1261251">
+   <string>The AESDEC256KL</string><footnote><para unique="1261248">
+     <string>Further details on Key Locker and usage of this instruction can be found here:</string></para>
+    <para unique="1261250">
+     <string>	</string><anchor id="message URL https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html"/><underline><string>https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html</string></underline><string>.</string></para>
+    </footnote><string> instruction performs 14 rounds of AES to decrypt the first operand using the 256-bit key indi&#173;cated by the handle from the second operand. It stores the result in the first operand if the operation succeeds (e.g., does not run into a handle violation failure).</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1261272">
+   <string>ZF is set to 0 if the operation succeeded and set to 1 if the operation failed due to a handle violation. The other arithmetic flags (OF, SF, AF, PF, CF) are cleared to 0.</string></para>
+  </subsection>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>AESDEC256KL					unsigned char _mm_aesdec256kl_u8(__m128i* odata, __m128i idata, const void* h);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Exceptions (All Operating Modes)">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If CPUID.07H.00H:ECX.KEY_LOCKER[23] = 0.</string></listitem>
+    <listitem><string>If CR4.KL = 0.</string></listitem>
+    <listitem><string>If CPUID.19H:EBX.AESKLE[0] = 0.</string></listitem>
+    <listitem><string>If CR0.EM = 1.</string></listitem>
+    <listitem><string>If CR4.OSFXSR = 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM </string></term>
+    <listitem><string>If CR0.TS = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF </string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0) </string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <listitem><string>If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</string></listitem>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0) </string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

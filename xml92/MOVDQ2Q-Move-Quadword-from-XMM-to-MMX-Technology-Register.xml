@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="MOVDQ2Q_MMXq_XMMq" xed_iform="MOVDQ2Q_MMXq_XMMq" encoding="F2 0F D6 /r" opcode="d6" valid32="V" valid64="V">
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Calculate_RM</callee>
+   <callee>FP87::Check_For_Pending_Unmasked_Floating_Point_Exceptions</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_MMX</callee>
+   <callee>Instr_MOV</callee>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>FP87_Tag_Word</var-used>
+   <var-used>FP87_Status</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_XMM(Calculate_RM(mod, rm, context), 64);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSFXSR_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_EM_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><exception_check><exception_condition>TRUE</exception_condition>
+     <exception_fault>CHECK_X87</exception_fault>
+     </exception_check><pre_execute>
+     <code>FP87_Status.TOP := 0b000;</code>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_MOV(operand_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_MMX(reg, result);</code>
+     <code>FP87_Tag_Word := Zero(16);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOVDQ2Q">
+    <asm-operand><varname>mmx</varname></asm-operand>
+    <asm-operand><varname>xmm</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="SSE2"><cpuid-flag>SSE2</cpuid-flag></cpuid-group>
+   <encoding-size name="operand_size" size="64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>mmx</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="MOV" variant_kind="Standard variant" mnemonic="MOVDQ2Q">
+  <code>let result := src;</code>
+  <other-copy>MOV</other-copy>
+  <other-copy>MOVNTDQ</other-copy>
+  <other-copy>MOVNTDQA</other-copy>
+  <other-copy>MOVNTI</other-copy>
+  <other-copy>MOVNTPD</other-copy>
+  <other-copy>MOVNTPS</other-copy>
+  <other-copy>MOVNTQ</other-copy>
+  <other-copy>MOVQ2DQ</other-copy>
+  </operation>
+ <category>scalar</category>
+ <category>integer/data_transfer</category>
+ <size name="operand_size"/>
+ <input name="src"/>
+ <output name="result"/>
+ </instruction>

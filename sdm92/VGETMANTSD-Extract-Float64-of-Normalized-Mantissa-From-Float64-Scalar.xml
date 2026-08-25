@@ -1,0 +1,40 @@
+<instruction name="VGETMANTSD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Extract Float64 of Normalized Mantissa From Float64 Scalar</shortdesc>
+ <longdesc><para unique="1045943">
+   <string>Convert the double precision floating values in the low quadword element of the second source operand (the third operand) to double precision floating-point value with the mantissa normalization and sign control specified by the imm8 byte, see </string><link linkend="55949: 05_FigureFrame: Figure 5-25. Imm8 Controls for VGETMANTPD/SD/PS/SS"><string>Figure&#160;5&#8209;15</string></link><string>. The converted result is written to the low quadword element of the destination operand (the first operand) using writemask k1. Bits (127:64) of the XMM register destination are copied from corresponding bits in the first source operand. The normalized mantissa is specified by interv (imm8[1:0]) and the sign control (sc) is specified by bits 3:2 of the immediate byte. </string></para>
+  <para unique="1045947">
+   <string>The conversion operation is:</string></para>
+  <para unique="1045948">
+   <italic><string>	GetMant</string></italic><string>(</string><italic><string>x</string></italic><string>) = </string><italic><string>&#177;</string></italic><string>2</string><string>k</string><italic><string>|x.significand|</string></italic></para>
+  <para unique="1045949">
+   <string>where:</string></para>
+  <para unique="1045950">
+   <string>	1 </string><italic><string>&lt;</string></italic><string>= </string><italic><string>|x.significand| &lt; </string></italic><string>2</string></para>
+  <para unique="1045952">
+   <string>Unbiased exponent k can be either 0 or -1, depending on the interval range defined by interv, the range of the significand and whether the exponent of the source is even or odd. The sign of the final result is determined by sc and the source sign. The encoded value of imm8[1:0] and sign control are shown in </string><link linkend="55949: 05_FigureFrame: Figure 5-25. Imm8 Controls for VGETMANTPD/SD/PS/SS"><string>Figure&#160;5&#8209;15</string></link><string>.</string></para>
+  <para unique="1045956">
+   <string>The converted double precision floating-point result is encoded according to the sign control, the unbiased expo&#173;nent k (adding bias) and a mantissa normalized to the range specified by interv.</string></para>
+  <para unique="1045959">
+   <string>The GetMant() function follows </string><link linkend="81073: 06_Table: Table 5-16. GetMant() Special Float Values Behavior"><string>Table 5&#8209;16</string></link><string> when dealing with floating-point special numbers.</string></para>
+  <para unique="1045961">
+   <string>If writemasking is used, the low quadword element of the destination operand is conditionally updated depending on the value of writemask register k1. If writemasking is not used, the low quadword element of the destination operand is unconditionally updated.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VGETMANTSD __m128d _mm_getmant_sd( __m128d a, __m128 b, enum intv, enum sgn);</string><string>
+</string><string>VGETMANTSD __m128d _mm_mask_getmant_sd(__m128d s, __mmask8 k, __m128d a, __m128d b, enum intv, enum sgn);</string><string>
+</string><string>VGETMANTSD __m128d _mm_maskz_getmant_sd( __mmask8 k, __m128 a, __m128d b, enum intv, enum sgn);</string><string>
+</string><string>VGETMANTSD __m128d _mm_getmant_round_sd( __m128d a, __m128 b, enum intv, enum sgn, int r);</string><string>
+</string><string>VGETMANTSD __m128d _mm_mask_getmant_round_sd(__m128d s, __mmask8 k, __m128d a, __m128d b, enum intv, enum sgn, int r);</string><string>
+</string><string>VGETMANTSD __m128d _mm_maskz_getmant_round_sd( __mmask8 k, __m128d a, __m128d b, enum intv, enum sgn, int r);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1045988">
+   <string>Denormal, Invalid</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1045993" format="xIndent1">
+   <string>See </string><link linkend="63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions"><string>Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

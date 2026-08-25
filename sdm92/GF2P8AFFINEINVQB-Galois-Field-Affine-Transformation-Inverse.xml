@@ -1,0 +1,959 @@
+<instruction name="GF2P8AFFINEINVQB">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Galois Field Affine Transformation Inverse</shortdesc>
+ <longdesc><para unique="1261434">
+   <string>The AFFINEINVB instruction computes an affine transformation in the Galois Field 2</string><superscript><string>8</string></superscript><string>. For this instruction, an affine transformation is defined by A * inv(x) + b where &#8220;A&#8221; is an 8 by 8 bit matrix, and &#8220;x&#8221; and &#8220;b&#8221; are 8-bit vectors. The inverse of the bytes in x is defined with respect to the reduction polynomial x</string><superscript><string>8</string></superscript><string> + x</string><superscript><string>4</string></superscript><string> + x</string><superscript><string>3</string></superscript><string> + x + 1.</string></para>
+  <para unique="1261435">
+   <string>One SIMD register (operand 1) holds &#8220;x&#8221; as either 16, 32 or 64 8-bit vectors. A second SIMD (operand 2) register or memory operand contains 2, 4, or 8 &#8220;A&#8221; values, which are operated upon by the correspondingly aligned 8 &#8220;x&#8221; values in the first register. The &#8220;b&#8221; vector is constant for all calculations and contained in the immediate byte.</string></para>
+  <para unique="1261436">
+   <string>The EVEX encoded form of this instruction does not support memory fault suppression. The SSE encoded forms of the instruction require 16B alignment on their memory operations.</string></para>
+  <para unique="1261437">
+   <string>The inverse of each byte is given by the following table. The upper nibble is on the vertical axis and the lower nibble is on the horizontal axis. For example, the inverse of 0x95 is 0x8A.</string></para>
+  <table>
+   <caption>Table 3-52.  Inverse Byte Listings</caption>
+   <colgroup><col width="30.25872pt" align="left"/>
+    <col width="30.25872pt"/>
+    <col width="30.25872pt"/>
+    <col width="30.25872pt"/>
+    <col width="30.25872pt"/>
+    <col width="30.25872pt"/>
+    <col width="30.25872pt"/>
+    <col width="30.25872pt"/>
+    <col width="30.25872pt"/>
+    <col width="30.25872pt"/>
+    <col width="30.25872pt"/>
+    <col width="30.25872pt"/>
+    <col width="30.25872pt"/>
+    <col width="30.25872pt"/>
+    <col width="30.25872pt"/>
+    <col width="29.754720000000002pt"/>
+    <col width="29.91816pt"/>
+    </colgroup>
+   <thead><tr>
+     <td><para unique="1261475" format="CellBodyC">
+       <string>-</string></para>
+      </td>
+     <td><para unique="1261477" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261479" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     <td><para unique="1261481" format="CellBodyC">
+       <string>2</string></para>
+      </td>
+     <td><para unique="1261483" format="CellBodyC">
+       <string>3</string></para>
+      </td>
+     <td><para unique="1261485" format="CellBodyC">
+       <string>4</string></para>
+      </td>
+     <td><para unique="1261487" format="CellBodyC">
+       <string>5</string></para>
+      </td>
+     <td><para unique="1261489" format="CellBodyC">
+       <string>6</string></para>
+      </td>
+     <td><para unique="1261491" format="CellBodyC">
+       <string>7</string></para>
+      </td>
+     <td><para unique="1261493" format="CellBodyC">
+       <string>8</string></para>
+      </td>
+     <td><para unique="1261495" format="CellBodyC">
+       <string>9</string></para>
+      </td>
+     <td><para unique="1261497" format="CellBodyC">
+       <string>A</string></para>
+      </td>
+     <td><para unique="1261499" format="CellBodyC">
+       <string>B</string></para>
+      </td>
+     <td><para unique="1261501" format="CellBodyC">
+       <string>C</string></para>
+      </td>
+     <td><para unique="1261503" format="CellBodyC">
+       <string>D</string></para>
+      </td>
+     <td><para unique="1261505" format="CellBodyC">
+       <string>E</string></para>
+      </td>
+     <td><para unique="1261507" format="CellBodyC">
+       <string>F</string></para>
+      </td>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1261509" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261511" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261513" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     <td><para unique="1261515" format="CellBodyC">
+       <string>8D</string></para>
+      </td>
+     <td><para unique="1261517" format="CellBodyC">
+       <string>F6</string></para>
+      </td>
+     <td><para unique="1261519" format="CellBodyC">
+       <string>CB</string></para>
+      </td>
+     <td><para unique="1261521" format="CellBodyC">
+       <string>52</string></para>
+      </td>
+     <td><para unique="1261523" format="CellBodyC">
+       <string>7B</string></para>
+      </td>
+     <td><para unique="1261525" format="CellBodyC">
+       <string>D1</string></para>
+      </td>
+     <td><para unique="1261527" format="CellBodyC">
+       <string>E8</string></para>
+      </td>
+     <td><para unique="1261529" format="CellBodyC">
+       <string>4F</string></para>
+      </td>
+     <td><para unique="1261531" format="CellBodyC">
+       <string>29</string></para>
+      </td>
+     <td><para unique="1261533" format="CellBodyC">
+       <string>C0</string></para>
+      </td>
+     <td><para unique="1261535" format="CellBodyC">
+       <string>B0</string></para>
+      </td>
+     <td><para unique="1261537" format="CellBodyC">
+       <string>E1</string></para>
+      </td>
+     <td><para unique="1261539" format="CellBodyC">
+       <string>E5</string></para>
+      </td>
+     <td><para unique="1261541" format="CellBodyC">
+       <string>C7</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261543" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     <td><para unique="1261545" format="CellBodyC">
+       <string>74</string></para>
+      </td>
+     <td><para unique="1261547" format="CellBodyC">
+       <string>B4</string></para>
+      </td>
+     <td><para unique="1261549" format="CellBodyC">
+       <string>AA</string></para>
+      </td>
+     <td><para unique="1261551" format="CellBodyC">
+       <string>4B</string></para>
+      </td>
+     <td><para unique="1261553" format="CellBodyC">
+       <string>99</string></para>
+      </td>
+     <td><para unique="1261555" format="CellBodyC">
+       <string>2B</string></para>
+      </td>
+     <td><para unique="1261557" format="CellBodyC">
+       <string>60</string></para>
+      </td>
+     <td><para unique="1261559" format="CellBodyC">
+       <string>5F</string></para>
+      </td>
+     <td><para unique="1261561" format="CellBodyC">
+       <string>58</string></para>
+      </td>
+     <td><para unique="1261563" format="CellBodyC">
+       <string>3F</string></para>
+      </td>
+     <td><para unique="1261565" format="CellBodyC">
+       <string>FD</string></para>
+      </td>
+     <td><para unique="1261567" format="CellBodyC">
+       <string>CC</string></para>
+      </td>
+     <td><para unique="1261569" format="CellBodyC">
+       <string>FF</string></para>
+      </td>
+     <td><para unique="1261571" format="CellBodyC">
+       <string>40</string></para>
+      </td>
+     <td><para unique="1261573" format="CellBodyC">
+       <string>EE</string></para>
+      </td>
+     <td><para unique="1261575" format="CellBodyC">
+       <string>B2</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261577" format="CellBodyC">
+       <string>2</string></para>
+      </td>
+     <td><para unique="1261579" format="CellBodyC">
+       <string>3A</string></para>
+      </td>
+     <td><para unique="1261581" format="CellBodyC">
+       <string>6E</string></para>
+      </td>
+     <td><para unique="1261583" format="CellBodyC">
+       <string>5A</string></para>
+      </td>
+     <td><para unique="1261585" format="CellBodyC">
+       <string>F1</string></para>
+      </td>
+     <td><para unique="1261587" format="CellBodyC">
+       <string>55</string></para>
+      </td>
+     <td><para unique="1261589" format="CellBodyC">
+       <string>4D</string></para>
+      </td>
+     <td><para unique="1261591" format="CellBodyC">
+       <string>A8</string></para>
+      </td>
+     <td><para unique="1261593" format="CellBodyC">
+       <string>C9</string></para>
+      </td>
+     <td><para unique="1261595" format="CellBodyC">
+       <string>C1</string></para>
+      </td>
+     <td><para unique="1261597" format="CellBodyC">
+       <string>A</string></para>
+      </td>
+     <td><para unique="1261599" format="CellBodyC">
+       <string>98</string></para>
+      </td>
+     <td><para unique="1261601" format="CellBodyC">
+       <string>15</string></para>
+      </td>
+     <td><para unique="1261603" format="CellBodyC">
+       <string>30</string></para>
+      </td>
+     <td><para unique="1261605" format="CellBodyC">
+       <string>44</string></para>
+      </td>
+     <td><para unique="1261607" format="CellBodyC">
+       <string>A2</string></para>
+      </td>
+     <td><para unique="1261609" format="CellBodyC">
+       <string>C2</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261611" format="CellBodyC">
+       <string>3</string></para>
+      </td>
+     <td><para unique="1261613" format="CellBodyC">
+       <string>2C</string></para>
+      </td>
+     <td><para unique="1261615" format="CellBodyC">
+       <string>45</string></para>
+      </td>
+     <td><para unique="1261617" format="CellBodyC">
+       <string>92</string></para>
+      </td>
+     <td><para unique="1261619" format="CellBodyC">
+       <string>6C</string></para>
+      </td>
+     <td><para unique="1261621" format="CellBodyC">
+       <string>F3</string></para>
+      </td>
+     <td><para unique="1261623" format="CellBodyC">
+       <string>39</string></para>
+      </td>
+     <td><para unique="1261625" format="CellBodyC">
+       <string>66</string></para>
+      </td>
+     <td><para unique="1261627" format="CellBodyC">
+       <string>42</string></para>
+      </td>
+     <td><para unique="1261629" format="CellBodyC">
+       <string>F2</string></para>
+      </td>
+     <td><para unique="1261631" format="CellBodyC">
+       <string>35</string></para>
+      </td>
+     <td><para unique="1261633" format="CellBodyC">
+       <string>20</string></para>
+      </td>
+     <td><para unique="1261635" format="CellBodyC">
+       <string>6F</string></para>
+      </td>
+     <td><para unique="1261637" format="CellBodyC">
+       <string>77</string></para>
+      </td>
+     <td><para unique="1261639" format="CellBodyC">
+       <string>BB</string></para>
+      </td>
+     <td><para unique="1261641" format="CellBodyC">
+       <string>59</string></para>
+      </td>
+     <td><para unique="1261643" format="CellBodyC">
+       <string>19</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261645" format="CellBodyC">
+       <string>4</string></para>
+      </td>
+     <td><para unique="1261647" format="CellBodyC">
+       <string>1D</string></para>
+      </td>
+     <td><para unique="1261649" format="CellBodyC">
+       <string>FE</string></para>
+      </td>
+     <td><para unique="1261651" format="CellBodyC">
+       <string>37</string></para>
+      </td>
+     <td><para unique="1261653" format="CellBodyC">
+       <string>67</string></para>
+      </td>
+     <td><para unique="1261655" format="CellBodyC">
+       <string>2D</string></para>
+      </td>
+     <td><para unique="1261657" format="CellBodyC">
+       <string>31</string></para>
+      </td>
+     <td><para unique="1261659" format="CellBodyC">
+       <string>F5</string></para>
+      </td>
+     <td><para unique="1261661" format="CellBodyC">
+       <string>69</string></para>
+      </td>
+     <td><para unique="1261663" format="CellBodyC">
+       <string>A7</string></para>
+      </td>
+     <td><para unique="1261665" format="CellBodyC">
+       <string>64</string></para>
+      </td>
+     <td><para unique="1261667" format="CellBodyC">
+       <string>AB</string></para>
+      </td>
+     <td><para unique="1261669" format="CellBodyC">
+       <string>13</string></para>
+      </td>
+     <td><para unique="1261671" format="CellBodyC">
+       <string>54</string></para>
+      </td>
+     <td><para unique="1261673" format="CellBodyC">
+       <string>25</string></para>
+      </td>
+     <td><para unique="1261675" format="CellBodyC">
+       <string>E9</string></para>
+      </td>
+     <td><para unique="1261677" format="CellBodyC">
+       <string>9</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261679" format="CellBodyC">
+       <string>5</string></para>
+      </td>
+     <td><para unique="1261681" format="CellBodyC">
+       <string>ED</string></para>
+      </td>
+     <td><para unique="1261683" format="CellBodyC">
+       <string>5C</string></para>
+      </td>
+     <td><para unique="1261685" format="CellBodyC">
+       <string>5</string></para>
+      </td>
+     <td><para unique="1261687" format="CellBodyC">
+       <string>CA</string></para>
+      </td>
+     <td><para unique="1261689" format="CellBodyC">
+       <string>4C</string></para>
+      </td>
+     <td><para unique="1261691" format="CellBodyC">
+       <string>24</string></para>
+      </td>
+     <td><para unique="1261693" format="CellBodyC">
+       <string>87</string></para>
+      </td>
+     <td><para unique="1261695" format="CellBodyC">
+       <string>BF</string></para>
+      </td>
+     <td><para unique="1261697" format="CellBodyC">
+       <string>18</string></para>
+      </td>
+     <td><para unique="1261699" format="CellBodyC">
+       <string>3E</string></para>
+      </td>
+     <td><para unique="1261701" format="CellBodyC">
+       <string>22</string></para>
+      </td>
+     <td><para unique="1261703" format="CellBodyC">
+       <string>F0</string></para>
+      </td>
+     <td><para unique="1261705" format="CellBodyC">
+       <string>51</string></para>
+      </td>
+     <td><para unique="1261707" format="CellBodyC">
+       <string>EC</string></para>
+      </td>
+     <td><para unique="1261709" format="CellBodyC">
+       <string>61</string></para>
+      </td>
+     <td><para unique="1261711" format="CellBodyC">
+       <string>17</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261713" format="CellBodyC">
+       <string>6</string></para>
+      </td>
+     <td><para unique="1261715" format="CellBodyC">
+       <string>16</string></para>
+      </td>
+     <td><para unique="1261717" format="CellBodyC">
+       <string>5E</string></para>
+      </td>
+     <td><para unique="1261719" format="CellBodyC">
+       <string>AF</string></para>
+      </td>
+     <td><para unique="1261721" format="CellBodyC">
+       <string>D3</string></para>
+      </td>
+     <td><para unique="1261723" format="CellBodyC">
+       <string>49</string></para>
+      </td>
+     <td><para unique="1261725" format="CellBodyC">
+       <string>A6</string></para>
+      </td>
+     <td><para unique="1261727" format="CellBodyC">
+       <string>36</string></para>
+      </td>
+     <td><para unique="1261729" format="CellBodyC">
+       <string>43</string></para>
+      </td>
+     <td><para unique="1261731" format="CellBodyC">
+       <string>F4</string></para>
+      </td>
+     <td><para unique="1261733" format="CellBodyC">
+       <string>47</string></para>
+      </td>
+     <td><para unique="1261735" format="CellBodyC">
+       <string>91</string></para>
+      </td>
+     <td><para unique="1261737" format="CellBodyC">
+       <string>DF</string></para>
+      </td>
+     <td><para unique="1261739" format="CellBodyC">
+       <string>33</string></para>
+      </td>
+     <td><para unique="1261741" format="CellBodyC">
+       <string>93</string></para>
+      </td>
+     <td><para unique="1261743" format="CellBodyC">
+       <string>21</string></para>
+      </td>
+     <td><para unique="1261745" format="CellBodyC">
+       <string>3B</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261747" format="CellBodyC">
+       <string>7</string></para>
+      </td>
+     <td><para unique="1261749" format="CellBodyC">
+       <string>79</string></para>
+      </td>
+     <td><para unique="1261751" format="CellBodyC">
+       <string>B7</string></para>
+      </td>
+     <td><para unique="1261753" format="CellBodyC">
+       <string>97</string></para>
+      </td>
+     <td><para unique="1261755" format="CellBodyC">
+       <string>85</string></para>
+      </td>
+     <td><para unique="1261757" format="CellBodyC">
+       <string>10</string></para>
+      </td>
+     <td><para unique="1261759" format="CellBodyC">
+       <string>B5</string></para>
+      </td>
+     <td><para unique="1261761" format="CellBodyC">
+       <string>BA</string></para>
+      </td>
+     <td><para unique="1261763" format="CellBodyC">
+       <string>3C</string></para>
+      </td>
+     <td><para unique="1261765" format="CellBodyC">
+       <string>B6</string></para>
+      </td>
+     <td><para unique="1261767" format="CellBodyC">
+       <string>70</string></para>
+      </td>
+     <td><para unique="1261769" format="CellBodyC">
+       <string>D0</string></para>
+      </td>
+     <td><para unique="1261771" format="CellBodyC">
+       <string>6</string></para>
+      </td>
+     <td><para unique="1261773" format="CellBodyC">
+       <string>A1</string></para>
+      </td>
+     <td><para unique="1261775" format="CellBodyC">
+       <string>FA</string></para>
+      </td>
+     <td><para unique="1261777" format="CellBodyC">
+       <string>81</string></para>
+      </td>
+     <td><para unique="1261779" format="CellBodyC">
+       <string>82</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261781" format="CellBodyC">
+       <string>8</string></para>
+      </td>
+     <td><para unique="1261783" format="CellBodyC">
+       <string>83</string></para>
+      </td>
+     <td><para unique="1261785" format="CellBodyC">
+       <string>7E</string></para>
+      </td>
+     <td><para unique="1261787" format="CellBodyC">
+       <string>7F</string></para>
+      </td>
+     <td><para unique="1261789" format="CellBodyC">
+       <string>80</string></para>
+      </td>
+     <td><para unique="1261791" format="CellBodyC">
+       <string>96</string></para>
+      </td>
+     <td><para unique="1261793" format="CellBodyC">
+       <string>73</string></para>
+      </td>
+     <td><para unique="1261795" format="CellBodyC">
+       <string>BE</string></para>
+      </td>
+     <td><para unique="1261797" format="CellBodyC">
+       <string>56</string></para>
+      </td>
+     <td><para unique="1261799" format="CellBodyC">
+       <string>9B</string></para>
+      </td>
+     <td><para unique="1261801" format="CellBodyC">
+       <string>9E</string></para>
+      </td>
+     <td><para unique="1261803" format="CellBodyC">
+       <string>95</string></para>
+      </td>
+     <td><para unique="1261805" format="CellBodyC">
+       <string>D9</string></para>
+      </td>
+     <td><para unique="1261807" format="CellBodyC">
+       <string>F7</string></para>
+      </td>
+     <td><para unique="1261809" format="CellBodyC">
+       <string>2</string></para>
+      </td>
+     <td><para unique="1261811" format="CellBodyC">
+       <string>B9</string></para>
+      </td>
+     <td><para unique="1261813" format="CellBodyC">
+       <string>A4</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261815" format="CellBodyC">
+       <string>9</string></para>
+      </td>
+     <td><para unique="1261817" format="CellBodyC">
+       <string>DE</string></para>
+      </td>
+     <td><para unique="1261819" format="CellBodyC">
+       <string>6A</string></para>
+      </td>
+     <td><para unique="1261821" format="CellBodyC">
+       <string>32</string></para>
+      </td>
+     <td><para unique="1261823" format="CellBodyC">
+       <string>6D</string></para>
+      </td>
+     <td><para unique="1261825" format="CellBodyC">
+       <string>D8</string></para>
+      </td>
+     <td><para unique="1261827" format="CellBodyC">
+       <string>8A</string></para>
+      </td>
+     <td><para unique="1261829" format="CellBodyC">
+       <string>84</string></para>
+      </td>
+     <td><para unique="1261831" format="CellBodyC">
+       <string>72</string></para>
+      </td>
+     <td><para unique="1261833" format="CellBodyC">
+       <string>2A</string></para>
+      </td>
+     <td><para unique="1261835" format="CellBodyC">
+       <string>14</string></para>
+      </td>
+     <td><para unique="1261837" format="CellBodyC">
+       <string>9F</string></para>
+      </td>
+     <td><para unique="1261839" format="CellBodyC">
+       <string>88</string></para>
+      </td>
+     <td><para unique="1261841" format="CellBodyC">
+       <string>F9</string></para>
+      </td>
+     <td><para unique="1261843" format="CellBodyC">
+       <string>DC</string></para>
+      </td>
+     <td><para unique="1261845" format="CellBodyC">
+       <string>89</string></para>
+      </td>
+     <td><para unique="1261847" format="CellBodyC">
+       <string>9A</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261849" format="CellBodyC">
+       <string>A</string></para>
+      </td>
+     <td><para unique="1261851" format="CellBodyC">
+       <string>FB</string></para>
+      </td>
+     <td><para unique="1261853" format="CellBodyC">
+       <string>7C</string></para>
+      </td>
+     <td><para unique="1261855" format="CellBodyC">
+       <string>2E</string></para>
+      </td>
+     <td><para unique="1261857" format="CellBodyC">
+       <string>C3</string></para>
+      </td>
+     <td><para unique="1261859" format="CellBodyC">
+       <string>8F</string></para>
+      </td>
+     <td><para unique="1261861" format="CellBodyC">
+       <string>B8</string></para>
+      </td>
+     <td><para unique="1261863" format="CellBodyC">
+       <string>65</string></para>
+      </td>
+     <td><para unique="1261865" format="CellBodyC">
+       <string>48</string></para>
+      </td>
+     <td><para unique="1261867" format="CellBodyC">
+       <string>26</string></para>
+      </td>
+     <td><para unique="1261869" format="CellBodyC">
+       <string>C8</string></para>
+      </td>
+     <td><para unique="1261871" format="CellBodyC">
+       <string>12</string></para>
+      </td>
+     <td><para unique="1261873" format="CellBodyC">
+       <string>4A</string></para>
+      </td>
+     <td><para unique="1261875" format="CellBodyC">
+       <string>CE</string></para>
+      </td>
+     <td><para unique="1261877" format="CellBodyC">
+       <string>E7</string></para>
+      </td>
+     <td><para unique="1261879" format="CellBodyC">
+       <string>D2</string></para>
+      </td>
+     <td><para unique="1261881" format="CellBodyC">
+       <string>62</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261883" format="CellBodyC">
+       <string>B</string></para>
+      </td>
+     <td><para unique="1261885" format="CellBodyC">
+       <string>C</string></para>
+      </td>
+     <td><para unique="1261887" format="CellBodyC">
+       <string>E0</string></para>
+      </td>
+     <td><para unique="1261889" format="CellBodyC">
+       <string>1F</string></para>
+      </td>
+     <td><para unique="1261891" format="CellBodyC">
+       <string>EF</string></para>
+      </td>
+     <td><para unique="1261893" format="CellBodyC">
+       <string>11</string></para>
+      </td>
+     <td><para unique="1261895" format="CellBodyC">
+       <string>75</string></para>
+      </td>
+     <td><para unique="1261897" format="CellBodyC">
+       <string>78</string></para>
+      </td>
+     <td><para unique="1261899" format="CellBodyC">
+       <string>71</string></para>
+      </td>
+     <td><para unique="1261901" format="CellBodyC">
+       <string>A5</string></para>
+      </td>
+     <td><para unique="1261903" format="CellBodyC">
+       <string>8E</string></para>
+      </td>
+     <td><para unique="1261905" format="CellBodyC">
+       <string>76</string></para>
+      </td>
+     <td><para unique="1261907" format="CellBodyC">
+       <string>3D</string></para>
+      </td>
+     <td><para unique="1261909" format="CellBodyC">
+       <string>BD</string></para>
+      </td>
+     <td><para unique="1261911" format="CellBodyC">
+       <string>BC</string></para>
+      </td>
+     <td><para unique="1261913" format="CellBodyC">
+       <string>86</string></para>
+      </td>
+     <td><para unique="1261915" format="CellBodyC">
+       <string>57</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261917" format="CellBodyC">
+       <string>C</string></para>
+      </td>
+     <td><para unique="1261919" format="CellBodyC">
+       <string>B</string></para>
+      </td>
+     <td><para unique="1261921" format="CellBodyC">
+       <string>28</string></para>
+      </td>
+     <td><para unique="1261923" format="CellBodyC">
+       <string>2F</string></para>
+      </td>
+     <td><para unique="1261925" format="CellBodyC">
+       <string>A3</string></para>
+      </td>
+     <td><para unique="1261927" format="CellBodyC">
+       <string>DA</string></para>
+      </td>
+     <td><para unique="1261929" format="CellBodyC">
+       <string>D4</string></para>
+      </td>
+     <td><para unique="1261931" format="CellBodyC">
+       <string>E4</string></para>
+      </td>
+     <td><para unique="1261933" format="CellBodyC">
+       <string>F</string></para>
+      </td>
+     <td><para unique="1261935" format="CellBodyC">
+       <string>A9</string></para>
+      </td>
+     <td><para unique="1261937" format="CellBodyC">
+       <string>27</string></para>
+      </td>
+     <td><para unique="1261939" format="CellBodyC">
+       <string>53</string></para>
+      </td>
+     <td><para unique="1261941" format="CellBodyC">
+       <string>4</string></para>
+      </td>
+     <td><para unique="1261943" format="CellBodyC">
+       <string>1B</string></para>
+      </td>
+     <td><para unique="1261945" format="CellBodyC">
+       <string>FC</string></para>
+      </td>
+     <td><para unique="1261947" format="CellBodyC">
+       <string>AC</string></para>
+      </td>
+     <td><para unique="1261949" format="CellBodyC">
+       <string>E6</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261951" format="CellBodyC">
+       <string>D</string></para>
+      </td>
+     <td><para unique="1261953" format="CellBodyC">
+       <string>7A</string></para>
+      </td>
+     <td><para unique="1261955" format="CellBodyC">
+       <string>7</string></para>
+      </td>
+     <td><para unique="1261957" format="CellBodyC">
+       <string>AE</string></para>
+      </td>
+     <td><para unique="1261959" format="CellBodyC">
+       <string>63</string></para>
+      </td>
+     <td><para unique="1261961" format="CellBodyC">
+       <string>C5</string></para>
+      </td>
+     <td><para unique="1261963" format="CellBodyC">
+       <string>DB</string></para>
+      </td>
+     <td><para unique="1261965" format="CellBodyC">
+       <string>E2</string></para>
+      </td>
+     <td><para unique="1261967" format="CellBodyC">
+       <string>EA</string></para>
+      </td>
+     <td><para unique="1261969" format="CellBodyC">
+       <string>94</string></para>
+      </td>
+     <td><para unique="1261971" format="CellBodyC">
+       <string>8B</string></para>
+      </td>
+     <td><para unique="1261973" format="CellBodyC">
+       <string>C4</string></para>
+      </td>
+     <td><para unique="1261975" format="CellBodyC">
+       <string>D5</string></para>
+      </td>
+     <td><para unique="1261977" format="CellBodyC">
+       <string>9D</string></para>
+      </td>
+     <td><para unique="1261979" format="CellBodyC">
+       <string>F8</string></para>
+      </td>
+     <td><para unique="1261981" format="CellBodyC">
+       <string>90</string></para>
+      </td>
+     <td><para unique="1261983" format="CellBodyC">
+       <string>6B</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261985" format="CellBodyC">
+       <string>E</string></para>
+      </td>
+     <td><para unique="1261987" format="CellBodyC">
+       <string>B1</string></para>
+      </td>
+     <td><para unique="1261989" format="CellBodyC">
+       <string>D</string></para>
+      </td>
+     <td><para unique="1261991" format="CellBodyC">
+       <string>D6</string></para>
+      </td>
+     <td><para unique="1261993" format="CellBodyC">
+       <string>EB</string></para>
+      </td>
+     <td><para unique="1261995" format="CellBodyC">
+       <string>C6</string></para>
+      </td>
+     <td><para unique="1261997" format="CellBodyC">
+       <string>E</string></para>
+      </td>
+     <td><para unique="1261999" format="CellBodyC">
+       <string>CF</string></para>
+      </td>
+     <td><para unique="1262001" format="CellBodyC">
+       <string>AD</string></para>
+      </td>
+     <td><para unique="1262003" format="CellBodyC">
+       <string>8</string></para>
+      </td>
+     <td><para unique="1262005" format="CellBodyC">
+       <string>4E</string></para>
+      </td>
+     <td><para unique="1262007" format="CellBodyC">
+       <string>D7</string></para>
+      </td>
+     <td><para unique="1262009" format="CellBodyC">
+       <string>E3</string></para>
+      </td>
+     <td><para unique="1262011" format="CellBodyC">
+       <string>5D</string></para>
+      </td>
+     <td><para unique="1262013" format="CellBodyC">
+       <string>50</string></para>
+      </td>
+     <td><para unique="1262015" format="CellBodyC">
+       <string>1E</string></para>
+      </td>
+     <td><para unique="1262017" format="CellBodyC">
+       <string>B3</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262019" format="CellBodyC">
+       <string>F</string></para>
+      </td>
+     <td><para unique="1262021" format="CellBodyC">
+       <string>5B</string></para>
+      </td>
+     <td><para unique="1262023" format="CellBodyC">
+       <string>23</string></para>
+      </td>
+     <td><para unique="1262025" format="CellBodyC">
+       <string>38</string></para>
+      </td>
+     <td><para unique="1262027" format="CellBodyC">
+       <string>34</string></para>
+      </td>
+     <td><para unique="1262029" format="CellBodyC">
+       <string>68</string></para>
+      </td>
+     <td><para unique="1262031" format="CellBodyC">
+       <string>46</string></para>
+      </td>
+     <td><para unique="1262033" format="CellBodyC">
+       <string>3</string></para>
+      </td>
+     <td><para unique="1262035" format="CellBodyC">
+       <string>8C</string></para>
+      </td>
+     <td><para unique="1262037" format="CellBodyC">
+       <string>DD</string></para>
+      </td>
+     <td><para unique="1262039" format="CellBodyC">
+       <string>9C</string></para>
+      </td>
+     <td><para unique="1262041" format="CellBodyC">
+       <string>7D</string></para>
+      </td>
+     <td><para unique="1262043" format="CellBodyC">
+       <string>A0</string></para>
+      </td>
+     <td><para unique="1262045" format="CellBodyC">
+       <string>CD</string></para>
+      </td>
+     <td><para unique="1262047" format="CellBodyC">
+       <string>1A</string></para>
+      </td>
+     <td><para unique="1262049" format="CellBodyC">
+       <string>41</string></para>
+      </td>
+     <td><para unique="1262051" format="CellBodyC">
+       <string>1C</string></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>(V)GF2P8AFFINEINVQB __m128i _mm_gf2p8affineinv_epi64_epi8(__m128i, __m128i, int);</string><string>
+</string><string>(V)GF2P8AFFINEINVQB __m128i _mm_mask_gf2p8affineinv_epi64_epi8(__m128i, __mmask16, __m128i, __m128i, int);</string><string>
+</string><string>(V)GF2P8AFFINEINVQB __m128i _mm_maskz_gf2p8affineinv_epi64_epi8(__mmask16, __m128i, __m128i, int);</string><string>
+</string><string>VGF2P8AFFINEINVQB __m256i _mm256_gf2p8affineinv_epi64_epi8(__m256i, __m256i, int);</string><string>
+</string><string>VGF2P8AFFINEINVQB __m256i _mm256_mask_gf2p8affineinv_epi64_epi8(__m256i, __mmask32, __m256i, __m256i, int);</string><string>
+</string><string>VGF2P8AFFINEINVQB __m256i _mm256_maskz_gf2p8affineinv_epi64_epi8(__mmask32, __m256i, __m256i, int);</string><string>
+</string><string>VGF2P8AFFINEINVQB __m512i _mm512_gf2p8affineinv_epi64_epi8(__m512i, __m512i, int);</string><string>
+</string><string>VGF2P8AFFINEINVQB __m512i _mm512_mask_gf2p8affineinv_epi64_epi8(__m512i, __mmask64, __m512i, __m512i, int);</string><string>
+</string><string>VGF2P8AFFINEINVQB __m512i _mm512_maskz_gf2p8affineinv_epi64_epi8(__mmask64, __m512i, __m512i, int);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1262130">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1262135" format="xIndent1">
+   <string>Legacy-encoded and VEX-encoded: See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1262138" format="xIndent1">
+   <string>EVEX-encoded: See </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

@@ -1,0 +1,212 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="LTR_GPR16" xed_iform="LTR_GPR16" encoding="0F 00 /3" opcode="00" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_General_Protection_Exception</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>VM_Exec_Controls2</callee>
+   <callee>VM_Exit</callee>
+   <callee>Instr_LTR</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>CPL</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>VMX_Operation_Mode</var-used>
+   <var-used>VMX_Non_Root</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>VMX_EXIT_LDTR_TR</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr><code>let src := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, 16);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>RealMode</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeV86</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VMX_EXEC_2(Descriptor_Table_Exiting == 0b1)</exception_condition>
+     <exception_fault>VMEXIT(VMX_EXIT_LDTR_TR)</exception_fault>
+     </exception_check><exception_check><exception_condition>CPL_Not0</exception_condition>
+     <exception_fault>#GP</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_LTR?(src);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="LTR">
+    <asm-operand><varname>r16</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r16</varname></label>
+    </operand>
+   </iform>
+  <iform name="LTR_MEMw" xed_iform="LTR_MEMw" encoding="0F 00 /3" opcode="00" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Report_General_Protection_Exception</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>VM_Exec_Controls2</callee>
+   <callee>VM_Exit</callee>
+   <callee>Instr_LTR</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>CPL</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>VMX_Operation_Mode</var-used>
+   <var-used>VMX_Non_Root</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>VMX_EXIT_LDTR_TR</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>RealMode</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeV86</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VMX_EXEC_2(Descriptor_Table_Exiting == 0b1)</exception_condition>
+     <exception_fault>VMEXIT(VMX_EXIT_LDTR_TR)</exception_fault>
+     </exception_check><exception_check><exception_condition>CPL_Not0</exception_condition>
+     <exception_fault>#GP</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src := Logical_Mem_Read?(segment, effective_address, 16);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_LTR?(src);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="LTR">
+    <asm-operand><varname>m16</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m16</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="LTR" variant_kind="Standard variant" mnemonic="LTR">
+  <code>var new_tr := Segment{</code>
+  <code>    selector =&gt; src,</code>
+  <code>    descriptor =&gt; Zero(64),</code>
+  <code>    descriptor_high =&gt; Zero(64),</code>
+  <code>    descriptor_valid =&gt; False,</code>
+  <code>    is_stack =&gt; False,</code>
+  <code>    is_code =&gt; False,</code>
+  <code>    is_64bit_mode_segment =&gt; False };</code>
+  <code></code>
+  <code>if Is_Null_Segment_Selector(new_tr.selector) then</code>
+  <code>    Report_General_Protection_Exception!(Zero(32));</code>
+  <code>endif;</code>
+  <code></code>
+  <code>if Is_Local_Segment_Selector(new_tr.selector) then</code>
+  <code>    Report_General_Protection_Exception!(Get_Error_Code_From_Selector(new_tr.selector));</code>
+  <code>endif;</code>
+  <code></code>
+  <code>new_tr := Load_Segment_Descriptor?(new_tr.selector, TR);</code>
+  <code>if In_64Bit_Mode() then</code>
+  <code>    new_tr.descriptor_high := Load_Segment_Descriptor_High?(new_tr.selector);</code>
+  <code></code>
+  <code>    if not Is_Canonical_Wrt_Max_Size(Get_Segment_Base(new_tr)) then</code>
+  <code>        Report_General_Protection_Exception!(Get_Error_Code_From_Selector(new_tr.selector));</code>
+  <code>    endif;</code>
+  <code>endif;</code>
+  <code></code>
+  <code>if not Is_Available_TSS(new_tr) then</code>
+  <code>    Report_General_Protection_Exception!(Get_Error_Code_From_Selector(new_tr.selector));</code>
+  <code>endif;</code>
+  <code></code>
+  <code>if new_tr.descriptor.P == 0b0 then</code>
+  <code>    Report_Segment_Not_Present!(Get_Error_Code_From_Selector(new_tr.selector));</code>
+  <code>endif;</code>
+  <code></code>
+  <code>// todo: Locked read-modify-write operation on the entire descriptor when setting busy flag</code>
+  <code>let _ := Load_Segment_Descriptor?(new_tr.selector, TR);</code>
+  <code>new_tr.descriptor.Busy := 0b1;</code>
+  <code>Store_Segment_Descriptor?(new_tr, False);</code>
+  <code></code>
+  <code>TR := new_tr;</code>
+  <callee>Std::Boolean::Not</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>Get_Error_Code_From_Selector</callee>
+  <callee>Get_Segment_Base</callee>
+  <callee>In_64Bit_Mode</callee>
+  <callee>Is_Available_TSS</callee>
+  <callee>Is_Canonical_Wrt_Max_Size</callee>
+  <callee>Is_Local_Segment_Selector</callee>
+  <callee>Is_Null_Segment_Selector</callee>
+  <callee>Load_Segment_Descriptor</callee>
+  <callee>Load_Segment_Descriptor_High</callee>
+  <callee>Report_General_Protection_Exception</callee>
+  <callee>Report_Segment_Not_Present</callee>
+  <callee>Store_Segment_Descriptor</callee>
+  <var-used>False</var-used>
+  <var-used>TR</var-used>
+  </operation>
+ <category>segments</category>
+ <input name="src"/>
+ </instruction>

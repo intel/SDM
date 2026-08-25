@@ -1,0 +1,65 @@
+<instruction name="CLTS">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Clear Task-Switched Flag in CR0</shortdesc>
+ <longdesc><para unique="1261240">
+   <string>Clears the task-switched (TS) flag in the CR0 register. This instruction is intended for use in operating-system procedures. It is a privileged instruction that can only be executed at a CPL of 0. It is allowed to be executed in real-address mode to allow initialization for protected mode.</string></para>
+  <para unique="1261241">
+   <string>The processor sets the TS flag every time a task switch occurs. The flag is used to synchronize the saving of FPU context in multitasking applications. See the description of the TS flag in the section titled </string><string>&#8220;Control Registers&#8221;</string><string> in </string><link linkend="17620: H1Heading: Chapter 2 System Architecture Overview"><string>Chapter 2</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A, for more information about this flag. </string></para>
+  <para unique="1261248">
+   <string>CLTS operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+  <para unique="1261252">
+   <string>See </string><link linkend="12383: H1Heading: Chapter 10 Debugging and Performance Monitoring"><string>Chapter 27, &#8220;Virtual Machine Control Structures,&#8221;</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Devel&#173;oper&#8217;s Manual, Volume 3C, for more information about the behavior of this instruction in VMX non-root operation.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1261256">
+   <string>The TS flag in CR0 register is cleared.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>CLTS is not recognized in virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261266" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the CPL is greater than 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

@@ -1,0 +1,80 @@
+<instruction name="MOVDQA,VMOVDQA32/64">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Move Aligned Packed Integer Values</shortdesc>
+ <longdesc><para unique="1091759">
+   <string>Note: VEX.vvvv and EVEX.vvvv are reserved and must be 1111b otherwise instructions will #UD.</string></para>
+  <para unique="1091760">
+   <string>EVEX encoded versions:</string></para>
+  <para unique="1091761">
+   <string>Moves 128, 256 or 512 bits of packed doubleword/quadword integer values from the source operand (the second operand) to the destination operand (the first operand). This instruction can be used to load a vector register from an int32/int64 memory location, to store the contents of a vector register into an int32/int64 memory location, or to move data between two ZMM registers. When the source or destination operand is a memory operand, the operand must be aligned on a 16 (EVEX.128)/32(EVEX.256)/64(EVEX.512)-byte boundary or a general-protection exception (#GP) will be generated. To move integer data to and from unaligned memory locations, use the VMOVDQU instruction.</string></para>
+  <para unique="1091762">
+   <string>The destination operand is updated at 32-bit (VMOVDQA32) or 64-bit (VMOVDQA64) granularity according to the writemask.</string></para>
+  <para unique="1091763">
+   <string>VEX.256 encoded version:</string></para>
+  <para unique="1091764">
+   <string>Moves 256 bits of packed integer values from the source operand (second operand) to the destination operand (first operand). This instruction can be used to load a YMM register from a 256-bit memory location, to store the contents of a YMM register into a 256-bit memory location, or to move data between two YMM registers. </string></para>
+  <para unique="1091765">
+   <string>When the source or destination operand is a memory operand, the operand must be aligned on a 32-byte boundary or a general-protection exception (#GP) will be generated. To move integer data to and from unaligned memory locations, use the VMOVDQU instruction. Bits (MAXVL-1:256) of the destination register are zeroed.</string></para>
+  <para unique="1091766">
+   <string>128-bit versions:</string></para>
+  <para unique="1091767">
+   <string>Moves 128 bits of packed integer values from the source operand (second operand) to the destination operand (first operand). This instruction can be used to load an XMM register from a 128-bit memory location, to store the contents of an XMM register into a 128-bit memory location, or to move data between two XMM registers. </string></para>
+  <para unique="1091768">
+   <string>When the source or destination operand is a memory operand, the operand must be aligned on a 16-byte boundary or a general-protection exception (#GP) will be generated. To move integer data to and from unaligned memory locations, use the VMOVDQU instruction.</string></para>
+  <para unique="1091769">
+   <string>128-bit Legacy SSE version: Bits (MAXVL-1:128) of the corresponding ZMM destination register remain unchanged.</string></para>
+  <para unique="1091770">
+   <string>VEX.128 encoded version: Bits (MAXVL-1:128) of the destination register are zeroed.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VMOVDQA32 __m512i _mm512_load_epi32( void * sa); </string><string>
+</string><string>VMOVDQA32 __m512i _mm512_mask_load_epi32(__m512i s, __mmask16 k, void * sa); </string><string>
+</string><string>VMOVDQA32 __m512i _mm512_maskz_load_epi32( __mmask16 k, void * sa); </string><string>
+</string><string>VMOVDQA32 void _mm512_store_epi32(void * d, __m512i a); </string><string>
+</string><string>VMOVDQA32 void _mm512_mask_store_epi32(void * d, __mmask16 k, __m512i a); </string><string>
+</string><string>VMOVDQA32 __m256i _mm256_mask_load_epi32(__m256i s, __mmask8 k, void * sa); </string><string>
+</string><string>VMOVDQA32 __m256i _mm256_maskz_load_epi32( __mmask8 k, void * sa); </string><string>
+</string><string>VMOVDQA32 void _mm256_store_epi32(void * d, __m256i a); </string><string>
+</string><string>VMOVDQA32 void _mm256_mask_store_epi32(void * d, __mmask8 k, __m256i a); </string><string>
+</string><string>VMOVDQA32 __m128i _mm_mask_load_epi32(__m128i s, __mmask8 k, void * sa); </string><string>
+</string><string>VMOVDQA32 __m128i _mm_maskz_load_epi32( __mmask8 k, void * sa); </string><string>
+</string><string>VMOVDQA32 void _mm_store_epi32(void * d, __m128i a); </string><string>
+</string><string>VMOVDQA32 void _mm_mask_store_epi32(void * d, __mmask8 k, __m128i a); </string><string>
+</string><string>VMOVDQA64 __m512i _mm512_load_epi64( void * sa); </string><string>
+</string><string>VMOVDQA64 __m512i _mm512_mask_load_epi64(__m512i s, __mmask8 k, void * sa); </string><string>
+</string><string>VMOVDQA64 __m512i _mm512_maskz_load_epi64( __mmask8 k, void * sa); </string><string>
+</string><string>VMOVDQA64 void _mm512_store_epi64(void * d, __m512i a); </string><string>
+</string><string>VMOVDQA64 void _mm512_mask_store_epi64(void * d, __mmask8 k, __m512i a); </string><string>
+</string><string>VMOVDQA64 __m256i _mm256_mask_load_epi64(__m256i s, __mmask8 k, void * sa); </string><string>
+</string><string>VMOVDQA64 __m256i _mm256_maskz_load_epi64( __mmask8 k, void * sa); </string><string>
+</string><string>VMOVDQA64 void _mm256_store_epi64(void * d, __m256i a); </string><string>
+</string><string>VMOVDQA64 void _mm256_mask_store_epi64(void * d, __mmask8 k, __m256i a); </string><string>
+</string><string>VMOVDQA64 __m128i _mm_mask_load_epi64(__m128i s, __mmask8 k, void * sa); </string><string>
+</string><string>VMOVDQA64 __m128i _mm_maskz_load_epi64( __mmask8 k, void * sa); </string><string>
+</string><string>VMOVDQA64 void _mm_store_epi64(void * d, __m128i a); </string><string>
+</string><string>VMOVDQA64 void _mm_mask_store_epi64(void * d, __mmask8 k, __m128i a); </string><string>
+</string><string>MOVDQA void __m256i _mm256_load_si256 (__m256i * p);</string><string>
+</string><string>MOVDQA _mm256_store_si256(_m256i *p, __m256i a);</string><string>
+</string><string>MOVDQA __m128i _mm_load_si128 (__m128i * p);</string><string>
+</string><string>MOVDQA void _mm_store_si128(__m128i *p, __m128i a);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1091901">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1091906" format="xIndent1">
+   <string>Non-EVEX-encoded instruction, see Exceptions Type1.SSE2 in </string><link linkend="11555: 06_Table: Table 2-8. Type 1 Class Exception Conditions"><string>Table&#160;2&#8209;18, &#8220;Type 1 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091910" format="xIndent1">
+   <string>EVEX-encoded instruction, see </string><link linkend="75930: 06_Table: Table 2-44. Type E1 Class Exception Conditions\x11 "><string>Table&#160;2&#8209;46, &#8220;Type E1 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091911" format="xIndent1">
+   <string>Additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If EVEX.vvvv != 1111B or VEX.vvvv != 1111B.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

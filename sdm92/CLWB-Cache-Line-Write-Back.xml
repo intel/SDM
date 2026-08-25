@@ -1,0 +1,96 @@
+<instruction name="CLWB">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Cache Line Write Back</shortdesc>
+ <longdesc><para unique="1261246">
+   <string>Writes back to memory the cache line (if modified) that contains the linear address specified with the memory operand from any level of the cache hierarchy in the cache coherence domain. The line may be retained in the cache hierarchy in non-modified state. Retaining the line in the cache hierarchy is a performance optimization (treated as a hint by hardware) to reduce the possibility of cache miss on a subsequent access. Hardware may choose to retain the line at any of the levels in the cache hierarchy, and in some cases, may invalidate the line from the cache hierarchy. The source operand is a byte memory location. </string></para>
+  <para unique="1261247">
+   <string>The availability of CLWB instruction is indicated by CPUID.07H.00H:EBX.CLWB[24]. The aligned cache line size affected is also indicated by the value in CPUID.01H:EBX[15:8].</string></para>
+  <para unique="1261248">
+   <string>The memory attribute of the page containing the affected line has no effect on the behavior of this instruction. It should be noted that processors are free to speculatively fetch and cache data from system memory regions that are assigned a memory-type allowing for speculative reads (such as, the WB, WC, and WT memory types). PREFETCHh instructions can be used to provide the processor with hints for this speculative behavior. Because this speculative fetching can occur at any time and is not tied to instruction execution, the CLWB instruction is not ordered with respect to PREFETCHh instructions or any of the speculative fetching mechanisms (that is, data can be speculatively loaded into a cache line just before, during, or after the execution of a CLWB instruction that refer&#173;ences the cache line). </string></para>
+  <para unique="1261249">
+   <string>Executions of the CLWB instruction are ordered with respect to fence instructions and to locked read-modify-write instructions; they are also ordered with respect to older writes to the cache line being written back. They are not ordered with respect to other executions of CLWB, to executions of CLFLUSH and CLFLUSHOPT, or to younger writes to the cache line being written back. Software can use the SFENCE instruction to order an execution of CLWB relative to one of those operations.</string></para>
+  <para unique="1261250">
+   <string>For usages that require only writing back modified data from cache lines to memory (do not require the line to be invalidated), and expect to subsequently access the data, software is recommended to use CLWB (with appropriate fencing) instead of CLFLUSH or CLFLUSHOPT for improved performance.</string></para>
+  <para unique="1261251">
+   <string>The CLWB instruction can be used at all privilege levels and is subject to all permission checking and faults associ&#173;ated with a byte load. Like a load, the CLWB instruction sets the accessed flag but not the dirty flag in the page tables.</string></para>
+  <para unique="1261252">
+   <string>In some implementations, the CLWB instruction may always cause transactional abort with Transactional Synchro&#173;nization Extensions (TSX). CLWB instruction is not expected to be commonly used inside typical transactional regions. However, programmers must not rely on CLWB instruction to force a transactional abort, since whether they cause transactional abort is implementation dependent.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1261256">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>CLWB void _mm_clwb(void const *p);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If CPUID.07H.00H:EBX.CLWB[24] = 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>For an illegal memory operand effective address in the CS, DS, ES, FS or GS segments.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0) </string></term>
+    <listitem><string>For an illegal address in the SS segment. </string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code) </string></term>
+    <listitem><string>For a page fault.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If CPUID.07H.00H:EBX.CLWB[24] = 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If any part of the operand lies outside the effective address space from 0 to FFFFH.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <para unique="1261270" format="xIndent1">
+   <string>Same exceptions as in real address mode.</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#PF(fault-code) </string></term>
+    <listitem><string>For a page fault.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261273" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If CPUID.07H.00H:EBX.CLWB[24] = 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code) </string></term>
+    <listitem><string>For a page fault.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

@@ -1,0 +1,36 @@
+<instruction name="VCVTPD2PH">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Convert Packed Double Precision FP Values to Packed FP16 Values</shortdesc>
+ <longdesc><para unique="1045959">
+   <string>This instruction converts two, four, or eight packed double precision floating-point values in the source operand (second operand) to two, four, or eight packed FP16 values in the destination operand (first operand). When a conversion is inexact, the value returned is rounded according to the rounding control bits in the MXCSR register or the embedded rounding control bits.</string></para>
+  <para unique="1045960">
+   <string>EVEX encoded versions: The source operand is a ZMM/YMM/XMM register, a 512/256/128-bit memory location, or a 512/256/128-bit vector broadcasts from a 64-bit memory location. The destination operand is a XMM register conditionally updated with writemask k1. The upper bits (MAXVL-1:128/64/32) of the corresponding destination are zeroed.</string></para>
+  <para unique="1045961">
+   <string>EVEX.vvvv are reserved and must be 1111b otherwise instructions will #UD.</string></para>
+  <para unique="1045962">
+   <string>This instruction uses MXCSR.DAZ for handling FP64 inputs. FP16 outputs can be normal or denormal, and are not conditionally flushed to zero.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VCVTPD2PH __m128h _mm512_cvt_roundpd_ph (__m512d a, int rounding);</string><string>
+</string><string>VCVTPD2PH __m128h _mm512_mask_cvt_roundpd_ph (__m128h src, __mmask8 k, __m512d a, int rounding);</string><string>
+</string><string>VCVTPD2PH __m128h _mm512_maskz_cvt_roundpd_ph (__mmask8 k, __m512d a, int rounding);</string><string>
+</string><string>VCVTPD2PH __m128h _mm_cvtpd_ph (__m128d a);</string><string>
+</string><string>VCVTPD2PH __m128h _mm_mask_cvtpd_ph (__m128h src, __mmask8 k, __m128d a);</string><string>
+</string><string>VCVTPD2PH __m128h _mm_maskz_cvtpd_ph (__mmask8 k, __m128d a);</string><string>
+</string><string>VCVTPD2PH __m128h _mm256_cvtpd_ph (__m256d a);</string><string>
+</string><string>VCVTPD2PH __m128h _mm256_mask_cvtpd_ph (__m128h src, __mmask8 k, __m256d a);</string><string>
+</string><string>VCVTPD2PH __m128h _mm256_maskz_cvtpd_ph (__mmask8 k, __m256d a);</string><string>
+</string><string>VCVTPD2PH __m128h _mm512_cvtpd_ph (__m512d a);</string><string>
+</string><string>VCVTPD2PH __m128h _mm512_mask_cvtpd_ph (__m128h src, __mmask8 k, __m512d a);</string><string>
+</string><string>VCVTPD2PH __m128h _mm512_maskz_cvtpd_ph (__mmask8 k, __m512d a);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1045999">
+   <string>Invalid, Underflow, Overflow, Precision, Denormal.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046004" format="xIndent1">
+   <string>EVEX-encoded instructions, see </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

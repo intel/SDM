@@ -1,0 +1,168 @@
+<instruction name="FUCOM/FUCOMP/FUCOMPP">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Unordered Compare Floating-Point Values</shortdesc>
+ <longdesc><para unique="1261257">
+   <string>Performs an </string><indexterm><primary>Unordered values;x87 FPU status word:condition code flags</primary></indexterm><string>unordered comparison of the contents of register ST(0) and ST(i) and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). If no operand is specified, the contents of registers ST(0) and ST(1) are compared. The sign of zero is ignored, so that &#8211;0.0 is equal to </string><string>+0.0.</string></para>
+  <table>
+   <caption>Table 3-43.  FUCOM/FUCOMP/FUCOMPP Results</caption>
+   <colgroup><col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <thead><tr>
+     <th><para unique="1261269" format="CellColHead">
+       <string>Comparison Results*</string></para>
+      </th>
+     <th><para unique="1261271" format="CellColHead">
+       <string>C3</string></para>
+      </th>
+     <th><para unique="1261273" format="CellColHead">
+       <string>C2</string></para>
+      </th>
+     <th><para unique="1261275" format="CellColHead">
+       <string>C0</string></para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1261277" format="CellBodyC">
+       <string>ST0 </string><string>&gt; ST(i)</string></para>
+      </td>
+     <td><para unique="1261279" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261281" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261283" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261285" format="CellBodyC">
+       <string>ST0 </string><string>&lt; ST(i)</string></para>
+      </td>
+     <td><para unique="1261287" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261289" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261291" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261293" format="CellBodyC">
+       <string>ST0 </string><string>= ST(i)</string></para>
+      </td>
+     <td><para unique="1261295" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     <td><para unique="1261297" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261299" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261301" format="CellBodyC">
+       <string>Unordered</string></para>
+      </td>
+     <td><para unique="1261303" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     <td><para unique="1261305" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     <td><para unique="1261307" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     </tr>
+    </tbody>
+   <tfoot><tr>
+     <td colspan="4"><para unique="1261309" format="TableFootnoteBLUE">
+       <string>NOTES:</string></para>
+      <para unique="1261310" format="TableFootnote">
+       <string>*	Flags not set if unmasked invalid-arithmetic-operand (#IA) exception is generated.</string></para>
+      </td>
+     </tr>
+    </tfoot></table>
+  <para unique="1261320">
+   <string>An unordered comparison checks the class of the numbers being compared (see </string><link linkend="21127: H5Heading: FXAM&#8212;Examine"><string>&#8220;FXAM&#8212;Examine Floating-Point&#8221;</string></link><string> in this chapter). The FUCOM/FUCOMP/FUCOMPP instructions perform the same operations as the FCOM/FCOMP/FCOMPP instructions. The only difference is that the FUCOM/FUCOMP/FUCOMPP instructions raise the invalid-arithmetic-operand exception (#IA) only when either or both operands are an SNaN or are in an unsup&#173;ported format; QNaNs cause the condition code flags to be set to unordered, but do not cause an exception to be generated. The FCOM/FCOMP/FCOMPP instructions raise an invalid-operation exception when either or both of the operands are a NaN value of any kind or are in an unsupported format.</string></para>
+  <para unique="1261322">
+   <string>As with the FCOM/FCOMP/FCOMPP instructions, if the operation results in an invalid-arithmetic-operand exception being raised, the condition code flags are set only if the exception is masked.</string></para>
+  <para unique="1261323">
+   <string>The FUCOMP instruction pops the register stack following the comparison operation and the FUCOMPP instruction pops the register stack twice following the comparison operation. To pop the register stack, the processor marks the ST(0) register as empty and increments the stack pointer (TOP) by 1.</string></para>
+  <para unique="1261324">
+   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+  </longdesc>
+ <subsection title="FPU Flags Affected">
+  <variablelist>
+   <variablelistentry>
+    <term><string>C1</string></term>
+    <listitem><string>Set to 0 if stack underflow occurred.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>C0, C2, C3</string></term>
+    <listitem><string>See </string><link linkend="22151: 06_Table: Table 3-44. FUCOM/FUCOMP/FUCOMPP Results"><string>Table 3&#8209;43</string></link><string>.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Floating-Point Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#IS</string></term>
+    <listitem><string>Stack underflow occurred.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#IA</string></term>
+    <listitem><string>One or both operands are SNaN values or have unsupported formats. Detection of a QNaN value in and of itself does not raise an invalid-operand exception.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#D</string></term>
+    <listitem><string>One or both operands are denormal values.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#MF </string></term>
+    <listitem><string>If there is a pending x87 FPU exception.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <para unique="1261364" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <para unique="1261366" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261368" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <para unique="1261370" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ </instruction>

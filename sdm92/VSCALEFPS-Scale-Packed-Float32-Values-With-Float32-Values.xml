@@ -1,0 +1,91 @@
+<instruction name="VSCALEFPS">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Scale Packed Float32 Values With Float32 Values</shortdesc>
+ <longdesc><para unique="1046173">
+   <string>Performs a floating-point scale of the packed single precision floating-point values in the first source operand by multiplying them by 2 to the power of the float32 values in second source operand.</string></para>
+  <para unique="1046174">
+   <string>The equation of this operation is given by:</string></para>
+  <para unique="1046175">
+   <string>zmm1 := zmm2*2</string><superscript><string>floor(zmm3)</string></superscript><string>.</string></para>
+  <para unique="1046176">
+   <string>Floor(zmm3) means maximum integer value &#8804; zmm3.</string></para>
+  <para unique="1046178">
+   <string>If the result cannot be represented in single precision, then the proper overflow response (for positive scaling operand), or the proper underflow response (for negative scaling operand) is issued. The overflow and underflow responses are dependent on the rounding mode (for IEEE-compliant rounding), as well as on other settings in MXCSR (exception mask bits, FTZ bit), and on the SAE bit.</string></para>
+  <para unique="1046179">
+   <string>EVEX.512 encoded version: The first source operand is a ZMM register. The second source operand is a ZMM register, a 512-bit memory location or a 512-bit vector broadcasted from a 32-bit memory location. The destina&#173;tion operand is a ZMM register conditionally updated with writemask k1.</string></para>
+  <para unique="1046180">
+   <string>EVEX.256 encoded version: The first source operand is a YMM register. The second source operand is a YMM register, a 256-bit memory location, or a 256-bit vector broadcasted from a 32-bit memory location. The destina&#173;tion operand is a YMM register, conditionally updated using writemask k1. </string></para>
+  <para unique="1046181">
+   <string>EVEX.128 encoded version: The first source operand is an XMM register. The second source operand is a XMM register, a 128-bit memory location, or a 128-bit vector broadcasted from a 32-bit memory location. The destina&#173;tion operand is a XMM register, conditionally updated using writemask k1. </string></para>
+  <para unique="1046184">
+   <string>Handling of special-case input values are listed in </string><link linkend="43524: 06_Table: Table 5-30. \VSCALEFPD Special Cases"><string>Table 5&#8209;37</string></link><string> and </string><link linkend="52133: 06_Table: Table 5-32. Additional VSCALEFPS/SS Special Cases"><string>Table 5&#8209;41</string></link><string>.</string></para>
+  <table>
+   <caption>Table 5-41.  Additional VSCALEFPS/SS Special Cases</caption>
+   <colgroup><col width="133.85952pt" align="leftright"/>
+    <col width="267.2928pt"/>
+    <col width="110.4984pt"/>
+    <col width="80.40312pt"/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1046198" format="CellRowHeadL">
+       <string>Special Case</string></para>
+      </th>
+     <th><para unique="1046200" format="CellRowHeadL">
+       <string> Returned value </string></para>
+      </th>
+     <th><para unique="1046202" format="CellRowHeadL">
+       <string>Faults</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1046204" format="CellBodyL">
+       <string>|result| &lt; 2</string><superscript><string>-149</string></superscript></para>
+      </td>
+     <td><para unique="1046206" format="CellBodyL">
+       <string>&#177;0 or &#177;Min-Denormal (Src1 sign)</string></para>
+      </td>
+     <td><para unique="1046208" format="CellBodyL">
+       <string>Underflow</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046210" format="CellBodyL">
+       <string>|result| &#8805; 2</string><superscript><string>128</string></superscript></para>
+      </td>
+     <td><para unique="1046212" format="CellBodyL">
+       <string>&#177;INF (Src1 sign) or &#177;Max-normal (Src1 sign)</string></para>
+      </td>
+     <td><para unique="1046214" format="CellBodyL">
+       <string>Overflow</string></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VSCALEFPS __m512 _mm512_scalef_round_ps(__m512 a, __m512 b, int rounding);</string><string>
+</string><string>VSCALEFPS __m512 _mm512_mask_scalef_round_ps(__m512 s, __mmask16 k, __m512 a, __m512 b, int rounding);</string><string>
+</string><string>VSCALEFPS __m512 _mm512_maskz_scalef_round_ps(__mmask16 k, __m512 a, __m512 b, int rounding);</string><string>
+</string><string>VSCALEFPS __m512 _mm512_scalef_ps(__m512 a, __m512 b);</string><string>
+</string><string>VSCALEFPS __m512 _mm512_mask_scalef_ps(__m512 s, __mmask16 k, __m512 a, __m512 b);</string><string>
+</string><string>VSCALEFPS __m512 _mm512_maskz_scalef_ps(__mmask16 k, __m512 a, __m512 b);</string><string>
+</string><string>VSCALEFPS __m256 _mm256_scalef_ps(__m256 a, __m256 b);</string><string>
+</string><string>VSCALEFPS __m256 _mm256_mask_scalef_ps(__m256 s, __mmask8 k, __m256 a, __m256 b);</string><string>
+</string><string>VSCALEFPS __m256 _mm256_maskz_scalef_ps(__mmask8 k, __m256 a, __m256 b);</string><string>
+</string><string>VSCALEFPS __m128 _mm_scalef_ps(__m128 a, __m128 b);</string><string>
+</string><string>VSCALEFPS __m128 _mm_mask_scalef_ps(__m128 s, __mmask8 k, __m128 a, __m128 b);</string><string>
+</string><string>VSCALEFPS __m128 _mm_maskz_scalef_ps(__mmask8 k, __m128 a, __m128 b);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046265">
+   <string>Overflow, Underflow, Invalid, Precision, Denormal (for Src1).</string></para>
+  <para unique="1046266">
+   <string>Denormal is not reported for Src2.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046271">
+   <string>See </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

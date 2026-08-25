@@ -1,0 +1,62 @@
+<instruction name="PSUBUSB/PSUBUSW">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Subtract Packed Unsigned Integers With Unsigned Saturation</shortdesc>
+ <longdesc><para unique="1091651">
+   <string>Performs a SIMD subtract of the packed unsigned integers of the source operand (second operand) from the packed unsigned integers of the destination operand (first operand), and stores the packed unsigned integer results in the destination operand. See Figure 9-4 in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for an illustration of a SIMD operation. Overflow is handled with unsigned saturation, as described in the following paragraphs.</string></para>
+  <para unique="1091652">
+   <string>These instructions can operate on either 64-bit or 128-bit operands.</string></para>
+  <para unique="1091653">
+   <string>The (V)PSUBUSB instruction subtracts packed unsigned byte integers. When an individual byte result is less than zero, the saturated value of 00H is written to the destination operand.</string></para>
+  <para unique="1091654">
+   <string>The (V)PSUBUSW instruction subtracts packed unsigned word integers. When an individual word result is less than zero, the saturated value of 0000H is written to the destination operand.</string></para>
+  <para unique="1091655">
+   <string>In 64-bit mode and not encoded with VEX/EVEX, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).</string></para>
+  <para unique="1091656">
+   <string>Legacy SSE version 64-bit operand: The destination operand must be an MMX technology register and the source operand can be either an MMX technology register or a 64-bit memory location. </string></para>
+  <para unique="1091657">
+   <string>128-bit Legacy SSE version: The second source operand is an XMM register or a 128-bit memory location. The first source operand and destination operands are XMM registers. Bits (MAXVL-1:128) of the corresponding YMM desti&#173;nation register remain unchanged.</string></para>
+  <para unique="1091658">
+   <string>VEX.128 encoded version: The second source operand is an XMM register or a 128-bit memory location. The first source operand and destination operands are XMM registers. Bits (MAXVL-1:128) of the destination YMM register are zeroed. </string></para>
+  <para unique="1091659">
+   <string>VEX.256 encoded versions: The second source operand is an YMM register or an 256-bit memory location. The first source operand and destination operands are YMM registers. Bits (MAXVL-1:256) of the corresponding ZMM register are zeroed.</string></para>
+  <para unique="1091660">
+   <string>EVEX encoded version: The second source operand is an ZMM/YMM/XMM register or an 512/256/128-bit memory location. The first source operand and destination operands are ZMM/YMM/XMM registers. The destination is condi&#173;tionally updated with writemask k1.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalents">
+  <programlisting><string>VPSUBUSB __m512i _mm512_subs_epu8(__m512i a, __m512i b);</string><string>
+</string><string>VPSUBUSB __m512i _mm512_mask_subs_epu8(__m512i s, __mmask64 k, __m512i a, __m512i b);</string><string>
+</string><string>VPSUBUSB __m512i _mm512_maskz_subs_epu8( __mmask64 k, __m512i a, __m512i b);</string><string>
+</string><string>VPSUBUSB __m256i _mm256_mask_subs_epu8(__m256i s, __mmask32 k, __m256i a, __m256i b);</string><string>
+</string><string>VPSUBUSB __m256i _mm256_maskz_subs_epu8( __mmask32 k, __m256i a, __m256i b);</string><string>
+</string><string>VPSUBUSB __m128i _mm_mask_subs_epu8(__m128i s, __mmask16 k, __m128i a, __m128i b);</string><string>
+</string><string>VPSUBUSB __m128i _mm_maskz_subs_epu8( __mmask16 k, __m128i a, __m128i b);</string><string>
+</string><string>VPSUBUSW __m512i _mm512_subs_epu16(__m512i a, __m512i b);</string><string>
+</string><string>VPSUBUSW __m512i _mm512_mask_subs_epu16(__m512i s, __mmask32 k, __m512i a, __m512i b);</string><string>
+</string><string>VPSUBUSW __m512i _mm512_maskz_subs_epu16( __mmask32 k, __m512i a, __m512i b);</string><string>
+</string><string>VPSUBUSW __m256i _mm256_mask_subs_epu16(__m256i s, __mmask16 k, __m256i a, __m256i b);</string><string>
+</string><string>VPSUBUSW __m256i _mm256_maskz_subs_epu16( __mmask16 k, __m256i a, __m256i b);</string><string>
+</string><string>VPSUBUSW __m128i _mm_mask_subs_epu16(__m128i s, __mmask8 k, __m128i a, __m128i b);</string><string>
+</string><string>VPSUBUSW __m128i _mm_maskz_subs_epu16( __mmask8 k, __m128i a, __m128i b);</string><string>
+</string><string>PSUBUSB 	__m64 _mm_subs_pu8(__m64 m1, __m64 m2)</string><string>
+</string><string>(V)PSUBUSB 	__m128i _mm_subs_epu8(__m128i m1, __m128i m2)</string><string>
+</string><string>VPSUBUSB 	__m256i _mm256_subs_epu8(__m256i m1, __m256i m2)</string><string>
+</string><string>PSUBUSW 	__m64 _mm_subs_pu16(__m64 m1, __m64 m2)</string><string>
+</string><string>(V)PSUBUSW 	__m128i _mm_subs_epu16(__m128i m1, __m128i m2)</string><string>
+</string><string>VPSUBUSW 	__m256i _mm256_subs_epu16(__m256i m1, __m256i m2)</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Flags Affected">
+  <para unique="1091761">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Numeric Exceptions">
+  <para unique="1091763">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1091768" format="xIndent1">
+   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091772" format="xIndent1">
+   <string>EVEX-encoded instruction, see </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

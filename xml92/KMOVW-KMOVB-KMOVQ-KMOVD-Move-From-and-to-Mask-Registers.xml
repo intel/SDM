@@ -1,0 +1,1487 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="KMOVB_MASKmskw_MASKu8_AVX512" xed_iform="KMOVB_MASKmskw_MASKu8_AVX512" encoding="VEX.L0.66.0F.W0 90 /r" opcode="90" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_K</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_Mask</callee>
+   <callee>Instr_KMOV_to</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let src_size := 64;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_K(rm);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_to(element_size, src_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_Mask(reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVB">
+    <asm-operand><varname>k<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>k<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512DQ_KOPB"><cpuid-flag>AVX512DQ</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512DQ_KOPB_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="src_size" size="64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>k<subscript>2</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="KMOVB_MASKmskw_MEMu8_AVX512" xed_iform="KMOVB_MASKmskw_MEMu8_AVX512" encoding="VEX.L0.66.0F.W0 90 /r" opcode="90" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_Mask</callee>
+   <callee>Instr_KMOV_to</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let src_size := 8;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src := Logical_Mem_Read?(segment, effective_address, src_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_to(element_size, src_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_Mask(reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVB">
+    <asm-operand><varname>k<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>m8<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512DQ_KOPB"><cpuid-flag>AVX512DQ</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512DQ_KOPB_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="src_size" size="8"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8<subscript>2</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="KMOV_to" variant_kind="To register" mnemonic="KMOVB">
+  <code>let result := Zero_Extend(src[0 +: element_size], 64);</code>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Bits::Zero_Extend</callee>
+  </operation>
+ <iform-group>
+  <iform name="KMOVB_MEMu8_MASKmskw_AVX512" xed_iform="KMOVB_MEMu8_MASKmskw_AVX512" encoding="VEX.L0.66.0F.W0 91 /r" opcode="91" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_K</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_KMOV_from</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let result_size := 8;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src := Read_K(reg);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_from(element_size, result_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVB">
+    <asm-operand><varname>m8</varname></asm-operand>
+    <asm-operand><varname>k</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512DQ_KOPB"><cpuid-flag>AVX512DQ</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512DQ_KOPB_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="result_size" size="8"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="KMOV_from" variant_kind="From register" mnemonic="KMOVB">
+  <code>let result := Zero_Extend(src[0 +: element_size], result_size);</code>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Bits::Zero_Extend</callee>
+  </operation>
+ <iform-group>
+  <iform name="KMOVW_MASKmskw_MASKu16_AVX512" xed_iform="KMOVW_MASKmskw_MASKu16_AVX512" encoding="VEX.L0.NP.0F.W0 90 /r" opcode="90" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_K</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_Mask</callee>
+   <callee>Instr_KMOV_to</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let src_size := 64;</code>
+     <code>let element_size := 16;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_K(rm);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_to(element_size, src_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_Mask(reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVW">
+    <asm-operand><varname>k<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>k<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512F_KOPW"><cpuid-flag>AVX512F</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512F_KOPW_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="16"/>
+   <encoding-size name="src_size" size="64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>k<subscript>2</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="KMOVW_MASKmskw_MEMu16_AVX512" xed_iform="KMOVW_MASKmskw_MEMu16_AVX512" encoding="VEX.L0.NP.0F.W0 90 /r" opcode="90" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_Mask</callee>
+   <callee>Instr_KMOV_to</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let src_size := 16;</code>
+     <code>let element_size := 16;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src := Logical_Mem_Read?(segment, effective_address, src_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_to(element_size, src_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_Mask(reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVW">
+    <asm-operand><varname>k<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>m16<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512F_KOPW"><cpuid-flag>AVX512F</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512F_KOPW_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="16"/>
+   <encoding-size name="src_size" size="16"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m16<subscript>2</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="KMOVW_MEMu16_MASKmskw_AVX512" xed_iform="KMOVW_MEMu16_MASKmskw_AVX512" encoding="VEX.L0.NP.0F.W0 91 /r" opcode="91" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_K</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_KMOV_from</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let result_size := 16;</code>
+     <code>let element_size := 16;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src := Read_K(reg);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_from(element_size, result_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVW">
+    <asm-operand><varname>m16</varname></asm-operand>
+    <asm-operand><varname>k</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512F_KOPW"><cpuid-flag>AVX512F</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512F_KOPW_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="16"/>
+   <encoding-size name="result_size" size="16"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m16</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="KMOVD_MASKmskw_MASKu32_AVX512" xed_iform="KMOVD_MASKmskw_MASKu32_AVX512" encoding="VEX.L0.66.0F.W1 90 /r" opcode="90" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_K</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_Mask</callee>
+   <callee>Instr_KMOV_to</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let src_size := 64;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_K(rm);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_to(element_size, src_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_Mask(reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVD">
+    <asm-operand><varname>k<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>k<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512BW_KOPD"><cpuid-flag>AVX512BW</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512BW_KOPD_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="src_size" size="64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>k<subscript>2</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="KMOVD_MASKmskw_MEMu32_AVX512" xed_iform="KMOVD_MASKmskw_MEMu32_AVX512" encoding="VEX.L0.66.0F.W1 90 /r" opcode="90" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_Mask</callee>
+   <callee>Instr_KMOV_to</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let src_size := 32;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src := Logical_Mem_Read?(segment, effective_address, src_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_to(element_size, src_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_Mask(reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVD">
+    <asm-operand><varname>k<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>m32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512BW_KOPD"><cpuid-flag>AVX512BW</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512BW_KOPD_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="src_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m32<subscript>2</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="KMOVD_MEMu32_MASKmskw_AVX512" xed_iform="KMOVD_MEMu32_MASKmskw_AVX512" encoding="VEX.L0.66.0F.W1 91 /r" opcode="91" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_K</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_KMOV_from</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let result_size := 32;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src := Read_K(reg);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_from(element_size, result_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVD">
+    <asm-operand><varname>m32</varname></asm-operand>
+    <asm-operand><varname>k</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512BW_KOPD"><cpuid-flag>AVX512BW</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512BW_KOPD_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="result_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m32</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="KMOVB_MASKmskw_GPR32u32_AVX512" xed_iform="KMOVB_MASKmskw_GPR32u32_AVX512" encoding="VEX.L0.66.0F.W0 92 /r" opcode="92" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_Mask</callee>
+   <callee>Instr_KMOV_to</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let src_size := 32;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, 32);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0) and (context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_to(element_size, src_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_Mask(reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVB">
+    <asm-operand><varname>k</varname></asm-operand>
+    <asm-operand><varname>r32</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512DQ_KOPB"><cpuid-flag>AVX512DQ</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512DQ_KOPB_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="src_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="KMOVD_MASKmskw_GPR32u32_AVX512_0" xed_iform="KMOVD_MASKmskw_GPR32u32_AVX512" encoding="VEX.L0.F2.0F.W0 92 /r" opcode="92" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_Mask</callee>
+   <callee>Instr_KMOV_to</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let src_size := 32;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, 32);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_to(element_size, src_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_Mask(reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVD">
+    <asm-operand><varname>k</varname></asm-operand>
+    <asm-operand><varname>r32</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512BW_KOPD"><cpuid-flag>AVX512BW</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512BW_KOPD_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="src_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="KMOVD_MASKmskw_GPR32u32_AVX512_1" xed_iform="KMOVD_MASKmskw_GPR32u32_AVX512" encoding="VEX.L0.F2.0F.WIG 92 /r" opcode="92" valid32="V" valid64="N.E.">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_Mask</callee>
+   <callee>Instr_KMOV_to</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let src_size := 32;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, 32);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Mode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_to(element_size, src_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_Mask(reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVD">
+    <asm-operand><varname>k</varname></asm-operand>
+    <asm-operand><varname>r32</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512BW_KOPD"><cpuid-flag>AVX512BW</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512BW_KOPD_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="src_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="KMOVW_MASKmskw_GPR32u32_AVX512" xed_iform="KMOVW_MASKmskw_GPR32u32_AVX512" encoding="VEX.L0.NP.0F.W0 92 /r" opcode="92" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_Mask</callee>
+   <callee>Instr_KMOV_to</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let src_size := 32;</code>
+     <code>let element_size := 16;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, 32);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (context.rex_w == 0b0) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_to(element_size, src_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_Mask(reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVW">
+    <asm-operand><varname>k</varname></asm-operand>
+    <asm-operand><varname>r32</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512F_KOPW"><cpuid-flag>AVX512F</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512F_KOPW_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="16"/>
+   <encoding-size name="src_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="KMOVB_GPR32u32_MASKmskw_AVX512" xed_iform="KMOVB_GPR32u32_MASKmskw_AVX512" encoding="VEX.L0.66.0F.W0 93 /r" opcode="93" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_K</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_KMOV_from</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let result_size := 32;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_K(rm);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0) and (context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_from(element_size, result_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVB">
+    <asm-operand><varname>r32</varname></asm-operand>
+    <asm-operand><varname>k</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512DQ_KOPB"><cpuid-flag>AVX512DQ</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512DQ_KOPB_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="result_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>k</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="KMOVD_GPR32u32_MASKmskw_AVX512_0" xed_iform="KMOVD_GPR32u32_MASKmskw_AVX512" encoding="VEX.L0.F2.0F.W0 93 /r" opcode="93" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_K</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_KMOV_from</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let result_size := 32;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_K(rm);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_from(element_size, result_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVD">
+    <asm-operand><varname>r32</varname></asm-operand>
+    <asm-operand><varname>k</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512BW_KOPD"><cpuid-flag>AVX512BW</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512BW_KOPD_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="result_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>k</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="KMOVD_GPR32u32_MASKmskw_AVX512_1" xed_iform="KMOVD_GPR32u32_MASKmskw_AVX512" encoding="VEX.L0.F2.0F.WIG 93 /r" opcode="93" valid32="V" valid64="N.E.">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Read_K</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_KMOV_from</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let result_size := 32;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_K(rm);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Mode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_from(element_size, result_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVD">
+    <asm-operand><varname>r32</varname></asm-operand>
+    <asm-operand><varname>k</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512BW_KOPD"><cpuid-flag>AVX512BW</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512BW_KOPD_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="result_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>k</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="KMOVW_GPR32u32_MASKmskw_AVX512" xed_iform="KMOVW_GPR32u32_MASKmskw_AVX512" encoding="VEX.L0.NP.0F.W0 93 /r" opcode="93" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_K</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_KMOV_from</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let result_size := 32;</code>
+     <code>let element_size := 16;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_K(rm);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (context.rex_w == 0b0) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_from(element_size, result_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVW">
+    <asm-operand><varname>r32</varname></asm-operand>
+    <asm-operand><varname>k</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512F_KOPW"><cpuid-flag>AVX512F</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512F_KOPW_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="16"/>
+   <encoding-size name="result_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>k</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="KMOVQ_MASKmskw_MASKu64_AVX512" xed_iform="KMOVQ_MASKmskw_MASKu64_AVX512" encoding="VEX.L0.NP.0F.W1 90 /r" opcode="90" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_K</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_Mask</callee>
+   <callee>Instr_KMOV_to</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let src_size := 64;</code>
+     <code>let element_size := 64;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_K(rm);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_to(element_size, src_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_Mask(reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVQ">
+    <asm-operand><varname>k<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>k<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512BW_KOPQ"><cpuid-flag>AVX512BW</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512BW_KOPQ_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="64"/>
+   <encoding-size name="src_size" size="64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>k<subscript>2</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="KMOVQ_MASKmskw_MEMu64_AVX512" xed_iform="KMOVQ_MASKmskw_MEMu64_AVX512" encoding="VEX.L0.NP.0F.W1 90 /r" opcode="90" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_Mask</callee>
+   <callee>Instr_KMOV_to</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let src_size := 64;</code>
+     <code>let element_size := 64;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src := Logical_Mem_Read?(segment, effective_address, src_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_to(element_size, src_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_Mask(reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVQ">
+    <asm-operand><varname>k<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>m64<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512BW_KOPQ"><cpuid-flag>AVX512BW</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512BW_KOPQ_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="64"/>
+   <encoding-size name="src_size" size="64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m64<subscript>2</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="KMOVQ_MEMu64_MASKmskw_AVX512" xed_iform="KMOVQ_MEMu64_MASKmskw_AVX512" encoding="VEX.L0.NP.0F.W1 91 /r" opcode="91" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_K</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_KMOV_from</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let result_size := 64;</code>
+     <code>let element_size := 64;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src := Read_K(reg);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_from(element_size, result_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVQ">
+    <asm-operand><varname>m64</varname></asm-operand>
+    <asm-operand><varname>k</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512BW_KOPQ"><cpuid-flag>AVX512BW</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512BW_KOPQ_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="64"/>
+   <encoding-size name="result_size" size="64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m64</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="KMOVQ_MASKmskw_GPR64u64_AVX512" xed_iform="KMOVQ_MASKmskw_GPR64u64_AVX512" encoding="VEX.L0.F2.0F.W1 92 /r" opcode="92" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_Mask</callee>
+   <callee>Instr_KMOV_to</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let src_size := 64;</code>
+     <code>let element_size := 64;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, 64);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_to(element_size, src_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_Mask(reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVQ">
+    <asm-operand><varname>k</varname></asm-operand>
+    <asm-operand><varname>r64</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512BW_KOPQ"><cpuid-flag>AVX512BW</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512BW_KOPQ_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="64"/>
+   <encoding-size name="src_size" size="64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>k</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r64</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="KMOVQ_GPR64u64_MASKmskw_AVX512" xed_iform="KMOVQ_GPR64u64_MASKmskw_AVX512" encoding="VEX.L0.F2.0F.W1 93 /r" opcode="93" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_K</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_KMOV_from</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let result_size := 64;</code>
+     <code>let element_size := 64;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_K(rm);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_LL == 0b00) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_KMOV_from(element_size, result_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="KMOVQ">
+    <asm-operand><varname>r64</varname></asm-operand>
+    <asm-operand><varname>k</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512BW_KOPQ"><cpuid-flag>AVX512BW</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512BW_KOPQ_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="64"/>
+   <encoding-size name="result_size" size="64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r64</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>k</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <category>vector/mask</category>
+ <size name="element_size"/>
+ <size name="src_size"/>
+ <size name="result_size"/>
+ <input name="src"/>
+ <output name="result"/>
+ </instruction>

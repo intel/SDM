@@ -1,0 +1,159 @@
+<instruction name="PCLMULQDQ">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Carry-Less Multiplication Quadword</shortdesc>
+ <longdesc><para unique="1091543">
+   <string>Performs packed carry-less multiplication of quadword pairs. XMM versions perform a single multiply of a pair of quadwords. YMM versions perform two packed multiplies of pairs of quadwords. ZMM versions perform four packed multiplies of pairs of quadwords. Bits 4 and 0 are used to select which 64-bit half of each operand to use according to </string><link linkend="23871: 06_Table: Table 5-1. PCLMULQDQ Quadword Selection of Immediate Byte"><string>Table&#160;4&#8209;14</string></link><string>, other bits of the immediate byte are ignored. </string></para>
+  <para unique="1091547">
+   <string>The EVEX encoded form of this instruction does not support memory fault suppression.</string></para>
+  <table>
+   <caption>Table 4-14.  PCLMULQDQ Quadword Selection of Immediate Byte</caption>
+   <colgroup><col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <thead><tr>
+     <th><para unique="1091557" format="CellColHead">
+       <string>Imm[4]</string></para>
+      </th>
+     <th><para unique="1091559" format="CellColHead">
+       <string>Imm[0]</string></para>
+      </th>
+     <th><para unique="1091561" format="CellColHead">
+       <string>PCLMULQDQ Operation</string></para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <th><para unique="1091563" format="CellRowHeadL">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1091565" format="CellRowHeadL">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1091570" format="CellRowHeadL">
+       <string>CL_MUL( SRC2</string><footnote><para unique="1091569" format="TableFootnote">
+         <string>SRC2 denotes the second source operand, which can be a register or memory; SRC1 denotes the first source and destination oper&#173;and.</string></para>
+        </footnote><string>[63:0], SRC1[63:0] )</string></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1091572" format="CellRowHeadL">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1091574" format="CellRowHeadL">
+       <string>1</string></para>
+      </th>
+     <th><para unique="1091576" format="CellRowHeadL">
+       <string>CL_MUL( SRC2[63:0], SRC1[127:64] )</string></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1091578" format="CellRowHeadL">
+       <string>1</string></para>
+      </th>
+     <th><para unique="1091580" format="CellRowHeadL">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1091582" format="CellRowHeadL">
+       <string>CL_MUL( SRC2[127:64], SRC1[63:0] )</string></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1091584" format="CellRowHeadL">
+       <string>1</string></para>
+      </th>
+     <th><para unique="1091586" format="CellRowHeadL">
+       <string>1</string></para>
+      </th>
+     <th><para unique="1091588" format="CellRowHeadL">
+       <string>CL_MUL( SRC2[127:64], SRC1[127:64] )</string></para>
+      </th>
+     </tr>
+    </tbody>
+   </table>
+  <para unique="1091590">
+   <string>The first source operand and the destination operand are the same and must be a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register or a 512/256/128-bit memory location. Bits (VL_MAX-1:128) of the corresponding YMM destination register remain unchanged.</string></para>
+  <para unique="1091591">
+   <string>Compilers and assemblers may implement the following pseudo-op syntax to simplify programming and emit the required encoding for imm8.</string></para>
+  <table>
+   <caption>Table 4-15.  Pseudo-Op and PCLMULQDQ Implementation</caption>
+   <colgroup><col width="408.29616pt"/>
+    <col width="103.13568pt"/>
+    <col width="269.45064pt"/>
+    <col width="49.716pt"/>
+    <col width="47.57256pt"/>
+    <col width="36.858959999999996pt"/>
+    </colgroup>
+   <thead><tr>
+     <th><para unique="1091598" format="CellRowHeadL">
+       <string>Pseudo-Op</string></para>
+      </th>
+     <th><para unique="1091600" format="CellRowHeadL">
+       <string>Imm8 Encoding</string></para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1091602" format="CellBodyL">
+       <bold><string>PCLMULLQLQDQ</string></bold><string> xmm1, xmm2</string></para>
+      </td>
+     <td><para unique="1091604" format="CellBodyL">
+       <string>0000_0000B</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091606" format="CellBodyL">
+       <bold><string>PCLMULHQLQDQ</string></bold><string> xmm1, xmm2</string></para>
+      </td>
+     <td><para unique="1091608" format="CellBodyL">
+       <string>0000_0001B</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091610" format="CellBodyL">
+       <bold><string>PCLMULLQHQDQ</string></bold><string> xmm1, xmm2</string></para>
+      </td>
+     <td><para unique="1091612" format="CellBodyL">
+       <string>0001_0000B</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091614" format="CellBodyL">
+       <bold><string>PCLMULHQHQDQ</string></bold><string> xmm1, xmm2</string></para>
+      </td>
+     <td><para unique="1091616" format="CellBodyL">
+       <string>0001_0001B</string></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>(V)PCLMULQDQ		 __m128i  _mm_clmulepi64_si128 (__m128i, __m128i, const int)</string><string>
+</string><string>VPCLMULQDQ	 __m256i _mm256_clmulepi64_epi128(__m256i, __m256i, const int);</string><string>
+</string><string>VPCLMULQDQ	 __m512i _mm512_clmulepi64_epi128(__m512i, __m512i, const int);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1091677">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1091682" format="xIndent1">
+   <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions,&#8221;</string></link><string> additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If VEX.L = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>EVEX-encoded: See </string></term>
+    <listitem><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

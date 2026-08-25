@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="PBNDKB" xed_iform="PBNDKB" encoding="NP 0F 01 C7" opcode="01" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Is_Aligned</callee>
+   <callee>Report_General_Protection_Exception</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>VM_Exec_Controls3</callee>
+   <callee>Instr_PBNDKB</callee>
+   <callee>RBX</callee>
+   <callee>RCX</callee>
+   <var-used>CPL</var-used>
+   <var-used>VMX_Operation_Mode</var-used>
+   <var-used>VMX_Non_Root</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>CPUID_PBNDKB</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not (not context.osz_prefix_present and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>REP_Not0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPL_Not0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPUID(PBNDKB)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>NotMode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VMX_EXEC_3(Enable_PBNDKB == 0b0)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>EVAL(RBX == RCX)</exception_condition>
+     <exception_fault>#GP</exception_fault>
+     </exception_check><exception_check><exception_condition>EVAL(not Is_Aligned(RBX, 256))</exception_condition>
+     <exception_fault>#GP</exception_fault>
+     </exception_check><exception_check><exception_condition>EVAL(not Is_Aligned(RCX, 256))</exception_condition>
+     <exception_fault>#GP</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_PBNDKB?();</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="PBNDKB">
+    </assembly-syntax>
+   <cpuid-group name="PBNDKB"><cpuid-flag>PBNDKB</cpuid-flag></cpuid-group>
+   </iform>
+  </iform-group>
+ <operation name="PBNDKB" variant_kind="Standard variant" mnemonic="PBNDKB">
+  <code>let tmp_bind_struct := PCONFIG::Load_Bind_Struct?(RBX);</code>
+  <code></code>
+  <code>if not Random_Numbers::Has_Sufficient_Entropy(PBNDKB_ENTROPY_ERROR) then</code>
+  <code>    RFLAGS.OF := 0b0;</code>
+  <code>    RFLAGS.SF := 0b0;</code>
+  <code>    RFLAGS.ZF := 0b1;</code>
+  <code>    RFLAGS.AF := 0b0;</code>
+  <code>    RFLAGS.PF := 0b0;</code>
+  <code>    RFLAGS.CF := 0b0;</code>
+  <code>    RAX := PBNDKB_ENTROPY_ERROR;</code>
+  <code>    return;</code>
+  <code>endif;</code>
+  <code></code>
+  <code>var output_bind_struct := tmp_bind_struct;</code>
+  <code></code>
+  <code>// Randomize input keys if requested</code>
+  <code>if tmp_bind_struct.KEY_GENERATION_CTRL == 0x01 then</code>
+  <code>    // Load PBNDKB_DATA_KEY random 256-bit value using hardware RNG</code>
+  <code>    let data_key := Random_Numbers::Read_PBNDKB_DATA_KEY();</code>
+  <code>    // Load PBNDKB_TWEAK_KEY random 256-bit value using hardware RNG</code>
+  <code>    let tweak_key := Random_Numbers::Read_PBNDKB_TWEAK_KEY();</code>
+  <code>    // XOR the input keys with the random keys</code>
+  <code>    output_bind_struct.BTENCDATA_DATA_KEY := data_key xor tmp_bind_struct.BTENCDATA_DATA_KEY;</code>
+  <code>    output_bind_struct.BTENCDATA_TWEAK_KEY := tweak_key xor tmp_bind_struct.BTENCDATA_TWEAK_KEY;</code>
+  <code>endif;</code>
+  <code></code>
+  <code>// let wrapping_fuse_key := HMAC_SHA256(platform_key, tmp_bind_struct.USER_SUPP_CHALLENGE);</code>
+  <code>// Get the ESE_WRAPPING_FUSE_KEY value from hardware</code>
+  <code>let wrapping_fuse_key := Random_Numbers::Read_ESE_WRAPPING_FUSE_KEY();</code>
+  <code></code>
+  <code>// Load PBNDKB_IV with a random 96-bit value using hardware RNG;</code>
+  <code>let iv := Random_Numbers::Read_PBNDKB_IV();</code>
+  <code></code>
+  <code>// Compose 176 bytes of additional authenticated data for use by authenticated encryption</code>
+  <code>let aad := Zero(64) ++ iv ++ Zero(224) ++ tmp_bind_struct.BTDATA;</code>
+  <code>// let encrypt_struct := AES256_GCM_ENC(tmp_bind_struct.BTENCDATA, wrapping_fuse_key, iv, aad, 176);</code>
+  <code>// output_bind_struct.MAC := encrypt_struct.MAC;</code>
+  <code>output_bind_struct.IV := iv;</code>
+  <code>// output_bind_struct.BTENCDATA := encrypt_struct.ENC_DATA;</code>
+  <code>output_bind_struct.USER_SUPP_CHALLENGE := Zero(256);</code>
+  <code>output_bind_struct.KEY_GENERATION_CTRL := tmp_bind_struct.KEY_GENERATION_CTRL;</code>
+  <code></code>
+  <code>__Fuzz_Next_Mem_Write("BIND_STRUCT.MAC");</code>
+  <code>Linear_Mem_Write?(RCX + 0,   128, output_bind_struct.MAC);</code>
+  <code>Linear_Mem_Write?(RCX + 16,  32,  output_bind_struct.BTID);</code>
+  <code>Linear_Mem_Write?(RCX + 20,  32,  output_bind_struct.RESERVED1);</code>
+  <code>Linear_Mem_Write?(RCX + 24,  64,  output_bind_struct.IV[63:0]);</code>
+  <code>Linear_Mem_Write?(RCX + 32,  32,  output_bind_struct.IV[95:64]);</code>
+  <code>Linear_Mem_Write?(RCX + 36,  32,  output_bind_struct.RESERVED2[31:0]);</code>
+  <code>Linear_Mem_Write?(RCX + 40,  64,  output_bind_struct.RESERVED2[95:32]);</code>
+  <code>Linear_Mem_Write?(RCX + 48,  128, output_bind_struct.RESERVED2[223:96]);</code>
+  <code>__Fuzz_Next_Mem_Write("BIND_STRUCT.BTENCDATA");</code>
+  <code>Linear_Mem_Write?(RCX + 64,  512, output_bind_struct.BTENCDATA);</code>
+  <code>Linear_Mem_Write?(RCX + 128, 256, output_bind_struct.USER_SUPP_CHALLENGE);</code>
+  <code>Linear_Mem_Write?(RCX + 160, 64,  output_bind_struct.KEY_GENERATION_CTRL_AND_RSVD_56);</code>
+  <code>Linear_Mem_Write?(RCX + 168, 64,  output_bind_struct.BTDATA_RSVD_64);</code>
+  <code>Linear_Mem_Write?(RCX + 176, 128, output_bind_struct.BTDATA_RSVD_128);</code>
+  <code>Linear_Mem_Write?(RCX + 192, 512, output_bind_struct.BTDATA_RSVD_512);</code>
+  <code></code>
+  <code>// Indicate successful completion</code>
+  <code>RAX := Zero(64);</code>
+  <code></code>
+  <code>RFLAGS.OF := 0b0;</code>
+  <code>RFLAGS.SF := 0b0;</code>
+  <code>RFLAGS.ZF := 0b0;</code>
+  <code>RFLAGS.AF := 0b0;</code>
+  <code>RFLAGS.PF := 0b0;</code>
+  <code>RFLAGS.CF := 0b0;</code>
+  <callee>Std::Boolean::Not</callee>
+  <callee>Std::Integer::Add</callee>
+  <callee>Std::Bits::Add_int</callee>
+  <callee>Std::Bits::Append</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Xor</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>Linear_Mem_Write</callee>
+  <callee>PCONFIG::Load_Bind_Struct</callee>
+  <callee>Random_Numbers::Has_Sufficient_Entropy</callee>
+  <callee>Random_Numbers::Read_ESE_WRAPPING_FUSE_KEY</callee>
+  <callee>Random_Numbers::Read_PBNDKB_DATA_KEY</callee>
+  <callee>Random_Numbers::Read_PBNDKB_IV</callee>
+  <callee>Random_Numbers::Read_PBNDKB_TWEAK_KEY</callee>
+  <callee>RAX_write</callee>
+  <callee>RBX</callee>
+  <callee>RCX</callee>
+  <var-used>RFLAGS</var-used>
+  <var-used>PBNDKB_ENTROPY_ERROR</var-used>
+  </operation>
+ <category>misc</category>
+ </instruction>

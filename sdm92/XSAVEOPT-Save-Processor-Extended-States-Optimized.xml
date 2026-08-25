@@ -1,0 +1,130 @@
+<instruction name="XSAVEOPT">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Save Processor Extended States Optimized</shortdesc>
+ <longdesc><para unique="1012610">
+   <string>Performs a full or partial save of processor state components to the XSAVE area located at the memory address specified by the destination operand. The implicit EDX:EAX register pair specifies a 64-bit instruction mask. The specific state components saved correspond to the bits set in the requested-feature bitmap (RFBM), which is the logical-AND of EDX:EAX and XCR0.</string></para>
+  <para unique="1012611">
+   <string>The format of the XSAVE area is detailed in Section 13.4, &#8220;XSAVE Area,&#8221; of Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Soft&#173;ware Developer&#8217;s Manual, Volume 1. Like FXRSTOR and FXSAVE, the memory format used for x87 state depends on a REX.W prefix; see Section 13.5.1, &#8220;x87 State&#8221; of Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1.</string></para>
+  <para unique="1012612">
+   <string>Section 13.9, &#8220;Operation of XSAVEOPT,&#8221; of Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1 provides a detailed description of the operation of the XSAVEOPT instruction. The following items provide a high-level outline:</string></para>
+  <itemizedlist><listitem><para unique="1012613">
+     <string>Execution of XSAVEOPT is similar to that of XSAVE. XSAVEOPT differs from XSAVE in that it may use the init and modified optimizations. The performance of XSAVEOPT will be equal to or better than that of XSAVE.</string></para>
+    </listitem>
+   <listitem><para unique="1012617">
+     <string>XSAVEOPT saves state component </string><italic><string>i</string></italic><string> only if RFBM[</string><italic><string>i</string></italic><string>]&#160;= 1 and XINUSE[</string><italic><string>i</string></italic><string>]&#160;= 1.</string><footnote><para unique="1012616">
+       <string>There is an exception made for MXCSR and MXCSR_MASK, which belong to state component 1 &#8212; SSE. XSAVEOPT always saves these to memory if RFBM[1]&#160;= 1 or RFBM[2]&#160;= 1, regardless of the value of XINUSE.</string></para>
+      </footnote><string> (XINUSE is a bitmap by which the processor tracks the status of various state components. See </string><link linkend="14990: 03_Level: 13.5.5 Processor Tracking of XSAVE-Managed State"><string>Section 13.6, &#8220;Processor Tracking of XSAVE-Managed State,&#8221;</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1.) Even if both bits are 1, XSAVEOPT may optimize and not save state component </string><italic><string>i</string></italic><string> if (1)&#160;state component </string><italic><string>i</string></italic><string> has not been modified since the last execution of XRSTOR or XRSTORS; and (2)&#160;this execution of XSAVES corresponds to that last execution of XRSTOR or XRSTORS as determined by the internal value XRSTOR_INFO (see the Operation section below).</string></para>
+    </listitem>
+   <listitem><para unique="1012621">
+     <string>XSAVEOPT does not modify bytes 511:464 of the legacy region of the XSAVE area (see Section 13.4.1, &#8220;Legacy Region of an XSAVE Area&#8221; of Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1).</string></para>
+    </listitem>
+   <listitem><para unique="1012625">
+     <string>XSAVEOPT reads the XSTATE_BV field of the XSAVE header (see </string><link linkend="43781: 03_Level: 14.4.2 XSAVE Header"><string>Section 13.4.2, &#8220;XSAVE Header,&#8221;</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1) and writes a modified value back to memory as follows. If RFBM[</string><italic><string>i</string></italic><string>]&#160;= 1, XSAVEOPT writes XSTATE_BV[</string><italic><string>i</string></italic><string>] with the value of XINUSE[</string><italic><string>i</string></italic><string>]. If RFBM[</string><italic><string>i</string></italic><string>]&#160;= 0, XSAVEOPT writes XSTATE_BV[</string><italic><string>i</string></italic><string>] with the value that it read from memory (it does not modify the bit). XSAVEOPT does not write to any part of the XSAVE header other than the XSTATE_BV field.</string></para>
+    </listitem>
+   <listitem><para unique="1012626">
+     <string>XSAVEOPT always uses the standard format of the extended region of the XSAVE area (see Section 13.4.3, &#8220;Extended Region of an XSAVE Area&#8221; of Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1).</string></para>
+    </listitem>
+   </itemizedlist><para unique="1012627">
+   <string>Use of a destination operand not aligned to 64-byte boundary (in either 64-bit or 32-bit modes) will result in a general-protection (#GP) exception. In 64-bit mode, the upper 32 bits of RDX and RAX are ignored.</string></para>
+  <para unique="1012628">
+   <string>See Section 13.6, &#8220;Processor Tracking of XSAVE-Managed State,&#8221; of Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1 for discussion of the bitmap XMODIFIED and of the quantity XRSTOR_INFO.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1012663">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>XSAVEOPT void _xsaveopt( void * , unsigned __int64);</string><string>
+</string><string>XSAVEOPT void _xsaveopt64( void * , unsigned __int64);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <listitem><string>If a memory operand is not aligned on a 64-byte boundary, regardless of segment.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM </string></term>
+    <listitem><string>If CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If CPUID.01H:ECX.XSAVE[26] = 0 or CPUID.0DH.01H:EAX.XSAVEOPT[0]&#160;= 0.</string></listitem>
+    <listitem><string>If CR4.OSXSAVE[bit 18] = 0.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC </string></term>
+    <listitem><string>If this exception is disabled a general protection exception (#GP) is signaled if the memory operand is not aligned on a 64&#8209;byte boundary, as described above. If the alignment check exception (#AC) is enabled (and the CPL is 3), signaling of #AC is not guaranteed and may vary with implementation, as follows. In all implementations where #AC is not signaled, a general protection exception is signaled in its place. In addition, the width of the alignment check may also vary with implementation. For instance, for a given implementation, an align&#173;ment check exception might be signaled for a 2-byte misalignment, whereas a general protec&#173;tion exception might be signaled for all other misalignments (4-, 8-, or 16-byte misalignments).</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If a memory operand is not aligned on a 64-byte boundary, regardless of segment.</string></listitem>
+    <listitem><string>If any part of the operand lies outside the effective address space from 0 to FFFFH.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM </string></term>
+    <listitem><string>If CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If CPUID.01H:ECX.XSAVE[26] = 0 or CPUID.0DH.01H:EAX.XSAVEOPT[0]&#160;= 0.</string></listitem>
+    <listitem><string>If CR4.OSXSAVE[bit 18] = 0.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <para unique="1012689" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1012691" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <listitem><string>If a memory operand is not aligned on a 64-byte boundary, regardless of segment.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM </string></term>
+    <listitem><string>If CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If CPUID.01H:ECX.XSAVE[26] = 0 or CPUID.0DH.01H:EAX.XSAVEOPT[0]&#160;= 0.</string></listitem>
+    <listitem><string>If CR4.OSXSAVE[bit 18] = 0.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC </string></term>
+    <listitem><string>If this exception is disabled a general protection exception (#GP) is signaled if the memory operand is not aligned on a 64&#8209;byte boundary, as described above. If the alignment check exception (#AC) is enabled (and the CPL is 3), signaling of #AC is not guaranteed and may vary with implementation, as follows. In all implementations where #AC is not signaled, a general protection exception is signaled in its place. In addition, the width of the alignment check may also vary with implementation. For instance, for a given implementation, an align&#173;ment check exception might be signaled for a 2-byte misalignment, whereas a general protec&#173;tion exception might be signaled for all other misalignments (4-, 8-, or 16-byte misalignments).</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

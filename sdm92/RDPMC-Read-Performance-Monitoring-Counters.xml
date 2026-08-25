@@ -1,0 +1,111 @@
+<instruction name="RDPMC">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Read Performance-Monitoring Counters</shortdesc>
+ <longdesc><para unique="1091440">
+   <string>Reads the contents of the performance monitoring counter (PMC) specified in ECX register into registers EDX:EAX. (On processors that support the Intel 64 architecture, the high-order 32 bits of RCX are ignored.) The EDX register is loaded with the high-order 32 bits of the PMC and the EAX register is loaded with the low-order 32 bits. (On processors that support the Intel 64 architecture, the high-order 32 bits of each of RAX and RDX are cleared.) If fewer than 64 bits are implemented in the PMC being read, unimplemented bits returned to EDX:EAX will have value zero. </string></para>
+  <para unique="1091441">
+   <string>The width of PMCs on processors supporting architectural performance monitoring (CPUID.0AH:EAX[7:0] </string><string>&#8800; 0) are reported by CPUID.0AH:EAX[23:16]. On processors that do not support architectural performance monitoring (CPUID.0AH:EAX[7:0]=0), the width of general-purpose performance PMCs is 40 bits, while the widths of special-purpose PMCs are implementation specific.</string></para>
+  <para unique="1091442">
+   <string>Use of ECX to specify a PMC depends on whether the processor supports architectural performance monitoring:</string></para>
+  <itemizedlist><listitem><para unique="1091443">
+     <string>If the processor does not support architectural performance monitoring (CPUID.0AH:EAX[7:0]=0), ECX[30:0] specifies the index of the PMC to be read. Setting ECX[31] selects &#8220;fast&#8221; read mode if supported. In this mode, RDPMC returns bits 31:0 of the PMC in EAX while clearing EDX to zero.</string></para>
+    </listitem>
+   <listitem><para unique="1091444">
+     <string>If the processor does support architectural performance monitoring (CPUID.0AH:EAX[7:0] </string><string>&#8800; 0), ECX[31:16] specifies type of PMC while ECX[15:0] specifies the index of the PMC to be read within that type. The following PMC types are currently defined:</string></para>
+    </listitem>
+   </itemizedlist><para unique="1091445" format="ListEmDash">
+   <string>General-purpose counters use type 0. To read IA32_PMCx, one of the following must hold for the index x:</string></para>
+  <itemizedlist><listitem><para unique="1091949">
+     <string>It is less than the value enumerated by CPUID.0AH:EAX[15:8]; or</string></para>
+    </listitem>
+   <listitem><para unique="1091950">
+     <string>It is at most 31 and the value enumerated by CPUID.23H.01H:EAX[x] is 1.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1091446" format="ListEmDash">
+   <string>Fixed-function counters use type 4000H. To read IA32_FIXED_CTRx, one of the following must hold for the index x:</string></para>
+  <itemizedlist><listitem><para unique="1091992">
+     <string>It is less than the value enumerated by CPUID.0AH:EDX[4:0];</string></para>
+    </listitem>
+   <listitem><para unique="1091993">
+     <string>It is at most 31 and the value enumerated by CPUID.0AH:ECX[x] is 1; or</string></para>
+    </listitem>
+   <listitem><para unique="1091994">
+     <string>It is at most 31 and the value enumerated by CPUID.23H.01H:EBX[x] is 1.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1091447" format="ListEmDash">
+   <string>Performance metrics use type 2000H. This type can be used only if IA32_PERF_CAPABILITIES.PERF_MET&#173;RICS_AVAILABLE[bit 15]=1. For this type, the index in ECX[15:0] is implementation specific.</string></para>
+  <para unique="1091448">
+   <string>Specifying an unsupported PMC encoding will cause a general protection exception #GP(0). For PMC details see </string><link linkend="12383: H1Heading: Chapter 10 Debugging and Performance Monitoring"><string>Chapter 21, &#8220;Last Branch Records,&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B.</string></para>
+  <para unique="1091453">
+   <string>When in protected or virtual 8086 mode, the </string><bold><string>Performance-monitoring Counters Enabled</string></bold><string> (</string><indexterm><primary>PCE flag, CR4 register</primary></indexterm><string>PCE) flag in register CR4 restricts the use of the RDPMC instruction. When the PCE flag is set, the RDPMC instruction can be executed at any privilege level; when the flag is clear, the instruction can only be executed at privilege level 0. (When in real-address mode, the RDPMC instruction is always enabled.) The PMCs can also be read with the RDMSR instruction, when executing at privilege level 0.</string></para>
+  <para unique="1092019">
+   <string>Processors that support performance metrics may also support clearing them on read if the IA32_PERF_CAPABILITIES.RDPMC_METRICS_CLEAR[bit 19] is set. Since the IA32_PERF_CAPABILITIES MSR enumerates non-architectural PMU features, software should check DisplayFamily and DisplayModel to confirm that the processor supports the functionality described in the next paragraph.</string></para>
+  <para unique="1092021">
+   <string>When the IA32_FIXED_CTR_CTRL.METRICS_CLEAR_EN[bit 14] is set, an RDPMC instruction for PERF_METRICS (that is, when ECX=0x2000'0000) clears PERF_METRICS-related resources as well as fixed-function performance monitoring counter 3 after the read is performed. When METRICS_CLEAR_EN is clear, the RDPMC instruction only reads PERF_METRICS.</string></para>
+  <para unique="1091454">
+   <string>The RDPMC instruction is not a serializing instruction; that is, it does not imply that all the events caused by the preceding instructions have been completed or that events caused by subsequent instructions have not begun. If an exact event count is desired, software must insert a serializing instruction (such as the CPUID instruction) before and/or after the RDPMC instruction.</string></para>
+  <para unique="1091455">
+   <string>Performing back-to-back fast reads are not guaranteed to be monotonic. To guarantee monotonicity on back-to-back reads, a serializing instruction must be placed between the two RDPMC instructions.</string></para>
+  <para unique="1091456">
+   <string>The RDPMC instruction can execute in 16-bit addressing mode or virtual-8086 mode; however, the full contents of the ECX register are used to select the PMC, and the event count is stored in the full EAX and EDX registers. The RDPMC instruction was introduced into the IA-32 Architecture in the Pentium Pro processor and the Pentium processor with MMX technology. The earlier Pentium processors have PMCs, but they must be read with the RDMSR instruction.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1091467">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the current privilege level is not 0 and the PCE flag in the CR4 register is clear.</string></listitem>
+    <listitem><string>If an invalid performance counter index is specified.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If an invalid performance counter index is specified.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the PCE flag in the CR4 register is clear.</string></listitem>
+    <listitem><string>If an invalid performance counter index is specified.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1091480" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the current privilege level is not 0 and the PCE flag in the CR4 register is clear.</string></listitem>
+    <listitem><string>If an invalid performance counter index is specified.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

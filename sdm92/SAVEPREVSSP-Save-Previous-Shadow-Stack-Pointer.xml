@@ -1,0 +1,78 @@
+<instruction name="SAVEPREVSSP">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Save Previous Shadow Stack Pointer</shortdesc>
+ <longdesc><para unique="1091442">
+   <string>Push a restore-shadow-stack token on the previous shadow stack at the next 8 byte aligned boundary. The previous SSP is obtained from the previous-ssp token at the top of the current shadow stack.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1091481">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>SAVEPREVSSP	 void _saveprevssp(void);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If CR4.CET = 0.</string></listitem>
+    <listitem><string>IF CPL = 3 and IA32_U_CET.SH_STK_EN = 0.</string></listitem>
+    <listitem><string>IF CPL &lt; 3 and IA32_S_CET.SH_STK_EN = 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If SSP not 8 byte aligned.</string></listitem>
+    <listitem><string>If alignment hole on shadow stack is not 0.</string></listitem>
+    <listitem><string>If bit 1 of the previous-ssp token is not set to 1.</string></listitem>
+    <listitem><string>If in 32-bit/compatibility mode and SSP recorded in previous-ssp token is beyond 4G.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The SAVEPREVSSP instruction is not recognized in real-address mode. </string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The SAVEPREVSSP instruction is not recognized in virtual-8086 mode. </string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1091499" format="xIndent1">
+   <string>Same as protected mode exceptions.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If CR4.CET = 0.</string></listitem>
+    <listitem><string>If CPL = 3 and IA32_U_CET.SH_STK_EN = 0.</string></listitem>
+    <listitem><string>If CPL &lt; 3 and IA32_S_CET.SH_STK_EN = 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If SSP not 8 byte aligned.</string></listitem>
+    <listitem><string>If carry flag is set.</string></listitem>
+    <listitem><string>If bit 1 of the previous-ssp token is not set to 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

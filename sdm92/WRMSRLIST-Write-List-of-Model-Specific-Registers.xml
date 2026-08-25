@@ -1,0 +1,102 @@
+<instruction name="WRMSRLIST">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Write List of Model Specific Registers</shortdesc>
+ <longdesc><para unique="1262715">
+   <string>This instruction writes a software-provided list of up to 64 MSRs with values loaded from memory.</string></para>
+  <para unique="1262716">
+   <string>WRMSRLIST takes three implied input operands:</string></para>
+  <itemizedlist><listitem><para unique="1262720">
+     <string>RSI: Linear address of a table of MSR addresses (8 bytes per address)</string><footnote><para unique="1262719">
+       <string>Since MSR addresses are only 32-bits wide, bits 63:32 of each MSR address table entry is reserved.</string></para>
+      </footnote><string>.</string></para>
+    </listitem>
+   <listitem><para unique="1262721">
+     <string>RDI: Linear address of a table from which MSR data is loaded (8 bytes per MSR).</string></para>
+    </listitem>
+   <listitem><para unique="1262722">
+     <string>RCX: 64-bit bitmask of valid bits for the MSRs. Bit 0 is the valid bit for entry 0 in each table, etc.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1262723">
+   <string>For each RCX bit [n] from 0 to 63, if RCX[n] is 1, WRMSRLIST will write the MSR specified at entry [n] in the RSI-based table with the value read from memory at the entry [n] in the RDI-based table.</string></para>
+  <para unique="1262724">
+   <string>This implies a maximum of 64 MSRs that can be processed by this instruction. The processor will clear RCX[n] after it finishes handling that MSR. Similar to repeated string operations, WRMSRLIST supports partial completion for interrupts, exceptions, and traps. In these situations, the RIP register saved will point to the MSRLIST instruction while the RCX register will have cleared bits corresponding to all completed iterations.</string></para>
+  <para unique="1262725">
+   <string>This instruction must be executed at privilege level 0; otherwise, a general protection exception #GP(0) is gener&#173;ated. This instruction performs MSR-specific checks in the same manner as WRMSR.</string></para>
+  <para unique="1262726">
+   <string>Like WRMSRNS (and unlike WRMSR), WRMSRLIST is not defined as a serializing instruction (see &#8220;Serializing Instructions&#8221; in </string><link linkend="36559: H1Heading: Chapter 7 Multiple-Processor Management"><string>Chapter 11</string></link><string> of the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A). This means that software should not rely on WRMSRLIST to drain all buffered writes to memory before the next instruction is fetched and executed. For implementation reasons, some processors may serialize when writing certain MSRs, even though that is not guaranteed.</string></para>
+  <para unique="1262733">
+   <string>Like WRMSR and WRMSRNS, WRMSRLIST ensures that all operations before WRMSRLIST do not use any new MSR value and that all operations after WRMSRLIST do use the new values. An exception to this rule is certain store related performance-monitor events that only count stores when they are drained to memory. Since WRMSRLIST is not a serializing instruction, if software uses WRMSRLIST to change the controls for such performance-monitor events, stores issued before WRMSRLIST may be counted based on the controls established by WRMSRLIST. Soft&#173;ware can insert the SERIALIZE instruction before the WRMSRLIST if so desired.</string></para>
+  <para unique="1262734">
+   <string>Those MSRs that cause a TLB invalidation when they are written via WRMSR (e.g., MTRRs) will also cause the same TLB invalidation when written by WRMSRLIST.</string></para>
+  <para unique="1262735">
+   <string>In places where WRMSR is being used as a proxy for a serializing instruction, a different serializing instruction can be used (e.g., SERIALIZE).</string></para>
+  <para unique="1262736">
+   <string>WRMSRLIST writes MSRs in order, which means the processor will ensure that an MSR in iteration &#8220;n&#8221; will be written only after previous iterations (&#8220;n-1&#8221;). If the older MSR writes had a side effect that affects the behavior of the next MSR, the processor will ensure that side effect is honored.</string></para>
+  <para unique="1262737">
+   <string>The processor is allowed (but not required) to &#8220;load ahead&#8221; in the list. The following are examples of things the processor may do:</string></para>
+  <itemizedlist><listitem><para unique="1262738">
+     <string>Use an old memory type or TLB entry for loads or stores to memory containing the tables despite an MSR written by a previous iteration changing MTRR or invalidating TLBs.</string></para>
+    </listitem>
+   <listitem><para unique="1262739">
+     <string>Cause a page fault for access to a table entry after the n</string><superscript><string>th</string></superscript><string>, despite the processor having written only n MSRs.</string><footnote><para unique="1262742">
+       <string>For example, the processor may take a page fault due to a linear address for the 10th entry in the MSR address table despite only having completed the MSR writes up to entry 5.</string></para>
+      </footnote></para>
+    </listitem>
+   </itemizedlist></longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1262770">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The WRMSRLIST instruction is not recognized in protected mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>The WRMSRLIST instruction is not recognized in real-address mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string> The WRMSRLIST instruction is not recognized in virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string> The WRMSRLIST instruction is not recognized in compatibility mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    <listitem><string>If RSI [2:0] </string><string>&#8800; 0, RDI [2:0] </string><string>&#8800; 0, or bits 63:32 of an MSR-address table entry are not all zero.</string></listitem>
+    <listitem><string>If an execution of WRMSR to a specified MSR with a specified value would generate a general-protection exception (#GP(0)).</string></listitem>
+    <listitem><string>If the memory address is in a non-canonical form. </string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If CPUID.07H.01H:EAX.MSRLIST[27] = 0.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

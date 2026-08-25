@@ -1,0 +1,61 @@
+<instruction name="LOOP/LOOPcc">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Loop According to ECX Counter</shortdesc>
+ <longdesc><para unique="1261264">
+   <string>Performs a loop operation using the RCX, ECX or CX register as a counter (depending on whether address size is 64 bits, 32 bits, or 16 bits). Note that the LOOP instruction ignores REX.W; but 64-bit address size can be over-ridden using a 67H prefix.</string></para>
+  <para unique="1261265">
+   <string>Each time the LOOP instruction is executed, the count register is decremented, then checked for 0. If the count is 0, the loop is terminated and program execution continues with the instruction following the LOOP instruction. If the count is not zero, a near jump is performed to the destination (target) operand, which is presumably the instruction at the beginning of the loop.</string></para>
+  <para unique="1261266">
+   <string>The target instruction is specified with a relative offset (a signed offset relative to the current value of the instruc&#173;tion pointer in the IP/EIP/RIP register). This offset is generally specified as a label in assembly code, but at the machine code level, it is encoded as a signed, 8-bit immediate value, which is added to the instruction pointer. Offsets of &#8211;128 to </string><string>+127 are allowed with this instruction.</string></para>
+  <para unique="1261268">
+   <string>Some forms of the loop instruction (LOOP</string><italic><string>cc</string></italic><string>) also accept the </string><indexterm><primary>ZF (zero) flag, EFLAGS register</primary></indexterm><string>ZF flag as a condition for terminating the loop before the count reaches zero. With these forms of the instruction, a condition code (</string><italic><string>cc</string></italic><string>) is associated with each instruc&#173;tion to indicate the condition being tested for. Here, the LOOP</string><italic><string>cc</string></italic><string> instruction itself does not affect the state of the ZF flag; the ZF flag is changed by other instructions in the loop.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1261317">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the offset being jumped to is beyond the limits of the CS segment.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If the offset being jumped to is beyond the limits of the CS segment or is outside of the effec&#173;tive address space from 0 to FFFFH. This condition can occur if a 32-bit address size override prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <para unique="1261325">
+   <string>Same exceptions as in real address mode.</string></para>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261327" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the offset being jumped to is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

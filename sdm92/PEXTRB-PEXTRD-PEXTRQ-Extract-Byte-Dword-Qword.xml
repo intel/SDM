@@ -1,0 +1,40 @@
+<instruction name="PEXTRB/PEXTRD/PEXTRQ">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Extract Byte/Dword/Qword</shortdesc>
+ <longdesc><para unique="1091566">
+   <string>Extract a byte/dword/qword integer value from the source XMM register at a byte/dword/qword offset determined from imm8[3:0]. The destination can be a register or byte/dword/qword memory location. If the destination is a register, the upper bits of the register are zero extended.</string></para>
+  <para unique="1091567">
+   <string>In legacy non-VEX encoded version and if the destination operand is a register, the default operand size in 64-bit mode for PEXTRB/PEXTRD is 64 bits, the bits above the least significant byte/dword data are filled with zeros. PEXTRQ is not encodable in non-64-bit modes and requires REX.W in 64-bit mode.</string></para>
+  <para unique="1091568">
+   <string>Note: In VEX.128 encoded versions, VEX.vvvv is reserved and must be 1111b, VEX.L must be 0, otherwise the instruction will #UD. In EVEX.128 encoded versions, EVEX.vvvv is reserved and must be 1111b, EVEX.L&#8221;L must be 0, otherwise the instruction will #UD. If the destination operand is a register, the default operand size in 64-bit mode for VPEXTRB/VPEXTRD is 64 bits, the bits above the least significant byte/word/dword data are filled with zeros. </string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>PEXTRB 	int _mm_extract_epi8 (__m128i src, const int ndx);</string><string>
+</string><string>PEXTRD 		int _mm_extract_epi32 (__m128i src, const int ndx);</string><string>
+</string><string>PEXTRQ 		__int64 _mm_extract_epi64 (__m128i src, const int ndx);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Flags Affected">
+  <para unique="1091620">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1091622" format="xIndent1">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1091627" format="xIndent1">
+   <string>Non-EVEX-encoded instruction, see </string><link linkend="48385: 06_Table: Table 2-22. Type 5 Class Exception Conditions"><string>Table&#160;2&#8209;22, &#8220;Type 5 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091631" format="xIndent1">
+   <string>EVEX-encoded instruction, see </string><link linkend="32485: 06_Table: Table 2-57. Type E9NF Class Exception Conditions"><string>Table&#160;2&#8209;59, &#8220;Type E9NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091632" format="xIndent1">
+   <string>Additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If VEX.L = 1 or EVEX.L&#8217;L &gt; 0.</string></listitem>
+    <listitem><string>If VEX.vvvv != 1111B or EVEX.vvvv != 1111B.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

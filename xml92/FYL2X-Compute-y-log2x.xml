@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="FYL2X" xed_iform="FYL2X" encoding="D9 F1" opcode="d9" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>FP87::Check_For_Pending_Unmasked_Floating_Point_Exceptions</callee>
+   <callee>FP87::Is_Enabled</callee>
+   <callee>FP87::Is_Unmasked_Pre_Computation_Exception</callee>
+   <callee>FP87::Pop</callee>
+   <callee>FP87::Process_Exceptions</callee>
+   <callee>Null_Segment</callee>
+   <callee>FP87::Update_Instruction_Info</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>ST</callee>
+   <callee>ST_write</callee>
+   <callee>Instr_FYL2X</callee>
+   <var-used>False</var-used>
+   <var-used>DS</var-used>
+   <var-used>FP87_Status</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>X87FPDisabled</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><exception_check><exception_condition>TRUE</exception_condition>
+     <exception_fault>CHECK_X87</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := ST[0];</code>
+     <code>let src2 := ST[1];</code>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result, status) := Instr_FYL2X(src1, src2);</code>
+     </execute>
+    <post_execute>
+     <code>let write_result := not FP87::Is_Unmasked_Pre_Computation_Exception(status.Exception_Flags);</code>
+     <code>if write_result then</code>
+     <code>    ST[1] := result;</code>
+     <code>    FP87::Pop();</code>
+     <code>endif;</code>
+     <code>FP87_Status.SF := status.SF;</code>
+     <code>FP87::Process_Exceptions(status.Exception_Flags);</code>
+     <code>FP87_Status.C0 := UNSPECIFIED : Bit;</code>
+     <code>FP87_Status.C1 := status.C1;</code>
+     <code>FP87_Status.C2 := UNSPECIFIED : Bit;</code>
+     <code>FP87_Status.C3 := UNSPECIFIED : Bit;</code>
+     <code>FP87::Update_Instruction_Info(opcode, mod ++ reg ++ rm);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="FYL2X">
+    <asm-operand><varname>ST(0)</varname></asm-operand>
+    <asm-operand><varname>ST(1)</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding/>
+    <label><varname>ST(0)</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding/>
+    <label><varname>ST(1)</varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding/>
+    <label><varname>ST(1)</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="FYL2X" variant_kind="Standard variant" mnemonic="FYL2X">
+  <code>var result : F80_Type;</code>
+  <code>var status := FP87_Status;</code>
+  <code></code>
+  <code>status.C0 := UNSPECIFIED : Bit;</code>
+  <code>status.C1 := 0b0;</code>
+  <code>status.C2 := UNSPECIFIED : Bit;</code>
+  <code>status.C3 := UNSPECIFIED : Bit;</code>
+  <code></code>
+  <code>if FP87::Is_STi_Empty(0) or FP87::Is_STi_Empty(1) then</code>
+  <code>    status.IE := 0b1;</code>
+  <code>    status.SF := 0b1;</code>
+  <code>    result := FP87::QNaN_Indefinite();</code>
+  <code>else</code>
+  <code>    var rounded_up := False;</code>
+  <code>    (result, rounded_up, status.Exception_Flags) := FP87::Log2_Multiply(src1, src2);</code>
+  <code>    status.C1 := if rounded_up then 0b1 else 0b0;</code>
+  <code>endif;</code>
+  <callee>Std::Boolean::Strict_Or</callee>
+  <callee>FP87::Is_STi_Empty</callee>
+  <callee>FP87::Log2_Multiply</callee>
+  <callee>FP87::QNaN_Indefinite</callee>
+  <var-used>False</var-used>
+  <var-used>FP87_Status</var-used>
+  </operation>
+ <category>scalar</category>
+ <category>fp/x87/transcendental</category>
+ <input name="src1"/>
+ <input name="src2"/>
+ <output name="result"/>
+ </instruction>

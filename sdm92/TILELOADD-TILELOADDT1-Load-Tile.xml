@@ -1,0 +1,28 @@
+<instruction name="TILELOADD/TILELOADDT1">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Load Tile</shortdesc>
+ <longdesc><para unique="1091458">
+   <string>This instruction is required to use SIB addressing. The index register serves as a stride indicator. If the SIB encoding omits an index register, the value zero is assumed for the content of the index register.</string></para>
+  <para unique="1091459">
+   <string>This instruction loads a tile destination with rows and columns as specified by the tile configuration. The &#8220;T1&#8221; version provides a hint to the implementation that the data would be reused but does not need to be resident in the nearest cache levels.</string></para>
+  <para unique="1091460">
+   <string>The TILECFG.start_row in the TILECFG data should be initialized to '0' in order to load the entire tile and is set to zero on successful completion of the TILELOADD instruction. TILELOADD is a restartable instruction and the TILECFG.start_row will be non-zero when restartable events occur during the instruction execution. </string></para>
+  <para unique="1091461">
+   <string>Only memory operands are supported and they can only be accessed using a SIB addressing mode, similar to the V[P]GATHER*/V[P]SCATTER* instructions.</string></para>
+  <para unique="1091462">
+   <string>Any attempt to execute the TILELOADD/TILELOADDT1 instructions inside an Intel TSX transaction will result in a transaction abort.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>TILELOADD		 void _tile_loadd(__tile dst, const void *base, int stride);</string><string>
+</string><string>TILELOADDT1 void _tile_stream_loadd(__tile dst, const void *base, int stride);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Flags Affected">
+  <para unique="1091484">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Exceptions">
+  <para unique="1091489" format="xIndent1">
+   <string>AMX-E3; see </string><link linkend="77014: 02_Level: 2.10 Intel&#174; AMX Instruction Exception Classes"><string>Section 2.10, &#8220;Intel&#174; AMX Instruction Exception Classes,&#8221;</string></link><string> for details.</string></para>
+  </subsection>
+ </instruction>

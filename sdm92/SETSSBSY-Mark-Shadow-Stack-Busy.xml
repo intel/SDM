@@ -1,0 +1,86 @@
+<instruction name="SETSSBSY">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Mark Shadow Stack Busy</shortdesc>
+ <longdesc><para unique="1091443">
+   <string>The SETSSBSY instruction verifies the presence of a non-busy supervisor shadow stack token at the address in the IA32_PL0_SSP MSR and marks it busy. Following successful execution of the instruction, the SSP is set to the value of the IA32_PL0_SSP MSR.</string></para>
+  <para unique="1092114">
+   <string>This instruction cannot be executed when FRED transitions are enabled. FRED transitions do not use supervisor shadow stack tokens.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1091462">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>SETSSBSY	void _setssbsy(void);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If CR4.CET = 0.</string></listitem>
+    <listitem><string>IF IA32_S_CET.SH_STK_EN = 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If IA32_PL0_SSP not aligned to 8 bytes.</string></listitem>
+    <listitem><string>If CPL is not 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#CP(setssbsy)</string></term>
+    <listitem><string>If busy bit in token is set.</string></listitem>
+    <listitem><string>If the address in token is not below 4 GBytes.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The SETSSBSY instruction is not recognized in real-address mode. </string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The SETSSBSY instruction is not recognized in virtual-8086 mode. </string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If CR4.CET = 0.</string></listitem>
+    <listitem><string>IF IA32_S_CET.SH_STK_EN = 0.</string></listitem>
+    <listitem><string>If CR4.FRED = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If IA32_PL0_SSP not aligned to 8 bytes.</string></listitem>
+    <listitem><string>If CPL is not 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#CP(setssbsy)</string></term>
+    <listitem><string>If busy bit in token is set.</string></listitem>
+    <listitem><string>If the address in token is not below 4 GBytes.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <para unique="1092198" format="xIndent1">
+   <string>Same as compatibility mode exceptions (except there is no check on the token address).</string></para>
+  </subsection>
+ </instruction>

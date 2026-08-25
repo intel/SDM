@@ -1,0 +1,126 @@
+<instruction name="XSAVES">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Save Processor Extended States Supervisor</shortdesc>
+ <longdesc><para unique="1012608">
+   <string>Performs a full or partial save of processor state components to the XSAVE area located at the memory address specified by the destination operand. The implicit EDX:EAX register pair specifies a 64-bit instruction mask. The specific state components saved correspond to the bits set in the requested-feature bitmap (RFBM), the logical-AND of EDX:EAX and the logical-OR of XCR0 with the IA32_XSS MSR. XSAVES may be executed only if CPL = 0.</string></para>
+  <para unique="1012612">
+   <string>The format of the XSAVE area is detailed in </string><link linkend="51305: 03_Level: 13.11.4 XSAVE Area"><string>Section 13.4, &#8220;XSAVE Area,&#8221;</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1. Like FXRSTOR and FXSAVE, the memory format used for x87 state depends on a REX.W prefix; see </string><link linkend="38590: 04_Level: 13.11.4.1 x87 State"><string>Section 13.5.1, &#8220;x87 State,&#8221;</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1.</string></para>
+  <para unique="1012619">
+   <link linkend="66607: 02_Level: 13.11 Operation of XSAVES"><string>Section 13.11, &#8220;Operation of XSAVES,&#8221;</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1 provides a detailed description of the operation of the XSAVES instruction. The following items provide a high-level outline:</string></para>
+  <itemizedlist><listitem><para unique="1012620">
+     <string>Execution of XSAVES is similar to that of XSAVEC. XSAVES differs from XSAVEC in that it can save state components corresponding to bits set in the IA32_XSS MSR and that it may use the modified optimization.</string></para>
+    </listitem>
+   <listitem><para unique="1012624">
+     <string>XSAVES saves state component </string><italic><string>i</string></italic><string> only if RFBM[</string><italic><string>i</string></italic><string>]&#160;= 1 and XINUSE[</string><italic><string>i</string></italic><string>]&#160;= 1.</string><footnote><para unique="1012623">
+       <string>There is an exception for state component 1 (SSE). MXCSR is part of SSE state, but XINUSE[1] may be 0 even if MXCSR does not have its initial value of 1F80H. In this case, the init optimization does not apply and XSAVEC will save SSE state as long as RFBM[1]&#160;= 1 and the modified optimization is not being applied.</string></para>
+      </footnote><string> (XINUSE is a bitmap by which the processor tracks the status of various state components. See </string><link linkend="14990: 03_Level: 13.5.5 Processor Tracking of XSAVE-Managed State"><string>Section 13.6, &#8220;Processor Tracking of XSAVE-Managed State,&#8221;</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1.) Even if both bits are 1, XSAVES may optimize and not save state component </string><italic><string>i</string></italic><string> if (1)&#160;state component </string><italic><string>i</string></italic><string> has not been modified since the last execution of XRSTOR or XRSTORS; and (2)&#160;this execution of XSAVES correspond to that last execution of XRSTOR or XRSTORS as determined by XRSTOR_INFO (see the Operation section below).</string></para>
+    </listitem>
+   <listitem><para unique="1012630">
+     <string>XSAVES does not modify bytes 511:464 of the legacy region of the XSAVE area (see </string><link linkend="70234: 03_Level: 14.4.1 Legacy Region of XSAVE Area"><string>Section 13.4.1, &#8220;Legacy Region of an XSAVE Area,&#8221;</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1).</string></para>
+    </listitem>
+   <listitem><para unique="1012637">
+     <string>XSAVES writes the logical AND of RFBM and XINUSE to the XSTATE_BV field of the XSAVE header.</string><footnote><para unique="1012634">
+       <string>There is an exception for state component 1 (SSE). MXCSR is part of SSE state, but XINUSE[1] may be 0 even if MXCSR does not have its initial value of 1F80H. In this case, XSAVES sets XSTATE_BV[1] to 1 as long as RFBM[1]&#160;= 1.</string></para>
+      </footnote><string> (See </string><link linkend="43781: 03_Level: 14.4.2 XSAVE Header"><string>Section 13.4.2, &#8220;XSAVE Header,&#8221;</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1.) XSAVES sets bit&#160;63 of the XCOMP_BV field and sets bits&#160;62:0 of that field to RFBM[62:0]. XSAVES does not write to any parts of the XSAVE header other than the XSTATE_BV and XCOMP_BV fields.</string></para>
+    </listitem>
+   <listitem><para unique="1012641">
+     <string>XSAVES always uses the compacted format of the extended region of the XSAVE area (see </string><link linkend="29115: 03_Level: 14.4.3 Extended Region of the XSAVE Area"><string>Section 13.4.3, &#8220;Extended Region of an XSAVE Area,&#8221;</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1).</string></para>
+    </listitem>
+   </itemizedlist><para unique="1012643">
+   <string>Use of a destination operand not aligned to 64-byte boundary (in either 64-bit or 32-bit modes) results in a general-protection (#GP) exception. In 64-bit mode, the upper 32 bits of RDX and RAX are ignored.</string></para>
+  <para unique="1012644">
+   <string>See Section 13.6, &#8220;Processor Tracking of XSAVE-Managed State,&#8221; of Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1 for discussion of the bitmap XMODIFIED and of the quantity XRSTOR_INFO.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1012691">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>XSAVES void _xsaves( void * , unsigned __int64);</string><string>
+</string><string>XSAVES64 void _xsaves64( void * , unsigned __int64);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If CPL&#160;&gt; 0.</string></listitem>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <listitem><string>If a memory operand is not aligned on a 64-byte boundary, regardless of segment.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM </string></term>
+    <listitem><string>If CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If CPUID.01H:ECX.XSAVE[26] = 0 or CPUID.0DH.01H:EAX.XSAVES[3]&#160;= 0.</string></listitem>
+    <listitem><string>If CR4.OSXSAVE[bit 18] = 0.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If a memory operand is not aligned on a 64-byte boundary, regardless of segment.</string></listitem>
+    <listitem><string>If any part of the operand lies outside the effective address space from 0 to FFFFH.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM </string></term>
+    <listitem><string>If CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If CPUID.01H:ECX.XSAVE[26] = 0 or CPUID.0DH.01H:EAX.XSAVES[3]&#160;= 0.</string></listitem>
+    <listitem><string>If CR4.OSXSAVE[bit 18] = 0.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <para unique="1012715" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1012717" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If CPL&#160;&gt; 0.</string></listitem>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <listitem><string>If a memory operand is not aligned on a 64-byte boundary, regardless of segment.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM </string></term>
+    <listitem><string>If CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If CPUID.01H:ECX.XSAVE[26] = 0 or CPUID.0DH.01H:EAX.XSAVES[3]&#160;= 0.</string></listitem>
+    <listitem><string>If CR4.OSXSAVE[bit 18] = 0.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

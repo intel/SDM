@@ -1,0 +1,65 @@
+<instruction name="CLDEMOTE">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Cache Line Demote</shortdesc>
+ <longdesc><para unique="1261246">
+   <string>Hints to hardware that the cache line that contains the linear address specified with the memory operand should be moved (&#8220;demoted&#8221;) from the cache(s) closest to the processor core to a level more distant from the processor core. This may accelerate subsequent accesses to the line by other cores in the same coherence domain, especially if the line was written by the core that demotes the line. Moving the line in such a manner is a performance optimi&#173;zation, i.e., it is a hint which does not modify architectural state. Hardware may choose which level in the cache hierarchy to retain the line (e.g., L3 in typical server designs). The source operand is a byte memory location. </string></para>
+  <para unique="1261247">
+   <string>The availability of the CLDEMOTE instruction is indicated by the presence of the CPUID feature flag CLDEMOTE (bit 25 of the ECX register in sub-leaf 07H, see </string><link linkend="42531: 05_Level: CPUID&#8212;CPU Identification"><string>&#8220;CPUID&#8212;CPU Identification&#8221;</string></link><string>). On processors which do not support the CLDEMOTE instruction (including legacy hardware) the instruction will be treated as a NOP.</string></para>
+  <para unique="1261251">
+   <string>A CLDEMOTE instruction is ordered with respect to stores to the same cache line, but unordered with respect to other instructions including memory fences, CLDEMOTE, CLWB or CLFLUSHOPT instructions to a different cache line. Since CLDEMOTE will retire in order with respect to stores to the same cache line, software should ensure that after issuing CLDEMOTE the line is not accessed again immediately by the same core to avoid cache data move&#173;ment penalties. </string></para>
+  <para unique="1261252">
+   <string>The effective memory type of the page containing the affected line determines the effect; cacheable types are likely to generate a data movement operation, while uncacheable types may cause the instruction to be ignored. </string></para>
+  <para unique="1261253">
+   <string>Speculative fetching can occur at any time and is not tied to instruction execution. The CLDEMOTE instruction is not ordered with respect to PREFETCHh instructions or any of the speculative fetching mechanisms. That is, data can be speculatively loaded into a cache line just before, during, or after the execution of a CLDEMOTE instruction that references the cache line.</string></para>
+  <para unique="1261254">
+   <string>Unlike CLFLUSH, CLFLUSHOPT, and CLWB instructions, CLDEMOTE is not guaranteed to write back modified data to memory. </string></para>
+  <para unique="1261255">
+   <string>The CLDEMOTE instruction may be ignored by hardware in certain cases and is not a guarantee. </string></para>
+  <para unique="1261256">
+   <string>The CLDEMOTE instruction can be used at all privilege levels. In certain processor implementations the CLDEMOTE instruction may set the A bit but not the D bit in the page tables. </string></para>
+  <para unique="1261257">
+   <string>If the line is not found in the cache, the instruction will be treated as a NOP. </string></para>
+  <para unique="1261258">
+   <string>In some implementations, the CLDEMOTE instruction may always cause a transactional abort with Transactional Synchronization Extensions (TSX). However, programmers must not rely on CLDEMOTE instruction to force a transactional abort. </string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1261262">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>CLDEMOTE void _cldemote(const void*);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <para unique="1261270" format="xIndent1">
+   <string>Same exceptions as in real address mode.</string></para>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261272" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

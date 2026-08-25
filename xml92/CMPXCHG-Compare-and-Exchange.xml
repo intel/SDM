@@ -1,0 +1,472 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="CMPXCHG_GPRv_GPRv" xed_iform="CMPXCHG_GPRv_GPRv" encoding="0F B1 /r" opcode="b1" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_CMPXCHG</callee>
+   <var-used>False</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let is_mem_operand := False;</code>
+     </decode_args>
+    <read_instr><code>let old_dest := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, operand_size);</code>
+     <code>let src := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result, write_result) := Instr_CMPXCHG(operand_size, old_dest, src, is_mem_operand);</code>
+     </execute>
+    <post_execute>
+     <code>if write_result then</code>
+     <code>    Write_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, result);</code>
+     <code>endif;</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPXCHG">
+    <asm-operand><varname>rv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>old_dest</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>rv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>is_mem_operand</name>
+    <label><literal>False</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMPXCHG_MEMv_GPRv" xed_iform="CMPXCHG_MEMv_GPRv" encoding="0F B1 /r" opcode="b1" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Instr_CMPXCHG</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let is_mem_operand := True;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <pre_execute>
+     <code>let old_dest := Logical_Mem_Read?(segment, effective_address, operand_size, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result, write_result) := Instr_CMPXCHG(operand_size, old_dest, src, is_mem_operand);</code>
+     </execute>
+    <post_execute>
+     <code>if write_result then</code>
+     <code>    Logical_Mem_Write?(segment, effective_address, result);</code>
+     <code>endif;</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPXCHG">
+    <asm-operand><varname>mv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>rv<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>old_dest</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>is_mem_operand</name>
+    <label><literal>True</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="CMPXCHG" variant_kind="Standard variant" mnemonic="CMPXCHG">
+  <code>let accumulator := RAX[0 +: operand_size];</code>
+  <code>let (difference, carry_out, overflow, alternative_carry) := Subtract(accumulator, old_dest);</code>
+  <code></code>
+  <code>var result : Bits(operand_size);</code>
+  <code>var write_result : Boolean;</code>
+  <code></code>
+  <code>if Is_Zero(difference) then</code>
+  <code>    result := src;</code>
+  <code>    write_result := True;</code>
+  <code>else</code>
+  <code>    Write_RAX(old_dest[0 +: operand_size]);</code>
+  <code>    result := old_dest;</code>
+  <code></code>
+  <code>    // Rewrite the "old_dest" value to the destination only when the destination is a memory operand.</code>
+  <code>    // In case of register destination operand there is no need to rewrite the register with the same</code>
+  <code>    // value as the upper 32-bits of the register will get cleared when operand_size == 32.</code>
+  <code>    write_result := is_mem_operand;</code>
+  <code>endif;</code>
+  <code></code>
+  <code>RFLAGS.OF := overflow;</code>
+  <code>RFLAGS.SF := difference[operand_size-1];</code>
+  <code>RFLAGS.ZF := if Is_Zero(difference) then 0b1 else 0b0;</code>
+  <code>RFLAGS.AF := alternative_carry;</code>
+  <code>RFLAGS.PF := if Is_Parity_Even(difference[0 +: 8]) then 0b1 else 0b0;</code>
+  <code>RFLAGS.CF := carry_out;</code>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Is_Zero</callee>
+  <callee>Std::Bits::Is_Parity_Even</callee>
+  <callee>Subtract</callee>
+  <callee>Write_RAX</callee>
+  <callee>RAX</callee>
+  <var-used>True</var-used>
+  <var-used>RFLAGS</var-used>
+  </operation>
+ <iform-group>
+  <iform name="CMPXCHG_GPR8_GPR8" xed_iform="CMPXCHG_GPR8_GPR8" encoding="0F B0 /r" opcode="b0" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Read_GPR8</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR8</callee>
+   <callee>Instr_CMPXCHG</callee>
+   <var-used>False</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let is_mem_operand := False;</code>
+     </decode_args>
+    <read_instr><code>let old_dest := Read_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present));</code>
+     <code>let src := Read_GPR8(context.rex_r4 ++ context.rex_r3 ++ reg, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present));</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result, write_result) := Instr_CMPXCHG(operand_size, old_dest, src, is_mem_operand);</code>
+     </execute>
+    <post_execute>
+     <code>if write_result then</code>
+     <code>    Write_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present), result);</code>
+     <code>endif;</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPXCHG">
+    <asm-operand><varname>r8<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r8<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="8"/>
+   <operand is_read="True">
+    <name>old_dest</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8<subscript>1</subscript></varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8<subscript>1</subscript></varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r8<subscript>2</subscript></varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>is_mem_operand</name>
+    <label><literal>False</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="CMPXCHG_MEMb_GPR8" xed_iform="CMPXCHG_MEMb_GPR8" encoding="0F B0 /r" opcode="b0" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR8</callee>
+   <callee>Instr_CMPXCHG</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let is_mem_operand := True;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src := Read_GPR8(context.rex_r4 ++ context.rex_r3 ++ reg, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present));</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <pre_execute>
+     <code>let old_dest := Logical_Mem_Read?(segment, effective_address, operand_size, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result, write_result) := Instr_CMPXCHG(operand_size, old_dest, src, is_mem_operand);</code>
+     </execute>
+    <post_execute>
+     <code>if write_result then</code>
+     <code>    Logical_Mem_Write?(segment, effective_address, result);</code>
+     <code>endif;</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="CMPXCHG">
+    <asm-operand><varname>mv<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r8<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="8"/>
+   <operand is_read="True">
+    <name>old_dest</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r8<subscript>2</subscript></varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>is_mem_operand</name>
+    <label><literal>True</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPXCHG_LOCK_MEMv_GPRv" xed_iform="CMPXCHG_LOCK_MEMv_GPRv" encoding="LOCK 0F B1 /r" opcode="b1" valid32="V" valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR</callee>
+   <callee>Instr_CMPXCHG</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let is_mem_operand := True;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src := Read_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, operand_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <pre_execute>
+     <code>let old_dest := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result, write_result) := Instr_CMPXCHG(operand_size, old_dest, src, is_mem_operand);</code>
+     </execute>
+    <post_execute>
+     <code>if write_result then</code>
+     <code>    Logical_Mem_Write?(segment, effective_address, result, release_lock=&gt;True);</code>
+     <code>endif;</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="LOCK CMPXCHG">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>rv</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="16/32/64"/>
+   <operand is_read="True">
+    <name>old_dest</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>rv</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>is_mem_operand</name>
+    <label><literal>True</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="CMPXCHG_LOCK_MEMb_GPR8" xed_iform="CMPXCHG_LOCK_MEMb_GPR8" encoding="LOCK 0F B0 /r" opcode="b0" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Read_GPR8</callee>
+   <callee>Instr_CMPXCHG</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Memory_Read_Modify_Write</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let is_mem_operand := True;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src := Read_GPR8(context.rex_r4 ++ context.rex_r3 ++ reg, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present));</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <pre_execute>
+     <code>let old_dest := Logical_Mem_Read?(segment, effective_address, operand_size, acquire_lock=&gt;True, access_type=&gt;Memory_Read_Modify_Write);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result, write_result) := Instr_CMPXCHG(operand_size, old_dest, src, is_mem_operand);</code>
+     </execute>
+    <post_execute>
+     <code>if write_result then</code>
+     <code>    Logical_Mem_Write?(segment, effective_address, result, release_lock=&gt;True);</code>
+     <code>endif;</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="LOCK CMPXCHG">
+    <asm-operand><varname>mv</varname></asm-operand>
+    <asm-operand><varname>r8</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="operand_size" size="8"/>
+   <operand is_read="True">
+    <name>old_dest</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mv</varname><footnoteref linkend="l"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r8</varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>is_mem_operand</name>
+    <label><literal>True</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <category>scalar</category>
+ <category>integer/data_transfer</category>
+ <size name="operand_size"/>
+ <input name="old_dest"/>
+ <input name="src"/>
+ <output name="result"/>
+ <footnote id="l"><para>A locked read-modify-write memory access is performed.</para>
+  </footnote>
+ <footnote id="r"><para>With a REX prefix in 64-bit mode, attempts to access AH, BH, CH, or DH will instead access SPL, DIL, BPL, or SIL, respectively.</para>
+  </footnote>
+ </instruction>

@@ -1,0 +1,77 @@
+<instruction name="Jcc">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Jump if Condition Is Met</shortdesc>
+ <longdesc><para unique="1262372">
+   <string>Checks the state of one or more of the </string><indexterm><primary>Status flags, EFLAGS register;EFLAGS register:status flags</primary></indexterm><string>status flags in the EFLAGS register (CF, OF, PF, SF, and ZF) and, if the flags are in the specified state (condition), performs a jump to the target instruction specified by the destination operand. A condition code (</string><italic><string>cc</string></italic><string>) is associated with each instruction to indicate the condition being tested for. If the condition is not satisfied, the jump is not performed and execution continues with the instruction following the J</string><italic><string>cc</string></italic><string> instruction. </string></para>
+  <para unique="1262373">
+   <string>The target instruction is specified with a relative offset (a signed offset relative to the current value of the instruc&#173;tion pointer in the EIP register). A relative offset (</string><italic><string>rel8</string></italic><string>, </string><italic><string>rel16,</string></italic><string> or </string><italic><string>rel32</string></italic><string>) is generally specified as a label in assembly code, but at the machine code level, it is encoded as a signed, 8-bit or 32-bit immediate value, which is added to the instruction pointer. Instruction coding is most efficient for offsets of &#8211;128 to </string><string>+127. If the operand-size attribute is 16, the upper two bytes of the EIP register are cleared, resulting in a maximum instruction pointer size of 16 bits. </string></para>
+  <para unique="1262374">
+   <string>The conditions for each J</string><italic><string>cc</string></italic><string> mnemonic are given in the &#8220;Description&#8221; column of the table on the preceding page. The terms &#8220;less&#8221; and &#8220;greater&#8221; are used for comparisons of signed integers and the terms &#8220;above&#8221; and &#8220;below&#8221; are used for unsigned integers.</string></para>
+  <para unique="1262375">
+   <string>Because a particular state of the status flags can sometimes be interpreted in two ways, two mnemonics are defined for some opcodes. For example, the JA (jump if above) instruction and the JNBE (jump if not below or equal) instruction are alternate mnemonics for the opcode 77H.</string></para>
+  <para unique="1262376">
+   <string>The J</string><italic><string>cc</string></italic><string> instruction does not support far jumps (jumps to other code segments). When the target for the conditional jump is in a different segment, use the opposite condition from the condition being tested for the J</string><italic><string>cc</string></italic><string> instruction, and then access the target with an unconditional far jump (JMP instruction) to the other segment. For example, the following conditional far jump is illegal:</string></para>
+  <programlisting><string>	JZ FARLABEL;</string><string>
+</string></programlisting>
+  <para unique="1262378">
+   <string>To accomplish this far jump, use the following two instructions:</string></para>
+  <programlisting><string>	JNZ BEYOND;</string><string>
+</string><string>	JMP FARLABEL;</string><string>
+</string><string>	BEYOND:</string><string>
+</string></programlisting>
+  <para unique="1262382">
+   <string>The JRCXZ, JECXZ, and JCXZ instructions differ from other J</string><italic><string>cc</string></italic><string> instructions because they do not check status flags. Instead, they check RCX, ECX or CX for 0. The register checked is determined by the address-size attribute. These instructions are useful when used at the beginning of a loop that terminates with a conditional loop instruction (such as LOOPNE). They can be used to prevent an instruction sequence from entering a loop when RCX, ECX or CX is 0. This would cause the loop to execute 2</string><superscript><string>64</string></superscript><string>, 2</string><superscript><string>32</string></superscript><string> or 64K times (not zero times).</string></para>
+  <para unique="1262383">
+   <string>All conditional jumps are converted to code fetches of one or two cache lines, regardless of jump address or cache&#173;ability.</string></para>
+  <para unique="1262384">
+   <string>In 64-bit mode, operand size is fixed at 64 bits. JMP Short is RIP = RIP + 8-bit offset sign extended to 64 bits. JMP Near is RIP = RIP + 32-bit offset sign extended to 64 bits.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1262398">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the offset being jumped to is beyond the limits of the CS segment.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If the offset being jumped to is beyond the limits of the CS segment or is outside of the effec&#173;tive address space from 0 to FFFFH. This condition can occur if a 32-bit address size override prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <para unique="1262406">
+   <string>Same exceptions as in real address mode.</string></para>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1262408" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

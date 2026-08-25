@@ -1,0 +1,173 @@
+<instruction name="MPSADBW">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Compute Multiple Packed Sums of Absolute Difference</shortdesc>
+ <longdesc><para unique="1091480">
+   <string>(V)MPSADBW calculates packed word results of sum-absolute-difference (SAD) of unsigned bytes from two blocks of 32-bit dword elements, using two select fields in the immediate byte to select the offsets of the two blocks within the first source operand and the second operand. Packed SAD word results are calculated within each 128-bit lane. Each SAD word result is calculated between a stationary block_2 (whose offset within the second source operand is selected by a two bit select control, multiplied by 32 bits) and a sliding block_1 at consecutive byte-granular position within the first source operand. The offset of the first 32-bit block of block_1 is selectable using a one bit select control, multiplied by 32 bits.</string></para>
+  <para unique="1091481">
+   <string>128-bit Legacy SSE version: Imm8[1:0]*32 specifies the bit offset of block_2 within the second source operand. Imm[2]*32 specifies the initial bit offset of the block_1 within the first source operand. The first source operand and destination operand are the same. The first source and destination operands are XMM registers. The second source operand is either an XMM register or a 128-bit memory location. Bits (MAXVL-1:128) of the corresponding YMM destination register remain unchanged. Bits 7:3 of the immediate byte are ignored.</string></para>
+  <para unique="1091482">
+   <string>VEX.128 encoded version: Imm8[1:0]*32 specifies the bit offset of block_2 within the second source operand. Imm[2]*32 specifies the initial bit offset of the block_1 within the first source operand. The first source and desti&#173;nation operands are XMM registers. The second source operand is either an XMM register or a 128-bit memory location. Bits (127:128) of the corresponding YMM register are zeroed. Bits 7:3 of the immediate byte are ignored.</string></para>
+  <para unique="1091483">
+   <string>VEX.256 encoded version: The sum-absolute-difference (SAD) operation is repeated 8 times for MPSADW between the same block_2 (fixed offset within the second source operand) and a variable block_1 (offset is shifted by 8 bits for each SAD operation) in the first source operand. Each 16-bit result of eight SAD operations between block_2 and block_1 is written to the respective word in the lower 128 bits of the destination operand. </string></para>
+  <para unique="1091484">
+   <string>Additionally, VMPSADBW performs another eight SAD operations on block_4 of the second source operand and block_3 of the first source operand. (Imm8[4:3]*32 + 128) specifies the bit offset of block_4 within the second source operand. (Imm[5]*32+128) specifies the initial bit offset of the block_3 within the first source operand. Each 16-bit result of eight SAD operations between block_4 and block_3 is written to the respective word in the upper 128 bits of the destination operand. </string></para>
+  <para unique="1091485">
+   <string>The first source operand is a YMM register. The second source register can be a YMM register or a 256-bit memory location. The destination operand is a YMM register. Bits 7:6 of the immediate byte are ignored.</string></para>
+  <para unique="1091486">
+   <string>Note: If VMPSADBW is encoded with VEX.L= 1, an attempt to execute the instruction encoded with VEX.L= 1 will cause an #UD exception.</string></para>
+  <table>
+   <caption>Figure 4-5.  256-bit VMPSADBW Operation</caption>
+   <colgroup><col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <td><para unique="1091615" format="TableAnchor">
+       <svg width="1000" height="1222.1934693631097" viewBox="0 0 333.87984 408.06576">
+        <defs>
+        <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+          <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
+        </marker>
+      </defs>
+        <rect width="72.0" height="18.0" x="23.72544" y="31.85928" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="72.0" height="18.0" x="95.72544" y="31.85928" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="72.0" height="18.0" x="167.72544" y="31.85928" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="72.0" height="18.0" x="239.72544" y="31.85928" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="205.37424,52.78248 242.57376,83.38248" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <ellipse cx="260.41499999999996" cy="125.33976" rx="14.39964" ry="9.9" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="214.6752" y="66.50784" font-size="6">Abs. Diff.</text>
+        <rect width="33.60024" height="18.0" x="275.92488" y="153.25776" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="33.60024" height="18.0" x="242.52552" y="153.25776" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="33.60024" height="18.0" x="209.12616" y="153.25776" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="33.60024" height="18.0" x="175.72680000000003" y="153.25776" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="33.60024" height="18.0" x="142.32744" y="153.25776" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="33.60024" height="18.0" x="108.92808000000001" y="153.25776" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="33.60024" height="18.0" x="75.52799999999999" y="153.25776" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="33.60024" height="18.0" x="42.12864" y="153.25776" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="60.60024" height="18.0" x="65.92752" y="113.65776000000001" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="60.60024" height="18.0" x="86.6988" y="109.31544" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="60.60024" height="18.0" x="107.47008" y="104.97240000000001" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="60.60024" height="18.0" x="128.24136000000001" y="100.63007999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="60.60024" height="18.0" x="149.01264" y="96.28704" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="60.60024" height="18.0" x="169.78392" y="91.94472" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="60.60024" height="18.0" x="190.55519999999999" y="87.60168" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="60.60024" height="18.0" x="211.32648" y="83.25936" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="240.77375999999998,84.58272 240.77375999999998,101.38248" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="255.97368,84.1824 255.97368,101.38248" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="224.97408,83.38248 224.97408,101.18232" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="71.40024" height="17.44272" x="167.72688000000002" y="31.85784" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="202.42224,32.24016 202.42224,49.68288" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="220.3308,32.15232 220.3308,49.59504" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="183.80736000000002,31.78368 183.80736000000002,49.2264" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="251.96472" y="126.95616" font-size="6">Sum</text>
+        <ellipse cx="230.61564" cy="64.34028" rx="19.79964" ry="11.099879999999999" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="234.63288,106.45632 250.974,150.58152" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="202.57416,54.18288 183.77424000000002,96.58224" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="213.23304000000002,110.25648 226.97424,151.18128000000002" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="245.23272000000003,102.05640000000001 289.37304,151.18128000000002" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="204.77448,54.582480000000004 206.57448,95.382" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="199.7748,53.1828 160.97472,100.78200000000001" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="193.63392000000002,115.85664000000001 193.97448,150.58152" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="176.43384,120.25656000000001 162.17496,151.18128000000002" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="159.83424000000002,124.05672 132.7752,149.98175999999998" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="140.2344,127.85688 102.77568000000001,151.18128000000002" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="115.83503999999999,132.85656 64.37592,151.78176000000002" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="196.97472,53.382960000000004 141.7752,100.18224000000001" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="193.37472000000002,53.382960000000004 118.57535999999999,105.18192" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="190.37447999999998,52.78248 95.976,108.38231999999999" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="182.57471999999999,52.78248 72.1764,111.582" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <text x="231.16464" y="19.75752" font-size="6">Imm[4:3]*32+128</text>
+        <text x="266.16456" y="69.7572" font-size="6">Imm[5]*32+128</text>
+        <text x="25.29504" y="62.75736" font-size="6">Src2</text>
+        <text x="23.6952" y="119.95632" font-size="6">Src1</text>
+        <polyline points="239.57424,24.58296 239.57424,28.18296" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="271.97352,74.38248 271.97352,78.58224" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="305.5644" y="149.35608000000002" font-size="6">128</text>
+        <text x="39.36744" y="150.156" font-size="6">255</text>
+        <text x="266.96448" y="149.15663999999998" font-size="6">144</text>
+        <text x="307.56384" y="28.35792" font-size="6">128</text>
+        <text x="21.5676" y="29.15784" font-size="6">255</text>
+        <text x="84.16728" y="29.358" font-size="6">224</text>
+        <text x="157.56624" y="29.55816" font-size="6">192</text>
+        <rect width="72.0" height="18.0" x="29.3256" y="230.05656" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="72.0" height="18.0" x="101.3256" y="230.05656" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="72.0" height="18.0" x="173.3256" y="230.05656" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="72.0" height="18.0" x="245.3256" y="230.05656" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="210.9744,250.98048 248.17392,281.57975999999996" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <ellipse cx="266.01516" cy="323.53704" rx="14.39964" ry="9.9" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="220.27536" y="264.70512" font-size="6">Abs. Diff.</text>
+        <rect width="33.60024" height="18.0" x="281.52504" y="351.45504" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="33.60024" height="18.0" x="248.12568000000002" y="351.45504" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="33.60024" height="18.0" x="214.72632" y="351.45504" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="33.60024" height="18.0" x="181.32695999999999" y="351.45504" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="33.60024" height="18.0" x="147.92759999999998" y="351.45504" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="33.60024" height="18.0" x="114.52752" y="351.45504" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="33.60024" height="18.0" x="81.12816" y="351.45504" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="33.60024" height="18.0" x="47.72880000000001" y="351.45504" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="60.60024" height="18.0" x="71.52768" y="311.85576000000003" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="60.60024" height="18.0" x="92.29896" y="307.51272000000006" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="60.60024" height="18.0" x="113.07024" y="303.17040000000003" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="60.60024" height="18.0" x="133.84152" y="298.82736" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="60.60024" height="18.0" x="154.61280000000002" y="294.48503999999997" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="60.60024" height="18.0" x="175.38408" y="290.142" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="60.60024" height="18.0" x="196.15536" y="285.79968" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="60.60024" height="18.0" x="216.92664" y="281.45664" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="246.37392,282.78000000000003 246.37392,299.57975999999996" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="261.57383999999996,282.3804 261.57383999999996,299.57975999999996" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="230.57424,281.57975999999996 230.57424,299.38032" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="71.40024" height="17.44272" x="173.32703999999998" y="230.05512" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="208.0224,230.43744 208.0224,247.88088" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="225.93096,230.3496 225.93096,247.79304" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="189.4068,229.98095999999998 189.4068,247.42368000000002" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="257.56488" y="325.15416" font-size="6">Sum</text>
+        <ellipse cx="236.21580000000003" cy="262.53828" rx="19.79964" ry="11.099879999999999" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="240.23304000000002,304.65432 256.57344,348.77952" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="208.17432,252.38016 189.37439999999998,294.77952" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="218.8332,308.45448 232.5744,349.37928000000005" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="250.83288,300.25368 294.9732,349.37928000000005" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="210.37464,252.78048 212.17464,293.58" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="205.37496,251.3808 166.57488,298.98" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="199.23336,314.05392 199.57464,348.77952" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="182.034,318.45456 167.77512000000002,349.37928000000005" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="165.43439999999998,322.25399999999996 138.37536,348.17904" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="145.83456,326.05416 108.37584,349.37928000000005" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="121.43520000000001,331.05456 69.97608,349.97904000000005" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="202.57488,251.58096 147.37536,298.37952" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="198.97415999999998,251.58024 124.17552,303.37992" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="195.97464,250.98048 101.57615999999999,306.57959999999997" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="188.17488,250.98048 77.77656,309.78000000000003" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <text x="236.7648" y="217.95551999999998" font-size="6">Imm[1:0]*32</text>
+        <text x="271.76472" y="267.9552" font-size="6">Imm[2]*32</text>
+        <text x="30.8952" y="260.95464" font-size="6">Src2</text>
+        <text x="22.09536" y="380.55312" font-size="6">Destination</text>
+        <polyline points="245.17368000000002,222.78096000000002 245.17368000000002,226.38096" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="277.57367999999997,272.58047999999997 277.57367999999997,276.78024" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="311.16384" y="347.55408" font-size="6">0</text>
+        <text x="44.967600000000004" y="348.35400000000004" font-size="6">127</text>
+        <text x="272.56464" y="347.35392" font-size="6">16</text>
+        <text x="313.164" y="226.55519999999999" font-size="6">0</text>
+        <text x="27.16776" y="227.35512" font-size="6">127</text>
+        <text x="89.76744" y="227.55527999999998" font-size="6">96</text>
+        <text x="163.1664" y="227.75544" font-size="6">64</text>
+        <text x="19.29528" y="180.35568" font-size="6">Destination</text>
+        <text x="34.09488" y="315.15407999999996" font-size="6">Src1</text>
+        </svg></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>(V)MPSADBW	 __m128i _mm_mpsadbw_epu8 (__m128i s1, __m128i s2, const int mask);</string><string>
+</string><string>VMPSADBW		 __m256i _mm256_mpsadbw_epu8 (__m256i s1, __m256i s2, const int mask);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Flags Affected">
+  <para unique="1091894">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1091899" format="xIndent1">
+   <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

@@ -1,0 +1,100 @@
+<instruction name="SENDUIPI">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Send User Interprocessor Interrupt</shortdesc>
+ <longdesc><para unique="1091445">
+   <string>The SENDUIPI instruction sends the user interprocessor interrupt (IPI) indicated by its register operand. (The operand always has 64 bits; operand-size overrides such as the prefix 66 are ignored.)</string></para>
+  <para unique="1091446">
+   <string>SENDUIPI uses a data structure called the user-interrupt target table (UITT). This table is located at the linear address UITTADDR (in the IA32_UINTR_TT MSR); it comprises UITTSZ+1 16-byte entries, where UITTSZ = IA32_UINT_MISC[31:0]. SENDUIPI uses the UITT entry (UITTE) indexed by the instruction's register operand. Each UITTE has the following format:</string></para>
+  <itemizedlist><listitem><para unique="1091447">
+     <string>Bit 0: V, a valid bit.</string></para>
+    </listitem>
+   <listitem><para unique="1091448">
+     <string>Bits 7:1 are reserved and must be 0.</string></para>
+    </listitem>
+   <listitem><para unique="1091449">
+     <string>Bits 15:8: UV, the user-interrupt vector (in the range 0&#8211;63, so bits 15:14 must be 0).</string></para>
+    </listitem>
+   <listitem><para unique="1091450">
+     <string>Bits 63:16 are reserved.</string></para>
+    </listitem>
+   <listitem><para unique="1091451">
+     <string>Bits 127:64: UPIDADDR, the linear address of a user posted-interrupt descriptor (UPID). (UPIDADDR is 64-byte aligned, so bits 69:64 of each UITTE must be 0.)</string></para>
+    </listitem>
+   </itemizedlist><para unique="1091452">
+   <string>Each UPID has the following format (fields and bits not referenced are reserved):</string></para>
+  <itemizedlist><listitem><para unique="1091453">
+     <string>Bit&#160;0 (ON) indicates an outstanding notification. If this bit is set, there is a notification outstanding for one or more user interrupts in PIR.</string></para>
+    </listitem>
+   <listitem><para unique="1091454">
+     <string>Bit&#160;1 (SN) indicates that notifications should be suppressed. If this bit is set, agents (including SENDUIPI) should not send notifications when posting user interrupts in this descriptor.</string></para>
+    </listitem>
+   <listitem><para unique="1091455">
+     <string>Bits&#160;23:16 (NV) contain the notification vector. This is used by agents sending user-interrupt notifications (including SENDUIPI).</string></para>
+    </listitem>
+   <listitem><para unique="1091456">
+     <string>Bits&#160;63:32 (NDST) contain the notification destination. This is the target physical APIC ID (in xAPIC mode, bits&#160;47:40 are the 8-bit APIC ID; in x2APIC mode, the entire field forms the 32-bit APIC ID).</string></para>
+    </listitem>
+   <listitem><para unique="1091457">
+     <string>Bits&#160;127:64	 (PIF) contain posted-interrupt requests. There is one bit for each user-interrupt vector. There is a user-interrupt request for a vector if the corresponding bit is 1.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1091458">
+   <string>Although SENDUIPI may be executed at any privilege level, all of the instruction&#8217;s memory accesses (to a UITTE and a UPID) are performed with supervisor privilege.</string></para>
+  <para unique="1091459">
+   <string>SENDUIPI sends a user interrupt by posting a user interrupt with vector V in the UPID referenced by UPIDADDR and then sending, as an ordinary IPI, any notification interrupt specified in that UPID.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1091490">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The SENDUIPI instruction is not recognized in protected mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The SENDUIPI instruction is not recognized in real-address mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The SENDUIPI instruction is not recognized in virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1091498">
+   <string>#UD	The SENDUIPI instruction is not recognized in compatibility mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If executed inside an enclave.</string></listitem>
+    <listitem><string>If CR4.UINTR = 0.</string></listitem>
+    <listitem><string>If IA32_UINTR_TT[0] = 0.</string></listitem>
+    <listitem><string>If CPUID.07H.00H:EDX.UINTR[5] = 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If the value of the register operand exceeds UITTSZ.</string></listitem>
+    <listitem><string>If the selected UITTE is not valid or sets any reserved bits.</string></listitem>
+    <listitem><string>If the selected UPID sets any reserved bits.</string></listitem>
+    <listitem><string>If there is an attempt to access memory using a linear address that is not canonical relative to the current paging mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

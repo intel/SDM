@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="TDPBF16PS_TMMf32_TMM2bf16_TMM2bf16" xed_iform="TDPBF16PS_TMMf32_TMM2bf16_TMM2bf16" encoding="VEX.L0.F3.0F38.W0 5C /r" opcode="5c" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Ge</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Lt</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_TDPBF16PS</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Tile::Palette_Table</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>TMM</var-used>
+   <var-used>Tile::Config</var-used>
+   <var-used>CPUID_AMX_TILE</var-used>
+   <var-used>IA32_XFD</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let srcdest_index := Unsigned(reg[2:0]);</code>
+     <code>let src1_index := Unsigned(rm[2:0]);</code>
+     <code>let src2_index := Unsigned(context.vvvv[2:0]);</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not ((context.rex_w == 0b0) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPUID(AMX_TILE)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_TILE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tiles_Not_Configured</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tile_Not_Valid(reg)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tile_Not_Valid(rm)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tile_Not_Valid(context.vvvv[2:0])</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XFD_TILE_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_TDPBF16PS?(srcdest_index, src1_index, src2_index);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="TDPBF16PS">
+    </assembly-syntax>
+   <cpuid-group name="AMX_BF16"><cpuid-flag>AMX_TILES</cpuid-flag><cpuid-flag>AMX_BF16</cpuid-flag></cpuid-group>
+   <cpuid-group name="AMX_BF16_AVX10"><cpuid-flag>AMX_BF16_MIRRORED</cpuid-flag></cpuid-group>
+   <operand is_read="True">
+    <name>srcdest_index</name>
+    <label><literal>Unsigned(reg[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>src1_index</name>
+    <label><literal>Unsigned(rm[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>src2_index</name>
+    <label><literal>Unsigned(context.vvvv[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="TDPBF16PS" variant_kind="Standard variant" mnemonic="TDPBF16PS">
+  <code>if srcdest_index == src1_index</code>
+  <code>    or src1_index == src2_index</code>
+  <code>    or srcdest_index == src2_index</code>
+  <code>    or (TMM[srcdest_index].Colsb % 4) != 0</code>
+  <code>    or (TMM[src1_index].Colsb % 4) != 0</code>
+  <code>    or (TMM[src2_index].Colsb % 4) != 0</code>
+  <code>    or TMM[srcdest_index].Colsb != TMM[src2_index].Colsb</code>
+  <code>    or TMM[srcdest_index].Rows  != TMM[src1_index].Rows</code>
+  <code>    or (TMM[src1_index].Colsb / 4) != TMM[src2_index].Rows</code>
+  <code>    or TMM[srcdest_index].Colsb &gt; Unsigned(CPUID_TMUL_MAXN)</code>
+  <code>    or TMM[src2_index].Colsb &gt; Unsigned(CPUID_TMUL_MAXN)</code>
+  <code>    or (TMM[src1_index].Colsb / 4) &gt; Unsigned(CPUID_TMUL_MAXK)</code>
+  <code>    or TMM[src2_index].Rows &gt; Unsigned(CPUID_TMUL_MAXK)</code>
+  <code>then</code>
+  <code>    Report_Invalid_Opcode!();</code>
+  <code>endif;</code>
+  <code></code>
+  <code>let srcdest_elements_per_row := TMM[srcdest_index].Colsb / 4;</code>
+  <code>let src1_elements_per_row := TMM[src1_index].Colsb / 4;</code>
+  <code></code>
+  <code>assert Tile::Palette_Table[Tile::Config.Palette].Bytes_Per_Row == 64;</code>
+  <code></code>
+  <code>for m := 0 to TMM[srcdest_index].Rows - 1 do</code>
+  <code>    var temp_row_data := Zero(1024);</code>
+  <code>    let src1_row := TMM[src1_index].Data[m *: 512];</code>
+  <code>    var srcdest_row_data := TMM[srcdest_index].Data[m *: 512];</code>
+  <code></code>
+  <code>    for k := 0 to src1_elements_per_row - 1 do</code>
+  <code>        let src2_row := TMM[src2_index].Data[k *: 512];</code>
+  <code></code>
+  <code>        // BF16 format is defined as the upper 16 bits of an IEEE-754 FP32 value;</code>
+  <code>        // concatenating 16 zero bits in the low part (src ++ Zero(16)) produces</code>
+  <code>        // the corresponding FP32 encoding for this instruction.</code>
+  <code>        let src1_fp32_0 := src1_row[((2*k)+0) *: 16] ++ Zero(16);</code>
+  <code>        let src1_fp32_1 := src1_row[((2*k)+1) *: 16] ++ Zero(16);</code>
+  <code></code>
+  <code>        for n := 0 to srcdest_elements_per_row - 1 do</code>
+  <code>            let src2_fp32_0 := src2_row[((2*n)+0) *: 16] ++ Zero(16);</code>
+  <code>            let src2_fp32_1 := src2_row[((2*n)+1) *: 16] ++ Zero(16);</code>
+  <code></code>
+  <code>            let (fma_0, _) := FP::FMA(src1_fp32_0, src2_fp32_0, temp_row_data[((2*n)+0) *: 32],</code>
+  <code>                                      denormals_are_zeros=&gt;True,</code>
+  <code>                                      rm=&gt;Rounding_Mode_RNE,</code>
+  <code>                                      flush_subnormals=&gt;True);</code>
+  <code>            let (fma_1, _) := FP::FMA(src1_fp32_1, src2_fp32_1, temp_row_data[((2*n)+1) *: 32],</code>
+  <code>                                      denormals_are_zeros=&gt;True,</code>
+  <code>                                      rm=&gt;Rounding_Mode_RNE,</code>
+  <code>                                      flush_subnormals=&gt;True);</code>
+  <code></code>
+  <code>            temp_row_data[((2*n)+0) *: 32] := fma_0;</code>
+  <code>            temp_row_data[((2*n)+1) *: 32] := fma_1;</code>
+  <code>        endfor;</code>
+  <code>    endfor;</code>
+  <code></code>
+  <code>    for n := 0 to srcdest_elements_per_row - 1 do</code>
+  <code>        let (pair_sum, _) := FP::Arithmetic(FP_ADD,</code>
+  <code>                                            temp_row_data[((2*n)+0) *: 32],</code>
+  <code>                                            temp_row_data[((2*n)+1) *: 32],</code>
+  <code>                                            denormals_are_zeros=&gt;True,</code>
+  <code>                                            rm=&gt;Rounding_Mode_RNE,</code>
+  <code>                                            flush_subnormals=&gt;True,</code>
+  <code>                                            mask_underflow=&gt;True);</code>
+  <code></code>
+  <code>        let (r, _) := FP::Arithmetic(FP_ADD, srcdest_row_data[n *: 32], pair_sum,</code>
+  <code>                                     denormals_are_zeros=&gt;True,</code>
+  <code>                                     rm=&gt;Rounding_Mode_RNE,</code>
+  <code>                                     flush_subnormals=&gt;True,</code>
+  <code>                                     mask_underflow=&gt;True);</code>
+  <code></code>
+  <code>        srcdest_row_data[n *: 32] := r;</code>
+  <code>    endfor;</code>
+  <code></code>
+  <code>    Tile::Write_Row_And_Zero_Extend(srcdest_index, m, srcdest_row_data);</code>
+  <code>endfor;</code>
+  <code></code>
+  <code>Tile::Zero_Upper_Rows(srcdest_index);</code>
+  <code>Tile::Config.Start_Row := 0;</code>
+  <callee>Std::Boolean::Strict_Or</callee>
+  <callee>Std::Integer::Add</callee>
+  <callee>Std::Integer::Eq</callee>
+  <callee>Std::Integer::Gt</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Multiply</callee>
+  <callee>Std::Integer::Ne</callee>
+  <callee>Std::Integer::Positive_Divide</callee>
+  <callee>Std::Integer::Positive_Remainder</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Append</callee>
+  <callee>Std::Bits::Unsigned</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>FP::Arithmetic</callee>
+  <callee>FP::FMA</callee>
+  <callee>Report_Invalid_Opcode</callee>
+  <callee>Tile::Write_Row_And_Zero_Extend</callee>
+  <callee>Tile::Zero_Upper_Rows</callee>
+  <var-used>True</var-used>
+  <var-used>False</var-used>
+  <var-used>Rounding_Mode_RNE</var-used>
+  <var-used>FP_ADD</var-used>
+  <var-used>Tile::Palette_Table</var-used>
+  <var-used>TMM</var-used>
+  <var-used>Tile::Config</var-used>
+  <var-used>CPUID_TMUL_MAXN</var-used>
+  <var-used>CPUID_TMUL_MAXK</var-used>
+  </operation>
+ <category>tile</category>
+ <input name="srcdest_index"/>
+ </instruction>

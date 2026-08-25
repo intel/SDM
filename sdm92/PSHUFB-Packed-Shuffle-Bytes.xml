@@ -1,0 +1,46 @@
+<instruction name="PSHUFB">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Packed Shuffle Bytes</shortdesc>
+ <longdesc><para unique="1092534">
+   <string>PSHUFB (with no VEX or EVEX prefix) performs an in-place shuffle of bytes in the destination operand (the first operand) according to the shuffle control mask in the source operand (the second operand). The instruction permutes the data in the destination operand, leaving the shuffle mask unaffected. If the most significant bit (bit[7]) of each byte of the shuffle control mask is set, then constant zero is written in the result byte. Each byte in the shuffle control mask forms an index to permute the corresponding byte in the destination operand. The value of each index is the least significant 3 bits (64-bit operation) or 4 bits (128-bit operation) of the shuffle control byte. See </string><link linkend="29116: 05_FigureFrame: Figure 4-15. PSHUFB with 64-Bit Operands"><string>Figure&#160;4&#8209;15</string></link><string> for an example for 64-bit operation.</string></para>
+  <para unique="1092549">
+   <string>The 128-bit forms of PSHUFB leave bits MAXVL&#8211;1:128 of the destination register unchanged. A 128-bit memory operand must be aligned on a 16-byte boundary or a general-protection exception (#GP) will be generated. In 64-bit mode, the REX prefix can be used to access XMM8-XMM15.</string></para>
+  <para unique="1092550">
+   <string>The following items apply to VPSHUFB, encoded with a VEX or EVEX prefix:</string></para>
+  <itemizedlist><listitem><para unique="1092551">
+     <string>Each of these forms uses shuffle control bytes in its second source operand to select which bytes in the first source operand to copy to the destination operand.</string></para>
+    </listitem>
+   <listitem><para unique="1092552">
+     <string>These forms operate in one, two, or four 16-byte &#8220;lanes.&#8221; As with the 128-bit form of PSHUFB (above), the low 4 bits of each shuffle control byte determines which of 16 bytes in a source lane is copied to the appropriate byte in the corresponding destination lane.</string></para>
+    </listitem>
+   <listitem><para unique="1092553">
+     <string>The 128-bit and 256-bit versions of these forms zero upper bits in the destination register beyond the instruction&#8217;s operand size.</string></para>
+    </listitem>
+   <listitem><para unique="1092554">
+     <string>The EVEX-encoded versions update their destination conditionally with writemask k1.</string></para>
+    </listitem>
+   </itemizedlist></longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VPSHUFB __m512i _mm512_shuffle_epi8(__m512i a, __m512i b);</string><string>
+</string><string>VPSHUFB __m512i _mm512_mask_shuffle_epi8(__m512i s, __mmask64 k, __m512i a, __m512i b);</string><string>
+</string><string>VPSHUFB __m512i _mm512_maskz_shuffle_epi8( __mmask64 k, __m512i a, __m512i b);</string><string>
+</string><string>VPSHUFB __m256i _mm256_mask_shuffle_epi8(__m256i s, __mmask32 k, __m256i a, __m256i b);</string><string>
+</string><string>VPSHUFB __m256i _mm256_maskz_shuffle_epi8( __mmask32 k, __m256i a, __m256i b);</string><string>
+</string><string>VPSHUFB __m128i _mm_mask_shuffle_epi8(__m128i s, __mmask16 k, __m128i a, __m128i b);</string><string>
+</string><string>VPSHUFB __m128i _mm_maskz_shuffle_epi8( __mmask16 k, __m128i a, __m128i b);</string><string>
+</string><string>PSHUFB:	 __m64 _mm_shuffle_pi8 (__m64 a, __m64 b)</string><string>
+</string><string>(V)PSHUFB:	 __m128i _mm_shuffle_epi8 (__m128i a, __m128i b)</string><string>
+</string><string>VPSHUFB:	__m256i _mm256_shuffle_epi8(__m256i a, __m256i b)</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1091650">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1091655" format="xIndent1">
+   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091659" format="xIndent1">
+   <string>EVEX-encoded instruction, see Exceptions Type E4NF.nb in </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

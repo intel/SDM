@@ -1,0 +1,100 @@
+<instruction name="RSTORSSP">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Restore Saved Shadow Stack Pointer</shortdesc>
+ <longdesc><para unique="1091442">
+   <string>Restores SSP from the shadow-stack-restore token pointed to by m64. If the SSP restore was successful then the instruction replaces the shadow-stack-restore token with a previous-ssp token. The instruction sets the CF flag to indicate whether the SSP address recorded in the shadow-stack-restore token that was processed was 4 byte aligned, i.e., whether an alignment hole was created when the restore-shadow-stack token was pushed on this shadow stack. </string></para>
+  <para unique="1091443">
+   <string>Following RSTORSSP if a restore-shadow-stack token needs to be saved on the previous shadow stack, use the SAVEPREVSSP instruction. </string></para>
+  <para unique="1091444">
+   <string>If pushing a restore-shadow-stack token on the previous shadow stack is not required, the previous-ssp token can be popped using the INCSSPQ instruction. If the CF flag was set to indicate presence of an alignment hole, an addi&#173;tional INCSSPD instruction is needed to advance the SSP past the alignment hole.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1091488">
+   <string>CF is set to indicate if the shadow stack pointer in the restore token was 4 byte aligned, else it is cleared. ZF, PF, AF, OF, and SF are cleared.</string></para>
+  </subsection>
+ <subsection title="C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>RSTORSSP 	void _rstorssp(void *);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If CR4.CET = 0.</string></listitem>
+    <listitem><string>IF CPL = 3 and IA32_U_CET.SH_STK_EN = 0.</string></listitem>
+    <listitem><string>IF CPL &lt; 3 and IA32_S_CET.SH_STK_EN = 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If linear address of memory operand not 8 byte aligned.</string></listitem>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <listitem><string>If destination is located in a non-writeable segment.</string></listitem>
+    <listitem><string>If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#CP(rstorssp)</string></term>
+    <listitem><string>If L bit in token does not match (IA32_EFER.LMA &amp; CS.L).</string></listitem>
+    <listitem><string>If address in token does not match linear address of memory operand.</string></listitem>
+    <listitem><string>If in 32-bit or compatibility mode and the address in token is not below 4G.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The RSTORSSP instruction is not recognized in real-address mode. </string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The RSTORSSP instruction is not recognized in virtual-8086 mode. </string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1091510" format="xIndent1">
+   <string>Same as protected mode exceptions.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If CR4.CET = 0.</string></listitem>
+    <listitem><string>If CPL = 3 and IA32_U_CET.SH_STK_EN = 0.</string></listitem>
+    <listitem><string>If CPL &lt; 3 and IA32_S_CET.SH_STK_EN = 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If linear address of memory operand not 8 byte aligned.</string></listitem>
+    <listitem><string>If a memory address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#CP(rstorssp)</string></term>
+    <listitem><string>If L bit in token does not match (IA32_EFER.LMA &amp; CS.L).</string></listitem>
+    <listitem><string>If address in token does not match linear address of memory operand.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

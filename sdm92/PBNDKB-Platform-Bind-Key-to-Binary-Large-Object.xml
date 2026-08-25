@@ -1,0 +1,225 @@
+<instruction name="PBNDKB">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Platform Bind Key to Binary Large Object</shortdesc>
+ <longdesc><para unique="1262837">
+   <string>The PBNDKB instruction allows software to bind information to a platform by encrypting it with a platform-specific wrapping key. The encrypted data may later be used by the PCONFIG instruction to configure the total storage encryption (TSE) engine.</string></para>
+  <para unique="1262844">
+   <string>The instruction can be executed only in 64-bit mode. The registers RBX and RCX provide input information to the instruction. Executions of PBNDKB may fail for platform-specific reasons. An execution reports failure by setting the ZF flag and loading EAX with a non-zero failure reason; a successful execution clears ZF and EAX.</string></para>
+  <para unique="1262845">
+   <string>The instruction operates on 256-byte data structures called </string><bold><string>bind structures</string></bold><string>. It reads a bind structure at the linear address in RBX and writes a modified bind structure to the linear address in RCX. The addresses in RBX and RCX must be different from each other and must be 256-byte aligned.</string></para>
+  <para unique="1262846">
+   <string>The instruction encrypts a portion of the input bind structure and generates a MAC of parts of that structure. The encrypted data and MAC are written out as part of the output bind structure.</string></para>
+  <para unique="1262850">
+   <string>The format of a bind structure is given in </string><link linkend="42440: 06_Table: Table 1-12. TSE_BIND_STRUCT Format"><string>Table 4&#8209;13</string></link><string>.</string></para>
+  <table>
+   <caption>Table 4-13.  Bind Structure Format</caption>
+   <colgroup><col align="left"/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <thead><tr>
+     <th><para unique="1262862" format="CellRowHeadL">
+       <string>Field</string></para>
+      </th>
+     <th><para unique="1262864" format="CellRowHeadL">
+       <string>Offset (bytes)</string></para>
+      </th>
+     <th><para unique="1262866" format="CellRowHeadL">
+       <string>Size (bytes)</string></para>
+      </th>
+     <th><para unique="1262868" format="CellRowHeadL">
+       <string>Comments</string></para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1262870" format="CellBodyL">
+       <string>MAC</string></para>
+      </td>
+     <td><para unique="1262872" format="CellBodyL">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1262874" format="CellBodyL">
+       <string>16</string></para>
+      </td>
+     <td><para unique="1262876" format="CellBodyL">
+       <string>Output by PBNDKB as a MAC based on the input bind structure</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262878" format="CellBodyL">
+       <string>Reserved</string></para>
+      </td>
+     <td><para unique="1262880" format="CellBodyL">
+       <string>16</string></para>
+      </td>
+     <td><para unique="1262882" format="CellBodyL">
+       <string>8</string></para>
+      </td>
+     <td><para unique="1262884" format="CellBodyL">
+       <string>Reserved; must be zero on input, output as zero</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262886" format="CellBodyL">
+       <string>IV</string></para>
+      </td>
+     <td><para unique="1262888" format="CellBodyL">
+       <string>24</string></para>
+      </td>
+     <td><para unique="1262890" format="CellBodyL">
+       <string>12</string></para>
+      </td>
+     <td><para unique="1262892" format="CellBodyL">
+       <string>Initialization vector generated and output by PBNDKB</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262894" format="CellBodyL">
+       <string>Reserved</string></para>
+      </td>
+     <td><para unique="1262896" format="CellBodyL">
+       <string>36</string></para>
+      </td>
+     <td><para unique="1262898" format="CellBodyL">
+       <string>28</string></para>
+      </td>
+     <td><para unique="1262900" format="CellBodyL">
+       <string>Reserved; must be zero on input, output as zero</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262902" format="CellBodyL">
+       <string>BTENCDATA</string></para>
+      </td>
+     <td><para unique="1262904" format="CellBodyL">
+       <string>64</string></para>
+      </td>
+     <td><para unique="1262906" format="CellBodyL">
+       <string>64</string></para>
+      </td>
+     <td><para unique="1262908" format="CellBodyL">
+       <string>Encryption data (plaintext on input; ciphertext on output)</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262910" format="CellBodyL">
+       <string>BTDATA</string></para>
+      </td>
+     <td><para unique="1262912" format="CellBodyL">
+       <string>128</string></para>
+      </td>
+     <td><para unique="1262914" format="CellBodyL">
+       <string>128</string></para>
+      </td>
+     <td><para unique="1262916" format="CellBodyL">
+       <string>Additional control and data (modified but not encrypted)</string></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  <para unique="1262933">
+   <string>A description of each of the fields in a bind structure is provided below:</string></para>
+  <itemizedlist><listitem><para unique="1262934">
+     <bold><string>MAC: </string></bold><string>A MAC produced by PBNDKB of parts of its input bind structure. This field in the input bind structure is not used.</string></para>
+    </listitem>
+   <listitem><para unique="1262935">
+     <bold><string>IV:</string></bold><string> PBNDKB randomly generates a 96-bit initialization vector and uses it as input to an authenticated encryption function. The generated IV is written to the output bind structure. If there is insufficient entropy for the random-number generator, PBNDKB will fail and report the failure by loading EAX with value 1 (ENTRO&#173;PY_ERROR). This field in the input bind structure is not used.</string></para>
+    </listitem>
+   <listitem><para unique="1262936">
+     <bold><string>BTENCDATA:</string></bold><string> In the input bind structure, the field contains the data to be encrypted. The data consist of two 256-bit keys, a data key and a tweak key. If the value of the KEY_GENERATION_CTRL field of the BTDATA (see below) is 1, PBNDKB randomizes the values of these keys before encrypting them. (If there is insufficient entropy for the random-number generator, PBNDKB will fail and report the failure by loading EAX with value 1 (ENTROPY_ERROR).) PBNDKB writes the encrypted data to this field in the output bind structure.</string></para>
+    </listitem>
+   <listitem><para unique="1262937">
+     <bold><string>BTDATA:</string></bold><string> This field contains additional control and data that are not encrypted. It has the following format:</string></para>
+    </listitem>
+   </itemizedlist><para unique="1262938" format="ListEmDash">
+   <bold><string>USER_SUPP_CHALLENGE </string></bold><string>(bytes 31:0): PBNDKB uses this value in the input bind structure to determine the wrapping key (see below). It writes zero to this field in the output bind structure.</string></para>
+  <itemizedlist><listitem><para unique="1262939">
+     <bold><string>KEY_GENERATION_CTRL</string></bold><string> (byte 32): PBNDKB uses this value in the input bind structure to determine whether to randomize the keys being encrypted. The value must be 0 or 1 (otherwise, a #GP occurs).</string></para>
+    </listitem>
+   <listitem><para unique="1262940">
+     <string>The remaining 95 bytes are reserved and must be zero.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1262941">
+   <string>PBNDKB determines a 256-bit </string><bold><string>wrapping key</string></bold><string> by computing an HMAC based on SHA-256 using 256-bit platform-specific key and the USER_SUPP_CHALLENGE in the BTDATA field in the input bind structure.</string></para>
+  <para unique="1262942">
+   <string>PBNDKB then uses the wrapping key and an AES GCM authenticated encryption function to encrypt BTENCDATA and produce a MAC. The encryption function uses the following inputs:</string></para>
+  <itemizedlist><listitem><para unique="1262943">
+     <string>The 64-byte BTENCDATA to be encrypted (which may have been randomized; see above).</string></para>
+    </listitem>
+   <listitem><para unique="1262944">
+     <string>The 256-bit wrapping key.</string></para>
+    </listitem>
+   <listitem><para unique="1262945">
+     <string>The 96-bit IV randomly generated by PBNDKB.</string></para>
+    </listitem>
+   <listitem><para unique="1262946">
+     <string>176 bytes of additional authenticated data that are the concatenation of 8 bytes of zeroes, the IV, 28 bytes of zeroes, and the BTDATA in the input bind structure.</string></para>
+    </listitem>
+   <listitem><para unique="1262947">
+     <string>The length of the additional authenticated data (176).</string></para>
+    </listitem>
+   </itemizedlist><para unique="1262948">
+   <string>The encryption function produces a structure with 64 bytes of encrypted data and a 16-byte MAC. PBNDKB saves these values to the corresponding fields in its output bind structure. Other fields are copied from the input bind structure or written as zero, except the IV (which receives the randomly generated value) and the USER_SUPP_CHALLENGE in the BTDATA, which is written as zero.</string></para>
+  </longdesc>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>PBNDKB is not supported in protected mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>PBNDKB is not supported in real-address mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>PBNDKB is not supported in virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>PBNDKB is not supported in compatibility mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the values of RBX and RCX are not both canonical.</string></listitem>
+    <listitem><string>If RBX or RCX is not 256B aligned.</string></listitem>
+    <listitem><string>If RBX = RCX.</string></listitem>
+    <listitem><string>If any of the reserved bytes in the input bind structure are set (including bytes in BTDATA).</string></listitem>
+    <listitem><string>If the value of the key-generation control in the BTDATA field of the input bind structure is not 0 or 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code) </string></term>
+    <listitem><string>If a page fault occurs in accessing memory operands.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If the LOCK prefix are used. </string></listitem>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    <listitem><string>If CPUID.07H.01H:EBX.PBNDKB[1] = 0.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

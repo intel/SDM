@@ -1,0 +1,33 @@
+<instruction name="ROUNDSD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Round Scalar Double Precision Floating-Point Values</shortdesc>
+ <longdesc><para unique="1091464">
+   <string>Round the double precision floating-point value in the lower qword of the source operand (second operand) using the rounding mode specified in the immediate operand (third operand) and place the result in the destination operand (first operand). The rounding process rounds a double precision floating-point input to an integer value and returns the integer result as a double precision floating-point value in the lowest position. The upper double precision floating-point value in the destination is retained. </string></para>
+  <para unique="1091465">
+   <string>The immediate operand specifies control fields for the rounding operation, three bit fields are defined and shown in </string><link linkend="67251: 05_FigureFrame: Figure 0-1. Bit Control Fields of Immediate Byte for ROUNDxx Instruction"><string>Figure&#160;4&#8209;24</string></link><string>. Bit 3 of the immediate byte controls processor behavior for a precision exception, bit 2 selects the source of rounding mode control. Bits 1:0 specify a non-sticky rounding-mode value (</string><link linkend="41418: TableTitleChap: Table 7-6 . Rounding Control Field (RC)."><string>Table 4&#8209;21</string></link><string> lists the encoded values for rounding-mode field). </string></para>
+  <para unique="1091472">
+   <string>The Precision Floating-Point Exception is signaled according to the immediate operand. If any source operand is an SNaN then it will be converted to a QNaN. If DAZ is set to &#8216;1 then denormals will be converted to zero before rounding.</string></para>
+  <para unique="1091473">
+   <string>128-bit Legacy SSE version: The first source operand and the destination operand are the same. Bits (MAXVL-1:64) of the corresponding YMM destination register remain unchanged.</string></para>
+  <para unique="1091474">
+   <string>VEX.128 encoded version: Bits (MAXVL-1:128) of the destination YMM register are zeroed.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>ROUNDSD 		__m128d mm_round_sd(__m128d dst, __m128d s1, int iRoundMode);
+ROUNDSD 		__m128d mm_floor_sd(__m128d dst, __m128d s1);
+ROUNDSD 		__m128d mm_ceil_sd(__m128d dst, __m128d s1);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1091495">
+   <string>Invalid (signaled only if SRC = SNaN).</string></para>
+  <para unique="1091496">
+   <string>Precision (signaled only if imm[3] = &#8216;0; if imm[3] = &#8216;1, then the Precision Mask in the MXCSR is ignored and preci&#173;sion exception is not signaled.)</string></para>
+  <para unique="1091497">
+   <string>Note that Denormal is not signaled by ROUNDSD.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1091502" format="xIndent1">
+   <string>See </string><link linkend="35386: 06_Table: Table 2-20. Type 3 Class Exception Conditions"><string>Table&#160;2&#8209;20, &#8220;Type 3 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

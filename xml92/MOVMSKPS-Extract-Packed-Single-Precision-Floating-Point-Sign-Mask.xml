@@ -1,0 +1,273 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="MOVMSKPS_GPR32_XMMps" xed_iform="MOVMSKPS_GPR32_XMMps" encoding="NP 0F 50 /r" opcode="50" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_MOVMSK</callee>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let result_size := 32;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_XMM(Calculate_RM(mod, rm, context), register_size);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rep_prefix == 0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>REP_Not0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSFXSR_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_EM_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_MOVMSK(element_size, register_size, result_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOVMSKPS">
+    <asm-operand><varname>r32</varname></asm-operand>
+    <asm-operand><varname>xmm</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="SSE"><cpuid-flag>SSE</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="result_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="MOVMSK" variant_kind="Standard variant" mnemonic="MOVMSKPS">
+  <code>let elements := register_size / element_size;</code>
+  <code></code>
+  <code>var r : Bits(elements);</code>
+  <code>for i := 0 to elements - 1 do</code>
+  <code>    r[i] := src[i * element_size + (element_size - 1)];</code>
+  <code>endfor;</code>
+  <code>let result := Zero_Extend(r, result_size);</code>
+  <callee>Std::Integer::Add</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Multiply</callee>
+  <callee>Std::Integer::Positive_Divide</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Zero_Extend</callee>
+  <other-copy>MOVMSKPD</other-copy>
+  <other-copy>PMOVMSKB</other-copy>
+  </operation>
+ <iform-group>
+  <iform name="VMOVMSKPS_GPR32d_XMMdq" xed_iform="VMOVMSKPS_GPR32d_XMMdq" encoding="VEX.L0.NP.0F.WIG 50 /r" opcode="50" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_MOVMSK</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let result_size := 32;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_XMM(Calculate_RM(mod, rm, context), register_size);</code>
+     </read_instr><decode_checks>
+     <code>if not ((not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_MOVMSK(element_size, register_size, result_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VMOVMSKPS">
+    <asm-operand><varname>r32</varname></asm-operand>
+    <asm-operand><varname>xmm</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX"><cpuid-flag>AVX</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="result_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="VMOVMSKPS_GPR32d_YMMqq" xed_iform="VMOVMSKPS_GPR32d_YMMqq" encoding="VEX.L1.NP.0F.WIG 50 /r" opcode="50" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_YMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_MOVMSK</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 256;</code>
+     <code>let result_size := 32;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let src := Read_YMM(Calculate_RM(mod, rm, context));</code>
+     </read_instr><decode_checks>
+     <code>if not ((not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_MOVMSK(element_size, register_size, result_size, src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VMOVMSKPS">
+    <asm-operand><varname>r32</varname></asm-operand>
+    <asm-operand><varname>ymm</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX"><cpuid-flag>AVX</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="256"/>
+   <encoding-size name="result_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>ymm</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <category>vector</category>
+ <category>data_transfer</category>
+ <size name="element_size"/>
+ <size name="register_size"/>
+ <size name="result_size"/>
+ <input name="src"/>
+ <output name="result"/>
+ </instruction>

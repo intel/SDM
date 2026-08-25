@@ -1,0 +1,365 @@
+<instruction name="FPREM">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Partial Remainder</shortdesc>
+ <longdesc><para unique="1261215">
+   <string>Computes the remainder obtained from dividing the value in the ST(0) register (the dividend) by the value in the ST(1) register (the divisor or </string><bold><string>modulus</string></bold><string>), and stores the result in ST(0). The remainder represents the following value:</string></para>
+  <para unique="1261216">
+   <string>Remainder</string><string> </string><sans><string>:= </string></sans><string>ST(0) </string><string>&#8722; (Q </string><string>* ST(1))</string></para>
+  <para unique="1261217">
+   <string>Here, Q is an integer value that is obtained by truncating the floating-point number quotient of [ST(0) / ST(1)] toward zero. The sign of the remainder is the same as the sign of the dividend. The magnitude of the remainder is less than that of the modulus, unless a partial remainder was computed (as described below).</string></para>
+  <para unique="1261218">
+   <string>This instruction produces an exact result; the inexact-result exception does not occur and the rounding control has no effect. The following table shows the results obtained when computing the remainder of various classes of numbers, assuming that underflow does not occur.</string></para>
+  <table>
+   <caption>Table 3-33.  FPREM Results</caption>
+   <colgroup><col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1261239" format="CellColHeadL">
+       </para>
+      </th>
+     <th colspan="8"><para unique="1261241" format="CellRowHeadC">
+       <string>ST(1)</string></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1261257" format="CellColHeadL">
+       </para>
+      </th>
+     <td><para unique="1261259" format="CellBodyC">
+       </para>
+      </td>
+     <td><para unique="1261261" format="CellBodyC">
+       <string>-</string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261263" format="CellBodyC">
+       <string>-F</string></para>
+      </td>
+     <td><para unique="1261265" format="CellBodyC">
+       <string>-0</string></para>
+      </td>
+     <td><para unique="1261267" format="CellBodyC">
+       <string>+0</string></para>
+      </td>
+     <td><para unique="1261269" format="CellBodyC">
+       <string>+F</string></para>
+      </td>
+     <td><para unique="1261271" format="CellBodyC">
+       <string>+</string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261273" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <th><para unique="1261275" format="CellColHeadL">
+       </para>
+      </th>
+     <td><para unique="1261277" format="CellBodyC">
+       <string>-</string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261279" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261281" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261283" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261285" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261287" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261289" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261291" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <th><para unique="1261293" format="CellColHeadL">
+       <string>ST(0)</string></para>
+      </th>
+     <td><para unique="1261295" format="CellBodyC">
+       <string>-F</string></para>
+      </td>
+     <td><para unique="1261297" format="CellBodyC">
+       <string>ST(0)</string></para>
+      </td>
+     <td><para unique="1261299" format="CellBodyC">
+       <string>-F or -0</string></para>
+      </td>
+     <td><para unique="1261301" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261303" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261305" format="CellBodyC">
+       <string>-F or -0</string></para>
+      </td>
+     <td><para unique="1261307" format="CellBodyC">
+       <string>ST(0)</string></para>
+      </td>
+     <td><para unique="1261309" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <th><para unique="1261311" format="CellColHeadL">
+       </para>
+      </th>
+     <td><para unique="1261313" format="CellBodyC">
+       <string>-0</string></para>
+      </td>
+     <td><para unique="1261315" format="CellBodyC">
+       <string>-0</string></para>
+      </td>
+     <td><para unique="1261317" format="CellBodyC">
+       <string>-0</string></para>
+      </td>
+     <td><para unique="1261319" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261321" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261323" format="CellBodyC">
+       <string>-0</string></para>
+      </td>
+     <td><para unique="1261325" format="CellBodyC">
+       <string>-0</string></para>
+      </td>
+     <td><para unique="1261327" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <th><para unique="1261329" format="CellColHeadL">
+       </para>
+      </th>
+     <td><para unique="1261331" format="CellBodyC">
+       <string>+0</string></para>
+      </td>
+     <td><para unique="1261333" format="CellBodyC">
+       <string>+0</string></para>
+      </td>
+     <td><para unique="1261335" format="CellBodyC">
+       <string>+0</string></para>
+      </td>
+     <td><para unique="1261337" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261339" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261341" format="CellBodyC">
+       <string>+0</string></para>
+      </td>
+     <td><para unique="1261343" format="CellBodyC">
+       <string>+0</string></para>
+      </td>
+     <td><para unique="1261345" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <th><para unique="1261347" format="CellColHeadL">
+       </para>
+      </th>
+     <td><para unique="1261349" format="CellBodyC">
+       <string>+F</string></para>
+      </td>
+     <td><para unique="1261351" format="CellBodyC">
+       <string>ST(0)</string></para>
+      </td>
+     <td><para unique="1261353" format="CellBodyC">
+       <string>+F or +0</string></para>
+      </td>
+     <td><para unique="1261355" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261357" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261359" format="CellBodyC">
+       <string>+F or +0</string></para>
+      </td>
+     <td><para unique="1261361" format="CellBodyC">
+       <string>ST(0)</string></para>
+      </td>
+     <td><para unique="1261363" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <th><para unique="1261365" format="CellColHeadL">
+       </para>
+      </th>
+     <td><para unique="1261367" format="CellBodyC">
+       <string>+</string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261369" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261371" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261373" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261375" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261377" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261379" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261381" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <th><para unique="1261383" format="CellColHeadL">
+       </para>
+      </th>
+     <td><para unique="1261385" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261387" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261389" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261391" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261393" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261395" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261397" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261399" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    </tbody>
+   <tfoot><tr>
+     <td colspan="9"><para unique="1261401" format="TableFootnoteBLUE">
+       <string>NOTES:</string></para>
+      <para unique="1261402" format="TableFootnote">
+       <string>F	Means finite floating-point value.</string></para>
+      <para unique="1261403" format="TableFootnote">
+       <string>*	Indicates floating-point invalid-arithmetic-operand (#IA) exception.</string></para>
+      </td>
+     </tr>
+    </tfoot></table>
+  <para unique="1261421">
+   <string>When the result is 0, its sign is the same as that of the dividend. When the modulus is </string><string>&#8734;, the result is equal to the value in ST(0). </string></para>
+  <para unique="1261422">
+   <string>The FPREM instruction does not compute the remainder specified in IEEE Std 754. The IEEE specified remainder can be computed with the FPREM1 instruction. The FPREM instruction is provided for compatibility with the Intel 8087 and Intel287 math coprocessors.</string></para>
+  <para unique="1261423">
+   <string>The FPREM instruction gets its name &#8220;partial remainder&#8221; because of the way it computes the remainder. This instruction arrives at a remainder through iterative subtraction. It can, however, reduce the exponent of ST(0) by no more than 63 in one execution of the instruction. If the instruction succeeds in producing a remainder that is less than the modulus, the operation is complete and the C2 flag in the FPU status word is cleared. Otherwise, C2 is set, and the result in ST(0) is called the </string><bold><string>partial remainder</string></bold><string>. The exponent of the partial remainder will be less than the exponent of the original dividend by at least 32. Software can re-execute the instruction (using the partial remainder in ST(0) as the dividend) until C2 is cleared. (Note that while executing such a remainder-computation loop, a higher-priority interrupting routine that needs the FPU can force a context switch in-between the instruc&#173;tions in the loop.)</string></para>
+  <para unique="1261424">
+   <string>An important use of the FPREM instruction is to reduce the arguments of periodic functions. When reduction is complete, the instruction stores the three least-significant bits of the quotient in the C3, C1, and C0 flags of the FPU status word. This information is important in argument reduction for the tangent function (using a modulus of </string><string>&#960;/4), because it locates the original angle in the correct one of eight sectors of the unit circle.</string></para>
+  <para unique="1261425">
+   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+  </longdesc>
+ <subsection title="FPU Flags Affected">
+  <variablelist>
+   <variablelistentry>
+    <term><string>C0</string></term>
+    <listitem><string>Set to bit 2 (Q2) of the quotient.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>C1</string></term>
+    <listitem><string>Set to 0 if stack underflow occurred; otherwise, set to least significant bit of quotient (Q0).</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>C2</string></term>
+    <listitem><string>Set to 0 if reduction complete; set to 1 if incomplete.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>C3 </string></term>
+    <listitem><string>Set to bit 1 (Q1) of the quotient.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Floating-Point Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#IS</string></term>
+    <listitem><string>Stack underflow occurred.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#IA</string></term>
+    <listitem><string>Source operand is an SNaN value, modulus is 0, dividend is </string><string>&#8734;, or unsupported format.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#D</string></term>
+    <listitem><string>Source operand is a denormal value.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#U</string></term>
+    <listitem><string>Result is too small for destination format.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#MF </string></term>
+    <listitem><string>If there is a pending x87 FPU exception.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <para unique="1261455" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <para unique="1261457" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261459" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <para unique="1261461" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ </instruction>

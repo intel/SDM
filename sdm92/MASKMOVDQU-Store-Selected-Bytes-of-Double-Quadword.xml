@@ -1,0 +1,48 @@
+<instruction name="MASKMOVDQU">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Store Selected Bytes of Double Quadword</shortdesc>
+ <longdesc><para unique="1091456">
+   <string>Stores selected bytes from the source operand (first operand) into an 128-bit memory location. The mask operand (second operand) selects which bytes from the source operand are written to memory. The source and mask oper&#173;ands are XMM registers. The memory location specified by the effective address in the DI/EDI/RDI register (the default segment register is DS, but this may be overridden with a segment-override prefix). The memory location does not need to be aligned on a natural boundary. (The size of the store address depends on the address-size attribute.)</string></para>
+  <para unique="1091457">
+   <string>The most significant bit in each byte of the mask operand determines whether the corresponding byte in the source operand is written to the corresponding byte location in memory: 0 indicates no write and 1 indicates write. </string></para>
+  <para unique="1091458">
+   <string>The MASKMOVDQU instruction generates a non-temporal hint to the processor to minimize cache pollution. The non-temporal hint is implemented by using a write combining (WC) memory type protocol (see </string><string>&#8220;Caching of Temporal vs. Non-Temporal Data&#8221;</string><string> in </string><link linkend="40469: H1Heading: Chapter 8 Input/Output"><string>Chapter 10</string></link><string>, of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1). Because the WC protocol uses a weakly-ordered memory consistency model, a fencing opera&#173;tion implemented with the SFENCE or MFENCE instruction should be used in conjunction with MASKMOVDQU instructions if multiple processors might use different memory types to read/write the destination memory loca&#173;tions.</string></para>
+  <para unique="1091465">
+   <string>Behavior with a mask of all 0s is as follows:</string></para>
+  <itemizedlist><listitem><para unique="1091466">
+     <string>No data will be written to memory. </string></para>
+    </listitem>
+   <listitem><para unique="1091467">
+     <string>Signaling of breakpoints (code or data) is not guaranteed; different processor implementations may signal or not signal these breakpoints.</string></para>
+    </listitem>
+   <listitem><para unique="1091468">
+     <string>Exceptions associated with addressing memory and page faults may still be signaled (implementation dependent).</string></para>
+    </listitem>
+   <listitem><para unique="1091469">
+     <string>If the destination memory region is mapped as UC or WP, enforcement of associated semantics for these memory types is not guaranteed (that is, is reserved) and is implementation-specific. </string></para>
+    </listitem>
+   </itemizedlist><para unique="1091470">
+   <string>The MASKMOVDQU instruction can be used to improve performance of algorithms that need to merge data on a byte-by-byte basis. MASKMOVDQU should not cause a read for ownership; doing so generates unnecessary band&#173;width since data is to be written directly using the byte-mask without allocating old data prior to the store. </string></para>
+  <para unique="1091471">
+   <string>In 64-bit mode, use of the REX.R prefix permits this instruction to access additional registers (XMM8-XMM15).</string></para>
+  <para unique="1091472">
+   <string>Note: In VEX-encoded versions, VEX.vvvv is reserved and must be 1111b otherwise instructions will #UD.</string></para>
+  <para unique="1091473">
+   <string>If VMASKMOVDQU is encoded with VEX.L= 1, an attempt to execute the instruction encoded with VEX.L= 1 will cause an #UD exception.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>void _mm_maskmoveu_si128(__m128i d, __m128i n, char * p)</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1091488" format="xIndent1">
+   <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions,&#8221;</string></link><string> additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If VEX.L= 1</string></listitem>
+    <listitem><string>If VEX.vvvv &#8800; 1111B.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

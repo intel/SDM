@@ -1,0 +1,55 @@
+<instruction name="PSHUFLW">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Shuffle Packed Low Words</shortdesc>
+ <longdesc><para unique="1091524">
+   <string>Copies words from the low quadword of a 128-bit lane of the source operand and inserts them in the low quadword of the destination operand at word locations (of the respective lane) selected with the immediate operand. The 256-bit operation is similar to the in-lane operation used by the 256-bit VPSHUFD instruction, which is illustrated in </string><link linkend="39699: 05_FigureFrame: Figure 4-16. 256-bit VPSHUFD Instruction Operation"><string>Figure 4&#8209;16</string></link><string>. For 128-bit operation, only the low 128-bit lane is operative. Each 2-bit field in the immediate operand selects the contents of one word location in the low quadword of the destination operand. The binary encodings of the immediate operand fields select words (0, 1, 2 or 3) from the low quadword of the source operand to be copied to the destination operand. The high quadword of the source operand is copied to the high quadword of the destination operand, for each 128-bit lane.</string></para>
+  <para unique="1091528">
+   <string>Note that this instruction permits a word in the low quadword of the source operand to be copied to more than one word location in the low quadword of the destination operand.</string></para>
+  <para unique="1091529">
+   <string>In 64-bit mode and not encoded with VEX/EVEX, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).</string></para>
+  <para unique="1091530">
+   <string>128-bit Legacy SSE version: The destination operand is an XMM register. The source operand can be an XMM register or a 128-bit memory location. Bits (MAXVL-1:128) of the corresponding YMM destination register remain unchanged.</string></para>
+  <para unique="1091531">
+   <string>VEX.128 encoded version: The destination operand is an XMM register. The source operand can be an XMM register or a 128-bit memory location. Bits (MAXVL-1:128) of the destination YMM register are zeroed. </string></para>
+  <para unique="1091532">
+   <string>VEX.256 encoded version: The destination operand is an YMM register. The source operand can be an YMM register or a 256-bit memory location. </string></para>
+  <para unique="1091533">
+   <string>EVEX encoded version: The destination operand is a ZMM/YMM/XMM registers. The source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location. The destination is updated according to the write&#173;mask.</string></para>
+  <para unique="1091534">
+   <string>Note: In VEX encoded versions, VEX.vvvv is reserved and must be 1111b otherwise instructions will #UD.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VPSHUFLW __m512i _mm512_shufflelo_epi16(__m512i a, int n);</string><string>
+</string><string>VPSHUFLW __m512i _mm512_mask_shufflelo_epi16(__m512i s, __mmask16 k, __m512i a, int n );</string><string>
+</string><string>VPSHUFLW __m512i _mm512_maskz_shufflelo_epi16( __mmask16 k, __m512i a, int n );</string><string>
+</string><string>VPSHUFLW __m256i _mm256_mask_shufflelo_epi16(__m256i s, __mmask8 k, __m256i a, int n );</string><string>
+</string><string>VPSHUFLW __m256i _mm256_maskz_shufflelo_epi16( __mmask8 k, __m256i a, int n );</string><string>
+</string><string>VPSHUFLW __m128i _mm_mask_shufflelo_epi16(__m128i s, __mmask8 k, __m128i a, int n );</string><string>
+</string><string>VPSHUFLW __m128i _mm_maskz_shufflelo_epi16( __mmask8 k, __m128i a, int n );</string><string>
+</string><string>(V)PSHUFLW:		__m128i _mm_shufflelo_epi16(__m128i a, int n)</string><string>
+</string><string>VPSHUFLW:		__m256i _mm256_shufflelo_epi16(__m256i a, const int n)</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Flags Affected">
+  <para unique="1091617">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1091619">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1091624" format="xIndent1">
+   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091628" format="xIndent1">
+   <string>EVEX-encoded instruction, see Exceptions Type E4NF.nb in </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091629" format="xIndent1">
+   <string>Additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>	If VEX.vvvv != 1111B, or EVEX.vvvv != 1111B.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

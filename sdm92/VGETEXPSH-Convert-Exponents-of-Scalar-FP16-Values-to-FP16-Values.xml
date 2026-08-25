@@ -1,0 +1,41 @@
+<instruction name="VGETEXPSH">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Convert Exponents of Scalar FP16 Values to FP16 Values</shortdesc>
+ <longdesc><para unique="1045937">
+   <string>This instruction extracts the biased exponents from the normalized FP16 representation of the low word element of the source operand (the second operand) as unbiased signed integer value, or convert the denormal representa&#173;tion of input data to an unbiased negative integer value. The integer value of the unbiased exponent is converted to an FP16 value and written to the low word element of the destination operand (the first operand) as an FP16 number.</string></para>
+  <para unique="1045938">
+   <string>Bits 127:16 of the destination operand are copied from the corresponding bits of the first source operand. Bits MAXVL-1:128 of the destination operand are zeroed. The low FP16 element of the destination is updated according to the writemask.</string></para>
+  <para unique="1045939">
+   <string>Each GETEXP operation converts the exponent value into a floating-point number (permitting input value in denormal representation). Special cases of input values are listed in </string><link linkend="59286: 06_Table: Table 5-6. VGETEXPPH/VGETEXPSH Special Cases"><string>Table 5&#8209;14</string></link><string>.</string></para>
+  <para unique="1045943">
+   <string>The formula is:</string></para>
+  <para unique="1045944">
+   <string>GETEXP(x) = floor(log</string><subscript><string>2</string></subscript><string>(|x|))</string></para>
+  <para unique="1045945">
+   <string>Notation </string><bold><string>floor(x)</string></bold><string> stands for maximal integer not exceeding real number x.</string></para>
+  <para unique="1045946">
+   <string>Software usage of VGETEXPxx and VGETMANTxx instructions generally involve a combination of GETEXP operation and GETMANT operation (see VGETMANTSH). Thus, the VGETEXPSH instruction does not require software to handle SIMD floating-point exceptions.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <para unique="1045958">
+   <string>VGETEXPSH __m128h _mm_getexp_round_sh (__m128h a, __m128h b, const int sae);</string></para>
+  <para unique="1045959">
+   <string>VGETEXPSH __m128h _mm_mask_getexp_round_sh (__m128h src, __mmask8 k, __m128h a, __m128h b, const int sae);</string></para>
+  <para unique="1045960">
+   <string>VGETEXPSH __m128h _mm_maskz_getexp_round_sh (__mmask8 k, __m128h a, __m128h b, const int sae);</string></para>
+  <para unique="1045961">
+   <string>VGETEXPSH __m128h _mm_getexp_sh (__m128h a, __m128h b);</string></para>
+  <para unique="1045962">
+   <string>VGETEXPSH __m128h _mm_mask_getexp_sh (__m128h src, __mmask8 k, __m128h a, __m128h b);</string></para>
+  <para unique="1045963">
+   <string>VGETEXPSH __m128h _mm_maskz_getexp_sh (__mmask8 k, __m128h a, __m128h b);</string></para>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1045965">
+   <string>Invalid, Denormal</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1045970" format="xIndent1">
+   <string>EVEX-encoded instructions, see </string><link linkend="63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions"><string>Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

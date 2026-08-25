@@ -1,0 +1,510 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="TDPBUSD_TMMi32_TMM4u8_TMM4i8" xed_iform="TDPBUSD_TMMi32_TMM4u8_TMM4i8" encoding="VEX.L0.66.0F38.W0 5E /r" opcode="5e" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Ge</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Lt</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_TDPBD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Tile::Palette_Table</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>TMM</var-used>
+   <var-used>Tile::Config</var-used>
+   <var-used>CPUID_AMX_TILE</var-used>
+   <var-used>IA32_XFD</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let srcdest_index := Unsigned(reg[2:0]);</code>
+     <code>let src1_index := Unsigned(rm[2:0]);</code>
+     <code>let src2_index := Unsigned(context.vvvv[2:0]);</code>
+     <code>let is_src1_unsigned := True;</code>
+     <code>let is_src2_unsigned := False;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not ((context.rex_w == 0b0) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPUID(AMX_TILE)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_TILE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tiles_Not_Configured</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tile_Not_Valid(reg)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tile_Not_Valid(rm)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tile_Not_Valid(context.vvvv[2:0])</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XFD_TILE_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_TDPBD?(srcdest_index, src1_index, src2_index, is_src1_unsigned, is_src2_unsigned);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="TDPBUSD">
+    </assembly-syntax>
+   <cpuid-group name="AMX_INT8"><cpuid-flag>AMX_TILES</cpuid-flag><cpuid-flag>AMX_INT8</cpuid-flag></cpuid-group>
+   <cpuid-group name="AMX_INT8_AVX10"><cpuid-flag>AMX_INT8_MIRRORED</cpuid-flag></cpuid-group>
+   <operand is_read="True">
+    <name>srcdest_index</name>
+    <label><literal>Unsigned(reg[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>src1_index</name>
+    <label><literal>Unsigned(rm[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>src2_index</name>
+    <label><literal>Unsigned(context.vvvv[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>is_src1_unsigned</name>
+    <label><literal>True</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>is_src2_unsigned</name>
+    <label><literal>False</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="TDPBD" variant_kind="Standard variant" mnemonic="TDPBUSD">
+  <code>if srcdest_index == src1_index</code>
+  <code>    or src1_index == src2_index</code>
+  <code>    or srcdest_index == src2_index</code>
+  <code>    or (TMM[srcdest_index].Colsb % 4) != 0</code>
+  <code>    or (TMM[src1_index].Colsb % 4) != 0</code>
+  <code>    or (TMM[src2_index].Colsb % 4) != 0</code>
+  <code>    or TMM[srcdest_index].Colsb != TMM[src2_index].Colsb</code>
+  <code>    or TMM[srcdest_index].Rows  != TMM[src1_index].Rows</code>
+  <code>    or (TMM[src1_index].Colsb / 4) != TMM[src2_index].Rows</code>
+  <code>    or TMM[srcdest_index].Colsb &gt; Unsigned(CPUID_TMUL_MAXN)</code>
+  <code>    or TMM[src2_index].Colsb &gt; Unsigned(CPUID_TMUL_MAXN)</code>
+  <code>    or (TMM[src1_index].Colsb / 4) &gt; Unsigned(CPUID_TMUL_MAXK)</code>
+  <code>    or TMM[src2_index].Rows &gt; Unsigned(CPUID_TMUL_MAXK)</code>
+  <code>then</code>
+  <code>    Report_Invalid_Opcode!();</code>
+  <code>endif;</code>
+  <code></code>
+  <code>let srcdest_elements_per_row := TMM[srcdest_index].Colsb / 4;</code>
+  <code>let src1_elements_per_row := TMM[src1_index].Colsb / 4;</code>
+  <code></code>
+  <code>assert Tile::Palette_Table[Tile::Config.Palette].Bytes_Per_Row == 64;</code>
+  <code></code>
+  <code>for m := 0 to TMM[srcdest_index].Rows - 1 do</code>
+  <code>    var srcdest_row_data := TMM[srcdest_index].Data[m *: 512];</code>
+  <code>    let src1_row := TMM[src1_index].Data[m *: 512];</code>
+  <code></code>
+  <code>    for k := 0 to src1_elements_per_row - 1 do</code>
+  <code>        let src2_row := TMM[src2_index].Data[k *: 512];</code>
+  <code></code>
+  <code>        for n := 0 to srcdest_elements_per_row - 1 do</code>
+  <code>            srcdest_row_data[n *: 32] := Dot_Product(8, srcdest_row_data[n *: 32],</code>
+  <code>                                                     src1_row[k *: 32], is_src1_unsigned,</code>
+  <code>                                                     src2_row[n *: 32], is_src2_unsigned);</code>
+  <code>        endfor;</code>
+  <code>    endfor;</code>
+  <code></code>
+  <code>    Tile::Write_Row_And_Zero_Extend(srcdest_index, m, srcdest_row_data);</code>
+  <code>endfor;</code>
+  <code></code>
+  <code>Tile::Zero_Upper_Rows(srcdest_index);</code>
+  <code>Tile::Config.Start_Row := 0;</code>
+  <callee>Std::Boolean::Strict_Or</callee>
+  <callee>Std::Integer::Eq</callee>
+  <callee>Std::Integer::Gt</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Multiply</callee>
+  <callee>Std::Integer::Ne</callee>
+  <callee>Std::Integer::Positive_Divide</callee>
+  <callee>Std::Integer::Positive_Remainder</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Unsigned</callee>
+  <callee>Dot_Product</callee>
+  <callee>Report_Invalid_Opcode</callee>
+  <callee>Tile::Write_Row_And_Zero_Extend</callee>
+  <callee>Tile::Zero_Upper_Rows</callee>
+  <var-used>Tile::Palette_Table</var-used>
+  <var-used>TMM</var-used>
+  <var-used>Tile::Config</var-used>
+  <var-used>CPUID_TMUL_MAXN</var-used>
+  <var-used>CPUID_TMUL_MAXK</var-used>
+  </operation>
+ <iform-group>
+  <iform name="TDPBSSD_TMMi32_TMM4i8_TMM4i8" xed_iform="TDPBSSD_TMMi32_TMM4i8_TMM4i8" encoding="VEX.L0.F2.0F38.W0 5E /r" opcode="5e" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Ge</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Lt</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_TDPBD</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Tile::Palette_Table</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>TMM</var-used>
+   <var-used>Tile::Config</var-used>
+   <var-used>CPUID_AMX_TILE</var-used>
+   <var-used>IA32_XFD</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let srcdest_index := Unsigned(reg[2:0]);</code>
+     <code>let src1_index := Unsigned(rm[2:0]);</code>
+     <code>let src2_index := Unsigned(context.vvvv[2:0]);</code>
+     <code>let is_src1_unsigned := False;</code>
+     <code>let is_src2_unsigned := False;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not ((context.rex_w == 0b0) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPUID(AMX_TILE)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_TILE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tiles_Not_Configured</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tile_Not_Valid(reg)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tile_Not_Valid(rm)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tile_Not_Valid(context.vvvv[2:0])</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XFD_TILE_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_TDPBD?(srcdest_index, src1_index, src2_index, is_src1_unsigned, is_src2_unsigned);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="TDPBSSD">
+    </assembly-syntax>
+   <cpuid-group name="AMX_INT8"><cpuid-flag>AMX_TILES</cpuid-flag><cpuid-flag>AMX_INT8</cpuid-flag></cpuid-group>
+   <cpuid-group name="AMX_INT8_AVX10"><cpuid-flag>AMX_INT8_MIRRORED</cpuid-flag></cpuid-group>
+   <operand is_read="True">
+    <name>srcdest_index</name>
+    <label><literal>Unsigned(reg[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>src1_index</name>
+    <label><literal>Unsigned(rm[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>src2_index</name>
+    <label><literal>Unsigned(context.vvvv[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>is_src1_unsigned</name>
+    <label><literal>False</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>is_src2_unsigned</name>
+    <label><literal>False</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="TDPBSUD_TMMi32_TMM4i8_TMM4u8" xed_iform="TDPBSUD_TMMi32_TMM4i8_TMM4u8" encoding="VEX.L0.F3.0F38.W0 5E /r" opcode="5e" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Ge</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Lt</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_TDPBD</callee>
+   <var-used>True</var-used>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Tile::Palette_Table</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>TMM</var-used>
+   <var-used>Tile::Config</var-used>
+   <var-used>CPUID_AMX_TILE</var-used>
+   <var-used>IA32_XFD</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let srcdest_index := Unsigned(reg[2:0]);</code>
+     <code>let src1_index := Unsigned(rm[2:0]);</code>
+     <code>let src2_index := Unsigned(context.vvvv[2:0]);</code>
+     <code>let is_src1_unsigned := False;</code>
+     <code>let is_src2_unsigned := True;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not ((context.rex_w == 0b0) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPUID(AMX_TILE)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_TILE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tiles_Not_Configured</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tile_Not_Valid(reg)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tile_Not_Valid(rm)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tile_Not_Valid(context.vvvv[2:0])</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XFD_TILE_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_TDPBD?(srcdest_index, src1_index, src2_index, is_src1_unsigned, is_src2_unsigned);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="TDPBSUD">
+    </assembly-syntax>
+   <cpuid-group name="AMX_INT8"><cpuid-flag>AMX_TILES</cpuid-flag><cpuid-flag>AMX_INT8</cpuid-flag></cpuid-group>
+   <cpuid-group name="AMX_INT8_AVX10"><cpuid-flag>AMX_INT8_MIRRORED</cpuid-flag></cpuid-group>
+   <operand is_read="True">
+    <name>srcdest_index</name>
+    <label><literal>Unsigned(reg[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>src1_index</name>
+    <label><literal>Unsigned(rm[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>src2_index</name>
+    <label><literal>Unsigned(context.vvvv[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>is_src1_unsigned</name>
+    <label><literal>False</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>is_src2_unsigned</name>
+    <label><literal>True</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="TDPBUUD_TMMu32_TMM4u8_TMM4u8" xed_iform="TDPBUUD_TMMu32_TMM4u8_TMM4u8" encoding="VEX.L0.NP.0F38.W0 5E /r" opcode="5e" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Ge</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Lt</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_TDPBD</callee>
+   <var-used>True</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Tile::Palette_Table</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>TMM</var-used>
+   <var-used>Tile::Config</var-used>
+   <var-used>CPUID_AMX_TILE</var-used>
+   <var-used>IA32_XFD</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let srcdest_index := Unsigned(reg[2:0]);</code>
+     <code>let src1_index := Unsigned(rm[2:0]);</code>
+     <code>let src2_index := Unsigned(context.vvvv[2:0]);</code>
+     <code>let is_src1_unsigned := True;</code>
+     <code>let is_src2_unsigned := True;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not ((context.rex_w == 0b0) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPUID(AMX_TILE)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_TILE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tiles_Not_Configured</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tile_Not_Valid(reg)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tile_Not_Valid(rm)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tile_Not_Valid(context.vvvv[2:0])</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XFD_TILE_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_TDPBD?(srcdest_index, src1_index, src2_index, is_src1_unsigned, is_src2_unsigned);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="TDPBUUD">
+    </assembly-syntax>
+   <cpuid-group name="AMX_INT8"><cpuid-flag>AMX_TILES</cpuid-flag><cpuid-flag>AMX_INT8</cpuid-flag></cpuid-group>
+   <cpuid-group name="AMX_INT8_AVX10"><cpuid-flag>AMX_INT8_MIRRORED</cpuid-flag></cpuid-group>
+   <operand is_read="True">
+    <name>srcdest_index</name>
+    <label><literal>Unsigned(reg[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>src1_index</name>
+    <label><literal>Unsigned(rm[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>src2_index</name>
+    <label><literal>Unsigned(context.vvvv[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>is_src1_unsigned</name>
+    <label><literal>True</literal></label>
+    <encoding></encoding>
+    </operand>
+   <operand is_read="True">
+    <name>is_src2_unsigned</name>
+    <label><literal>True</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <category>tile</category>
+ <input name="srcdest_index"/>
+ <input name="is_src1_unsigned"/>
+ <input name="is_src2_unsigned"/>
+ </instruction>

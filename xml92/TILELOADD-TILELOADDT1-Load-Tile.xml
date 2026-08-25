@@ -1,0 +1,233 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="TILELOADDT1_TMMu32_MEMu32" xed_iform="TILELOADDT1_TMMu32_MEMu32" encoding="VEX.L0.66.0F38.W0 4B /r" opcode="4b" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Ge</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Lt</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Read_SIB</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_TILELOADD</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Tile::Palette_Table</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>TMM</var-used>
+   <var-used>Tile::Config</var-used>
+   <var-used>CPUID_AMX_TILE</var-used>
+   <var-used>IA32_XFD</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let tmm_index := Unsigned(reg[2:0]);</code>
+     </decode_args>
+    <read_instr><code>let (segment, base_address, index, scale, next_ip0) := Read_SIB?(context, mod, 1, ip);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPUID(AMX_TILE)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_TILE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tiles_Not_Configured</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tile_Not_Valid(reg)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XFD_TILE_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_TILELOADD?(tmm_index, segment, scale, index, base_address);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="TILELOADDT1">
+    <asm-operand><varname>sib</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AMX_TILE"><cpuid-flag>AMX_TILES</cpuid-flag></cpuid-group>
+   <operand is_read="True">
+    <name>segment</name>
+    <name>base_address</name>
+    <name>index</name>
+    <name>scale</name>
+    <encoding>sib</encoding>
+    <label><varname>sib</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>tmm_index</name>
+    <label><literal>Unsigned(reg[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="TILELOADD" variant_kind="Standard variant" mnemonic="TILELOADDT1">
+  <code>if (TMM[tmm_index].Colsb % 4) != 0 or Tile::Config.Start_Row &gt;= TMM[tmm_index].Rows then</code>
+  <code>    Report_Invalid_Opcode!();</code>
+  <code>endif;</code>
+  <code></code>
+  <code>let stride := Unsigned(index) * scale;</code>
+  <code>while Tile::Config.Start_Row &lt; TMM[tmm_index].Rows do</code>
+  <code>    let offset := base_address + (Tile::Config.Start_Row * stride);</code>
+  <code>    Tile::Load_Row_And_Zero_Extend?(tmm_index, Tile::Config.Start_Row, segment, offset);</code>
+  <code>    Tile::Config.Start_Row := Tile::Config.Start_Row + 1;</code>
+  <code>endwhile;</code>
+  <code>Tile::Config.Start_Row := 0;</code>
+  <callee>Std::Boolean::Strict_Or</callee>
+  <callee>Std::Integer::Add</callee>
+  <callee>Std::Integer::Ge</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Multiply</callee>
+  <callee>Std::Integer::Ne</callee>
+  <callee>Std::Integer::Positive_Remainder</callee>
+  <callee>Std::Bits::Add_int</callee>
+  <callee>Std::Bits::Unsigned</callee>
+  <callee>Report_Invalid_Opcode</callee>
+  <callee>Tile::Load_Row_And_Zero_Extend</callee>
+  <var-used>TMM</var-used>
+  <var-used>Tile::Config</var-used>
+  <other-copy>TILELOADDRS[,T1]</other-copy>
+  </operation>
+ <iform-group>
+  <iform name="TILELOADD_TMMu32_MEMu32" xed_iform="TILELOADD_TMMu32_MEMu32" encoding="VEX.L0.F2.0F38.W0 4B /r" opcode="4b" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Ge</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Lt</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Not</callee>
+   <callee>Current_Mode</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Read_SIB</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_TILELOADD</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Tile::Palette_Table</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>TMM</var-used>
+   <var-used>Tile::Config</var-used>
+   <var-used>CPUID_AMX_TILE</var-used>
+   <var-used>IA32_XFD</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let tmm_index := Unsigned(reg[2:0]);</code>
+     </decode_args>
+    <read_instr><code>let (segment, base_address, index, scale, next_ip0) := Read_SIB?(context, mod, 1, ip);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0) and (context.vex_LL == 0b00) and (Data_Size_Of_Current_Mode() == 64) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPUID(AMX_TILE)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_TILE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tiles_Not_Configured</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Tile_Not_Valid(reg)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XFD_TILE_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_TILELOADD?(tmm_index, segment, scale, index, base_address);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="TILELOADD">
+    <asm-operand><varname>sib</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AMX_TILE"><cpuid-flag>AMX_TILES</cpuid-flag></cpuid-group>
+   <operand is_read="True">
+    <name>segment</name>
+    <name>base_address</name>
+    <name>index</name>
+    <name>scale</name>
+    <encoding>sib</encoding>
+    <label><varname>sib</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>tmm_index</name>
+    <label><literal>Unsigned(reg[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <category>tile</category>
+ <input name="tmm_index"/>
+ <input name="segment"/>
+ <input name="scale"/>
+ <input name="index"/>
+ <input name="base_address"/>
+ </instruction>

@@ -1,0 +1,149 @@
+<instruction name="VGETEXPPS">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Convert Exponents of Packed Single Precision Floating-Point Values to Single Precision Floating-Point Values</shortdesc>
+ <longdesc><para unique="1045980">
+   <string>Extracts the biased exponents from the normalized single precision floating-point representation of each dword element of the source operand (the second operand) as unbiased signed integer value, or convert the denormal representation of input data to unbiased negative integer values. Each integer value of the unbiased exponent is converted to single precision floating-point value and written to the corresponding dword elements of the destina&#173;tion operand (the first operand) as single precision floating-point numbers. </string></para>
+  <para unique="1045981">
+   <string>The destination operand is a ZMM/YMM/XMM register and updated under the writemask. The source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location, or a 512/256/128-bit vector broadcasted from a 32-bit memory location.</string></para>
+  <para unique="1045982">
+   <string>EVEX.vvvv is reserved and must be 1111b, otherwise instructions will #UD.</string></para>
+  <para unique="1045983">
+   <string>Each GETEXP operation converts the exponent value into a floating-point number (permitting input value in denormal representation). Special cases of input values are listed in </string><link linkend="82579: 06_Table: Table 5-15. VGETEXPPS Special Cases"><string>Table 5&#8209;15</string></link><string>.</string></para>
+  <para unique="1045987">
+   <string>The formula is:</string></para>
+  <para unique="1045988">
+   <string>GETEXP(x) = floor(log</string><subscript><string>2</string></subscript><string>(|x|)) </string></para>
+  <para unique="1045989">
+   <string>Notation </string><bold><string>floor(x)</string></bold><string> stands for maximal integer not exceeding real number x. </string></para>
+  <para unique="1045990">
+   <string>Software usage of VGETEXPxx and VGETMANTxx instructions generally involve a combination of GETEXP operation and GETMANT operation (see VGETMANTPD). Thus VGETEXPxx instruction do not require software to handle SIMD floating-point exceptions.</string></para>
+  <para unique="1046032">
+   <anchor id="_Toc190577520"/></para>
+  <table>
+   <caption>Table 5-15.  VGETEXPPS/SS Special Cases</caption>
+   <colgroup><col width="149.80968000000001pt" align="leftright"/>
+    <col width="155.72591999999997pt" align="left"/>
+    <col width="206.86176pt"/>
+    <col width="89.75016pt"/>
+    <col width="58.00032pt"/>
+    <col width="36.0pt"/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1046001" format="CellRowHeadL">
+       <string>Input Operand</string></para>
+      </th>
+     <th><para unique="1046003" format="CellRowHeadL">
+       <string>Result</string></para>
+      </th>
+     <th><para unique="1046005" format="CellRowHeadL">
+       <string>Comments</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1046007" format="CellBodyL">
+       <string>src1 = NaN</string></para>
+      </td>
+     <td><para unique="1046009" format="CellBodyL">
+       <string>QNaN(src1)</string></para>
+      </td>
+     <td><para unique="1046011" format="CellBodyL">
+       </para>
+      <para unique="1046012" format="CellBodyL">
+       <string>If (SRC = SNaN) then #IE</string></para>
+      <para unique="1046013" format="CellBodyL">
+       <string>If (SRC = denormal) then #DE</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046015" format="CellBodyL">
+       <string>0 &lt; |src1| &lt; INF</string></para>
+      </td>
+     <td><para unique="1046017" format="CellBodyL">
+       <string>floor(log</string><subscript><string>2</string></subscript><string>(|src1|)) </string></para>
+      </td>
+     <td><para unique="1046019">
+       </para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046021" format="CellBodyL">
+       <string>| src1| = +INF</string></para>
+      </td>
+     <td><para unique="1046023" format="CellBodyL">
+       <string>+INF</string></para>
+      </td>
+     <td><para unique="1046025">
+       </para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046027" format="CellBodyL">
+       <string>| src1| = 0</string></para>
+      </td>
+     <td><para unique="1046029" format="CellBodyL">
+       <string>-INF</string></para>
+      </td>
+     <td><para unique="1046031">
+       </para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  <programlisting><anchor id="_Toc190578596"/><anchor id="_Toc190578080"/><anchor id="_Toc190577518"/><string>
+</string></programlisting>
+  <para unique="1046039">
+   <link linkend="61612: 05_FigureFrame: Figure 5-25. VGETEXPPS Functionality On Normal Input values"><string>Figure&#160;5&#8209;14</string></link><string> illustrates the VGETEXPPS functionality on input values with normalized representation.</string></para>
+  <table>
+   <caption>Figure 5-14.  VGETEXPPS Functionality On Normal Input values</caption>
+   <colgroup><col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <td><para unique="1046046" format="05_FigureGraphic">
+       <svg width="1000" height="303.7553325039905" viewBox="0 0 380.25288 115.50384">
+        <defs>
+        <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+          <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
+        </marker>
+      </defs>
+        <text x="72" y="72" font-size="6">Error: unsupported graphic element 'ImportObject'</text>
+        </svg></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VGETEXPPS __m512 _mm512_getexp_ps( __m512 a);</string><string>
+</string><string>VGETEXPPS __m512 _mm512_mask_getexp_ps(__m512 s, __mmask16 k, __m512 a);</string><string>
+</string><string>VGETEXPPS __m512 _mm512_maskz_getexp_ps( __mmask16 k, __m512 a);</string><string>
+</string><string>VGETEXPPS __m512 _mm512_getexp_round_ps( __m512 a, int sae);</string><string>
+</string><string>VGETEXPPS __m512 _mm512_mask_getexp_round_ps(__m512 s, __mmask16 k, __m512 a, int sae);</string><string>
+</string><string>VGETEXPPS __m512 _mm512_maskz_getexp_round_ps( __mmask16 k, __m512 a, int sae);</string><string>
+</string><string>VGETEXPPS __m256 _mm256_getexp_ps(__m256 a);</string><string>
+</string><string>VGETEXPPS __m256 _mm256_mask_getexp_ps(__m256 s, __mmask8 k, __m256 a);</string><string>
+</string><string>VGETEXPPS __m256 _mm256_maskz_getexp_ps( __mmask8 k, __m256 a);</string><string>
+</string><string>VGETEXPPS __m128 _mm_getexp_ps(__m128 a);</string><string>
+</string><string>VGETEXPPS __m128 _mm_mask_getexp_ps(__m128 s, __mmask8 k, __m128 a);</string><string>
+</string><string>VGETEXPPS __m128 _mm_maskz_getexp_ps( __mmask8 k, __m128 a);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046182">
+   <string>Invalid, Denormal.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046187" format="xIndent1">
+   <string>See </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046188" format="xIndent1">
+   <string>Additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If EVEX.vvvv != 1111B.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

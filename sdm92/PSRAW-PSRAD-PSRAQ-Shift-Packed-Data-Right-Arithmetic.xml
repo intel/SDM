@@ -1,0 +1,158 @@
+<instruction name="PSRAW/PSRAD/PSRAQ">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Shift Packed Data Right Arithmetic</shortdesc>
+ <longdesc><para unique="1092004">
+   <string>Shifts the bits in the individual data elements (words, doublewords or quadwords) in the destination operand (first operand) to the right by the number of bits specified in the count operand (second operand). As the bits in the data elements are shifted right, the empty high-order bits are filled with the initial value of the sign bit of the data element. If the value specified by the count operand is greater than 15 (for words), 31 (for doublewords), or 63 (for quadwords), each destination data element is filled with the initial value of the sign bit of the element. (</string><link linkend="15379: 05_FigureFrame: Figure 3-12. PSRAW and PSRAD Instruction Operation"><string>Figure&#160;4&#8209;18</string></link><string> gives an example of shifting words in a 64-bit operand.)</string></para>
+  <table>
+   <caption>Figure 4-18.  PSRAW and PSRAD Instruction Operation Using a 64-bit Operand</caption>
+   <colgroup><col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <td><para unique="1092047" format="TableAnchor">
+       <svg width="1000" height="320.60449458040165" viewBox="0 0 301.77144000000004 96.74928">
+        <defs>
+        <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+          <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
+        </marker>
+      </defs>
+        <rect width="62.89128" height="18.0" x="43.59816" y="5.12496" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="62.89128" height="18.0" x="106.48944" y="5.12496" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="62.89128" height="18.0" x="169.38072" y="5.12496" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="62.897760000000005" height="18.0" x="232.27128" y="5.12496" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="39.780719999999995" y="74.07000000000001" font-size="6" text-anchor="end">DEST</text>
+        <rect width="62.89128" height="18.0" x="43.02648" y="58.12488" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="62.89128" height="18.0" x="105.91776" y="58.12488" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="62.89128" height="18.0" x="168.80904" y="58.12488" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <rect width="62.897760000000005" height="18.0" x="231.70032" y="58.12488" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="40.81608" y="21.53376" font-size="6" text-anchor="end">DEST</text>
+        <text x="8.96472" y="13.23432" font-size="6">Pre-Shift</text>
+        <text x="4.1436" y="66.09456" font-size="6">Post-Shift</text>
+        <polyline points="243.96624,23.59152 243.96624,38.0556 269.68104,38.0556 269.68104,58.412879999999994" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="61.7868,23.55552 61.7868,38.02032 87.50088,38.02032 87.50088,58.3776" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="125.50103999999999,23.52024 125.50103999999999,37.984320000000004 151.21584000000001,37.984320000000004 151.21584000000001,58.3416" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="182.25144,24.019920000000003 182.25144,38.483999999999995 207.96624,38.483999999999995 207.96624,58.84128" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <text x="39.47256" y="34.84152" font-size="6" text-anchor="end">Shift Right</text>
+        <text x="256.83696" y="17.32392" font-size="6">X0</text>
+        <text x="235.40831999999997" y="71.07624" font-size="6">X0 &gt;&gt; COUNT</text>
+        <text x="69.83568" y="17.32392" font-size="6">X3</text>
+        <text x="133.55064" y="17.32392" font-size="6">X2</text>
+        <text x="194.58648" y="17.32392" font-size="6">X1</text>
+        <text x="174.83688" y="71.07624" font-size="6">X1 &gt;&gt; COUNT</text>
+        <text x="111.58632" y="71.07624" font-size="6">X2 &gt;&gt; COUNT</text>
+        <text x="47.80008" y="71.07624" font-size="6">X3 &gt;&gt; COUNT</text>
+        <text x="39.47256" y="42.11208" font-size="6" text-anchor="end">with Sign</text>
+        <text x="39.47256" y="49.91832" font-size="6" text-anchor="end">Extension</text>
+        </svg></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  <para unique="1092052">
+   <string>Note that only the first 64-bits of a 128-bit count operand are checked to compute the count. If the second source operand is a memory address, 128 bits are loaded.</string></para>
+  <para unique="1092053">
+   <string>The (V)PSRAW instruction shifts each of the words in the destination operand to the right by the number of bits specified in the count operand, and the (V)PSRAD instruction shifts each of the doublewords in the destination operand.</string></para>
+  <para unique="1092054">
+   <string>In 64-bit mode and not encoded with VEX/EVEX, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).</string></para>
+  <para unique="1092055">
+   <string>Legacy SSE instructions 64-bit operand: The destination operand is an MMX technology register; the count operand can be either an MMX technology register or an 64-bit memory location. </string></para>
+  <para unique="1092056">
+   <string>128-bit Legacy SSE version: The destination and first source operands are XMM registers. Bits (MAXVL-1:128) of the corresponding YMM destination register remain unchanged. The count operand can be either an XMM register or a 128-bit memory location or an 8-bit immediate. If the count operand is a memory address, 128 bits are loaded but the upper 64 bits are ignored.</string></para>
+  <para unique="1092057">
+   <string>VEX.128 encoded version: The destination and first source operands are XMM registers. Bits (MAXVL-1:128) of the destination YMM register are zeroed. The count operand can be either an XMM register or a 128-bit memory loca&#173;tion or an 8-bit immediate. If the count operand is a memory address, 128 bits are loaded but the upper 64 bits are ignored.</string></para>
+  <para unique="1092058">
+   <string>VEX.256 encoded version: The destination operand is a YMM register. The source operand is a YMM register or a memory location. The count operand can come either from an XMM register or a memory location or an 8-bit immediate. Bits (MAXVL-1:256) of the corresponding ZMM register are zeroed.</string></para>
+  <para unique="1092059">
+   <string>EVEX encoded versions: The destination operand is a ZMM register updated according to the writemask. The count operand is either an 8-bit immediate (the immediate count version) or an 8-bit value from an XMM register or a memory location (the variable count version). For the immediate count version, the source operand (the second operand) can be a ZMM register, a 512-bit memory location or a 512-bit vector broadcasted from a 32/64-bit memory location. For the variable count version, the first source operand (the second operand) is a ZMM register, the second source operand (the third operand, 8-bit variable count) can be an XMM register or a memory location.</string></para>
+  <para unique="1092060">
+   <string>Note: In VEX/EVEX encoded versions of shifts with an immediate count, vvvv of VEX/EVEX encode the destination register, and VEX.B/EVEX.B + ModRM.r/m encodes the source register.</string></para>
+  <para unique="1092061">
+   <string>Note: For shifts with an immediate count (VEX.128.66.0F 71-73 /4, EVEX.128.66.0F 71-73 /4), VEX.vvvv/EVEX.vvvv encodes the destination register.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalents">
+  <programlisting><string>VPSRAD __m512i _mm512_srai_epi32(__m512i a, unsigned int imm);</string><string>
+</string><string>VPSRAD __m512i _mm512_mask_srai_epi32(__m512i s, __mmask16 k, __m512i a, unsigned int imm);</string><string>
+</string><string>VPSRAD __m512i _mm512_maskz_srai_epi32( __mmask16 k, __m512i a, unsigned int imm);</string><string>
+</string><string>VPSRAD __m256i _mm256_mask_srai_epi32(__m256i s, __mmask8 k, __m256i a, unsigned int imm);</string><string>
+</string><string>VPSRAD __m256i _mm256_maskz_srai_epi32( __mmask8 k, __m256i a, unsigned int imm);</string><string>
+</string><string>VPSRAD __m128i _mm_mask_srai_epi32(__m128i s, __mmask8 k, __m128i a, unsigned int imm);</string><string>
+</string><string>VPSRAD __m128i _mm_maskz_srai_epi32( __mmask8 k, __m128i a, unsigned int imm);</string><string>
+</string><string>VPSRAD __m512i _mm512_sra_epi32(__m512i a, __m128i cnt);</string><string>
+</string><string>VPSRAD __m512i _mm512_mask_sra_epi32(__m512i s, __mmask16 k, __m512i a, __m128i cnt);</string><string>
+</string><string>VPSRAD __m512i _mm512_maskz_sra_epi32( __mmask16 k, __m512i a, __m128i cnt);</string><string>
+</string><string>VPSRAD __m256i _mm256_mask_sra_epi32(__m256i s, __mmask8 k, __m256i a, __m128i cnt);</string><string>
+</string><string>VPSRAD __m256i _mm256_maskz_sra_epi32( __mmask8 k, __m256i a, __m128i cnt);</string><string>
+</string><string>VPSRAD __m128i _mm_mask_sra_epi32(__m128i s, __mmask8 k, __m128i a, __m128i cnt);</string><string>
+</string><string>VPSRAD __m128i _mm_maskz_sra_epi32( __mmask8 k, __m128i a, __m128i cnt);</string><string>
+</string><string>VPSRAQ __m512i _mm512_srai_epi64(__m512i a, unsigned int imm);</string><string>
+</string><string>VPSRAQ __m512i _mm512_mask_srai_epi64(__m512i s, __mmask8 k, __m512i a, unsigned int imm)</string><string>
+</string><string>VPSRAQ __m512i _mm512_maskz_srai_epi64( __mmask8 k, __m512i a, unsigned int imm)</string><string>
+</string><string>VPSRAQ __m256i _mm256_mask_srai_epi64(__m256i s, __mmask8 k, __m256i a, unsigned int imm);</string><string>
+</string><string>VPSRAQ __m256i _mm256_maskz_srai_epi64( __mmask8 k, __m256i a, unsigned int imm);</string><string>
+</string><string>VPSRAQ __m128i _mm_mask_srai_epi64(__m128i s, __mmask8 k, __m128i a, unsigned int imm);</string><string>
+</string><string>VPSRAQ __m128i _mm_maskz_srai_epi64( __mmask8 k, __m128i a, unsigned int imm);</string><string>
+</string><string>VPSRAQ __m512i _mm512_sra_epi64(__m512i a, __m128i cnt);</string><string>
+</string><string>VPSRAQ __m512i _mm512_mask_sra_epi64(__m512i s, __mmask8 k, __m512i a, __m128i cnt)</string><string>
+</string><string>VPSRAQ __m512i _mm512_maskz_sra_epi64( __mmask8 k, __m512i a, __m128i cnt)</string><string>
+</string><string>VPSRAQ __m256i _mm256_mask_sra_epi64(__m256i s, __mmask8 k, __m256i a, __m128i cnt);</string><string>
+</string><string>VPSRAQ __m256i _mm256_maskz_sra_epi64( __mmask8 k, __m256i a, __m128i cnt);</string><string>
+</string><string>VPSRAQ __m128i _mm_mask_sra_epi64(__m128i s, __mmask8 k, __m128i a, __m128i cnt);</string><string>
+</string><string>VPSRAQ __m128i _mm_maskz_sra_epi64( __mmask8 k, __m128i a, __m128i cnt);</string><string>
+</string><string>VPSRAW __m512i _mm512_srai_epi16(__m512i a, unsigned int imm);</string><string>
+</string><string>VPSRAW __m512i _mm512_mask_srai_epi16(__m512i s, __mmask32 k, __m512i a, unsigned int imm);</string><string>
+</string><string>VPSRAW __m512i _mm512_maskz_srai_epi16( __mmask32 k, __m512i a, unsigned int imm);</string><string>
+</string><string>VPSRAW __m256i _mm256_mask_srai_epi16(__m256i s, __mmask16 k, __m256i a, unsigned int imm);</string><string>
+</string><string>VPSRAW __m256i _mm256_maskz_srai_epi16( __mmask16 k, __m256i a, unsigned int imm);</string><string>
+</string><string>VPSRAW __m128i _mm_mask_srai_epi16(__m128i s, __mmask8 k, __m128i a, unsigned int imm);</string><string>
+</string><string>VPSRAW __m128i _mm_maskz_srai_epi16( __mmask8 k, __m128i a, unsigned int imm);</string><string>
+</string><string>VPSRAW __m512i _mm512_sra_epi16(__m512i a, __m128i cnt);</string><string>
+</string><string>VPSRAW __m512i _mm512_mask_sra_epi16(__m512i s, __mmask16 k, __m512i a, __m128i cnt);</string><string>
+</string><string>VPSRAW __m512i _mm512_maskz_sra_epi16( __mmask16 k, __m512i a, __m128i cnt);</string><string>
+</string><string>VPSRAW __m256i _mm256_mask_sra_epi16(__m256i s, __mmask8 k, __m256i a, __m128i cnt);</string><string>
+</string><string>VPSRAW __m256i _mm256_maskz_sra_epi16( __mmask8 k, __m256i a, __m128i cnt);</string><string>
+</string><string>VPSRAW __m128i _mm_mask_sra_epi16(__m128i s, __mmask8 k, __m128i a, __m128i cnt);</string><string>
+</string><string>VPSRAW __m128i _mm_maskz_sra_epi16( __mmask8 k, __m128i a, __m128i cnt);</string><string>
+</string><string>PSRAW 	__m64 _mm_srai_pi16 (__m64 m, int count)</string><string>
+</string><string>PSRAW 	__m64 _mm_sra_pi16 (__m64 m, __m64 count)</string><string>
+</string><string>(V)PSRAW 	__m128i _mm_srai_epi16(__m128i m, int count)</string><string>
+</string><string>(V)PSRAW 	__m128i _mm_sra_epi16(__m128i m, __m128i count)</string><string>
+</string><string>VPSRAW 	__m256i _mm256_srai_epi16 (__m256i m, int count)</string><string>
+</string><string>VPSRAW 	__m256i _mm256_sra_epi16 (__m256i m, __m128i count)</string><string>
+</string><string>PSRAD 	__m64 _mm_srai_pi32 (__m64 m, int count)</string><string>
+</string><string>PSRAD 	__m64 _mm_sra_pi32 (__m64 m, __m64 count)</string><string>
+</string><string>(V)PSRAD 	__m128i _mm_srai_epi32 (__m128i m, int count)</string><string>
+</string><string>(V)PSRAD 	__m128i _mm_sra_epi32 (__m128i m, __m128i count)</string><string>
+</string><string>VPSRAD 	__m256i _mm256_srai_epi32 (__m256i m, int count)</string><string>
+</string><string>VPSRAD 	__m256i _mm256_sra_epi32 (__m256i m, __m128i count)</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Flags Affected">
+  <para unique="1092381">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Numeric Exceptions">
+  <para unique="1092383">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <itemizedlist><listitem><para unique="1092385">
+     <string>VEX-encoded instructions:</string></para>
+    </listitem>
+   </itemizedlist><para unique="1092388" format="ListEmDash">
+   <string>Syntax with RM/RVM operand encoding (A/C in the operand encoding table), see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  <itemizedlist><listitem><para unique="1092392">
+     <string>Syntax with MI/VMI operand encoding (B/D in the operand encoding table), see </string><link linkend="94725: 06_Table: Table 2-14. Type 7 Class Exception Conditions"><string>Table&#160;2&#8209;24, &#8220;Type 7 Class Exception Conditions.&#8221;</string></link></para>
+    </listitem>
+   </itemizedlist><para unique="1092396" format="ListBulletBig">
+   <string>EVEX-encoded VPSRAW (E in the operand encoding table), see Exceptions Type E4NF.nb in </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  <itemizedlist><listitem><para unique="1092398">
+     <string>EVEX-encoded VPSRAD/Q:</string></para>
+    </listitem>
+   </itemizedlist><para unique="1092399" format="ListEmDash">
+   <string>Syntax with Mem128 tuple type (G in the operand encoding table), see Exceptions Type E4NF.nb in </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  <itemizedlist><listitem><para unique="1092405">
+     <string>Syntax with Full tuple type (F in the operand encoding table), see </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+    </listitem>
+   </itemizedlist></subsection>
+ </instruction>

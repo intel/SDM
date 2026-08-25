@@ -1,0 +1,93 @@
+<instruction name="ENTER">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Make Stack Frame for Procedure Parameters</shortdesc>
+ <longdesc><para unique="1261264">
+   <string>Creates a stack frame (comprising of space for dynamic storage and 1-32 frame pointer storage) for a procedure. The first operand (imm16) specifies the size of the dynamic storage in the stack frame (that is, the number of bytes of dynamically allocated on the stack for the procedure). The second operand (imm8) gives the lexical nesting level (0 to 31) of the procedure. The nesting level (imm8 mod 32) and the OperandSize attribute determine the size in bytes of the storage space for frame pointers.</string></para>
+  <para unique="1261265">
+   <string>The nesting level determines the number of frame pointers that are copied into the &#8220;display area&#8221; of the new stack frame from the preceding frame. The default size of the frame pointer is the StackAddrSize attribute, but can be overridden using the 66H prefix. Thus, the OperandSize attribute determines the size of each frame pointer that will be copied into the stack frame and the data being transferred from SP/ESP/RSP register into the BP/EBP/RBP register.</string></para>
+  <para unique="1261266">
+   <string>The ENTER and companion LEAVE instructions are provided to support block structured languages. The ENTER instruction (when used) is typically the first instruction in a procedure and is used to set up a new stack frame for a procedure. The LEAVE instruction is then used at the end of the procedure (just before the RET instruction) to release the stack frame.</string></para>
+  <para unique="1261267">
+   <string>If the nesting level is 0, the processor pushes the frame pointer from the BP/EBP/RBP register onto the stack, copies the current stack pointer from the SP/ESP/RSP register into the BP/EBP/RBP register, and loads the SP/ESP/RSP register with the current stack-pointer value minus the value in the size operand. For nesting levels of 1 or greater, the processor pushes additional frame pointers on the stack before adjusting the stack pointer. These additional frame pointers provide the called procedure with access points to other nested frames on the stack. See </string><string>&#8220;Procedure Calls for Block-Structured Languages&#8221;</string><string> in </string><link linkend="26958: H1Heading: Chapter 4 Procedure Calls, Interrupts, and Exceptions"><string>Chapter 6</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for more information about the actions of the ENTER instruction.</string></para>
+  <para unique="1261274">
+   <string>The ENTER instruction causes a page fault whenever a write using the final value of the stack pointer (within the current stack segment) would do so.</string></para>
+  <para unique="1261275">
+   <string>In 64-bit mode, default operation size is 64 bits; 32-bit operation size cannot be encoded. Use of 66H prefix changes frame pointer operand size to 16 bits.</string></para>
+  <para unique="1261276">
+   <string>When the 66H prefix is used and causing the OperandSize attribute to be less than the StackAddrSize, software is responsible for the following:</string></para>
+  <itemizedlist><listitem><para unique="1261277">
+     <string>The companion LEAVE instruction must also use the 66H prefix,</string></para>
+    </listitem>
+   <listitem><para unique="1261278">
+     <string>The value in the RBP/EBP register prior to executing &#8220;66H ENTER&#8221; must be within the same 16KByte region of the current stack pointer (RSP/ESP), such that the value of RBP/EBP after &#8220;66H ENTER&#8221; remains a valid address in the stack. This ensures &#8220;66H LEAVE&#8221; can restore 16-bits of data from the stack.</string></para>
+    </listitem>
+   </itemizedlist></longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1261355">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If the new value of the SP or ESP register is outside the stack segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs or if a write using the final value of the stack pointer (within the current stack segment) would cause a page fault.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS</string></term>
+    <listitem><string>If the new value of the SP or ESP register is outside the stack segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If the new value of the SP or ESP register is outside the stack segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs or if a write using the final value of the stack pointer (within the current stack segment) would cause a page fault.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261368" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If the stack address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs or if a write using the final value of the stack pointer (within the current stack segment) would cause a page fault.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

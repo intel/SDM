@@ -1,0 +1,37 @@
+<instruction name="MOVNTPD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Store Packed Double Precision Floating-Point Values Using Non-Temporal Hint</shortdesc>
+ <longdesc><para unique="1091542">
+   <string>Moves the packed double precision floating-point values in the source operand (second operand) to the destination operand (first operand) using a non-temporal hint to prevent caching of the data during the write to memory. The source operand is an XMM register, YMM register or ZMM register, which is assumed to contain packed double preci&#173;sion, floating-pointing data. The destination operand is a 128-bit, 256-bit or 512-bit memory location. The memory operand must be aligned on a 16-byte (128-bit version), 32-byte (VEX.256 encoded version) or 64-byte (EVEX.512 encoded version) boundary otherwise a general-protection exception (#GP) will be generated. </string></para>
+  <para unique="1091543">
+   <string>The non-temporal hint is implemented by using a write combining (WC) memory type protocol when writing the data to memory. Using this protocol, the processor does not write the data into the cache hierarchy, nor does it fetch the corresponding cache line from memory into the cache hierarchy. The memory type of the region being written to can override the non-temporal hint, if the memory address specified for the non-temporal store is in an uncacheable (UC) or write protected (WP) memory region. For more information on non-temporal stores, see &#8220;Caching of Temporal vs. Non-Temporal Data&#8221; in Chapter 10 in the IA-32 Intel Architecture Software Developer&#8217;s Manual, Volume 1.</string></para>
+  <para unique="1091544">
+   <string>Because the WC protocol uses a weakly-ordered memory consistency model, a fencing operation implemented with the SFENCE or MFENCE instruction should be used in conjunction with MOVNTPD instructions if multiple processors might use different memory types to read/write the destination memory locations.</string></para>
+  <para unique="1091545">
+   <string>Note: VEX.vvvv and EVEX.vvvv are reserved and must be 1111b, VEX.L must be 0; otherwise instructions will #UD.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VMOVNTPD void _mm512_stream_pd(double * p, __m512d a);</string><string>
+</string><string>VMOVNTPD void _mm256_stream_pd (double * p, __m256d a);</string><string>
+</string><string>MOVNTPD void _mm_stream_pd (double * p, __m128d a);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1091559">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1091564" format="xIndent1">
+   <string>Non-EVEX-encoded instruction, see Exceptions Type1.SSE2 in </string><link linkend="11555: 06_Table: Table 2-8. Type 1 Class Exception Conditions"><string>Table&#160;2&#8209;18, &#8220;Type 1 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091568" format="xIndent1">
+   <string>EVEX-encoded instruction, see </string><link linkend="41111: 06_Table: Table 2-45. Type E1NF Class Exception Conditions"><string>Table&#160;2&#8209;47, &#8220;Type E1NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091569" format="xIndent1">
+   <string>Additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If VEX.vvvv != 1111B or EVEX.vvvv != 1111B.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

@@ -1,0 +1,1260 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="REP_MOVSB_1" xed_iform="REP_MOVSB" encoding="F2 A4" opcode="a4" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Is_Zero</callee>
+   <callee>Std::Bits::Subtract_int</callee>
+   <callee>Get_Repeat_String_Stride</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_RCX</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <callee>RCX</callee>
+   <callee>RDI</callee>
+   <callee>RSI</callee>
+   <var-used>False</var-used>
+   <var-used>Repeat_String_Operation</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not (not context.rex2_prefix_present) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let count := Unsigned(RCX[0 +: address_size]);</code>
+     <code>if count == 0 then</code>
+     <code>    Repeat_String_Operation := False;</code>
+     <code>else</code>
+     <code>    let stride := Get_Repeat_String_Stride(operand_size, count);</code>
+     <code>    for i := 0 to stride - 1 do</code>
+     <code>        Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     <code>        Write_RCX(RCX - 1);</code>
+     <code>    end;</code>
+     <code>endif;</code>
+     <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="REP MOVSB">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="8"/>
+   </iform>
+  </iform-group>
+ <operation name="MOV_STRING" variant_kind="Standard variant" mnemonic="REP_MOVSB">
+  <code>let effective_segment1 := Get_Effective_Segment(context, DS);</code>
+  <code>let effective_segment2 := if In_64Bit_Mode() then Null_Segment(ES) else ES;</code>
+  <code></code>
+  <code>let effective_address1 := Zero_Extend(RSI[0 +: address_size], 64);</code>
+  <code>let effective_address2 := Zero_Extend(RDI[0 +: address_size], 64);</code>
+  <code></code>
+  <code>let data := Logical_Mem_Read?(effective_segment1, effective_address1, operand_size);</code>
+  <code>Logical_Mem_Write?(effective_segment2, effective_address2, data);</code>
+  <code></code>
+  <code>let size_in_bytes := operand_size / 8;</code>
+  <code>let address_increment := if RFLAGS.DF == 0b0 then size_in_bytes else -size_in_bytes;</code>
+  <code>Write_RSI(RSI[0 +: address_size] + address_increment);</code>
+  <code>Write_RDI(RDI[0 +: address_size] + address_increment);</code>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Negate</callee>
+  <callee>Std::Integer::Positive_Divide</callee>
+  <callee>Std::Bits::Add_int</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Zero_Extend</callee>
+  <callee>Null_Segment</callee>
+  <callee>Get_Effective_Segment</callee>
+  <callee>In_64Bit_Mode</callee>
+  <callee>Logical_Mem_Read</callee>
+  <callee>Logical_Mem_Write</callee>
+  <callee>Write_RDI</callee>
+  <callee>Write_RSI</callee>
+  <callee>RDI</callee>
+  <callee>RSI</callee>
+  <var-used>False</var-used>
+  <var-used>RFLAGS</var-used>
+  <var-used>Memory_Read</var-used>
+  <var-used>Normal_Alignment</var-used>
+  <var-used>Memory_Type_Unknown</var-used>
+  <var-used>DS</var-used>
+  <var-used>ES</var-used>
+  <other-copy>MOVSD</other-copy>
+  </operation>
+ <iform-group>
+  <iform name="REP_MOVSB_0" xed_iform="REP_MOVSB" encoding="F3 A4" opcode="a4" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Is_Zero</callee>
+   <callee>Std::Bits::Subtract_int</callee>
+   <callee>Get_Repeat_String_Stride</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_RCX</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <callee>RCX</callee>
+   <callee>RDI</callee>
+   <callee>RSI</callee>
+   <var-used>False</var-used>
+   <var-used>Repeat_String_Operation</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not (not context.rex2_prefix_present) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let count := Unsigned(RCX[0 +: address_size]);</code>
+     <code>if count == 0 then</code>
+     <code>    Repeat_String_Operation := False;</code>
+     <code>else</code>
+     <code>    let stride := Get_Repeat_String_Stride(operand_size, count);</code>
+     <code>    for i := 0 to stride - 1 do</code>
+     <code>        Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     <code>        Write_RCX(RCX - 1);</code>
+     <code>    end;</code>
+     <code>endif;</code>
+     <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="REP MOVSB">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="8"/>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="REP_MOVSD_3" xed_iform="REP_MOVSD" encoding="F2 A5" opcode="a5" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Is_Zero</callee>
+   <callee>Std::Bits::Subtract_int</callee>
+   <callee>Get_Repeat_String_Stride</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_RCX</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <callee>RCX</callee>
+   <callee>RDI</callee>
+   <callee>RSI</callee>
+   <var-used>False</var-used>
+   <var-used>Repeat_String_Operation</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let count := Unsigned(RCX[0 +: address_size]);</code>
+     <code>if count == 0 then</code>
+     <code>    Repeat_String_Operation := False;</code>
+     <code>else</code>
+     <code>    let stride := Get_Repeat_String_Stride(operand_size, count);</code>
+     <code>    for i := 0 to stride - 1 do</code>
+     <code>        Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     <code>        Write_RCX(RCX - 1);</code>
+     <code>    end;</code>
+     <code>endif;</code>
+     <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="REP MOVSD">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="32"/>
+   </iform>
+  <iform name="REP_MOVSD_4" xed_iform="REP_MOVSD" encoding="F2 A5" opcode="a5" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Is_Zero</callee>
+   <callee>Std::Bits::Subtract_int</callee>
+   <callee>Get_Repeat_String_Stride</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_RCX</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <callee>RCX</callee>
+   <callee>RDI</callee>
+   <callee>RSI</callee>
+   <var-used>False</var-used>
+   <var-used>Repeat_String_Operation</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let count := Unsigned(RCX[0 +: address_size]);</code>
+     <code>if count == 0 then</code>
+     <code>    Repeat_String_Operation := False;</code>
+     <code>else</code>
+     <code>    let stride := Get_Repeat_String_Stride(operand_size, count);</code>
+     <code>    for i := 0 to stride - 1 do</code>
+     <code>        Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     <code>        Write_RCX(RCX - 1);</code>
+     <code>    end;</code>
+     <code>endif;</code>
+     <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="REP MOVSD">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="32"/>
+   </iform>
+  <iform name="REP_MOVSD_5" xed_iform="REP_MOVSD" encoding="F2 A5" opcode="a5" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Is_Zero</callee>
+   <callee>Std::Bits::Subtract_int</callee>
+   <callee>Get_Repeat_String_Stride</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_RCX</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <callee>RCX</callee>
+   <callee>RDI</callee>
+   <callee>RSI</callee>
+   <var-used>False</var-used>
+   <var-used>Repeat_String_Operation</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not (not context.rex2_prefix_present) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let count := Unsigned(RCX[0 +: address_size]);</code>
+     <code>if count == 0 then</code>
+     <code>    Repeat_String_Operation := False;</code>
+     <code>else</code>
+     <code>    let stride := Get_Repeat_String_Stride(operand_size, count);</code>
+     <code>    for i := 0 to stride - 1 do</code>
+     <code>        Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     <code>        Write_RCX(RCX - 1);</code>
+     <code>    end;</code>
+     <code>endif;</code>
+     <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="REP MOVSD">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="32"/>
+   </iform>
+  <iform name="REP_MOVSQ_1" xed_iform="REP_MOVSQ" encoding="F2 A5" opcode="a5" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Is_Zero</callee>
+   <callee>Std::Bits::Subtract_int</callee>
+   <callee>Get_Repeat_String_Stride</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_RCX</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <callee>RCX</callee>
+   <callee>RDI</callee>
+   <callee>RSI</callee>
+   <var-used>False</var-used>
+   <var-used>Repeat_String_Operation</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not (not context.rex2_prefix_present) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let count := Unsigned(RCX[0 +: address_size]);</code>
+     <code>if count == 0 then</code>
+     <code>    Repeat_String_Operation := False;</code>
+     <code>else</code>
+     <code>    let stride := Get_Repeat_String_Stride(operand_size, count);</code>
+     <code>    for i := 0 to stride - 1 do</code>
+     <code>        Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     <code>        Write_RCX(RCX - 1);</code>
+     <code>    end;</code>
+     <code>endif;</code>
+     <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="REP MOVSQ">
+    </assembly-syntax>
+   <cpuid-group name="LONGMODE"><cpuid-flag>INTEL64</cpuid-flag></cpuid-group>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="64"/>
+   </iform>
+  <iform name="REP_MOVSW_3" xed_iform="REP_MOVSW" encoding="F2 A5" opcode="a5" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Is_Zero</callee>
+   <callee>Std::Bits::Subtract_int</callee>
+   <callee>Get_Repeat_String_Stride</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_RCX</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <callee>RCX</callee>
+   <callee>RDI</callee>
+   <callee>RSI</callee>
+   <var-used>False</var-used>
+   <var-used>Repeat_String_Operation</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 16;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let count := Unsigned(RCX[0 +: address_size]);</code>
+     <code>if count == 0 then</code>
+     <code>    Repeat_String_Operation := False;</code>
+     <code>else</code>
+     <code>    let stride := Get_Repeat_String_Stride(operand_size, count);</code>
+     <code>    for i := 0 to stride - 1 do</code>
+     <code>        Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     <code>        Write_RCX(RCX - 1);</code>
+     <code>    end;</code>
+     <code>endif;</code>
+     <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="REP MOVSW">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="16"/>
+   </iform>
+  <iform name="REP_MOVSW_4" xed_iform="REP_MOVSW" encoding="F2 A5" opcode="a5" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Is_Zero</callee>
+   <callee>Std::Bits::Subtract_int</callee>
+   <callee>Get_Repeat_String_Stride</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_RCX</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <callee>RCX</callee>
+   <callee>RDI</callee>
+   <callee>RSI</callee>
+   <var-used>False</var-used>
+   <var-used>Repeat_String_Operation</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 16;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let count := Unsigned(RCX[0 +: address_size]);</code>
+     <code>if count == 0 then</code>
+     <code>    Repeat_String_Operation := False;</code>
+     <code>else</code>
+     <code>    let stride := Get_Repeat_String_Stride(operand_size, count);</code>
+     <code>    for i := 0 to stride - 1 do</code>
+     <code>        Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     <code>        Write_RCX(RCX - 1);</code>
+     <code>    end;</code>
+     <code>endif;</code>
+     <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="REP MOVSW">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="16"/>
+   </iform>
+  <iform name="REP_MOVSW_5" xed_iform="REP_MOVSW" encoding="F2 A5" opcode="a5" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Is_Zero</callee>
+   <callee>Std::Bits::Subtract_int</callee>
+   <callee>Get_Repeat_String_Stride</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_RCX</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <callee>RCX</callee>
+   <callee>RDI</callee>
+   <callee>RSI</callee>
+   <var-used>False</var-used>
+   <var-used>Repeat_String_Operation</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 16;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not (not context.rex2_prefix_present) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let count := Unsigned(RCX[0 +: address_size]);</code>
+     <code>if count == 0 then</code>
+     <code>    Repeat_String_Operation := False;</code>
+     <code>else</code>
+     <code>    let stride := Get_Repeat_String_Stride(operand_size, count);</code>
+     <code>    for i := 0 to stride - 1 do</code>
+     <code>        Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     <code>        Write_RCX(RCX - 1);</code>
+     <code>    end;</code>
+     <code>endif;</code>
+     <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="REP MOVSW">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="16"/>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="REP_MOVSD_0" xed_iform="REP_MOVSD" encoding="F3 A5" opcode="a5" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Is_Zero</callee>
+   <callee>Std::Bits::Subtract_int</callee>
+   <callee>Get_Repeat_String_Stride</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_RCX</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <callee>RCX</callee>
+   <callee>RDI</callee>
+   <callee>RSI</callee>
+   <var-used>False</var-used>
+   <var-used>Repeat_String_Operation</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let count := Unsigned(RCX[0 +: address_size]);</code>
+     <code>if count == 0 then</code>
+     <code>    Repeat_String_Operation := False;</code>
+     <code>else</code>
+     <code>    let stride := Get_Repeat_String_Stride(operand_size, count);</code>
+     <code>    for i := 0 to stride - 1 do</code>
+     <code>        Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     <code>        Write_RCX(RCX - 1);</code>
+     <code>    end;</code>
+     <code>endif;</code>
+     <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="REP MOVSD">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="32"/>
+   </iform>
+  <iform name="REP_MOVSD_1" xed_iform="REP_MOVSD" encoding="F3 A5" opcode="a5" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Is_Zero</callee>
+   <callee>Std::Bits::Subtract_int</callee>
+   <callee>Get_Repeat_String_Stride</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_RCX</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <callee>RCX</callee>
+   <callee>RDI</callee>
+   <callee>RSI</callee>
+   <var-used>False</var-used>
+   <var-used>Repeat_String_Operation</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let count := Unsigned(RCX[0 +: address_size]);</code>
+     <code>if count == 0 then</code>
+     <code>    Repeat_String_Operation := False;</code>
+     <code>else</code>
+     <code>    let stride := Get_Repeat_String_Stride(operand_size, count);</code>
+     <code>    for i := 0 to stride - 1 do</code>
+     <code>        Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     <code>        Write_RCX(RCX - 1);</code>
+     <code>    end;</code>
+     <code>endif;</code>
+     <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="REP MOVSD">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="32"/>
+   </iform>
+  <iform name="REP_MOVSD_2" xed_iform="REP_MOVSD" encoding="F3 A5" opcode="a5" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Is_Zero</callee>
+   <callee>Std::Bits::Subtract_int</callee>
+   <callee>Get_Repeat_String_Stride</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_RCX</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <callee>RCX</callee>
+   <callee>RDI</callee>
+   <callee>RSI</callee>
+   <var-used>False</var-used>
+   <var-used>Repeat_String_Operation</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not (not context.rex2_prefix_present) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let count := Unsigned(RCX[0 +: address_size]);</code>
+     <code>if count == 0 then</code>
+     <code>    Repeat_String_Operation := False;</code>
+     <code>else</code>
+     <code>    let stride := Get_Repeat_String_Stride(operand_size, count);</code>
+     <code>    for i := 0 to stride - 1 do</code>
+     <code>        Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     <code>        Write_RCX(RCX - 1);</code>
+     <code>    end;</code>
+     <code>endif;</code>
+     <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="REP MOVSD">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="32"/>
+   </iform>
+  <iform name="REP_MOVSQ_0" xed_iform="REP_MOVSQ" encoding="F3 A5" opcode="a5" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Is_Zero</callee>
+   <callee>Std::Bits::Subtract_int</callee>
+   <callee>Get_Repeat_String_Stride</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_RCX</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <callee>RCX</callee>
+   <callee>RDI</callee>
+   <callee>RSI</callee>
+   <var-used>False</var-used>
+   <var-used>Repeat_String_Operation</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not (not context.rex2_prefix_present) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let count := Unsigned(RCX[0 +: address_size]);</code>
+     <code>if count == 0 then</code>
+     <code>    Repeat_String_Operation := False;</code>
+     <code>else</code>
+     <code>    let stride := Get_Repeat_String_Stride(operand_size, count);</code>
+     <code>    for i := 0 to stride - 1 do</code>
+     <code>        Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     <code>        Write_RCX(RCX - 1);</code>
+     <code>    end;</code>
+     <code>endif;</code>
+     <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="REP MOVSQ">
+    </assembly-syntax>
+   <cpuid-group name="LONGMODE"><cpuid-flag>INTEL64</cpuid-flag></cpuid-group>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="64"/>
+   </iform>
+  <iform name="REP_MOVSW_0" xed_iform="REP_MOVSW" encoding="F3 A5" opcode="a5" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Is_Zero</callee>
+   <callee>Std::Bits::Subtract_int</callee>
+   <callee>Get_Repeat_String_Stride</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_RCX</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <callee>RCX</callee>
+   <callee>RDI</callee>
+   <callee>RSI</callee>
+   <var-used>False</var-used>
+   <var-used>Repeat_String_Operation</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 16;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let count := Unsigned(RCX[0 +: address_size]);</code>
+     <code>if count == 0 then</code>
+     <code>    Repeat_String_Operation := False;</code>
+     <code>else</code>
+     <code>    let stride := Get_Repeat_String_Stride(operand_size, count);</code>
+     <code>    for i := 0 to stride - 1 do</code>
+     <code>        Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     <code>        Write_RCX(RCX - 1);</code>
+     <code>    end;</code>
+     <code>endif;</code>
+     <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="REP MOVSW">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="16"/>
+   </iform>
+  <iform name="REP_MOVSW_1" xed_iform="REP_MOVSW" encoding="F3 A5" opcode="a5" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Is_Zero</callee>
+   <callee>Std::Bits::Subtract_int</callee>
+   <callee>Get_Repeat_String_Stride</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_RCX</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <callee>RCX</callee>
+   <callee>RDI</callee>
+   <callee>RSI</callee>
+   <var-used>False</var-used>
+   <var-used>Repeat_String_Operation</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 16;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let count := Unsigned(RCX[0 +: address_size]);</code>
+     <code>if count == 0 then</code>
+     <code>    Repeat_String_Operation := False;</code>
+     <code>else</code>
+     <code>    let stride := Get_Repeat_String_Stride(operand_size, count);</code>
+     <code>    for i := 0 to stride - 1 do</code>
+     <code>        Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     <code>        Write_RCX(RCX - 1);</code>
+     <code>    end;</code>
+     <code>endif;</code>
+     <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="REP MOVSW">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="16"/>
+   </iform>
+  <iform name="REP_MOVSW_2" xed_iform="REP_MOVSW" encoding="F3 A5" opcode="a5" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Is_Zero</callee>
+   <callee>Std::Bits::Subtract_int</callee>
+   <callee>Get_Repeat_String_Stride</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_RCX</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <callee>RCX</callee>
+   <callee>RDI</callee>
+   <callee>RSI</callee>
+   <var-used>False</var-used>
+   <var-used>Repeat_String_Operation</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 16;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not (not context.rex2_prefix_present) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let count := Unsigned(RCX[0 +: address_size]);</code>
+     <code>if count == 0 then</code>
+     <code>    Repeat_String_Operation := False;</code>
+     <code>else</code>
+     <code>    let stride := Get_Repeat_String_Stride(operand_size, count);</code>
+     <code>    for i := 0 to stride - 1 do</code>
+     <code>        Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     <code>        Write_RCX(RCX - 1);</code>
+     <code>    end;</code>
+     <code>endif;</code>
+     <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="REP MOVSW">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="16"/>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="MOVSB" xed_iform="MOVSB" encoding="NFx A4" opcode="a4" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not (not context.rex2_prefix_present) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>REP_Not0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOVSB">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="8"/>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="MOVSD_0" xed_iform="MOVSD" encoding="NFx A5" opcode="a5" valid32="V" valid64="V">
+   <callee>Std::Integer::Ne</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>REP_Not0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOVSD">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="32"/>
+   </iform>
+  <iform name="MOVSQ" xed_iform="MOVSQ" encoding="NFx A5" opcode="a5" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 64;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not (not context.rex2_prefix_present) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>REP_Not0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOVSQ">
+    </assembly-syntax>
+   <cpuid-group name="LONGMODE"><cpuid-flag>INTEL64</cpuid-flag></cpuid-group>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="64"/>
+   </iform>
+  <iform name="MOVSW_1" xed_iform="MOVSW" encoding="NFx A5" opcode="a5" valid32="V" valid64="V">
+   <callee>Std::Integer::Ne</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 16;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>REP_Not0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOVSW">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="16"/>
+   </iform>
+  <iform name="MOVSW_2" xed_iform="MOVSW" encoding="NFx A5" opcode="a5" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 16;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not (not context.rex2_prefix_present) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>REP_Not0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOVSW">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="16"/>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="MOVSD_1" xed_iform="MOVSD" encoding="NP A5" opcode="a5" valid32="V" valid64="V">
+   <callee>Std::Integer::Ne</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>REP_Not0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOVSD">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="32"/>
+   </iform>
+  <iform name="MOVSD_2" xed_iform="MOVSD" encoding="NP A5" opcode="a5" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 32;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not (not context.rex2_prefix_present) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>REP_Not0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOVSD">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="32"/>
+   </iform>
+  <iform name="MOVSW_0" xed_iform="MOVSW" encoding="NP A5" opcode="a5" valid32="V" valid64="V">
+   <callee>Std::Integer::Ne</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_MOV_STRING</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 16;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>REP_Not0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_MOV_STRING?(address_size, operand_size, context);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOVSW">
+    </assembly-syntax>
+   <encoding-size name="address_size" size="16/32/64"/>
+   <encoding-size name="operand_size" size="16"/>
+   </iform>
+  </iform-group>
+ <category>string</category>
+ <size name="address_size"/>
+ <size name="operand_size"/>
+ </instruction>

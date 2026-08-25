@@ -1,0 +1,166 @@
+<instruction name="ENQCMD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Enqueue Command</shortdesc>
+ <longdesc><para unique="1261247">
+   <string>The ENQCMD instruction allows software to write commands to </string><bold><string>enqueue registers</string></bold><string>, which are special device registers accessed using memory-mapped I/O (MMIO).</string></para>
+  <para unique="1261248">
+   <string>Enqueue registers expect writes to have the following format:</string></para>
+  <table>
+   <caption>Figure 3-11.  64-Byte Data Written to Enqueue Registers</caption>
+   <colgroup><col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <td><svg width="1440" height="43.25" viewBox="0 0 1440 43.25" name="undefined" shortdesc="64-Byte Data Written to Enqueue Registers">
+       <defs><marker id="arrow" viewBox="0 0 10 6" refX="7" refY="3" markerWidth="10" markerHeight="6" style="fill: dimgray;" orient="auto-start-reverse"><path d="M 0 0 L 10 3 L 0 6 L 2 3 z"/></marker></defs>
+       <rect x="0" y="8.25" width="480" height="15" fill="whitesmoke" stroke="dimgray"/>
+       <text x="240" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">DEVICE SPECIFIC COMMAND</text>
+       <line x1="0" y1="8.25" x2="0" y2="0" stroke="gray"/><line x1="480" y1="8.25" x2="480" y2="0" stroke="gray"/><text x="2" y="6.25" font-family="Verdana" font-size="7.5" fill="gray">511</text>
+       <text x="478" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="end">32</text>
+       <rect x="480" y="8.25" width="30" height="15" fill="whitesmoke" stroke="dimgray"/>
+       <text x="495" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">PRIV</text>
+       <line x1="480" y1="8.25" x2="480" y2="0" stroke="gray"/><line x1="510" y1="8.25" x2="510" y2="0" stroke="gray"/><text x="495" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="middle">31</text>
+       <rect x="510" y="8.25" width="330" height="15" fill="lightgray" stroke="dimgray"/>
+       <text x="675" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">Reserved</text>
+       <line x1="510" y1="8.25" x2="510" y2="0" stroke="gray"/><line x1="840" y1="8.25" x2="840" y2="0" stroke="gray"/><text x="512" y="6.25" font-family="Verdana" font-size="7.5" fill="gray">30</text>
+       <text x="838" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="end">20</text>
+       <rect x="840" y="8.25" width="600" height="15" fill="whitesmoke" stroke="dimgray"/>
+       <text x="1140" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">PASID</text>
+       <line x1="840" y1="8.25" x2="840" y2="0" stroke="gray"/><line x1="1440" y1="8.25" x2="1440" y2="0" stroke="gray"/><text x="842" y="6.25" font-family="Verdana" font-size="7.5" fill="gray">19</text>
+       <text x="1438" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="end">0</text>
+       <text x="-5" y="8.25" font-family="Verdana" font-size="9.9" fill="black"><tspan x="-5" dy="11.88" font-family="Verdana" text-anchor="start"/></text>
+       </svg></td>
+     </tr>
+    </tbody>
+   </table>
+  <para unique="1261259">
+   <string>Bits&#160;19:0 convey the process address space identifier (PASID), a value which system software may assign to indi&#173;vidual software threads. Bit&#160;31 contains privilege identification (0&#160;= user; 1&#160;= supervisor). Devices implementing enqueue registers may use these two values along with a device-specific command in the upper 60 bytes.</string></para>
+  <para unique="1261260">
+   <string>The ENQCMD instruction begins by reading 64 bytes of command data from its source memory operand. This is an ordinary load with cacheability and memory ordering implied normally by the memory type. The source operand need not be aligned, and there is no guarantee that all 64 bytes are loaded atomically. Bits 31:0 of the source operand must be zero.</string></para>
+  <para unique="1261261">
+   <string>The instruction then formats those 64 bytes into </string><bold><string>command data</string></bold><string> with a format consistent with that given in </string><link linkend="96818: 05_FigureFrame: Figure 2-1. 64-Byte Data Written to Enqueue Registers"><string>Figure&#160;3&#8209;11</string></link><string>:</string></para>
+  <itemizedlist><listitem><para unique="1261268">
+     <string>Command[19:0] get IA32_PASID[19:0].</string><footnote><para unique="1261267">
+       <string>It is expected that system software will load the IA32_PASID MSR so that bits 19:0 contain the PASID of the current soft&#173;ware thread. The MSR&#8217;s valid bit, IA32_PASID[31], must be 1. For additional details on the IA32_PASID MSR, see the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 4.</string></para>
+      </footnote></para>
+    </listitem>
+   <listitem><para unique="1261269">
+     <string>Command[30:20] are zero.</string></para>
+    </listitem>
+   <listitem><para unique="1261270">
+     <string>Command[31] is 0 (indicating user; this value is used regardless of CPL).</string></para>
+    </listitem>
+   <listitem><para unique="1261271">
+     <string>Command[511:32] get bits&#160;511:32 of the source operand that was read from memory.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1261272" format="xIndent1">
+   <string>The ENQCMD instruction uses an </string><bold><string>enqueue store</string></bold><string> (defined below) to write this command data to the destination operand. The address of the destination operand is specified in a general-purpose register as an offset into the ES segment (the segment cannot be overridden).</string><footnote><para unique="1261275">
+     <string>In 64-bit mode, the width of the register operand is 64 bits (32 bits with a 67H prefix). Outside 64-bit mode when CS.D = 1, the width is 32 bits (16 bits with a 67H prefix). Outside 64-bit mode when CS.D=0, the width is 16 bits (32 bits with a 67H prefix).</string></para>
+    </footnote><string> The destination linear address must be 64-byte aligned. The oper&#173;ation of an enqueue store disregards the memory type of the destination memory address.</string></para>
+  <para unique="1261276">
+   <string>An enqueue store is not ordered relative to older stores to WB or WC memory (including non-temporal stores) or to executions of the CLFLUSHOPT or CLWB (when applied to addresses other than that of the enqueue store). Soft&#173;ware can enforce such ordering by executing a fencing instruction such as SFENCE or MFENCE before the enqueue store.</string></para>
+  <para unique="1261277">
+   <string>An enqueue store does not write the data into the cache hierarchy, nor does it fetch any data into the cache hier&#173;archy. An enqueue store&#8217;s command data is never combined with that of any other store to the same address.</string></para>
+  <para unique="1261278">
+   <string>Unlike other stores, an enqueue store returns a status, which the ENQCMD instruction loads into the ZF flag in the RFLAGS register:</string></para>
+  <itemizedlist><listitem><para unique="1261279">
+     <string>ZF&#160;= 0 (success) reports that the 64-byte command data was written atomically to a device&#8217;s enqueue register and has been accepted by the device. (It does not guarantee that the device has acted on the command; it may have queued it for later execution.)</string></para>
+    </listitem>
+   <listitem><para unique="1261280">
+     <string>ZF&#160;= 1 (retry) reports that the command data was not accepted. This status is returned if the destination address is an enqueue register but the command was not accepted due to capacity or other temporal reasons. This status is also returned if the destination address was not an enqueue register (including the case of a memory address); in these cases, the store is dropped and is written neither to MMIO nor to memory.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1261281">
+   <string>Availability of the ENQCMD instruction is indicated by the presence of the CPUID feature flag ENQCMD (CPUID.07H.00H:ECX[29]).</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>ENQCMD int_enqcmd(void *dst, const void *src)</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Flags Affected">
+  <para unique="1261292">
+   <string>The ZF flag is set if the enqueue-store completion returns the retry status; otherwise it is cleared. All other flags are cleared.</string></para>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1261294">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0) </string></term>
+    <listitem><string>For an illegal memory operand effective address in the CS, DS, ES, FS or GS segments.</string></listitem>
+    <listitem><string>If destination linear address is not aligned to a 64-byte boundary.</string></listitem>
+    <listitem><string>If the PASID Valid field (bit 31) is 0 in IA32_PASID MSR.</string></listitem>
+    <listitem><string>If bits 31:0 of the source operand are not all zero.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0) </string></term>
+    <listitem><string>For an illegal address in the SS segment.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code) </string></term>
+    <listitem><string>For a page fault.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If CPUID.07H.00H:ECX.ENQCMD[29] = 0.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP </string></term>
+    <listitem><string>If any part of the operand lies outside the effective address space from 0 to FFFFH.</string></listitem>
+    <listitem><string>If destination linear address is not aligned to a 64-byte boundary.</string></listitem>
+    <listitem><string>If the PASID Valid field (bit 31) is 0 in IA32_PASID MSR.</string></listitem>
+    <listitem><string>If bits 31:0 of the source operand are not all zero.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If CPUID.07H.00H:ECX.ENQCMD[29] = 0.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <para unique="1261312" format="xIndent1">
+   <string>Same exceptions as in real-address mode. Additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#PF(fault-code) </string></term>
+    <listitem><string>For a page fault.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261315" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0) </string></term>
+    <listitem><string>If a memory address referencing the SS segment is in non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0) </string></term>
+    <listitem><string>If the memory address is in non-canonical form.</string></listitem>
+    <listitem><string>If destination linear address is not aligned to a 64-byte boundary.</string></listitem>
+    <listitem><string>If the PASID Valid field (bit 31) is 0 in IA32_PASID MSR.</string></listitem>
+    <listitem><string>If bits 31:0 of the source operand are not all zero.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code) </string></term>
+    <listitem><string>For a page fault.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If CPUID.07H.00H:ECX.ENQCMD[29].</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

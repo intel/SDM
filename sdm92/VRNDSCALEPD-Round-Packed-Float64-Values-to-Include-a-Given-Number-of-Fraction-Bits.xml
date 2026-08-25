@@ -1,0 +1,137 @@
+<instruction name="VRNDSCALEPD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Round Packed Float64 Values to Include a Given Number of Fraction Bits</shortdesc>
+ <longdesc><para unique="1046173">
+   <string>Round the double precision floating-point values in the source operand by the rounding mode specified in the immediate operand (see </string><link linkend="68758: 05_FigureFrame: Figure 5-42. Imm8 Controls for VRNDSCALEPD/SD/PS/SS"><string>Figure&#160;5&#8209;29</string></link><string>) and places the result in the destination operand.</string></para>
+  <para unique="1046177">
+   <string>The destination operand (the first operand) is a ZMM/YMM/XMM register conditionally updated according to the writemask. The source operand (the second operand) can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location, or a 512/256/128-bit vector broadcasted from a 64-bit memory location.</string></para>
+  <para unique="1046178">
+   <string>The rounding process rounds the input to an integral value, plus number bits of fraction that are specified by imm8[7:4] (to be included in the result) and returns the result as a double precision floating-point value.</string></para>
+  <para unique="1046179">
+   <string>It should be noticed that no overflow is induced while executing this instruction (although the source is scaled by the imm8[7:4] value).</string></para>
+  <para unique="1046180">
+   <string>The immediate operand also specifies control fields for the rounding operation, three bit fields are defined and shown in the &#8220;Immediate Control Description&#8221; figure below. Bit 3 of the immediate byte controls the processor behavior for a precision exception, bit 2 selects the source of rounding mode control. Bits 1:0 specify a non-sticky rounding-mode value (immediate control table below lists the encoded values for rounding-mode field).</string></para>
+  <para unique="1046181">
+   <string>The Precision Floating-Point Exception is signaled according to the immediate operand. If any source operand is an SNaN then it will be converted to a QNaN. If DAZ is set to &#8216;1 then denormals will be converted to zero before rounding. </string></para>
+  <para unique="1046182">
+   <string>The sign of the result of this instruction is preserved, including the sign of zero.</string></para>
+  <para unique="1046183">
+   <string>The formula of the operation on each data element for VRNDSCALEPD is</string></para>
+  <para unique="1046184" format="ListBulletCONT">
+   <string>ROUND(x) = 2</string><superscript><string>-M</string></superscript><string>*Round_to_INT(x*2</string><superscript><string>M</string></superscript><string>, round_ctrl), </string></para>
+  <para unique="1046185" format="ListBulletCONT">
+   <string>round_ctrl = imm[3:0];</string></para>
+  <para unique="1046186" format="ListBulletCONT">
+   <string>M=imm[7:4];</string></para>
+  <para unique="1046187">
+   <string>The operation of x*2</string><superscript><string>M</string></superscript><string> is computed as if the exponent range is unlimited (i.e., no overflow ever occurs).</string></para>
+  <para unique="1046188">
+   <string>VRNDSCALEPD is a more general form of the VEX-encoded VROUNDPD instruction. In VROUNDPD, the formula of the operation on each element is</string></para>
+  <para unique="1046189" format="ListBulletCONT">
+   <string>ROUND(x) = Round_to_INT(x, round_ctrl), </string></para>
+  <para unique="1046190" format="ListBulletCONT">
+   <string>round_ctrl = imm[3:0];</string></para>
+  <para unique="1046192">
+   <string>Note: EVEX.vvvv is reserved and must be 1111b, otherwise instructions will #UD.</string></para>
+  <table>
+   <caption>Figure 5-29.  Imm8 Controls for VRNDSCALEPD/SD/PS/SS</caption>
+   <colgroup><col width="515.33352pt"/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <td><svg width="835.1737060546875" height="143.65" viewBox="0 0 835.1737060546875 143.65" name="imm8" shortdesc="Imm8 Controls for VRNDSCALEPD/SD/PS/SS">
+       <defs><marker id="arrow" viewBox="0 0 10 6" refX="7" refY="3" markerWidth="10" markerHeight="6" style="fill: dimgray;" orient="auto-start-reverse"><path d="M 0 0 L 10 3 L 0 6 L 2 3 z"/></marker></defs>
+       <rect x="111.27301502227783" y="8.25" width="320" height="15" fill="whitesmoke" stroke="dimgray"/>
+       <text x="271.27301502227783" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">Fixed Point Length</text>
+       <line x1="111.27301502227783" y1="8.25" x2="111.27301502227783" y2="0" stroke="gray"/><line x1="431.27301502227783" y1="8.25" x2="431.27301502227783" y2="0" stroke="gray"/><text x="113.27301502227783" y="6.25" font-family="Verdana" font-size="7.5" fill="gray">7</text>
+       <text x="429.27301502227783" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="end">4</text>
+       <rect x="431.27301502227783" y="8.25" width="80" height="15" fill="whitesmoke" stroke="dimgray"/>
+       <text x="471.27301502227783" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">SPE</text>
+       <line x1="431.27301502227783" y1="8.25" x2="431.27301502227783" y2="0" stroke="gray"/><line x1="511.27301502227783" y1="8.25" x2="511.27301502227783" y2="0" stroke="gray"/><text x="471.27301502227783" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="middle">3</text>
+       <rect x="511.27301502227783" y="8.25" width="80" height="15" fill="whitesmoke" stroke="dimgray"/>
+       <text x="551.2730150222778" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">RS</text>
+       <line x1="511.27301502227783" y1="8.25" x2="511.27301502227783" y2="0" stroke="gray"/><line x1="591.2730150222778" y1="8.25" x2="591.2730150222778" y2="0" stroke="gray"/><text x="551.2730150222778" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="middle">2</text>
+       <rect x="591.2730150222778" y="8.25" width="160" height="15" fill="whitesmoke" stroke="dimgray"/>
+       <text x="671.2730150222778" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">RC</text>
+       <line x1="591.2730150222778" y1="8.25" x2="591.2730150222778" y2="0" stroke="gray"/><line x1="751.2730150222778" y1="8.25" x2="751.2730150222778" y2="0" stroke="gray"/><text x="593.2730150222778" y="6.25" font-family="Verdana" font-size="7.5" fill="gray">1</text>
+       <text x="749.2730150222778" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="end">0</text>
+       <text x="77.90069103240967" y="8.25" font-family="Verdana" font-size="9.9" fill="black"><tspan x="77.90069103240967" dy="11.88" font-family="Verdana" text-anchor="start">imm8</tspan></text>
+       <text x="36.372323989868164" y="53" font-family="Verdana" font-size="9.9" fill="black"><tspan x="36.372323989868164" dy="11.88" font-family="Verdana" text-anchor="start">Fixed Point Length</tspan><tspan x="36.372323989868164" dy="11.88" font-family="Verdana" text-anchor="start">Number of fixed points to preserve</tspan></text>
+       <text x="226.20566749572754" y="53" font-family="Verdana" font-size="9.9" fill="black"><tspan x="226.20566749572754" dy="11.88" font-family="Verdana" text-anchor="start">Suppress Precision Exceptions (SPE)</tspan><tspan x="226.20566749572754" dy="11.88" font-family="Verdana" text-anchor="start">imm8[3] = 0b0 : Use MXCSR exception mask</tspan><tspan x="226.20566749572754" dy="11.88" font-family="Verdana" text-anchor="start">imm8[3] = 0b1 : Suppress</tspan></text>
+       <text x="473.2960147857666" y="53" font-family="Verdana" font-size="9.9" fill="black"><tspan x="473.2960147857666" dy="11.88" font-family="Verdana" text-anchor="start">Round Select (RS)</tspan><tspan x="473.2960147857666" dy="11.88" font-family="Verdana" text-anchor="start">imm8[2] = 0b0 : Use imm8[1:0]</tspan><tspan x="473.2960147857666" dy="11.88" font-family="Verdana" text-anchor="start">imm8[2] = 0b1 : Use MXCSR</tspan></text>
+       <text x="657.2293491363525" y="53" font-family="Verdana" font-size="9.9" fill="black"><tspan x="657.2293491363525" dy="11.88" font-family="Verdana" text-anchor="start">Round Control Override (RC)</tspan><tspan x="657.2293491363525" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b00 : Round nearest even</tspan><tspan x="657.2293491363525" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b01 : Round down</tspan><tspan x="657.2293491363525" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b10 : Round up</tspan><tspan x="657.2293491363525" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b11 : Truncate</tspan></text>
+       <line x1="271.27301502227783" y1="23.25" x2="53.755658340454104" y2="53" stroke="white" stroke-width="2.7" opacity="70%"/><line x1="271.27301502227783" y1="23.25" x2="53.755658340454104" y2="53" stroke="dimgray" stroke-width="0.7" fill="transparent"/><line x1="471.27301502227783" y1="23.25" x2="249.01470222473145" y2="53" stroke="white" stroke-width="2.7" opacity="70%"/><line x1="471.27301502227783" y1="23.25" x2="249.01470222473145" y2="53" stroke="dimgray" stroke-width="0.7" fill="transparent"/><line x1="551.2730150222778" y1="23.25" x2="489.7893482208252" y2="53" stroke="white" stroke-width="2.7" opacity="70%"/><line x1="551.2730150222778" y1="23.25" x2="489.7893482208252" y2="53" stroke="dimgray" stroke-width="0.7" fill="transparent"/><line x1="671.2730150222778" y1="23.25" x2="677.7610172271728" y2="53" stroke="white" stroke-width="2.7" opacity="70%"/><line x1="671.2730150222778" y1="23.25" x2="677.7610172271728" y2="53" stroke="dimgray" stroke-width="0.7" fill="transparent"/></svg></td>
+     </tr>
+    </tbody>
+   </table>
+  <para unique="1046241">
+   <string>Handling of special case of input values are listed in </string><link linkend="54735: 06_Table: Table 5-25. VRNDSCALEPD/SD/PS/SS Special Cases"><string>Table 5&#8209;29</string></link><string>.</string></para>
+  <table>
+   <caption>Table 5-29.  VRNDSCALEPD/SD/PS/SS Special Cases</caption>
+   <colgroup><col width="227.21616pt" align="leftright"/>
+    <col width="287.4348pt"/>
+    <col width="70.25976pt"/>
+    <col width="80.40312pt"/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1046250" format="CellColHeadL">
+       </para>
+      </th>
+     <th><para unique="1046252" format="CellRowHeadL">
+       <string>Returned value </string></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1046254" format="CellColHeadL">
+       <string>Src1=&#177;inf </string></para>
+      </th>
+     <td><para unique="1046256" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     </tr>
+    <tr>
+     <th><para unique="1046258" format="CellColHeadL">
+       <string>Src1=&#177;NAN</string></para>
+      </th>
+     <td><para unique="1046260" format="CellBodyL">
+       <string>Src1 converted to QNAN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <th><para unique="1046262" format="CellColHeadL">
+       <string>Src1=&#177;0</string></para>
+      </th>
+     <td><para unique="1046264" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VRNDSCALEPD __m512d _mm512_roundscale_pd( __m512d a, int imm);</string><string>
+</string><string>VRNDSCALEPD __m512d _mm512_roundscale_round_pd( __m512d a, int imm, int sae);</string><string>
+</string><string>VRNDSCALEPD __m512d _mm512_mask_roundscale_pd(__m512d s, __mmask8 k, __m512d a, int imm);</string><string>
+</string><string>VRNDSCALEPD __m512d _mm512_mask_roundscale_round_pd(__m512d s, __mmask8 k, __m512d a, int imm, int sae);</string><string>
+</string><string>VRNDSCALEPD __m512d _mm512_maskz_roundscale_pd( __mmask8 k, __m512d a, int imm);</string><string>
+</string><string>VRNDSCALEPD __m512d _mm512_maskz_roundscale_round_pd( __mmask8 k, __m512d a, int imm, int sae);</string><string>
+</string><string>VRNDSCALEPD __m256d _mm256_roundscale_pd( __m256d a, int imm);</string><string>
+</string><string>VRNDSCALEPD __m256d _mm256_mask_roundscale_pd(__m256d s, __mmask8 k, __m256d a, int imm);</string><string>
+</string><string>VRNDSCALEPD __m256d _mm256_maskz_roundscale_pd( __mmask8 k, __m256d a, int imm);</string><string>
+</string><string>VRNDSCALEPD __m128d _mm_roundscale_pd( __m128d a, int imm);</string><string>
+</string><string>VRNDSCALEPD __m128d _mm_mask_roundscale_pd(__m128d s, __mmask8 k, __m128d a, int imm);</string><string>
+</string><string>VRNDSCALEPD __m128d _mm_maskz_roundscale_pd( __mmask8 k, __m128d a, int imm);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046326">
+   <string>Invalid, Precision.</string></para>
+  <para unique="1046327">
+   <string>If SPE is enabled, precision exception is not reported (regardless of MXCSR exception mask).</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046332" format="xIndent1">
+   <string>See </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

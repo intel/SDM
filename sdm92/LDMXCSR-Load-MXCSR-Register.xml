@@ -1,0 +1,47 @@
+<instruction name="LDMXCSR">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Load MXCSR Register</shortdesc>
+ <longdesc><para unique="1261255">
+   <string>Loads the source operand into the MXCSR control/status register. The source operand is a 32&#8209;bit memory location. See </string><string>&#8220;MXCSR Control and Status Register&#8221;</string><string> in </string><link linkend="40469: H1Heading: Chapter 8 Input/Output"><string>Chapter 10</string></link><string>, of the </string><string>Intel&#174; 64 and IA&#8209;32 Architectures Software Devel&#173;oper&#8217;s Manual, Volume 1, for a description of the MXCSR register and its contents.</string></para>
+  <para unique="1261262">
+   <string>The LDMXCSR instruction is typically used in conjunction with the (V)STMXCSR instruction, which stores the contents of the MXCSR register in memory.</string></para>
+  <para unique="1261263">
+   <string>The default MXCSR value at reset is 1F80H.</string></para>
+  <para unique="1261264">
+   <string>If a (V)LDMXCSR instruction clears a SIMD floating-point exception mask bit and sets the corresponding exception flag bit, a SIMD floating-point exception will not be immediately generated. The exception will be generated only upon the execution of the next instruction that meets both conditions below:</string></para>
+  <itemizedlist><listitem><para unique="1261265">
+     <string>the instruction must operate on an XMM or YMM register operand,</string></para>
+    </listitem>
+   <listitem><para unique="1261266">
+     <string>the instruction causes that particular SIMD floating-point exception to be reported. </string></para>
+    </listitem>
+   </itemizedlist><para unique="1261267">
+   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+  <para unique="1261268">
+   <string>If VLDMXCSR is encoded with VEX.L= 1, an attempt to execute the instruction encoded with VEX.L= 1 will cause an #UD exception.</string></para>
+  <para unique="1261269">
+   <string>Note: In VEX-encoded versions, VEX.vvvv is reserved and must be 1111b, otherwise instructions will #UD.</string></para>
+  </longdesc>
+ <subsection title="C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>_mm_setcsr(unsigned int i)</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Numeric Exceptions">
+  <para unique="1261275">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1261280" format="xIndent1">
+   <string>See </string><link linkend="48385: 06_Table: Table 2-22. Type 5 Class Exception Conditions"><string>Table&#160;2&#8209;22, &#8220;Type 5 Class Exception Conditions,&#8221;</string></link><string> additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>For an attempt to set reserved bits in MXCSR.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If VEX.vvvv &#8800; 1111B.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

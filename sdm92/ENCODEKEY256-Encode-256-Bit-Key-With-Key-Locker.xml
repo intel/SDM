@@ -1,0 +1,44 @@
+<instruction name="ENCODEKEY256">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Encode 256-Bit Key With Key Locker</shortdesc>
+ <longdesc><para unique="1261251">
+   <string>The ENCODEKEY256</string><footnote><para unique="1261248">
+     <string>Further details on Key Locker and usage of this instruction can be found here:</string></para>
+    <para unique="1261250">
+     <string>	</string><anchor id="message URL https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html"/><underline><string>https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html</string></underline><string>.</string></para>
+    </footnote><string> instruction wraps a 256-bit AES key from the implicit operand XMM1:XMM0 into a key handle that is then stored in the implicit destination operands XMM0-3.</string></para>
+  <para unique="1261252">
+   <string>The explicit source operand is a general-purpose register and specifies what handle restrictions should be built into the handle.</string></para>
+  <para unique="1261253">
+   <string>The explicit destination operand is populated with information on the source of the key and its attributes. XMM4 through XMM6 are reserved for future usages and software should not rely upon them being zeroed.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1261283">
+   <string>All arithmetic flags (OF, SF, ZF, AF, PF, CF) are cleared to 0. Although they are cleared for the currently defined oper&#173;ations, future extensions may report information in the flags.</string></para>
+  </subsection>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>ENCODEKEY256						unsigned int _mm_encodekey256_u32(unsigned int htype, __m128i key_lo, __m128i key_hi, void* h);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Exceptions (All Operating Modes)">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP </string></term>
+    <listitem><string>If reserved bit is set in source register value.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If CPUID.07H.00H:ECX.KEY_LOCKER[23] = 0.</string></listitem>
+    <listitem><string>If CR4.KL = 0.</string></listitem>
+    <listitem><string>If CPUID.19H:EBX.AESKLE[0] = 0.</string></listitem>
+    <listitem><string>If CR0.EM = 1.</string></listitem>
+    <listitem><string>If CR4.OSFXSR = 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM </string></term>
+    <listitem><string>If CR0.TS = 1.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

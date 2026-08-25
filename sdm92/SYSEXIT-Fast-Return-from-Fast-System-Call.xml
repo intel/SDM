@@ -1,0 +1,110 @@
+<instruction name="SYSEXIT">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Fast Return from Fast System Call</shortdesc>
+ <longdesc><para unique="1091453">
+   <string>Executes a fast return to privilege level 3 user code. SYSEXIT is a companion instruction to the SYSENTER instruc&#173;tion. The instruction is optimized to provide the maximum performance for returns from system procedures executing at protections levels 0 to user procedures executing at protection level 3. It must be executed from code executing at privilege level 0. </string></para>
+  <para unique="1091454">
+   <string>With a 64-bit operand size, SYSEXIT remains in 64-bit mode; otherwise, it either enters compatibility mode (if the logical processor is in IA&#8209;32e mode) or remains in protected mode (if it is not).</string></para>
+  <para unique="1091455">
+   <string>Prior to executing SYSEXIT, software must specify the privilege level 3 code segment and code entry point, and the privilege level 3 stack segment and stack pointer by writing values into the following MSR and general-purpose registers:</string></para>
+  <itemizedlist><listitem><para unique="1091456">
+     <bold><string>IA32_SYSENTER_CS</string></bold><string> (MSR address 174H) &#8212; Contains a 32-bit value that is used to determine the segment selectors for the privilege level 3 code and stack segments (see the Operation section)</string></para>
+    </listitem>
+   <listitem><para unique="1091457">
+     <bold><string>RDX</string></bold><string> &#8212; The canonical address in this register is loaded into RIP (thus, this value references the first instruction to be executed in the user code). If the return is not to 64-bit mode, only bits&#160;31:0 are loaded.</string></para>
+    </listitem>
+   <listitem><para unique="1091458">
+     <bold><string>RCX</string></bold><string> &#8212; The canonical address in this register is loaded into RSP (thus, this value contains the stack pointer for the privilege level 3 stack). If the return is not to 64-bit mode, only bits&#160;31:0 are loaded.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1091459">
+   <string>The IA32_SYSENTER_CS MSR can be read from and written to using RDMSR and WRMSR.</string></para>
+  <para unique="1091460">
+   <string>While SYSEXIT loads the CS and SS selectors with values derived from the IA32_SYSENTER_CS MSR, the CS and SS descriptor caches are </string><bold><string>not</string></bold><string> loaded from the descriptors (in GDT or LDT) referenced by those selectors. Instead, the descriptor caches are loaded with fixed values. See the Operation section for details. It is the responsibility of OS software to ensure that the descriptors (in GDT or LDT) referenced by those selector values correspond to the fixed values loaded into the descriptor caches; the SYSEXIT instruction does not ensure this correspondence.</string></para>
+  <para unique="1091461">
+   <string>The SYSEXIT instruction can be invoked from all operating modes except real-address mode and virtual-8086 mode. </string></para>
+  <para unique="1091462">
+   <string>The SYSENTER and SYSEXIT instructions were introduced into the IA-32 architecture in the Pentium II processor. The availability of these instructions on a processor is indicated with the SYSENTER/SYSEXIT present (SEP) feature flag returned to the EDX register by the CPUID instruction. An operating system that qualifies the SEP flag must also qualify the processor family and model to ensure that the SYSENTER/SYSEXIT instructions are actually present. For example:</string></para>
+  <programlisting><string>IF CPUID SEP bit is set</string><string>
+</string><string>	THEN IF (Family </string><string>= 6) and (Model &lt; 3) and (Stepping &lt; 3) </string><string>
+</string><string>		THEN</string><string>
+</string><string>			SYSENTER/SYSEXIT_Not_Supported; FI;</string><string>
+</string><string>		ELSE </string><string>
+</string><string>			SYSENTER/SYSEXIT_Supported; FI;</string><string>
+</string><string>FI;</string><string>
+</string></programlisting>
+  <para unique="1091470">
+   <string>When the CPUID instruction is executed on the Pentium Pro processor (model</string><string> 1), the processor returns a the SEP flag as set, but does not support the SYSENTER/SYSEXIT instructions.</string></para>
+  <para unique="1091471">
+   <string>When shadow stacks are enabled at privilege level 3 the instruction loads SSP with value from IA32_PL3_SSP MSR. Refer to </string><link linkend="26613: H1Heading: Chapter 5 Protected-Mode Exceptions and Interrupts"><string>Chapter 7, &#8220;Interrupt and Exception Handling&#8218;&#8221;</string></link><string> and </string><link linkend="40469: H1Heading: Chapter 16 Input/Output"><string>Chapter 18, &#8220;Control-flow Enforcement Technology (CET)&#8218;&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for additional CET details.</string></para>
+  <para unique="1092346">
+   <string>The instruction cannot be executed when FRED transitions are enabled. An operating system that has enabled FRED transitions should use ERETU instead.</string></para>
+  <para unique="1091478">
+   <string>Instruction ordering. Instructions following a SYSEXIT may be fetched from memory before earlier instructions complete execution, but they will not execute (even speculatively) until all instructions prior to the SYSEXIT have completed execution (the later instructions may execute before data stored by the earlier instructions have become globally visible).</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1091526">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If IA32_SYSENTER_CS[15:2] = 0.</string></listitem>
+    <listitem><string>If CPL </string><string>&#8800;</string><string> 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>The SYSEXIT instruction is not recognized in real-address mode.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>The SYSEXIT instruction is not recognized in virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If IA32_SYSENTER_CS[15:2] = 0.</string></listitem>
+    <listitem><string>If CPL </string><string>&#8800;</string><string> 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If CR4.FRED&#160;= 1.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If IA32_SYSENTER_CS = 0.</string></listitem>
+    <listitem><string>If CPL </string><string>&#8800;</string><string> 0.</string></listitem>
+    <listitem><string>If RCX or RDX contains a non-canonical address.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If CR4.FRED&#160;= 1.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

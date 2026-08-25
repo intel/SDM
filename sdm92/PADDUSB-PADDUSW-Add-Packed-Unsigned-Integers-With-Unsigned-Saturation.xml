@@ -1,0 +1,56 @@
+<instruction name="PADDUSB/PADDUSW">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Add Packed Unsigned Integers With Unsigned Saturation</shortdesc>
+ <longdesc><para unique="1091651">
+   <string>Performs a SIMD add of the packed unsigned integers from the source operand (second operand) and the destina&#173;tion operand (first operand), and stores the packed integer results in the destination operand. See Figure 9-4 in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for an illustration of a SIMD operation. Overflow is handled with unsigned saturation, as described in the following paragraphs.</string></para>
+  <para unique="1091652">
+   <string>(V)PADDUSB performs a SIMD add of the packed unsigned integers with saturation from the first source operand and second source operand and stores the packed integer results in the destination operand. When an individual byte result is beyond the range of an unsigned byte integer (that is, greater than FFH), the saturated value of FFH is written to the destination operand.</string></para>
+  <para unique="1091653">
+   <string>(V)PADDUSW performs a SIMD add of the packed unsigned word integers with saturation from the first source operand and second source operand and stores the packed integer results in the destination operand. When an individual word result is beyond the range of an unsigned word integer (that is, greater than FFFFH), the saturated value of FFFFH is written to the destination operand.</string></para>
+  <para unique="1091654">
+   <string>EVEX encoded versions: The first source operand is an ZMM/YMM/XMM register. The second source operand is an ZMM/YMM/XMM register or a 512/256/128-bit memory location. The destination is an ZMM/YMM/XMM register.</string></para>
+  <para unique="1091655">
+   <string>VEX.256 encoded version: The first source operand is a YMM register. The second source operand is a YMM register or a 256-bit memory location. The destination operand is a YMM register. </string></para>
+  <para unique="1091656">
+   <string>VEX.128 encoded version: The first source operand is an XMM register. The second source operand is an XMM register or 128-bit memory location. The destination operand is an XMM register. The upper bits (MAXVL-1:128) of the corresponding destination register destination are zeroed.</string></para>
+  <para unique="1091657">
+   <string>128-bit Legacy SSE version: The first source operand is an XMM register. The second operand can be an XMM register or an 128-bit memory location. The destination is not distinct from the first source XMM register and the upper bits (</string><sans><string>MAXVL-1</string></sans><string>:128) of the corresponding register destination are unmodified.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalents">
+  <programlisting><string>PADDUSB __m64 _mm_adds_pu8(__m64 m1, __m64 m2)</string><string>
+</string><string>PADDUSW __m64 _mm_adds_pu16(__m64 m1, __m64 m2)</string><string>
+</string><string>(V)PADDUSB 	__m128i _mm_adds_epu8 ( __m128i a, __m128i b)</string><string>
+</string><string>(V)PADDUSW 	__m128i _mm_adds_epu16 ( __m128i a, __m128i b)</string><string>
+</string><string>VPADDUSB 	__m256i _mm256_adds_epu8 ( __m256i a, __m256i b)</string><string>
+</string><string>VPADDUSW 	__m256i _mm256_adds_epu16 ( __m256i a, __m256i b)</string><string>
+</string><string>VPADDUSB	 __m512i _mm512_adds_epu8 ( __m512i a, __m512i b)</string><string>
+</string><string>VPADDUSW	 __m512i _mm512_adds_epu16 ( __m512i a, __m512i b)</string><string>
+</string><string>VPADDUSB	 __m512i _mm512_mask_adds_epu8 ( __m512i s, __mmask64 m, __m512i a, __m512i b)</string><string>
+</string><string>VPADDUSW 	__m512i _mm512_mask_adds_epu16 ( __m512i s, __mmask32 m, __m512i a, __m512i b)</string><string>
+</string><string>VPADDUSB	 __m512i _mm512_maskz_adds_epu8 (__mmask64 m, __m512i a, __m512i b)</string><string>
+</string><string>VPADDUSW	 __m512i _mm512_maskz_adds_epu16 (__mmask32 m, __m512i a, __m512i b)</string><string>
+</string><string>VPADDUSB	 __m256i _mm256_mask_adds_epu8 (__m256i s, __mmask32 m, __m256i a, __m256i b)</string><string>
+</string><string>VPADDUSW	 __m256i _mm256_mask_adds_epu16 (__m256i s, __mmask16 m, __m256i a, __m256i b)</string><string>
+</string><string>VPADDUSB	 __m256i _mm256_maskz_adds_epu8 (__mmask32 m, __m256i a, __m256i b)</string><string>
+</string><string>VPADDUSW	 __m256i _mm256_maskz_adds_epu16 (__mmask16 m, __m256i a, __m256i b)</string><string>
+</string><string>VPADDUSB	 __m128i _mm_mask_adds_epu8 (__m128i s, __mmask16 m, __m128i a, __m128i b)</string><string>
+</string><string>VPADDUSW	 __m128i _mm_mask_adds_epu16 (__m128i s, __mmask8 m, __m128i a, __m128i b)</string><string>
+</string><string>VPADDUSB	 __m128i _mm_maskz_adds_epu8 (__mmask16 m, __m128i a, __m128i b)</string><string>
+</string><string>VPADDUSW	 __m128i _mm_maskz_adds_epu16 (__mmask8 m, __m128i a, __m128i b)</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Flags Affected">
+  <para unique="1091756">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Numeric Exceptions">
+  <para unique="1091758">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1091763" format="xIndent1">
+   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091767">
+   <string>EVEX-encoded instruction, see Exceptions Type E4.nb in </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

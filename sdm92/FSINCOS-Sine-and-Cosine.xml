@@ -1,0 +1,206 @@
+<instruction name="FSINCOS">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Sine and Cosine</shortdesc>
+ <longdesc><para unique="1261215">
+   <string>Computes both the approximate sine and the cosine of the source operand in register ST(0), stores the sine in ST(0), and pushes the cosine onto the top of the FPU register stack. (This instruction is faster than executing the FSIN and FCOS instructions in succession.)</string></para>
+  <para unique="1261216">
+   <string>The source operand must be given in radians and must be within the range </string><string>&#8722;2</string><superscript><string>63</string></superscript><string> to </string><string>+2</string><superscript><string>63</string></superscript><string>. The following table shows the results obtained when taking the sine and cosine of various classes of numbers, assuming that underflow does not occur.</string></para>
+  <table>
+   <caption>Table 3-38.  FSINCOS Results</caption>
+   <colgroup><col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1261225" format="CellColHead">
+       <string>SRC</string></para>
+      </th>
+     <th colspan="2"><para unique="1261227" format="CellColHead">
+       <string>DEST</string></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1261231" format="CellRowHeadC">
+       <string>ST(0)</string></para>
+      </th>
+     <th><para unique="1261233" format="CellRowHeadC">
+       <string>ST(1) Cosine</string></para>
+      </th>
+     <th><para unique="1261235" format="CellRowHeadC">
+       <string>ST(0) Sine</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1261237" format="CellBodyC">
+       <string>&#8722; &#8734;</string></para>
+      </td>
+     <td><para unique="1261239" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261241" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261243" format="CellBodyC">
+       <string>&#8722; F</string></para>
+      </td>
+     <td><para unique="1261245" format="CellBodyC">
+       <string>&#8722; 1 to </string><string>+ 1</string></para>
+      </td>
+     <td><para unique="1261247" format="CellBodyC">
+       <string>&#8722; 1 to </string><string>+ 1</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261249" format="CellBodyC">
+       <string>&#8722; 0</string></para>
+      </td>
+     <td><para unique="1261251" format="CellBodyC">
+       <string>+ 1</string></para>
+      </td>
+     <td><para unique="1261253" format="CellBodyC">
+       <string>&#8722; 0</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261255" format="CellBodyC">
+       <string>+ 0</string></para>
+      </td>
+     <td><para unique="1261257" format="CellBodyC">
+       <string>+ 1</string></para>
+      </td>
+     <td><para unique="1261259" format="CellBodyC">
+       <string>+ 0</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261261" format="CellBodyC">
+       <string>+ F</string></para>
+      </td>
+     <td><para unique="1261263" format="CellBodyC">
+       <string>&#8722; 1 to </string><string>+ 1</string></para>
+      </td>
+     <td><para unique="1261265" format="CellBodyC">
+       <string>&#8722; 1 to </string><string>+ 1</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261267" format="CellBodyC">
+       <string>+ &#8734;</string></para>
+      </td>
+     <td><para unique="1261269" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261271" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261273" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261275" format="CellBodyC">
+       <string>NaN </string></para>
+      </td>
+     <td><para unique="1261277" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    </tbody>
+   <tfoot><tr>
+     <td colspan="3"><para unique="1261279" format="TableFootnoteBLUE">
+       <string>NOTES:</string></para>
+      <para unique="1261280" format="TableFootnote">
+       <string>F	Means finite floating-point value.</string></para>
+      <para unique="1261281" format="TableFootnote">
+       <string>*	Indicates floating-point invalid-arithmetic-operand (#IA) exception.</string></para>
+      </td>
+     </tr>
+    </tfoot></table>
+  <para unique="1261287">
+   <string>If the source operand is outside the acceptable range, the C2 flag in the FPU status word is set, and the value in register ST(0) remains unchanged. The instruction does not raise an exception when the source operand is out of range. It is up to the program to check the C2 flag for out-of-range conditions. Source values outside the range </string><string>&#8722;2</string><superscript><string>63</string></superscript><string> to </string><string>+2</string><superscript><string>63</string></superscript><string> can be reduced to the range of the instruction by subtracting an appropriate integer multiple of 2</string><string>&#960;. However, even within the range -2</string><superscript><string>63</string></superscript><string> to +2</string><superscript><string>63</string></superscript><string>, inaccurate results can occur because the finite approximation of </string><string>&#960; used internally for argument reduction is not sufficient in all cases. Therefore, for accurate results it is safe to apply FSINCOS only to arguments reduced accurately in software, to a value smaller in absolute value than 3</string><string>&#960;/8. See the sections titled </string><string>&#8220;Approximation of Pi&#8221;</string><string> and &#8220;Transcendental Instruction Accuracy&#8221; in </string><link linkend="12935: H1Heading: Chapter 7 Numeric Programming Environment"><string>Chapter 8</string></link><string> of the </string><string>Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for a discussion of the proper value to use for </string><string>&#960; in performing such reductions.</string></para>
+  <para unique="1261294">
+   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+  </longdesc>
+ <subsection title="FPU Flags Affected">
+  <variablelist>
+   <variablelistentry>
+    <term><string>C1</string></term>
+    <listitem><string>Set to 0 if stack underflow occurred; set to 1 of stack overflow occurs.</string></listitem>
+    <listitem><string>Set if result was rounded up; cleared otherwise.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>C2</string></term>
+    <listitem><string>Set to 1 if outside range (</string><string>&#8722;2</string><superscript><string>63</string></superscript><string> </string><string>&lt; source operand </string><string>&lt; </string><string>+2</string><superscript><string>63</string></superscript><string>); otherwise, set to 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>C0, C3 </string></term>
+    <listitem><string>Undefined.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Floating-Point Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#IS</string></term>
+    <listitem><string>Stack underflow or overflow occurred.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#IA</string></term>
+    <listitem><string>Source operand is an SNaN value, </string><string>&#8734;, or unsupported format.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#D</string></term>
+    <listitem><string>Source operand is a denormal value.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#U</string></term>
+    <listitem><string>Result is too small for destination format.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#P</string></term>
+    <listitem><string>Value cannot be represented exactly in destination format.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#MF </string></term>
+    <listitem><string>If there is a pending x87 FPU exception.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <para unique="1261321" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <para unique="1261323" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261325" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <para unique="1261327" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ </instruction>

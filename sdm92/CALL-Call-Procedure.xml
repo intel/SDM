@@ -1,0 +1,301 @@
+<instruction name="CALL">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Call Procedure</shortdesc>
+ <longdesc><para unique="1261359">
+   <string>Saves procedure linking information on the stack and branches to the called proce&#173;dure specified using the target operand. The target operand specifies the address of the first instruction in the called procedure. The operand can be an immediate value, a general-purpose register, or a memory location.</string></para>
+  <para unique="1261360">
+   <string>This instruction can be used to execute four types of calls:</string></para>
+  <itemizedlist><listitem><para unique="1261361">
+     <string>Near Call</string><string> &#8212;&#160; A call to a procedure in the current code segment (the segment currently pointed to by the CS register), sometimes referred to as an intra-segment call.</string></para>
+    </listitem>
+   <listitem><para unique="1261362">
+     <bold><string>Far Call </string></bold><string>&#8212;&#160;A call to a procedure located in a different segment than the current code segment, sometimes referred to as an inter-segment call.</string></para>
+    </listitem>
+   <listitem><para unique="1261364">
+     <bold><string>Inter-privilege-level far </string><indexterm><primary>Inter-privilege level:call, CALL instruction</primary></indexterm><string>call&#160;</string></bold><string>&#8212;&#160;A far call to a procedure in a segment at a different privilege level than that of the currently executing program or procedure.</string></para>
+    </listitem>
+   <listitem><para unique="1261366">
+     <bold><string>Task </string><indexterm><primary>Task switch:CALL instruction</primary></indexterm><string>switch</string></bold><string>&#160;&#8212;&#160;A call to a procedure located in a different task.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1261367">
+   <string>The latter two call types (inter-privilege-level call and task switch) can only be executed in protected mode. See </string><string>&#8220;Calling Procedures Using Call and RET&#8221;</string><string> in </string><link linkend="26958: H1Heading: Chapter 4 Procedure Calls, Interrupts, and Exceptions"><string>Chapter 6</string></link><string> of the </string><string>Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for additional information on near, far, and inter-privilege-level calls. See </string><link linkend="30822: H1Heading: Chapter 6 Protected-Mode Multitasking"><string>Chapter 10, &#8220;Task Management,&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A, for information on performing task switches with the CALL instruction.</string></para>
+  <para unique="1261378">
+   <string>Near Call. When executing a near call, the processor pushes the value of the </string><indexterm><primary>EIP register</primary></indexterm><string>EIP register (which contains the offset of the instruction following the CALL instruction) on the stack (for use later as a return-instruction pointer). The processor then branches to the address in the current code segment specified by the target operand. The target operand specifies either an absolute offset in the code segment (an offset from the base of the code segment) or a relative offset (a signed displacement relative to the current value of the instruction pointer in the EIP register; this value points to the instruction following the CALL instruction). The </string><indexterm><primary>CS register</primary></indexterm><string>CS register is not changed on near calls.</string></para>
+  <para unique="1261380">
+   <string>For a near call absolute, an absolute offset is specified indirectly in a general-purpose register or a memory location (</string><italic><string>r/m16</string></italic><string>, </string><italic><string>r/m32, or r/m64</string></italic><string>). The operand-size attribute determines the size of the target operand (16, 32 or 64 bits). When in 64-bit mode, the operand size for near call (and all near branches) is forced to 64-bits. Absolute offsets are loaded directly into the EIP(RIP) register. If the operand size attribute is 16, the upper two bytes of the EIP register are cleared, resulting in a maximum instruction pointer size of 16 bits. When accessing an absolute offset indirectly using the stack pointer [ESP] as the base register, the base value used is the value of the </string><indexterm><primary>ESP register</primary></indexterm><string>ESP before the instruction executes.</string></para>
+  <para unique="1261382">
+   <string>A relative offset (</string><italic><string>rel16</string></italic><string> or </string><italic><string>rel32</string></italic><string>) is generally specified as a label in assembly code. But at the machine code level, it is encoded as a signed, 16- or 32-bit immediate value. This value is added to the value in the EIP(RIP) register. In 64-bit mode the relative offset is always a 32-bit immediate value which is sign extended to 64-bits before it is added to the value in the RIP register for the target calculation. As with absolute offsets, the operand-size attribute determines the size of the target operand (16, 32, or 64 bits). In 64-bit mode the target operand will always be 64-bits because the operand size is forced to 64-bits for near branches.</string></para>
+  <para unique="1261383">
+   <string>Far Calls in Real-Address or Virtual-8086 Mode. When executing a far call in real- address or virtual-8086 mode, the processor pushes the current value of both the CS and EIP registers on the stack for use as a return-instruction pointer. The processor then performs a &#8220;far branch&#8221; to the code segment and offset specified with the target operand for the called proce&#173;dure. The target operand specifies an absolute far address either directly with a pointer (</string><italic><string>ptr16:16</string></italic><string> or </string><italic><string>ptr16:32</string></italic><string>) or indirectly with a memory location (</string><italic><string>m16:16</string></italic><string> or </string><italic><string>m16:32</string></italic><string>). With the pointer method, the segment and offset of the called procedure is encoded in the instruction using a 4-byte (16-bit operand size) or 6-byte (32-bit operand size) far address immediate. With the indirect method, the target operand specifies a memory location that contains a 4-byte (16&#8209;bit operand size) or 6-byte (32-bit operand size) far address. The operand-size attribute determines the size of the offset (16 or 32 bits) in the far address. The far address is loaded directly into the CS and EIP registers. If the operand-size attribute is 16, the upper two bytes of the EIP register are cleared.</string></para>
+  <para unique="1261384">
+   <string>Far Calls in Protected Mode. When the processor is operating in protected mode, the CALL instruction can be used to perform the following types of far calls:</string></para>
+  <itemizedlist><listitem><para unique="1261385">
+     <string>Far call to the same privilege level</string></para>
+    </listitem>
+   <listitem><para unique="1261386">
+     <string>Far call to a different privilege level (inter-privilege level call)</string></para>
+    </listitem>
+   <listitem><para unique="1261387">
+     <string>Task switch (far call to another task)</string></para>
+    </listitem>
+   </itemizedlist><para unique="1261388">
+   <string>In protected mode, the processor always uses the segment selector part of the far address to access the corre&#173;sponding descriptor in the GDT or LDT. The descriptor type (code segment, call gate, task gate, or TSS) and access rights determine the type of call operation to be performed.</string></para>
+  <para unique="1261389">
+   <string>If the selected descriptor is for a code segment, a far call to a code segment at the same privilege level is performed. (If the selected code segment is at a different privilege level and the code segment is non-conforming, a general-protection exception is generated.) A far call to the same privilege level in protected mode is very similar to one carried out in real-address or virtual-8086 mode. The target operand specifies an absolute far address either directly with a pointer (</string><italic><string>ptr16:16</string></italic><string> or </string><italic><string>ptr16:32</string></italic><string>) or indirectly with a memory location (</string><italic><string>m16:16</string></italic><string> or </string><italic><string>m16:32</string></italic><string>). The operand- size attribute determines the size of the offset (16 or 32 bits) in the far address. The new code segment selector and its descriptor are loaded into CS register; the offset from the instruction is loaded into the EIP register. </string></para>
+  <para unique="1261390">
+   <string>A call gate (described in the next paragraph) can also be used to perform a far call to a code segment at the same privilege level. Using this mechanism provides an extra level of indi&#173;rection and is the preferred method of making calls between 16-bit and 32-bit code segments.</string></para>
+  <para unique="1261391">
+   <string>When executing an inter-privilege-level far call, the code segment for the procedure being called must be accessed through a call gate. The segment selector specified by the target operand iden&#173;tifies the call gate. The target operand can specify the call gate segment selector either directly with a pointer (</string><italic><string>ptr16:16</string></italic><string> or </string><italic><string>ptr16:32</string></italic><string>) or indirectly with a memory location (</string><italic><string>m16:16</string></italic><string> or </string><italic><string>m16:32</string></italic><string>). The processor obtains the segment selector for the new code segment and the new instruction pointer (offset) from the call gate descriptor. (The offset from the target operand is ignored when a call gate is used.) </string></para>
+  <para unique="1261392">
+   <string>On inter-privilege-level calls, the processor switches to the stack for the privilege level of the called procedure. The segment selector for the new stack segment is specified in the TSS for the currently running task. The branch to the new code segment occurs after the stack switch. (Note that when using a call gate to perform a far call to a segment at the same privilege level, no stack switch occurs.) On the new stack, the processor pushes the segment selector and stack pointer for the calling procedure&#8217;s stack, an optional set of parameters from the calling proce&#173;dures stack, and the segment selector and instruction pointer for the calling procedure&#8217;s code segment. (A value in the call gate descriptor determines how many parameters to copy to the new stack.) Finally, the processor branches to the address of the procedure being called within the new code segment.</string></para>
+  <para unique="1261393">
+   <string>Executing a task switch with the CALL instruction is similar to executing a call through a call gate. The target operand specifies the segment selector of the task gate for the new task activated by the switch (the offset in the target operand is ignored). The task gate in turn points to the TSS for the new task, which contains the segment selectors for the task&#8217;s code and stack segments. Note that the TSS also contains the EIP value for the next instruc&#173;tion that was to be executed before the calling task was suspended. This instruction pointer value is loaded into the EIP register to re-start the calling task. </string></para>
+  <para unique="1261394">
+   <string>The CALL instruction can also specify the segment selector of the TSS directly, which eliminates the indirection of the task gate. See </string><link linkend="30822: H1Heading: Chapter 6 Protected-Mode Multitasking"><string>Chapter 10, &#8220;Task Management,&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A, for information on the mechanics of a task switch.</string></para>
+  <para unique="1261398">
+   <string>When execution of a CALL instruction effects a task switch, the nested task flag (NT) is set in the EFLAGS register and the new TSS&#8217;s previous task link field is loaded with the old task&#8217;s TSS selector. Code is expected to suspend this nested task by executing an IRET instruction which, because the NT flag is set, automatically uses the previous task link to return to the calling task. (See </string><string>&#8220;Task Linking&#8221;</string><string> in </string><link linkend="30822: H1Heading: Chapter 6 Protected-Mode Multitasking"><string>Chapter 10</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A, for information on nested tasks.) Switching tasks with the CALL instruc&#173;tion differs in this regard from JMP instruction. JMP does not set the NT flag and therefore does not expect an IRET instruction to suspend the task.</string></para>
+  <para unique="1261405">
+   <string>Mixing 16-Bit and 32-Bit Calls. When making far calls between 16-bit and 32-bit code segments, use a call gate. If the far call is from a 32-bit code segment to a 16-bit code segment, the call should be made from the first 64 KBytes of the 32-bit code segment. This is because the operand-size attribute of the instruction is set to 16, so only a 16-bit return address offset can be saved. Also, the call should be made using a 16-bit call gate so that 16-bit values can be pushed on the stack. See </string><link linkend="18504: 01_Level: CHAPTER 13 Mixing 16-Bit and 32-Bit Code"><string>Chapter 24, &#8220;Mixing 16-Bit and 32-Bit Code,&#8221;</string></link><string> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B, for more information.</string></para>
+  <para unique="1261409">
+   <string>Far Calls in Compatibility Mode. When the processor is operating in compatibility mode, the CALL instruction can be used to perform the following types of far calls:</string></para>
+  <itemizedlist><listitem><para unique="1261410">
+     <string>Far call to the same privilege level, remaining in compatibility mode</string></para>
+    </listitem>
+   <listitem><para unique="1261411">
+     <string>Far call to the same privilege level, transitioning to 64-bit mode</string></para>
+    </listitem>
+   <listitem><para unique="1261412">
+     <string>Far call to a different privilege level (inter-privilege level call), transitioning to 64-bit mode</string></para>
+    </listitem>
+   </itemizedlist><para unique="1261413">
+   <string>Note that a CALL instruction cannot be used to cause a task switch in compatibility mode since task switches are not supported in IA-32e mode.</string></para>
+  <para unique="1261414">
+   <string>In compatibility mode, the processor always uses the segment selector part of the far address to access the corre&#173;sponding descriptor in the GDT or LDT. The descriptor type (code segment, call gate) and access rights determine the type of call operation to be performed.</string></para>
+  <para unique="1261415">
+   <string>If the selected descriptor is for a code segment, a far call to a code segment at the same privilege level is performed. (If the selected code segment is at a different privilege level and the code segment is non-conforming, a general-protection exception is generated.) A far call to the same privilege level in compatibility mode is very similar to one carried out in protected mode. The target operand specifies an absolute far address either directly with a pointer (</string><italic><string>ptr16:16</string></italic><string> or </string><italic><string>ptr16:32</string></italic><string>) or indirectly with a memory location (</string><italic><string>m16:16</string></italic><string> or </string><italic><string>m16:32</string></italic><string>). The operand-size attribute determines the size of the offset (16 or 32 bits) in the far address. The new code segment selector and its descriptor are loaded into CS register and the offset from the instruction is loaded into the EIP register. The differ&#173;ence is that 64-bit mode may be entered. This specified by the L bit in the new code segment descriptor.</string></para>
+  <para unique="1261416">
+   <string>Note that a 64-bit call gate (described in the next paragraph) can also be used to perform a far call to a code segment at the same privilege level. However, using this mechanism requires that the target code segment descriptor have the L bit set, causing an entry to 64-bit mode.</string></para>
+  <para unique="1261417">
+   <string>When executing an inter-privilege-level far call, the code segment for the procedure being called must be accessed through a 64-bit call gate. The segment selector specified by the target operand iden&#173;tifies the call gate. The target operand can specify the call gate segment selector either directly with a pointer (</string><italic><string>ptr16:16</string></italic><string> or </string><italic><string>ptr16:32</string></italic><string>) or indirectly with a memory location (</string><italic><string>m16:16</string></italic><string> or </string><italic><string>m16:32</string></italic><string>). The processor obtains the segment selector for the new code segment and the new instruction pointer (offset) from the 16-byte call gate descriptor. (The offset from the target operand is ignored when a call gate is used.) </string></para>
+  <para unique="1261418">
+   <string>On inter-privilege-level calls, the processor switches to the stack for the privilege level of the called procedure. The segment selector for the new stack segment is set to NULL. The new stack pointer is specified in the TSS for the currently running task. The branch to the new code segment occurs after the stack switch. (Note that when using a call gate to perform a far call to a segment at the same privilege level, an implicit stack switch occurs as a result of entering 64&#8209;bit mode. The SS selector is unchanged, but stack segment accesses use a segment base of 0x0, the limit is ignored, and the default stack size is 64-bits. The full value of RSP is used for the offset, of which the upper 32-bits are undefined.) On the new stack, the processor pushes the segment selector and stack pointer for the calling procedure&#8217;s stack and the segment selector and instruction pointer for the calling procedure&#8217;s code segment. (Parameter copy is not supported in IA-32e mode.) Finally, the processor branches to the address of the procedure being called within the new code segment.</string></para>
+  <para unique="1261419">
+   <string>Near/(Far) Calls in 64-bit Mode. When the processor is operating in 64-bit mode, the CALL instruction can be used to perform the following types of far calls:</string></para>
+  <itemizedlist><listitem><para unique="1261420">
+     <string>Far call to the same privilege level, transitioning to compatibility mode</string></para>
+    </listitem>
+   <listitem><para unique="1261421">
+     <string>Far call to the same privilege level, remaining in 64-bit mode</string></para>
+    </listitem>
+   <listitem><para unique="1261422">
+     <string>Far call to a different privilege level (inter-privilege level call), remaining in 64-bit mode</string></para>
+    </listitem>
+   </itemizedlist><para unique="1261423">
+   <string>Note that in this mode the CALL instruction can not be used to cause a task switch in 64-bit mode since task switches are not supported in IA-32e mode.</string></para>
+  <para unique="1261424">
+   <string>In 64-bit mode, the processor always uses the segment selector part of the far address to access the corresponding descriptor in the GDT or LDT. The descriptor type (code segment, call gate) and access rights determine the type of call operation to be performed.</string></para>
+  <para unique="1261425">
+   <string>If the selected descriptor is for a code segment, a far call to a code segment at the same privilege level is performed. (If the selected code segment is at a different privilege level and the code segment is non-conforming, a general-protection exception is generated.) A far call to the same privilege level in 64-bit mode is very similar to one carried out in compatibility mode. The target operand specifies an absolute far address indirectly with a memory location (</string><italic><string>m16:16, m16:32</string></italic><string> or </string><italic><string>m16:64</string></italic><string>). The form of CALL with a direct specification of absolute far address is not defined in 64-bit mode. The operand-size attribute determines the size of the offset (16, 32, or 64 bits) in the far address. The new code segment selector and its descriptor are loaded into the CS register; the offset from the instruction is loaded into the EIP register. The new code segment may specify entry either into compati&#173;bility or 64-bit mode, based on the L bit value.</string></para>
+  <para unique="1261426">
+   <string>A 64-bit call gate (described in the next paragraph) can also be used to perform a far call to a code segment at the same privilege level. However, using this mechanism requires that the target code segment descriptor have the L bit set.</string></para>
+  <para unique="1261427">
+   <string>When executing an inter-privilege-level far call, the code segment for the procedure being called must be accessed through a 64-bit call gate. The segment selector specified by the target operand iden&#173;tifies the call gate. The target operand can only specify the call gate segment selector indirectly with a memory location (</string><italic><string>m16:16, m16:32</string></italic><string> or </string><italic><string>m16:64</string></italic><string>). The processor obtains the segment selector for the new code segment and the new instruction pointer (offset) from the 16&#8209;byte call gate descriptor. (The offset from the target operand is ignored when a call gate is used.)</string></para>
+  <para unique="1261428">
+   <string>On inter-privilege-level calls, the processor switches to the stack for the privilege level of the called procedure. The segment selector for the new stack segment is set to NULL. The new stack pointer is specified in the TSS for the currently running task. The branch to the new code segment occurs after the stack switch. </string></para>
+  <para unique="1261429">
+   <string>Note that when using a call gate to perform a far call to a segment at the same privilege level, an implicit stack switch occurs as a result of entering 64-bit mode. The SS selector is unchanged, but stack segment accesses use a segment base of 0x0, the limit is ignored, and the default stack size is 64-bits. (The full value of RSP is used for the offset.) On the new stack, the processor pushes the segment selector and stack pointer for the calling proce&#173;dure&#8217;s stack and the segment selector and instruction pointer for the calling procedure&#8217;s code segment. (Parameter copy is not supported in IA-32e mode.) Finally, the processor branches to the address of the procedure being called within the new code segment.</string></para>
+  <para unique="1261435">
+   <string>Refer to </string><link linkend="26958: H1Heading: Chapter 4 Procedure Calls, Interrupts, and Exceptions"><string>Chapter 6, &#8220;Procedure Calls, Interrupts, and Exceptions&#8218;&#8221;</string></link><string> and </string><link linkend="40469: H1Heading: Chapter 16 Input/Output"><string>Chapter 18, &#8220;Control-flow Enforcement Technology (CET)&#8218;&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for CET details.</string></para>
+  <para unique="1263033">
+   <string>When FRED transitions are enabled, an execution of far CALL that references a call gate causes a general-protec&#173;tion exception, as does an execution of far CALL that would enter compatibility mode when CPL is 0.</string></para>
+  <para unique="1261437">
+   <string>Instruction ordering. Instructions following a far call may be fetched from memory before earlier instructions complete execution, but they will not execute (even speculatively) until all instructions prior to the far call have completed execution (the later instructions may execute before data stored by the earlier instructions have become globally visible).</string></para>
+  <para unique="1261438">
+   <string>Instructions sequentially following a near indirect CALL instruction (i.e., those not at the target) may be executed speculatively. If software needs to prevent this (e.g., in order to prevent a speculative execution side channel), then an LFENCE instruction opcode can be placed after the near indirect CALL in order to block speculative execu&#173;tion.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1261963">
+   <string>All flags are affected if a task switch occurs; no flags are affected if a task switch does not occur.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the target offset in destination operand is beyond the new code segment limit.</string></listitem>
+    <listitem><string>If the segment selector in the destination operand is NULL.</string></listitem>
+    <listitem><string>If the code segment selector in the gate is NULL.</string></listitem>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <listitem><string>If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</string></listitem>
+    <listitem><string>If target mode is compatibility mode and SSP is not in low 4GB.</string></listitem>
+    <listitem><string>If SSP in IA32_PLi_SSP (where i is the new CPL) is not 8 byte aligned.</string></listitem>
+    <listitem><string>If the token and the stack frame to be pushed on shadow stack are not contained in a naturally aligned 32-byte region of the shadow stack.</string></listitem>
+    <listitem><string>If &#8220;supervisor Shadow Stack&#8221; token on new shadow stack is marked busy.</string></listitem>
+    <listitem><string>If destination mode is 32-bit or compatibility mode, but SSP address in &#8220;supervisor shadow stack&#8221; token is beyond 4GB.</string></listitem>
+    <listitem><string>If SSP address in &#8220;supervisor shadow stack&#8221; token does not match SSP address in IA32_PLi_SSP (where i is the new CPL).</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(selector)</string></term>
+    <listitem><string>If a code segment or gate or TSS selector index is outside descriptor table limits. </string></listitem>
+    <listitem><string>If the segment descriptor pointed to by the segment selector in the destination operand is not for a conforming-code segment, noncon&#173;forming-code segment, call gate, task gate, or task state segment.</string></listitem>
+    <listitem><string>If the DPL for a nonconforming-code segment is not equal to the CPL or the RPL for the segment&#8217;s segment selector is greater than the CPL.</string></listitem>
+    <listitem><string>If the DPL for a conforming-code segment is greater than the CPL.</string></listitem>
+    <listitem><string>If the DPL from a call-gate, task-gate, or TSS segment descriptor is less than the CPL or than the RPL of the call-gate, task-gate, or TSS&#8217;s segment selector.</string></listitem>
+    <listitem><string>If the segment descriptor for a segment selector from a call gate does not indicate it is a code segment.</string></listitem>
+    <listitem><string>If the segment selector from a call gate is beyond the descriptor table limits.</string></listitem>
+    <listitem><string>If the DPL for a code-segment obtained from a call gate is greater than the CPL.</string></listitem>
+    <listitem><string>If the segment selector for a TSS has its local/global bit set for local.</string></listitem>
+    <listitem><string>If a TSS segment descriptor specifies that the TSS is busy or not available.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If pushing the return address, parameters, or stack segment pointer onto the stack exceeds the bounds of the stack segment, when no stack switch occurs.</string></listitem>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(selector)</string></term>
+    <listitem><string>If pushing the return address, parameters, or stack segment pointer onto the stack exceeds the bounds of the stack segment, when a stack switch occurs.</string></listitem>
+    <listitem><string>If the SS register is being loaded as part of a stack switch and the segment pointed to is marked not present.</string></listitem>
+    <listitem><string>If stack segment does not have room for the return address, parameters, or stack segment pointer, when stack switch occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NP(selector)</string></term>
+    <listitem><string>If a code segment, data segment, call gate, task gate, or TSS is not present.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#TS(selector)</string></term>
+    <listitem><string>If the new stack segment selector and ESP are beyond the end of the TSS.</string></listitem>
+    <listitem><string>If the new stack segment selector is NULL.</string></listitem>
+    <listitem><string>If the RPL of the new stack segment selector in the TSS is not equal to the DPL of the code segment being accessed.</string></listitem>
+    <listitem><string>If DPL of the stack segment descriptor for the new stack segment is not equal to the DPL of the code segment descriptor.</string></listitem>
+    <listitem><string>If the new stack segment is not a writable data segment.</string></listitem>
+    <listitem><string>If segment-selector index for stack segment is outside descriptor table limits. </string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <listitem><string>If the target offset is beyond the code segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <listitem><string>If the target offset is beyond the code segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1262012" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(selector)</string></term>
+    <listitem><string>If a memory address accessed by the selector is in non-canonical space.</string></listitem>
+    <listitem><string>If FRED transitions are enabled and the selector references a call gate.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the target offset in the destination operand is non-canonical.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a memory address is non-canonical.</string></listitem>
+    <listitem><string>If target offset in destination operand is non-canonical.</string></listitem>
+    <listitem><string>If the segment selector in the destination operand is NULL.</string></listitem>
+    <listitem><string>If the code segment selector in the 64-bit gate is NULL.</string></listitem>
+    <listitem><string>If target mode is compatibility mode and SSP is not in low 4GB.</string></listitem>
+    <listitem><string>If SSP in IA32_PLi_SSP (where i is the new CPL) is not 8 byte aligned.</string></listitem>
+    <listitem><string>If the token and the stack frame to be pushed on shadow stack are not contained in a naturally aligned 32-byte region of the shadow stack.</string></listitem>
+    <listitem><string>If &#8220;supervisor Shadow Stack&#8221; token on new shadow stack is marked busy.</string></listitem>
+    <listitem><string>If destination mode is 32-bit mode or compatibility mode, but SSP address in &#8220;super-visor shadow&#8221; stack token is beyond 4GB.</string></listitem>
+    <listitem><string>If SSP address in &#8220;supervisor shadow stack&#8221; token does not match SSP address in IA32_PLi_SSP (where i is the new CPL).	</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(selector)</string></term>
+    <listitem><string>If code segment or 64-bit call gate is outside descriptor table limits. </string></listitem>
+    <listitem><string>If code segment or 64-bit call gate overlaps non-canonical space. </string></listitem>
+    <listitem><string>If the segment descriptor pointed to by the segment selector in the destination operand is not for a conforming-code segment, nonconforming-code segment, or 64-bit call gate.</string></listitem>
+    <listitem><string>If the segment descriptor pointed to by the segment selector in the destination operand is a code segment and has both the D-bit and the L- bit set.</string></listitem>
+    <listitem><string>If the DPL for a nonconforming-code segment is not equal to the CPL, or the RPL for the segment&#8217;s segment selector is greater than the CPL.</string></listitem>
+    <listitem><string>If the DPL for a conforming-code segment is greater than the CPL.</string></listitem>
+    <listitem><string>If the DPL from a 64-bit call-gate is less than the CPL or than the RPL of the 64-bit call-gate.</string></listitem>
+    <listitem><string>If the upper type field of a 64-bit call gate is not 0x0.</string></listitem>
+    <listitem><string>If the segment selector from a 64-bit call gate is beyond the descriptor table limits.</string></listitem>
+    <listitem><string>If the DPL for a code-segment obtained from a 64-bit call gate is greater than the CPL.</string></listitem>
+    <listitem><string>If the code segment descriptor pointed to by the selector in the 64-bit gate doesn't have the L-bit set and the D-bit clear.</string></listitem>
+    <listitem><string>If the segment descriptor for a segment selector from the 64-bit call gate does not indicate it is a code segment. </string></listitem>
+    <listitem><string>If FRED transitions are enabled and the selector references a call gate.</string></listitem>
+    <listitem><string>If FRED transitions are enabled, CPL is 0, and the instruction would enter compatibility mode.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If pushing the return offset or CS selector onto the stack exceeds the bounds of the stack segment when no stack switch occurs.</string></listitem>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <listitem><string>If the stack address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(selector)</string></term>
+    <listitem><string>If pushing the old values of SS selector, stack pointer, EFLAGS, CS selector, offset, or error code onto the stack violates the canonical boundary when a stack switch occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NP(selector)</string></term>
+    <listitem><string>If a code segment or 64-bit call gate is not present.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#TS(selector)</string></term>
+    <listitem><string>If the load of the new RSP exceeds the limit of the TSS.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>(64-bit mode only) If a far call is direct to an absolute address in memory.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string><anchor id="25948: 05_Level: CALL&#8212;Call Procedure"/></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

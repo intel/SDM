@@ -1,0 +1,123 @@
+<instruction name="VGETEXPPD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Convert Exponents of Packed Double Precision Floating-Point Values to Double Precision Floating-Point Values</shortdesc>
+ <longdesc><para unique="1045980">
+   <string>Extracts the biased exponents from the normalized double precision floating-point representation of each qword data element of the source operand (the second operand) as unbiased signed integer value, or convert the denormal representation of input data to unbiased negative integer values. Each integer value of the unbiased exponent is converted to double precision floating-point value and written to the corresponding qword elements of the destination operand (the first operand) as double precision floating-point numbers. </string></para>
+  <para unique="1045981">
+   <string>The destination operand is a ZMM/YMM/XMM register and updated under the writemask. The source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location, or a 512/256/128-bit vector broadcasted from a 64-bit memory location.</string></para>
+  <para unique="1045982">
+   <string>EVEX.vvvv is reserved and must be 1111b, otherwise instructions will #UD.</string></para>
+  <para unique="1045983">
+   <string>Each GETEXP operation converts the exponent value into a floating-point number (permitting input value in denormal representation). Special cases of input values are listed in </string><link linkend="53045: 06_Table: Table 5-14. VGETEXPPD Special Cases"><string>Table 5&#8209;13</string></link><string>.</string></para>
+  <para unique="1045987">
+   <string>The formula is:</string></para>
+  <para unique="1045988">
+   <string>GETEXP(x) = floor(log</string><subscript><string>2</string></subscript><string>(|x|)) </string></para>
+  <para unique="1045989">
+   <string>Notation </string><bold><string>floor(x)</string></bold><string> stands for the greatest integer not exceeding real number x. </string></para>
+  <table>
+   <caption>Table 5-13.  VGETEXPPD/SD Special Cases</caption>
+   <colgroup><col width="141.87888pt" align="leftright"/>
+    <col width="146.89872pt" align="left"/>
+    <col width="222.59735999999998pt"/>
+    <col width="89.75016pt"/>
+    <col width="58.00032pt"/>
+    <col width="36.0pt"/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1045999" format="CellRowHeadL">
+       <string>Input Operand</string></para>
+      </th>
+     <th><para unique="1046001" format="CellRowHeadL">
+       <string>Result</string></para>
+      </th>
+     <th><para unique="1046003" format="CellRowHeadL">
+       <string>Comments</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1046005" format="CellBodyL">
+       <string>src1 = NaN</string></para>
+      </td>
+     <td><para unique="1046007" format="CellBodyL">
+       <string>QNaN(src1)</string></para>
+      </td>
+     <td><para unique="1046009" format="CellBodyL">
+       </para>
+      <para unique="1046010" format="CellBodyL">
+       <string>If (SRC = SNaN) then #IE</string></para>
+      <para unique="1046011" format="CellBodyL">
+       <string>If (SRC = denormal) then #DE</string></para>
+      <para unique="1046012" format="CellBodyL">
+       </para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046014" format="CellBodyL">
+       <string>0 &lt; |src1| &lt; INF</string></para>
+      </td>
+     <td><para unique="1046016" format="CellBodyL">
+       <string>floor(log</string><subscript><string>2</string></subscript><string>(|src1|)) </string></para>
+      </td>
+     <td><para unique="1046018">
+       </para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046020" format="CellBodyL">
+       <string>| src1| = +INF</string></para>
+      </td>
+     <td><para unique="1046022" format="CellBodyL">
+       <string>+INF</string></para>
+      </td>
+     <td><para unique="1046024">
+       </para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046026" format="CellBodyL">
+       <string>| src1| = 0</string></para>
+      </td>
+     <td><para unique="1046028" format="CellBodyL">
+       <string>-INF</string></para>
+      </td>
+     <td><para unique="1046030">
+       </para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VGETEXPPD __m512d _mm512_getexp_pd(__m512d a);</string><string>
+</string><string>VGETEXPPD __m512d _mm512_mask_getexp_pd(__m512d s, __mmask8 k, __m512d a);</string><string>
+</string><string>VGETEXPPD __m512d _mm512_maskz_getexp_pd( __mmask8 k, __m512d a);</string><string>
+</string><string>VGETEXPPD __m512d _mm512_getexp_round_pd(__m512d a, int sae);</string><string>
+</string><string>VGETEXPPD __m512d _mm512_mask_getexp_round_pd(__m512d s, __mmask8 k, __m512d a, int sae);</string><string>
+</string><string>VGETEXPPD __m512d _mm512_maskz_getexp_round_pd( __mmask8 k, __m512d a, int sae);</string><string>
+</string><string>VGETEXPPD __m256d _mm256_getexp_pd(__m256d a);</string><string>
+</string><string>VGETEXPPD __m256d _mm256_mask_getexp_pd(__m256d s, __mmask8 k, __m256d a);</string><string>
+</string><string>VGETEXPPD __m256d _mm256_maskz_getexp_pd( __mmask8 k, __m256d a);</string><string>
+</string><string>VGETEXPPD __m128d _mm_getexp_pd(__m128d a);</string><string>
+</string><string>VGETEXPPD __m128d _mm_mask_getexp_pd(__m128d s, __mmask8 k, __m128d a);</string><string>
+</string><string>VGETEXPPD __m128d _mm_maskz_getexp_pd( __mmask8 k, __m128d a);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046122">
+   <string>Invalid, Denormal.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046127" format="xIndent1">
+   <string>See </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046128" format="xIndent1">
+   <string>Additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If EVEX.vvvv != 1111B.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

@@ -1,0 +1,112 @@
+<instruction name="VDPBF16PS">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Dot Product of BF16 Pairs Accumulated Into Packed Single Precision</shortdesc>
+ <longdesc><para unique="1045970">
+   <string>This instruction performs a SIMD dot-product of two BF16 pairs and accumulates into a packed single precision register.</string></para>
+  <para unique="1045971">
+   <string>&#8220;Round to nearest even&#8221; rounding mode is used when doing each accumulation of the FMA. Output denormals are always flushed to zero and input denormals are always treated as zero. MXCSR is not consulted nor updated. </string></para>
+  <section level="7">
+   <title unique="1045974"><string>NaN propagation priorities are described in </string><link linkend="33350: 06_Table: Table 2-6. PCONFIG Operation Variables"><string>Table 5&#8209;4</string></link><string>. </string></title>
+   <table>
+    <caption>Table 5-4.  NaN Propagation Priorities</caption>
+    <colgroup><col align="left"/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     </colgroup>
+    <thead><tr>
+      <th><para unique="1045985" format="CellRowHeadC">
+        <string>NaN Priority</string></para>
+       </th>
+      <th><para unique="1045987" format="CellRowHeadL">
+        <string>Description</string></para>
+       </th>
+      <th><para unique="1045989" format="CellRowHeadL">
+        <string>Comments</string></para>
+       </th>
+      </tr>
+     </thead><tbody>
+     <tr>
+      <td><para unique="1045991" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1045993" format="CellBodyL">
+        <string>src1 low is NaN</string></para>
+       </td>
+      <td><para unique="1045995" format="CellBodyL">
+        <string>Lower part has priority over upper part, i.e., it overrides the upper part.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1045997" format="CellBodyC">
+        <string>2</string></para>
+       </td>
+      <td><para unique="1045999" format="CellBodyL">
+        <string>src2 low is NaN</string></para>
+       </td>
+      <td><para unique="1046001" format="CellBodyL">
+        </para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1046003" format="CellBodyC">
+        <string>3</string></para>
+       </td>
+      <td><para unique="1046005" format="CellBodyL">
+        <string>src1 high is NaN</string></para>
+       </td>
+      <td><para unique="1046007" format="CellBodyL">
+        <string>Upper part may be overridden if lower has NaN.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1046009" format="CellBodyC">
+        <string>4</string></para>
+       </td>
+      <td><para unique="1046011" format="CellBodyL">
+        <string>src2 high is NaN</string></para>
+       </td>
+      <td><para unique="1046013" format="CellBodyL">
+        </para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1046015" format="CellBodyC">
+        <string>5</string></para>
+       </td>
+      <td><para unique="1046017" format="CellBodyL">
+        <string>srcdest is NaN</string></para>
+       </td>
+      <td><para unique="1046019" format="CellBodyL">
+        <string>Dest is propagated if no NaN is encountered by src2.</string></para>
+       </td>
+      </tr>
+     </tbody>
+    </table>
+   </section>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VDPBF16PS __m128 _mm_dpbf16_ps(__m128, __m128bh, __m128bh);</string><string>
+</string><string>VDPBF16PS __m128 _mm_mask_dpbf16_ps( __m128, __mmask8, __m128bh, __m128bh);</string><string>
+</string><string>VDPBF16PS __m128 _mm_maskz_dpbf16_ps(__mmask8, __m128, __m128bh, __m128bh);</string><string>
+</string><string>VDPBF16PS __m256 _mm256_dpbf16_ps(__m256, __m256bh, __m256bh);</string><string>
+</string><string>VDPBF16PS __m256 _mm256_mask_dpbf16_ps(__m256, __mmask8, __m256bh, __m256bh);</string><string>
+</string><string>VDPBF16PS __m256 _mm256_maskz_dpbf16_ps(__mmask8, __m256, __m256bh, __m256bh);</string><string>
+</string><string>VDPBF16PS __m512 _mm512_dpbf16_ps(__m512, __m512bh, __m512bh);</string><string>
+</string><string>VDPBF16PS __m512 _mm512_mask_dpbf16_ps(__m512, __mmask16, __m512bh, __m512bh);</string><string>
+</string><string>VDPBF16PS __m512 _mm512_maskz_dpbf16_ps(__mmask16, __m512, __m512bh, __m512bh);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046063">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046068" format="xIndent1">
+   <string>See </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

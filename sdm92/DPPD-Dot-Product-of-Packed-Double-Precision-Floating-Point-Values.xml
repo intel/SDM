@@ -1,0 +1,43 @@
+<instruction name="DPPD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Dot Product of Packed Double Precision Floating-Point Values</shortdesc>
+ <longdesc><para unique="1261264">
+   <string>Conditionally multiplies the packed double precision floating-point values in the destination operand (first operand) with the packed double precision floating-point values in the source (second operand) depending on a mask extracted from bits [5:4] of the immediate operand (third operand). If a condition mask bit is zero, the corre&#173;sponding multiplication is replaced by a value of 0.0 in the manner described by Section 12.8.4 of </string><string>Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1.</string></para>
+  <para unique="1261265">
+   <string>The two resulting double precision values are summed into an intermediate result. The intermediate result is condi&#173;tionally broadcasted to the destination using a broadcast mask specified by bits [1:0] of the immediate byte. </string></para>
+  <para unique="1261266">
+   <string>If a broadcast mask bit is &#8220;1&#8221;, the intermediate result is copied to the corresponding qword element in the destina&#173;tion operand. If a broadcast mask bit is zero, the corresponding element in the destination is set to zero.</string></para>
+  <para unique="1261267">
+   <string>DPPD follows the NaN forwarding rules stated in the Software Developer&#8217;s Manual, vol. 1, table 4.7. These rules do not cover horizontal prioritization of NaNs. Horizontal propagation of NaNs to the destination and the positioning of those NaNs in the destination is implementation dependent. NaNs on the input sources or computationally gener&#173;ated NaNs will have at least one NaN propagated to the destination.</string></para>
+  <para unique="1261268">
+   <string>128-bit Legacy SSE version: The second source can be an XMM register or an 128-bit memory location. The desti&#173;nation is not distinct from the first source XMM register and the upper bits (MAXVL-1:128) of the corresponding YMM register destination are unmodified.</string></para>
+  <para unique="1261269">
+   <string>VEX.128 encoded version: the first source operand is an XMM register or 128-bit memory location. The destination operand is an XMM register. The upper bits (MAXVL-1:128) of the corresponding YMM register destination are zeroed.</string></para>
+  <para unique="1261270">
+   <string>If VDPPD is encoded with VEX.L= 1, an attempt to execute the instruction encoded with VEX.L= 1 will cause an #UD exception.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1261299">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>DPPD 	__m128d _mm_dp_pd ( __m128d a, __m128d b, const int mask);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1261303">
+   <string>Overflow, Underflow, Invalid, Precision, Denormal.</string></para>
+  <para unique="1261304">
+   <string>Exceptions are determined separately for each add and multiply operation. Unmasked exceptions will leave the destination untouched.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1261309" format="xIndent1">
+   <string>See </string><link linkend="73761: 06_Table: Table 2-19. Type 2 Class Exception Conditions"><string>Table&#160;2&#8209;19, &#8220;Type 2 Class Exception Conditions,&#8221;</string></link><string> additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If VEX.L= 1.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

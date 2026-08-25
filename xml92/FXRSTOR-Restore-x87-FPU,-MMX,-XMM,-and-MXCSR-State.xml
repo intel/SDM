@@ -1,0 +1,248 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="FXRSTOR64_MEMmfpxenv" xed_iform="FXRSTOR64_MEMmfpxenv" encoding="NP 0F AE /1" opcode="ae" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Effective_Address</callee>
+   <callee>FP87::Is_Enabled</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_FXRSTOR</callee>
+   <var-used>True</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let is_FXRSTOR64 := True;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>REP_Not0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>X87FPDisabled</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_FXRSTOR?(is_FXRSTOR64, segment, effective_address);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="FXRSTOR64">
+    <asm-operand><varname>mem</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="FXSAVE64"><cpuid-flag>FXSAVE</cpuid-flag><cpuid-flag>INTEL64</cpuid-flag></cpuid-group>
+   <operand is_read="True">
+    <name>logical_address</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mem</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>is_FXRSTOR64</name>
+    <label><literal>True</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="FXRSTOR_MEMmfpxenv" xed_iform="FXRSTOR_MEMmfpxenv" encoding="NP 0F AE /1" opcode="ae" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Effective_Address</callee>
+   <callee>FP87::Is_Enabled</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_FXRSTOR</callee>
+   <var-used>False</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let is_FXRSTOR64 := False;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>OSZ_Prefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>REP_Not0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>X87FPDisabled</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_FXRSTOR?(is_FXRSTOR64, segment, effective_address);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="FXRSTOR">
+    <asm-operand><varname>mem</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="FXSAVE"><cpuid-flag>FXSAVE</cpuid-flag></cpuid-group>
+   <operand is_read="True">
+    <name>logical_address</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>mem</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>is_FXRSTOR64</name>
+    <label><literal>False</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="FXRSTOR" variant_kind="Standard variant" mnemonic="FXRSTOR64">
+  <code>let linear_address := Compute_Linear_Address(segment, effective_address);</code>
+  <code></code>
+  <code>if Is_Alignment_Checking_Enabled() then</code>
+  <code>    Check_Alignment?(linear_address, 16);</code>
+  <code>endif;</code>
+  <code>if not Is_Aligned(linear_address, 16) then</code>
+  <code>    Report_General_Protection_Exception!(Zero(32));</code>
+  <code>endif;</code>
+  <code></code>
+  <code>// check readability of the last byte</code>
+  <code>Check_Logical_Address_Is_Readable?(segment, effective_address + 511, 8);</code>
+  <code></code>
+  <code>let cw_sw      := Logical_Mem_Read?(segment, effective_address + 0, 32);</code>
+  <code>let tag_opcode := Logical_Mem_Read?(segment, effective_address + 4, 32);</code>
+  <code>let fip_fcs    := Logical_Mem_Read?(segment, effective_address + 8, 64);</code>
+  <code>let fdp_fds    := Logical_Mem_Read?(segment, effective_address + 16, 64);</code>
+  <code></code>
+  <code>let new_mxcsr : MXCSR_Type := Logical_Mem_Read?(segment, effective_address + 24, 32);</code>
+  <code>Check_MXCSR_Reserved_Bits?(new_mxcsr);</code>
+  <code>MXCSR := new_mxcsr;</code>
+  <code></code>
+  <code>// begin to commit FP state</code>
+  <code>FP87_Control := cw_sw[0 +: 16];</code>
+  <code>FP87_Control.RESERVED_ONE := 0b1;</code>
+  <code>FP87_Control.RESERVED_ZERO := Zero(4);</code>
+  <code></code>
+  <code>FP87_Status := cw_sw[16 +: 16];</code>
+  <code>FP87_Status.ES := 0b0;</code>
+  <code>FP87_Status.B := 0b0;</code>
+  <code></code>
+  <code>FP87_FOP := tag_opcode[16 +: 11];</code>
+  <code></code>
+  <code>if is_FXRSTOR64 then</code>
+  <code>    FP87_FIP := Set_Canonical_Wrt_Max_Size(fip_fcs);</code>
+  <code>    FP87_FCS := Zero(16);</code>
+  <code>    FP87_FDP := fdp_fds;</code>
+  <code>    FP87_FDS := Zero(16);</code>
+  <code>else</code>
+  <code>    FP87_FIP := Zero_Extend(fip_fcs[0 +: 32], 64);</code>
+  <code>    FP87_FCS := fip_fcs[32 +: 16];</code>
+  <code>    FP87_FDP := Zero_Extend(fdp_fds[0 +: 32], 64);</code>
+  <code>    FP87_FDS := fdp_fds[32 +: 16];</code>
+  <code>endif;</code>
+  <code></code>
+  <code>FP87::Process_Exceptions(FP87_Status.Exception_Flags);</code>
+  <code></code>
+  <code>// FP registers</code>
+  <code>let fp_offset := 32;</code>
+  <code>for i := 0 to 7 do</code>
+  <code>    ST[i] := Logical_Mem_Read?(segment, effective_address + fp_offset + (i * 16), 80);</code>
+  <code>endfor;</code>
+  <code></code>
+  <code>// now that FP regsister are loaded, update tag word information</code>
+  <code>FP87_Tag_Word := FP87::Expand_Abridged_Tag_Word(tag_opcode[0 +: 8]);</code>
+  <code></code>
+  <code>if CR4.OSFXSR == 0b1 then</code>
+  <code>    // XMM registers</code>
+  <code>    let xmm_offset := 160;</code>
+  <code>    let num_xmm_regs := if In_64Bit_Mode() then 16 else 8;</code>
+  <code>    for i := 0 to num_xmm_regs - 1 do</code>
+  <code>        XMM[i] := Logical_Mem_Read?(segment, effective_address + xmm_offset + (i * 16), 128);</code>
+  <code>    endfor;</code>
+  <code>endif;</code>
+  <callee>Std::Boolean::Not</callee>
+  <callee>Std::Integer::Multiply</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Add_int</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Zero_Extend</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>Check_Alignment</callee>
+  <callee>Check_Logical_Address_Is_Readable</callee>
+  <callee>Check_MXCSR_Reserved_Bits</callee>
+  <callee>Compute_Linear_Address</callee>
+  <callee>FP87::Expand_Abridged_Tag_Word</callee>
+  <callee>FP87::Process_Exceptions</callee>
+  <callee>In_64Bit_Mode</callee>
+  <callee>Is_Aligned</callee>
+  <callee>Is_Alignment_Checking_Enabled</callee>
+  <callee>Logical_Mem_Read</callee>
+  <callee>Report_General_Protection_Exception</callee>
+  <callee>ST_write</callee>
+  <callee>Set_Canonical_Wrt_Max_Size</callee>
+  <callee>XMM_write</callee>
+  <var-used>False</var-used>
+  <var-used>CR4</var-used>
+  <var-used>Memory_Read</var-used>
+  <var-used>Normal_Alignment</var-used>
+  <var-used>FP87_Control</var-used>
+  <var-used>FP87_Tag_Word</var-used>
+  <var-used>FP87_Status</var-used>
+  <var-used>FP87_FCS</var-used>
+  <var-used>FP87_FDS</var-used>
+  <var-used>FP87_FIP</var-used>
+  <var-used>FP87_FDP</var-used>
+  <var-used>FP87_FOP</var-used>
+  <var-used>MXCSR</var-used>
+  </operation>
+ <category>scalar</category>
+ <category>fp/x87/state</category>
+ <input name="is_FXRSTOR64"/>
+ <input name="logical_address"/>
+ </instruction>

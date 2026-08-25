@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="INT_IMMb" xed_iform="INT_IMMb" encoding="CD ib" opcode="cd" valid32="V" valid64="V">
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_INT</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr><code>let src := Mem_Fetch?(ip, 8);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_INT?(src);</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="INT">
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding/>
+    <label><varname>imm8</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="INT" variant_kind="Standard variant" mnemonic="INT">
+  <code>if Current_Mode() == Virtual_8086_Mode and CR4.VME == 0b0 and RFLAGS.IOPL != 0b11 then</code>
+  <code>    Report_General_Protection_Exception!(Zero(32));</code>
+  <code>endif;</code>
+  <code></code>
+  <code>Take_Interrupt?(Software_Interrupt_INTn, Unsigned(src), Next_IP);</code>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Bits::Unsigned</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Ne</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>Current_Mode</callee>
+  <callee>Report_General_Protection_Exception</callee>
+  <callee>Take_Interrupt</callee>
+  <var-used>Virtual_8086_Mode</var-used>
+  <var-used>CR4</var-used>
+  <var-used>RFLAGS</var-used>
+  <var-used>Software_Interrupt_INTn</var-used>
+  <var-used>Next_IP</var-used>
+  </operation>
+ <iform-group>
+  <iform name="INT3" xed_iform="INT3" encoding="CC" opcode="cc" valid32="V" valid64="V">
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_INT3</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_INT3?();</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="INT3">
+    </assembly-syntax>
+   </iform>
+  </iform-group>
+ <operation name="INT3" variant_kind="Standard variant" mnemonic="INT3">
+  <code>Take_Interrupt?(Software_Exception_INT3_Or_INTO, 3, Next_IP);</code>
+  <callee>Take_Interrupt</callee>
+  <var-used>Software_Exception_INT3_Or_INTO</var-used>
+  <var-used>Next_IP</var-used>
+  </operation>
+ <iform-group>
+  <iform name="INTO" xed_iform="INTO" encoding="CE" opcode="ce" valid32="V" valid64="N.E.">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_INTO</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not ((Data_Size_Of_Current_Mode() != 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Mode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_INTO?();</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="INTO">
+    </assembly-syntax>
+   </iform>
+  </iform-group>
+ <operation name="INTO" variant_kind="Standard variant" mnemonic="INTO">
+  <code>if RFLAGS.OF == 0b1 then</code>
+  <code>    Take_Interrupt?(Software_Exception_INT3_Or_INTO, 4, Next_IP);  // todo: does not set bits in DR6</code>
+  <code>endif;</code>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Take_Interrupt</callee>
+  <var-used>RFLAGS</var-used>
+  <var-used>Software_Exception_INT3_Or_INTO</var-used>
+  <var-used>Next_IP</var-used>
+  </operation>
+ <iform-group>
+  <iform name="INT1" xed_iform="INT1" encoding="F1" opcode="f1" valid32="V" valid64="V">
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_INT1</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_INT1?();</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="INT1">
+    </assembly-syntax>
+   </iform>
+  </iform-group>
+ <operation name="INT1" variant_kind="Standard variant" mnemonic="INT1">
+  <code>Take_Interrupt?(Privileged_Software_Exception_INT1, 1, Next_IP);</code>
+  <callee>Take_Interrupt</callee>
+  <var-used>Privileged_Software_Exception_INT1</var-used>
+  <var-used>Next_IP</var-used>
+  </operation>
+ <category>interrupts</category>
+ <input name="src"/>
+ </instruction>

@@ -1,0 +1,142 @@
+<instruction name="UMWAIT">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>User Level Monitor Wait</shortdesc>
+ <longdesc><para unique="1091447">
+   <string>UMWAIT instructs the processor to enter an implementation-dependent optimized state while monitoring a range of addresses. The optimized state may be either a light-weight power/performance optimized state or an improved power/performance optimized state. The selection between the two states is governed by the explicit input register bit[0] source operand.</string></para>
+  <para unique="1091448">
+   <string>UMWAIT is available when CPUID.07H.00H:ECX.WAITPKG[5] is enumerated as 1. UMWAIT may be executed at any privilege level. This instruction&#8217;s operation is the same in non-64-bit modes and in 64-bit mode.</string></para>
+  <para unique="1091449">
+   <string>The input register contains information such as the preferred optimized state the processor should enter as described in the following table. Bits other than bit 0 are reserved and will result in #GP if nonzero.</string></para>
+  <table>
+   <caption>Table 4-24.  UMWAIT Input Register Bit Definitions</caption>
+   <colgroup><col width="50.108399999999996pt" align="left"/>
+    <col width="59.6484pt"/>
+    <col width="67.48848pt"/>
+    <col width="69.81912pt"/>
+    <col width="264.61656pt"/>
+    </colgroup>
+   <thead><tr>
+     <th><para unique="1091462" format="CellRowHeadL">
+       <string>Bit Value</string></para>
+      </th>
+     <th><para unique="1091464" format="CellRowHeadL">
+       <string>State Name</string></para>
+      </th>
+     <th><para unique="1091466" format="CellRowHeadL">
+       <string>Wakeup Time</string></para>
+      </th>
+     <th><para unique="1091468" format="CellRowHeadL">
+       <string>Power Savings</string></para>
+      </th>
+     <th><para unique="1091470" format="CellRowHeadL">
+       <string>Other Benefits</string></para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1091472" format="CellBodyL">
+       <string>bit[0] = 0</string></para>
+      </td>
+     <td><para unique="1091474" format="CellBodyL">
+       <string>C0.2</string></para>
+      </td>
+     <td><para unique="1091476" format="CellBodyL">
+       <string>Slower</string></para>
+      </td>
+     <td><para unique="1091478" format="CellBodyL">
+       <string>Larger</string></para>
+      </td>
+     <td><para unique="1091480" format="CellBodyL">
+       <string>Improves performance of the other SMT thread(s) on the same core.</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091482" format="CellBodyL">
+       <string>bit[0] = 1</string></para>
+      </td>
+     <td><para unique="1091484" format="CellBodyL">
+       <string>C0.1</string></para>
+      </td>
+     <td><para unique="1091486" format="CellBodyL">
+       <string>Faster</string></para>
+      </td>
+     <td><para unique="1091488" format="CellBodyL">
+       <string>Smaller</string></para>
+      </td>
+     <td><para unique="1091490" format="CellBodyL">
+       <string>N/A</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091492" format="CellBodyL">
+       <string>bits[31:1]</string></para>
+      </td>
+     <td><para unique="1091494" format="CellBodyL">
+       <string>N/A</string></para>
+      </td>
+     <td><para unique="1091496" format="CellBodyL">
+       <string>N/A</string></para>
+      </td>
+     <td><para unique="1091498" format="CellBodyL">
+       <string>N/A</string></para>
+      </td>
+     <td><para unique="1091500" format="CellBodyL">
+       <string>Reserved</string></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  <para unique="1091502">
+   <string>The instruction wakes up when the time-stamp counter reaches or exceeds the implicit EDX:EAX 64-bit input value (if the monitoring hardware did not trigger beforehand).</string></para>
+  <para unique="1091503">
+   <string>Prior to executing the UMWAIT instruction, an operating system may specify the maximum delay it allows the processor to suspend its operation. It can do so by writing TSC-quanta value to the following 32bit MSR (IA32_UM&#173;WAIT_CONTROL at MSR index E1H):</string></para>
+  <itemizedlist><listitem><para unique="1091504">
+     <string>IA32_UMWAIT_CONTROL[31:2] &#8212; Determines the maximum time in TSC-quanta that the processor can reside in either C0.1 or C0.2. A zero value indicates no maximum time. The maximum time value is a 32-bit value where the upper 30 bits come from this field and the lower two bits are zero.</string></para>
+    </listitem>
+   <listitem><para unique="1091505">
+     <string>IA32_UMWAIT_CONTROL[1] &#8212; Reserved.</string></para>
+    </listitem>
+   <listitem><para unique="1091506">
+     <string>IA32_UMWAIT_CONTROL[0] &#8212; C0.2 is not allowed by the OS. Value of &#8220;1&#8221; means all C0.2 requests revert to C0.1.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1091507">
+   <string>If the processor that executed a UMWAIT instruction wakes due to the expiration of the operating system time-limit, the instructions sets RFLAGS.CF; otherwise, that flag is cleared.</string></para>
+  <para unique="1091508">
+   <string>The UMWAIT instruction causes a transactional abort when used inside a transactional region.</string></para>
+  <para unique="1091509">
+   <string>The UMWAIT instruction operates with the UMONITOR instruction. The two instructions allow the definition of an address at which to wait (UMONITOR) and an implementation-dependent optimized operation to perform while waiting (UMWAIT). The execution of UMWAIT is a hint to the processor that it can enter an implementation-depen&#173;dent-optimized state while waiting for an event or a store operation to the address range armed by UMONITOR. The UMWAIT instruction will not wait (will not enter an implementation-dependent optimized state) if any of the following instructions were executed before UMWAIT and after the most recent execution of UMONITOR: IRET, MONITOR, SYSEXIT, SYSRET, and far RET (the last if it is changing CPL).</string></para>
+  <para unique="1091510">
+   <string>The following additional events cause the processor to exit the implementation-dependent optimized state: a store to the address range armed by the UMONITOR instruction, an NMI or SMI, a debug exception, a machine check exception, the BINIT# signal, the INIT# signal, and the RESET# signal. Other implementation-dependent events may also cause the processor to exit the implementation-dependent optimized state.</string></para>
+  <para unique="1091511">
+   <string>In addition, an external interrupt causes the processor to exit the implementation-dependent optimized state regardless of whether maskable-interrupts are inhibited (EFLAGS.IF =0).</string></para>
+  <para unique="1091512">
+   <string>Following exit from the implementation-dependent-optimized state, control passes to the instruction after the UMWAIT instruction. A pending interrupt that is not masked (including an NMI or an SMI) may be delivered before execution of that instruction.</string></para>
+  <para unique="1091513">
+   <string>Unlike the HLT instruction, the UMWAIT instruction does not restart at the UMWAIT instruction following the handling of an SMI.</string></para>
+  <para unique="1091514">
+   <string>If the preceding UMONITOR instruction did not successfully arm an address range or if UMONITOR was not executed prior to executing UMWAIT and following the most recent execution of the legacy MONITOR instruction (UMWAIT does not interoperate with MONITOR), then the processor will not enter an optimized state. Execution will continue to the instruction following UMWAIT.</string></para>
+  <para unique="1091515">
+   <string>A store to the address range armed by the UMONITOR instruction will cause the processor to exit UMWAIT if either the store was originated by other processor agents or the store was originated by a non-processor agent.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>UMWAIT uint8_t _umwait(uint32_t control, uint64_t counter);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Numeric Exceptions">
+  <para unique="1091539">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Exceptions (All Operating Modes)">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0) </string></term>
+    <listitem><string>If src[31:1] != 0.</string></listitem>
+    <listitem><string>If CR4.TSD = 1 and CPL != 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If CPUID.07H.00H:ECX.WAITPKG[5] = 0.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

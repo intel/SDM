@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="FNCLEX" xed_iform="FNCLEX" encoding="DB E2" opcode="db" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>FP87::Is_Enabled</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Instr_FNCLEX</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>X87FPDisabled</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_FNCLEX();</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="FNCLEX">
+    </assembly-syntax>
+   </iform>
+  </iform-group>
+ <operation name="FNCLEX" variant_kind="Standard variant" mnemonic="FNCLEX">
+  <code>// Note: does not check for pending FP exceptions</code>
+  <code></code>
+  <code>FP87_Status.IE := 0b0;</code>
+  <code>FP87_Status.DE := 0b0;</code>
+  <code>FP87_Status.ZE := 0b0;</code>
+  <code>FP87_Status.OE := 0b0;</code>
+  <code>FP87_Status.UE := 0b0;</code>
+  <code>FP87_Status.PE := 0b0;</code>
+  <code>FP87_Status.SF := 0b0;</code>
+  <code>FP87_Status.ES := 0b0;</code>
+  <code>FP87_Status.C0 := UNSPECIFIED : Bit;</code>
+  <code>FP87_Status.C1 := UNSPECIFIED : Bit;</code>
+  <code>FP87_Status.C2 := UNSPECIFIED : Bit;</code>
+  <code>FP87_Status.C3 := UNSPECIFIED : Bit;</code>
+  <code>// FP87_Status.TOP and FP87_Status.CC are not affected</code>
+  <code>FP87_Status.B  := 0b0;</code>
+  <var-used>FP87_Status</var-used>
+  </operation>
+ <category>fp/x87/control</category>
+ </instruction>

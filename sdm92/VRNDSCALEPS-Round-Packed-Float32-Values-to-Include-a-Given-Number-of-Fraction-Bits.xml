@@ -1,0 +1,64 @@
+<instruction name="VRNDSCALEPS">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Round Packed Float32 Values to Include a Given Number of Fraction Bits</shortdesc>
+ <longdesc><para unique="1046173">
+   <string>Round the single precision floating-point values in the source operand by the rounding mode specified in the imme&#173;diate operand (see </string><link linkend="68758: 05_FigureFrame: Figure 5-42. Imm8 Controls for VRNDSCALEPD/SD/PS/SS"><string>Figure&#160;5&#8209;29</string></link><string>) and places the result in the destination operand.</string></para>
+  <para unique="1046177">
+   <string>The destination operand (the first operand) is a ZMM register conditionally updated according to the writemask. The source operand (the second operand) can be a ZMM register, a 512-bit memory location, or a 512-bit vector broadcasted from a 32-bit memory location.</string></para>
+  <para unique="1046178">
+   <string>The rounding process rounds the input to an integral value, plus number bits of fraction that are specified by imm8[7:4] (to be included in the result) and returns the result as a single precision floating-point value.</string></para>
+  <para unique="1046179">
+   <string>It should be noticed that no overflow is induced while executing this instruction (although the source is scaled by the imm8[7:4] value).</string></para>
+  <para unique="1046180">
+   <string>The immediate operand also specifies control fields for the rounding operation, three bit fields are defined and shown in the &#8220;Immediate Control Description&#8221; figure below. Bit 3 of the immediate byte controls the processor behavior for a precision exception, bit 2 selects the source of rounding mode control. Bits 1:0 specify a non-sticky rounding-mode value (immediate control table below lists the encoded values for rounding-mode field).</string></para>
+  <para unique="1046181">
+   <string>The Precision Floating-Point Exception is signaled according to the immediate operand. If any source operand is an SNaN then it will be converted to a QNaN. If DAZ is set to &#8216;1 then denormals will be converted to zero before rounding.</string></para>
+  <para unique="1046182">
+   <string>The sign of the result of this instruction is preserved, including the sign of zero.</string></para>
+  <para unique="1046184">
+   <string>The formula of the operation on each data element for VRNDSCALEPS is</string></para>
+  <para unique="1046185" format="ListBulletCONT">
+   <string>ROUND(x) = 2</string><superscript><string>-M</string></superscript><string>*Round_to_INT(x*2</string><superscript><string>M</string></superscript><string>, round_ctrl), </string></para>
+  <para unique="1046186" format="ListBulletCONT">
+   <string>round_ctrl = imm[3:0];</string></para>
+  <para unique="1046187" format="ListBulletCONT">
+   <string>M=imm[7:4];</string></para>
+  <para unique="1046188">
+   <string>The operation of x*2</string><superscript><string>M</string></superscript><string> is computed as if the exponent range is unlimited (i.e., no overflow ever occurs).</string></para>
+  <para unique="1046189">
+   <string>VRNDSCALEPS is a more general form of the VEX-encoded VROUNDPS instruction. In VROUNDPS, the formula of the operation on each element is</string></para>
+  <para unique="1046190" format="ListBulletCONT">
+   <string>ROUND(x) = Round_to_INT(x, round_ctrl), </string></para>
+  <para unique="1046191" format="ListBulletCONT">
+   <string>round_ctrl = imm[3:0];</string></para>
+  <para unique="1046192">
+   <string>Note: EVEX.vvvv is reserved and must be 1111b, otherwise instructions will #UD.</string></para>
+  <para unique="1046195">
+   <string>Handling of special case of input values are listed in </string><link linkend="54735: 06_Table: Table 5-25. VRNDSCALEPD/SD/PS/SS Special Cases"><string>Table 5&#8209;29</string></link><string>.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VRNDSCALEPS __m512 _mm512_roundscale_ps( __m512 a, int imm);</string><string>
+</string><string>VRNDSCALEPS __m512 _mm512_roundscale_round_ps( __m512 a, int imm, int sae);</string><string>
+</string><string>VRNDSCALEPS __m512 _mm512_mask_roundscale_ps(__m512 s, __mmask16 k, __m512 a, int imm);</string><string>
+</string><string>VRNDSCALEPS __m512 _mm512_mask_roundscale_round_ps(__m512 s, __mmask16 k, __m512 a, int imm, int sae);</string><string>
+</string><string>VRNDSCALEPS __m512 _mm512_maskz_roundscale_ps( __mmask16 k, __m512 a, int imm);</string><string>
+</string><string>VRNDSCALEPS __m512 _mm512_maskz_roundscale_round_ps( __mmask16 k, __m512 a, int imm, int sae);</string><string>
+</string><string>VRNDSCALEPS __m256 _mm256_roundscale_ps( __m256 a, int imm);</string><string>
+</string><string>VRNDSCALEPS __m256 _mm256_mask_roundscale_ps(__m256 s, __mmask8 k, __m256 a, int imm);</string><string>
+</string><string>VRNDSCALEPS __m256 _mm256_maskz_roundscale_ps( __mmask8 k, __m256 a, int imm);</string><string>
+</string><string>VRNDSCALEPS __m128 _mm_roundscale_ps( __m256 a, int imm);</string><string>
+</string><string>VRNDSCALEPS __m128 _mm_mask_roundscale_ps(__m128 s, __mmask8 k, __m128 a, int imm);</string><string>
+</string><string>VRNDSCALEPS __m128 _mm_maskz_roundscale_ps( __mmask8 k, __m128 a, int imm);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046257">
+   <string>Invalid, Precision.</string></para>
+  <para unique="1046258">
+   <string>If SPE is enabled, precision exception is not reported (regardless of MXCSR exception mask).</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046263" format="xIndent1">
+   <string>See </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

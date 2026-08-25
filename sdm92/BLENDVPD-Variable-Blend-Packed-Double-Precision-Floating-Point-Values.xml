@@ -1,0 +1,45 @@
+<instruction name="BLENDVPD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Variable Blend Packed Double Precision Floating-Point Values</shortdesc>
+ <longdesc><para unique="1261277">
+   <string>Conditionally copy each quadword data element of double precision floating-point value from the second source operand and the first source operand depending on mask bits defined in the mask register operand. The mask bits are the most significant bit in each quadword element of the mask register.</string></para>
+  <para unique="1261278">
+   <string>Each quadword element of the destination operand is copied from:</string></para>
+  <itemizedlist><listitem><para unique="1261279">
+     <string>the corresponding quadword element in the second source operand, if a mask bit is &#8220;1&#8221;; or</string></para>
+    </listitem>
+   <listitem><para unique="1261280">
+     <string>the corresponding quadword element in the first source operand, if a mask bit is &#8220;0&#8221;</string></para>
+    </listitem>
+   </itemizedlist><para unique="1261281">
+   <string>The register assignment of the implicit mask operand for BLENDVPD is defined to be the architectural register XMM0.</string></para>
+  <para unique="1261282">
+   <string>128-bit Legacy SSE version: The first source operand and the destination operand is the same. Bits (MAXVL-1:128) of the corresponding YMM destination register remain unchanged. The mask register operand is implicitly defined to be the architectural register XMM0. An attempt to execute BLENDVPD with a VEX prefix will cause #UD.</string></para>
+  <para unique="1261283">
+   <string>VEX.128 encoded version: The first source operand and the destination operand are XMM registers. The second source operand is an XMM register or 128-bit memory location. The mask operand is the third source register, and encoded in bits[7:4] of the immediate byte(imm8). The bits[3:0] of imm8 are ignored. In 32-bit mode, imm8[7] is ignored. The upper bits (MAXVL-1:128) of the corresponding YMM register (destination register) are zeroed. VEX.W must be 0, otherwise, the instruction will #UD.</string></para>
+  <para unique="1261284">
+   <string>VEX.256 encoded version: The first source operand and destination operand are YMM registers. The second source operand can be a YMM register or a 256-bit memory location. The mask operand is the third source register, and encoded in bits[7:4] of the immediate byte(imm8). The bits[3:0] of imm8 are ignored. In 32-bit mode, imm8[7] is ignored. VEX.W must be 0, otherwise, the instruction will #UD.</string></para>
+  <para unique="1261285">
+   <string>VBLENDVPD permits the mask to be any XMM or YMM register. In contrast, BLENDVPD treats XMM0 implicitly as the mask and do not support non-destructive destination operation. </string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>BLENDVPD 		__m128d _mm_blendv_pd(__m128d v1, __m128d v2, __m128d v3);</string><string>
+</string><string>VBLENDVPD 			__m128 _mm_blendv_pd (__m128d a, __m128d b, __m128d mask);</string><string>
+</string><string>VBLENDVPD 			__m256 _mm256_blendv_pd (__m256d a, __m256d b, __m256d mask);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1261318" format="PseudoCode">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1261323" format="xIndent1">
+   <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions,&#8221;</string></link><string> additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If VEX.W = 1.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

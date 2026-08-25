@@ -1,0 +1,100 @@
+<instruction name="LLDT">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Load Local Descriptor Table Register</shortdesc>
+ <longdesc><para unique="1261241">
+   <string>Loads the source operand into the segment selector field of the </string><indexterm><primary>LDTR (local descriptor table register)</primary></indexterm><string>local descriptor table register (LDTR). The source operand (a general-purpose register or a memory location) contains a segment selector that points to a </string><indexterm><primary>LDT (local descriptor table)</primary></indexterm><string>local descriptor table (LDT). After the segment selector is loaded in the LDTR, the processor uses the segment selector to locate the segment descriptor for the LDT in the </string><indexterm><primary>GDT (global descriptor table)</primary></indexterm><string>global descriptor table (GDT). It then loads the segment limit and base address for the LDT from the segment descriptor into the LDTR. The segment registers DS, ES, SS, FS, GS, and CS are not affected by this instruction, nor is the LDTR field in the task state segment (TSS) for the current task.</string></para>
+  <para unique="1261244">
+   <string>If bits 2-15 of the source operand are 0, LDTR is marked invalid and the LLDT instruction completes silently. However, all subsequent references to descriptors in the LDT (except by the LAR, VERR, VERW or LSL instructions) cause a general protection exception (#GP).</string></para>
+  <para unique="1261245">
+   <string>The operand-size attribute has no effect on this instruction. </string></para>
+  <para unique="1261246">
+   <string>The LLDT instruction is provided for use in operating-system software; it should not be used in application programs. This instruction can only be executed in protected mode or 64-bit mode.</string></para>
+  <para unique="1261247">
+   <string>In 64-bit mode, the operand size is fixed at 16 bits.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1261263">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(selector)</string></term>
+    <listitem><string>If the selector operand does not point into the Global Descriptor Table or if the entry in the GDT is not a Local Descriptor Table.</string></listitem>
+    <listitem><string>Segment selector is beyond GDT limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NP(selector)</string></term>
+    <listitem><string>If the LDT descriptor is not present.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The LLDT instruction is not recognized in real-address mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The LLDT instruction is not recognized in virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261279" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(selector)</string></term>
+    <listitem><string>If the selector operand does not point into the Global Descriptor Table or if the entry in the GDT is not a Local Descriptor Table.</string></listitem>
+    <listitem><string>Segment selector is beyond GDT limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NP(selector)</string></term>
+    <listitem><string>If the LDT descriptor is not present.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

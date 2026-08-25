@@ -1,0 +1,126 @@
+<instruction name="VGETEXPPH">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Convert Exponents of Packed FP16 Values to FP16 Values</shortdesc>
+ <longdesc><para unique="1045959">
+   <string>This instruction extracts the biased exponents from the normalized FP16 representation of each word element of the source operand (the second operand) as unbiased signed integer value, or convert the denormal representa&#173;tion of input data to unbiased negative integer values. Each integer value of the unbiased exponent is converted to an FP16 value and written to the corresponding word elements of the destination operand (the first operand) as FP16 numbers.</string></para>
+  <para unique="1045960">
+   <string>The destination elements are updated according to the writemask.</string></para>
+  <para unique="1045961">
+   <string>Each GETEXP operation converts the exponent value into a floating-point number (permitting input value in denormal representation). Special cases of input values are listed in </string><link linkend="62319: 06_Table: Table 1-16. VF[,N]MSUB[132,213,231]PH Notation for Operands"><string>Table 5&#8209;8</string></link><string>.</string></para>
+  <para unique="1045965">
+   <string>The formula is:</string></para>
+  <para unique="1045966">
+   <string>GETEXP(x) = floor(log</string><subscript><string>2</string></subscript><string>(|x|))</string></para>
+  <para unique="1045967">
+   <string>Notation </string><bold><string>floor(x)</string></bold><string> stands for maximal integer not exceeding real number x.</string></para>
+  <para unique="1045968">
+   <string>Software usage of VGETEXPxx and VGETMANTxx instructions generally involve a combination of GETEXP operation and GETMANT operation (see VGETMANTPH). Thus, the VGETEXPPH instruction does not require software to handle SIMD floating-point exceptions.</string></para>
+  <table>
+   <caption>Table 5-14.  VGETEXPPH/VGETEXPSH Special Cases</caption>
+   <colgroup><col width="141.87888pt" align="leftright"/>
+    <col width="146.89872pt" align="left"/>
+    <col width="222.59735999999998pt"/>
+    <col width="89.75016pt"/>
+    <col width="58.00032pt"/>
+    <col width="36.0pt"/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1045978" format="CellRowHeadL">
+       <string>Input Operand</string></para>
+      </th>
+     <th><para unique="1045980" format="CellRowHeadL">
+       <string>Result</string></para>
+      </th>
+     <th><para unique="1045982" format="CellRowHeadL">
+       <string>Comments</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1045984" format="CellBodyL">
+       <string>src1 = NaN</string></para>
+      </td>
+     <td><para unique="1045986" format="CellBodyL">
+       <string>QNaN(src1)</string></para>
+      </td>
+     <td><para unique="1045988" format="CellBodyL">
+       </para>
+      <para unique="1045989" format="CellBodyL">
+       <string>If (SRC = SNaN), then #IE.</string></para>
+      <para unique="1045990" format="CellBodyL">
+       <string>If (SRC = denormal), then #DE.</string></para>
+      <para unique="1045991" format="CellBodyL">
+       </para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1045993" format="CellBodyL">
+       <string>0 &lt; |src1| &lt; INF</string></para>
+      </td>
+     <td><para unique="1045995" format="CellBodyL">
+       <string>floor(log</string><subscript><string>2</string></subscript><string>(|src1|)) </string></para>
+      </td>
+     <td><para unique="1045997">
+       </para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1045999" format="CellBodyL">
+       <string>| src1| = +INF</string></para>
+      </td>
+     <td><para unique="1046001" format="CellBodyL">
+       <string>+INF</string></para>
+      </td>
+     <td><para unique="1046003">
+       </para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046005" format="CellBodyL">
+       <string>| src1| = 0</string></para>
+      </td>
+     <td><para unique="1046007" format="CellBodyL">
+       <string>-INF</string></para>
+      </td>
+     <td><para unique="1046009">
+       </para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <para unique="1046073">
+   <string>VGETEXPPH __m128h _mm_getexp_ph (__m128h a);</string></para>
+  <para unique="1046074">
+   <string>VGETEXPPH __m128h _mm_mask_getexp_ph (__m128h src, __mmask8 k, __m128h a);</string></para>
+  <para unique="1046075">
+   <string>VGETEXPPH __m128h _mm_maskz_getexp_ph (__mmask8 k, __m128h a);</string></para>
+  <para unique="1046076">
+   <string>VGETEXPPH __m256h _mm256_getexp_ph (__m256h a);</string></para>
+  <para unique="1046077">
+   <string>VGETEXPPH __m256h _mm256_mask_getexp_ph (__m256h src, __mmask16 k, __m256h a);</string></para>
+  <para unique="1046078">
+   <string>VGETEXPPH __m256h _mm256_maskz_getexp_ph (__mmask16 k, __m256h a);</string></para>
+  <para unique="1046079">
+   <string>VGETEXPPH __m512h _mm512_getexp_ph (__m512h a);</string></para>
+  <para unique="1046080">
+   <string>VGETEXPPH __m512h _mm512_mask_getexp_ph (__m512h src, __mmask32 k, __m512h a);</string></para>
+  <para unique="1046081">
+   <string>VGETEXPPH __m512h _mm512_maskz_getexp_ph (__mmask32 k, __m512h a);</string></para>
+  <para unique="1046082">
+   <string>VGETEXPPH __m512h _mm512_getexp_round_ph (__m512h a, const int sae);</string></para>
+  <para unique="1046083">
+   <string>VGETEXPPH __m512h _mm512_mask_getexp_round_ph (__m512h src, __mmask32 k, __m512h a, const int sae);</string></para>
+  <para unique="1046084">
+   <string>VGETEXPPH __m512h _mm512_maskz_getexp_round_ph (__mmask32 k, __m512h a, const int sae);</string></para>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046086">
+   <string>Invalid, Denormal.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046091" format="xIndent1">
+   <string>EVEX-encoded instructions, see </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

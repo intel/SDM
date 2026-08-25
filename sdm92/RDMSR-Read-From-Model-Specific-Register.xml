@@ -1,0 +1,79 @@
+<instruction name="RDMSR">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Read From Model Specific Register</shortdesc>
+ <longdesc><para unique="1092673">
+   <string>Reads the contents of a 64-bit model specific register (MSR). RDMSR has an </string><bold><string>implicit</string></bold><string> form and an </string><bold><string>immediate</string></bold><string> form.</string></para>
+  <para unique="1091443">
+   <string>The implicit form reads the contents of a 64-bit </string><indexterm><primary>MSRs (model specific registers):reading</primary></indexterm><string>model specific register (MSR) specified in the ECX register into registers EDX:EAX. (On processors that support the Intel&#160;64 architecture, the high-order 32 bits of RCX are ignored.) The EDX register is loaded with the high-order 32 bits of the MSR and the EAX register is loaded with the low-order 32 bits. (On processors that support the Intel&#160;64 architecture, the high-order 32 bits of each of RAX and RDX are cleared.) If fewer than 64 bits are implemented in the MSR being read, the values returned to EDX:EAX in unimplemented bit locations are undefined.</string></para>
+  <para unique="1092900">
+   <string>The immediate form reads the contents of the MSR specified by operand 2 into operand 1. Operand 2 is an imme&#173;diate, while operand 1 is a general-purpose register. The immediate form can be used only in 64-bit mode; other&#173;wise, a invalid-opcode exception (#UD) will be generated. The immediate form may provide better performance than the implicit form.</string></para>
+  <para unique="1091444">
+   <string>This instruction must be executed at privilege level 0 or in real-address mode; otherwise, a general protection exception #GP(0) will be generated. Specifying a reserved or unimplemented MSR address in ECX will also cause a general protection exception.</string></para>
+  <para unique="1091445">
+   <string>The MSRs control functions for testability, execution tracing, performance-monitoring, and machine check errors. </string><link linkend="13468: A1Heading: Appendix D Model-Specific Registers (MSRs)"><string>Chapter 2, &#8220;Model-Specific Registers (MSRs)&#8221;</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 4, lists all the MSRs that can be read with this instruction and their addresses. Note that each processor family has its own set of MSRs.</string></para>
+  <para unique="1091449">
+   <string>The CPUID instruction should be used to determine whether MSRs are supported (CPUID.01H:EDX[5] </string><string>= 1) before using this instruction. The immediate form is supported only in CPUID.07H.01H:ECX.MSR_IMM[5] = 1. </string></para>
+  <section level="7">
+   <title unique="1091450"><string>IA-32 Architecture Compatibility</string></title>
+   <para unique="1091451">
+    <string>The MSRs and the ability to read them with the RDMSR instruction were introduced into the IA-32 Architecture with the Pentium processor. Execution of this instruction by an IA-32 processor earlier than the Pentium processor results in an invalid opcode exception #UD.</string></para>
+   </section>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1091459">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    <listitem><string>If the value in ECX specifies a reserved or unimplemented MSR address.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If the immediate form is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If the value in ECX specifies a reserved or unimplemented MSR address.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If the immediate form is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string> The RDMSR instruction is not recognized in virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1091470" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    <listitem><string>If the value in ECX specifies a reserved or unimplemented MSR address.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If the immediate form is used and CPUID.07H.01H:ECX.MSR_IMM[5] = 0.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

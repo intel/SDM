@@ -1,0 +1,1469 @@
+<instruction name="POPF/POPFD/POPFQ">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Pop Stack Into EFLAGS Register</shortdesc>
+ <longdesc><para unique="1091463">
+   <string>Pops a doubleword (POPFD) from the top of the stack (if the current operand-size attribute is 32) and stores the value in the </string><indexterm><primary>EFLAGS register:popping</primary></indexterm><string>EFLAGS register, or pops a word from the top of the stack (if the operand-size attribute is 16) and stores it in the lower 16 bits of the EFLAGS register (that is, the FLAGS register). These instructions reverse the operation of the PUSHF/PUSHFD/PUSHFQ instructions. </string></para>
+  <para unique="1091465">
+   <string>The POPF (pop flags) and POPFD (pop flags double) mnemonics reference the same opcode. The POPF instruction is intended for use when the operand-size attribute is 16; the POPFD instruction is intended for use when the operand-size attribute is 32. Some assemblers may force the operand size to 16 for POPF and to 32 for POPFD. Others may treat the mnemonics as synonyms (POPF/POPFD) and use the setting of the operand-size attribute to determine the size of values to pop from the stack.</string></para>
+  <para unique="1091468">
+   <string>The effect of POPF/POPFD on the EFLAGS register changes, depending on the mode of operation. See </string><link linkend="11825: 06_Table: Table 4-12."><string>Table 4&#8209;20</string></link><string> and the key below for details.</string></para>
+  <para unique="1091470">
+   <string>When operating in protected, compatibility, or 64-bit mode at privilege level 0 (or in real-address mode, the equiv&#173;alent to privilege level 0), all non-reserved flags in the EFLAGS register except RF</string><footnote><para unique="1091473">
+     <string>RF is always zero after the execution of POPF. This is because POPF, like all instructions, clears RF as it begins to execute.</string></para>
+    </footnote><string>, VIP, VIF, and VM may be modi&#173;fied. VIP, VIF, and VM remain unaffected.</string></para>
+  <para unique="1091474">
+   <string>When operating in protected, compatibility, or 64-bit mode with a privilege level greater than 0, but less than or equal to IOPL, all flags can be modified except the IOPL field and RF, IF, VIP, VIF, and VM; these remain unaffected. The AC and ID flags can only be modified if the operand-size attribute is 32. The interrupt flag (IF) is altered only when executing at a level at least as privileged as the IOPL. If a POPF/POPFD instruction is executed with insuffi&#173;cient privilege, an exception does not occur but privileged bits do not change.</string></para>
+  <para unique="1091475">
+   <string>When operating in virtual-8086 mode (EFLAGS.VM = 1) without the virtual-8086 mode extensions (CR4.VME = 0), the POPF/POPFD instructions can be used only if IOPL = 3; otherwise, a general-protection exception (#GP) occurs. If the virtual-8086 mode extensions are enabled (CR4.VME = 1), POPF (but not POPFD) can be executed in virtual-8086 mode with IOPL &lt; 3.</string></para>
+  <para unique="1091476">
+   <string>(The protected-mode virtual-interrupt feature &#8212; enabled by setting CR4.PVI &#8212; affects the CLI and STI instructions in the same manner as the virtual-8086 mode extensions. POPF, however, is not affected by CR4.PVI.)</string></para>
+  <para unique="1091477">
+   <string>In 64-bit mode, the mnemonic assigned is POPFQ (note that the 32-bit operand is not encodable). POPFQ pops 64 bits from the stack. Reserved bits of RFLAGS (including the upper 32 bits of RFLAGS) are not affected.</string></para>
+  <para unique="1091481">
+   <string>See </string><link linkend="40668: 01_Level: CHAPTER 3 Basic Execution Environment"><string>Chapter 3</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for more informa&#173;tion about the EFLAGS registers.</string></para>
+  <table>
+   <caption>Table 4-20.  Effect of POPF/POPFD on the EFLAGS Register </caption>
+   <colgroup><col width="64.8pt"/>
+    <col width="39.00024pt"/>
+    <col width="22.89528pt"/>
+    <col width="25.99992pt"/>
+    <col width="19.803600000000003pt"/>
+    <col width="20.404079999999997pt"/>
+    <col width="21.003839999999997pt"/>
+    <col width="18.80352pt"/>
+    <col width="20.00376pt"/>
+    <col width="18.80352pt"/>
+    <col width="19.20384pt"/>
+    <col width="30.000239999999998pt"/>
+    <col width="19.803600000000003pt"/>
+    <col width="19.803600000000003pt"/>
+    <col width="18.0036pt"/>
+    <col width="18.30384pt"/>
+    <col width="17.70408pt"/>
+    <col width="17.40384pt"/>
+    <col width="18.60408pt"/>
+    <col width="19.803600000000003pt"/>
+    <col width="18.60408pt"/>
+    <col width="30.599999999999998pt"/>
+    </colgroup>
+   <thead><tr>
+     <th><para unique="1091529" format="CellColHead">
+       <string>Mode</string></para>
+      </th>
+     <th><para unique="1091531" format="CellColHead">
+       <string>Operand
+Size</string></para>
+      </th>
+     <th><para unique="1091533" format="CellColHead">
+       <string>CPL</string></para>
+      </th>
+     <th><para unique="1091535" format="CellColHead">
+       <string>IOPL</string></para>
+      </th>
+     <th colspan="17"><para unique="1091537" format="CellColHead">
+       <string>Flags</string></para>
+      </th>
+     <th><para unique="1091571" format="CellColHead">
+       </para>
+      <para unique="1091572" format="CellColHead">
+       <string>Notes</string></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1091574" format="CellColHead">
+       </para>
+      </th>
+     <th><para unique="1091576" format="CellColHead">
+       </para>
+      </th>
+     <th><para unique="1091578" format="CellColHead">
+       </para>
+      </th>
+     <th><para unique="1091580" format="CellColHead">
+       </para>
+      </th>
+     <th><para unique="1091582" format="CellRowHeadR">
+       <string>21</string></para>
+      </th>
+     <th><para unique="1091584" format="CellRowHeadR">
+       <string>20</string></para>
+      </th>
+     <th><para unique="1091586" format="CellRowHeadR">
+       <string>19</string></para>
+      </th>
+     <th><para unique="1091588" format="CellRowHeadR">
+       <string>18</string></para>
+      </th>
+     <th><para unique="1091590" format="CellRowHeadR">
+       <string>17</string></para>
+      </th>
+     <th><para unique="1091592" format="CellRowHeadR">
+       <string>16</string></para>
+      </th>
+     <th><para unique="1091594" format="CellRowHeadR">
+       <string>14</string></para>
+      </th>
+     <th><para unique="1091596" format="CellRowHeadR">
+       <string>13:12</string></para>
+      </th>
+     <th><para unique="1091598" format="CellRowHeadR">
+       <string>11</string></para>
+      </th>
+     <th><para unique="1091600" format="CellRowHeadR">
+       <string>10</string></para>
+      </th>
+     <th><para unique="1091602" format="CellRowHeadR">
+       <string>9</string></para>
+      </th>
+     <th><para unique="1091604" format="CellRowHeadR">
+       <string>8</string></para>
+      </th>
+     <th><para unique="1091606" format="CellRowHeadR">
+       <string>7</string></para>
+      </th>
+     <th><para unique="1091608" format="CellRowHeadR">
+       <string>6</string></para>
+      </th>
+     <th><para unique="1091610" format="CellRowHeadR">
+       <string>4</string></para>
+      </th>
+     <th><para unique="1091612" format="CellRowHeadR">
+       <string>2</string></para>
+      </th>
+     <th><para unique="1091614" format="CellRowHeadR">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1091616" format="CellColHead">
+       </para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1091618" format="CellColHead">
+       </para>
+      </th>
+     <th><para unique="1091620" format="CellColHead">
+       </para>
+      </th>
+     <th><para unique="1091622" format="CellColHead">
+       </para>
+      </th>
+     <th><para unique="1091624" format="CellColHead">
+       </para>
+      </th>
+     <th><para unique="1091626" format="CellRowHeadR">
+       <string>ID</string></para>
+      </th>
+     <th><para unique="1091628" format="CellRowHeadR">
+       <string>VIP</string></para>
+      </th>
+     <th><para unique="1091630" format="CellRowHeadR">
+       <string>VIF</string></para>
+      </th>
+     <th><para unique="1091632" format="CellRowHeadR">
+       <string>AC</string></para>
+      </th>
+     <th><para unique="1091634" format="CellRowHeadR">
+       <string>VM</string></para>
+      </th>
+     <th><para unique="1091636" format="CellRowHeadR">
+       <string>RF</string></para>
+      </th>
+     <th><para unique="1091638" format="CellRowHeadR">
+       <string>NT</string></para>
+      </th>
+     <th><para unique="1091640" format="CellRowHeadR">
+       <string>IOPL</string></para>
+      </th>
+     <th><para unique="1091642" format="CellRowHeadR">
+       <string>OF</string></para>
+      </th>
+     <th><para unique="1091644" format="CellRowHeadR">
+       <string>DF</string></para>
+      </th>
+     <th><para unique="1091646" format="CellRowHeadR">
+       <string>IF</string></para>
+      </th>
+     <th><para unique="1091648" format="CellRowHeadR">
+       <string>TF</string></para>
+      </th>
+     <th><para unique="1091650" format="CellRowHeadR">
+       <string>SF</string></para>
+      </th>
+     <th><para unique="1091652" format="CellRowHeadR">
+       <string>ZF</string></para>
+      </th>
+     <th><para unique="1091654" format="CellRowHeadR">
+       <string>AF</string></para>
+      </th>
+     <th><para unique="1091656" format="CellRowHeadR">
+       <string>PF</string></para>
+      </th>
+     <th><para unique="1091658" format="CellRowHeadR">
+       <string>CF</string></para>
+      </th>
+     <th><para unique="1091660" format="CellColHead">
+       </para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <th><para unique="1091662" format="CellRowHeadC">
+       <string>Real-Address Mode
+(CR0.PE = 0)</string></para>
+      </th>
+     <th><para unique="1091664" format="CellRowHeadJ">
+       <string>16</string></para>
+      </th>
+     <th><para unique="1091666" format="CellRowHeadL">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1091668" format="CellRowHeadR">
+       <string>0-3</string></para>
+      </th>
+     <th><para unique="1091670" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091672" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091674" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091676" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091678" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091680" format="CellRowHeadR">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1091682" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091684" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091686" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091688" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091690" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091692" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091694" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091696" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091698" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091700" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091702" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091704" format="CellRowHeadR">
+       </para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1091706" format="CellRowHeadC">
+       </para>
+      </th>
+     <th><para unique="1091708" format="CellRowHeadJ">
+       <string>32</string></para>
+      </th>
+     <th><para unique="1091710" format="CellRowHeadL">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1091712" format="CellRowHeadR">
+       <string>0-3</string></para>
+      </th>
+     <th><para unique="1091714" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091716" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091718" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091720" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091722" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091724" format="CellRowHeadR">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1091726" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091728" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091730" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091732" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091734" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091736" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091738" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091740" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091742" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091744" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091746" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091748" format="CellRowHeadR">
+       </para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1091750" format="CellRowHeadC">
+       <string>Protected, Compatibility, and 64-Bit Modes</string></para>
+      <para unique="1091751" format="CellRowHeadC">
+       </para>
+      <para unique="1091752" format="CellRowHeadC">
+       <string>(CR0.PE = 1 </string></para>
+      <para unique="1091753" format="CellRowHeadC">
+       <string>EFLAGS.VM = 0)</string></para>
+      </th>
+     <th><para unique="1091755" format="CellRowHeadJ">
+       <string>16</string></para>
+      </th>
+     <th><para unique="1091757" format="CellRowHeadL">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1091759" format="CellRowHeadR">
+       <string>0-3</string></para>
+      </th>
+     <th><para unique="1091761" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091763" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091765" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091767" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091769" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091771" format="CellRowHeadR">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1091773" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091775" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091777" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091779" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091781" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091783" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091785" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091787" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091789" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091791" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091793" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091795" format="CellRowHeadR">
+       </para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1091797" format="CellRowHeadC">
+       </para>
+      </th>
+     <th><para unique="1091799" format="CellRowHeadJ">
+       <string>16</string></para>
+      </th>
+     <th><para unique="1091801" format="CellRowHeadL">
+       <string>1-3</string></para>
+      </th>
+     <th><para unique="1091803" format="CellRowHeadR">
+       <string>&lt;CPL</string></para>
+      </th>
+     <th><para unique="1091805" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091807" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091809" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091811" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091813" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091815" format="CellRowHeadR">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1091817" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091819" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091821" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091823" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091825" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091827" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091829" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091831" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091833" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091835" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091837" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091839" format="CellRowHeadR">
+       </para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1091841" format="CellRowHeadC">
+       </para>
+      </th>
+     <th><para unique="1091843" format="CellRowHeadJ">
+       <string>16</string></para>
+      </th>
+     <th><para unique="1091845" format="CellRowHeadL">
+       <string>1-3</string></para>
+      </th>
+     <th><para unique="1091847" format="CellRowHeadR">
+       <string>&#8805;CPL</string></para>
+      </th>
+     <th><para unique="1091849" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091851" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091853" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091855" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091857" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091859" format="CellRowHeadR">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1091861" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091863" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091865" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091867" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091869" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091871" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091873" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091875" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091877" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091879" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091881" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091883" format="CellRowHeadR">
+       </para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1091885" format="CellRowHeadC">
+       </para>
+      </th>
+     <th><para unique="1091887" format="CellRowHeadJ">
+       <string>32, 64</string></para>
+      </th>
+     <th><para unique="1091889" format="CellRowHeadL">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1091891" format="CellRowHeadR">
+       <string>0-3</string></para>
+      </th>
+     <th><para unique="1091893" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091895" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091897" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091899" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091901" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091903" format="CellRowHeadR">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1091905" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091907" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091909" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091911" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091913" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091915" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091917" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091919" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091921" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091923" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091925" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091927" format="CellRowHeadR">
+       </para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1091929" format="CellRowHeadC">
+       </para>
+      </th>
+     <th><para unique="1091931" format="CellRowHeadJ">
+       <string>32, 64</string></para>
+      </th>
+     <th><para unique="1091933" format="CellRowHeadL">
+       <string>1-3</string></para>
+      </th>
+     <th><para unique="1091935" format="CellRowHeadR">
+       <string>&lt;CPL</string></para>
+      </th>
+     <th><para unique="1091937" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091939" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091941" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091943" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091945" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091947" format="CellRowHeadR">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1091949" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091951" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091953" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091955" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091957" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091959" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091961" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091963" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091965" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091967" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091969" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091971" format="CellRowHeadR">
+       </para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1091973" format="CellRowHeadC">
+       </para>
+      </th>
+     <th><para unique="1091975" format="CellRowHeadJ">
+       <string>32, 64</string></para>
+      </th>
+     <th><para unique="1091977" format="CellRowHeadL">
+       <string>1-3</string></para>
+      </th>
+     <th><para unique="1091979" format="CellRowHeadR">
+       <string>&#8805;CPL</string></para>
+      </th>
+     <th><para unique="1091981" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091983" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091985" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091987" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091989" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091991" format="CellRowHeadR">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1091993" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091995" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1091997" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1091999" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092001" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092003" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092005" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092007" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092009" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092011" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092013" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092015" format="CellRowHeadR">
+       </para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1092017" format="CellRowHeadC">
+       <string>Virtual-8086</string></para>
+      <para unique="1092018" format="CellRowHeadC">
+       <string>(CR0.PE = 1</string></para>
+      <para unique="1092019" format="CellRowHeadC">
+       <string>EFLAGS.VM = 1</string></para>
+      <para unique="1092020" format="CellRowHeadC">
+       <string>CR4.VME = 0)</string></para>
+      </th>
+     <th><para unique="1092022" format="CellRowHeadJ">
+       <string>16</string></para>
+      </th>
+     <th><para unique="1092024" format="CellRowHeadL">
+       <string>3</string></para>
+      </th>
+     <th><para unique="1092026" format="CellRowHeadR">
+       <string>0-2</string></para>
+      </th>
+     <th><para unique="1092028" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092030" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092032" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092034" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092036" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092038" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092040" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092042" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092044" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092046" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092048" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092050" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092052" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092054" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092056" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092058" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092060" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092065" format="CellRowHeadR">
+       <footnote><para unique="1092064" format="TableFootnote">
+         <string>#GP fault - no flag update</string></para>
+        </footnote></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1092067" format="CellRowHeadC">
+       </para>
+      </th>
+     <th><para unique="1092069" format="CellRowHeadJ">
+       <string>16</string></para>
+      </th>
+     <th><para unique="1092071" format="CellRowHeadL">
+       <string>3</string></para>
+      </th>
+     <th><para unique="1092073" format="CellRowHeadR">
+       <string>3</string></para>
+      </th>
+     <th><para unique="1092075" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092077" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092079" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092081" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092083" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092085" format="CellRowHeadR">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1092087" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092089" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092091" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092093" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092095" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092097" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092099" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092101" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092103" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092105" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092107" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092109" format="CellRowHeadR">
+       </para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1092111" format="CellRowHeadC">
+       </para>
+      </th>
+     <th><para unique="1092113" format="CellRowHeadJ">
+       <string>32</string></para>
+      </th>
+     <th><para unique="1092115" format="CellRowHeadL">
+       <string>3</string></para>
+      </th>
+     <th><para unique="1092117" format="CellRowHeadR">
+       <string>0-2</string></para>
+      </th>
+     <th><para unique="1092119" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092121" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092123" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092125" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092127" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092129" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092131" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092133" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092135" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092137" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092139" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092141" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092143" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092145" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092147" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092149" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092151" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092153" format="CellRowHeadR">
+       <string>1</string></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1092155" format="CellRowHeadC">
+       </para>
+      </th>
+     <th><para unique="1092157" format="CellRowHeadJ">
+       <string>32</string></para>
+      </th>
+     <th><para unique="1092159" format="CellRowHeadL">
+       <string>3</string></para>
+      </th>
+     <th><para unique="1092161" format="CellRowHeadR">
+       <string>3</string></para>
+      </th>
+     <th><para unique="1092163" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092165" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092167" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092169" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092171" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092173" format="CellRowHeadR">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1092175" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092177" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092179" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092181" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092183" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092185" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092187" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092189" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092191" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092193" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092195" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092197" format="CellRowHeadR">
+       </para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1092199" format="CellRowHeadC">
+       <string>VME</string></para>
+      <para unique="1092200" format="CellRowHeadC">
+       <string>(CR0.PE = 1</string></para>
+      <para unique="1092201" format="CellRowHeadC">
+       <string>EFLAGS.VM = 1</string></para>
+      <para unique="1092202" format="CellRowHeadC">
+       <string>CR4.VME = 1)</string></para>
+      </th>
+     <th><para unique="1092204" format="CellRowHeadJ">
+       <string>16</string></para>
+      </th>
+     <th><para unique="1092206" format="CellRowHeadL">
+       <string>3</string></para>
+      </th>
+     <th><para unique="1092208" format="CellRowHeadR">
+       <string>0-2</string></para>
+      </th>
+     <th><para unique="1092210" format="CellRowHeadR">
+       <string>N/X</string></para>
+      </th>
+     <th><para unique="1092212" format="CellRowHeadR">
+       <string>N/X</string></para>
+      </th>
+     <th><para unique="1092214" format="CellRowHeadR">
+       <string>SV/X</string></para>
+      </th>
+     <th><para unique="1092216" format="CellRowHeadR">
+       <string>N/X</string></para>
+      </th>
+     <th><para unique="1092218" format="CellRowHeadR">
+       <string>N/X</string></para>
+      </th>
+     <th><para unique="1092220" format="CellRowHeadR">
+       <string>0/X</string></para>
+      </th>
+     <th><para unique="1092222" format="CellRowHeadR">
+       <string>S/X</string></para>
+      </th>
+     <th><para unique="1092224" format="CellRowHeadR">
+       <string>N/X</string></para>
+      </th>
+     <th><para unique="1092226" format="CellRowHeadR">
+       <string>S/X</string></para>
+      </th>
+     <th><para unique="1092228" format="CellRowHeadR">
+       <string>S/X</string></para>
+      </th>
+     <th><para unique="1092230" format="CellRowHeadR">
+       <string>N/X</string></para>
+      </th>
+     <th><para unique="1092232" format="CellRowHeadR">
+       <string>S/X</string></para>
+      </th>
+     <th><para unique="1092234" format="CellRowHeadR">
+       <string>S/X</string></para>
+      </th>
+     <th><para unique="1092236" format="CellRowHeadR">
+       <string>S/X</string></para>
+      </th>
+     <th><para unique="1092238" format="CellRowHeadR">
+       <string>S/X</string></para>
+      </th>
+     <th><para unique="1092240" format="CellRowHeadR">
+       <string>S/X</string></para>
+      </th>
+     <th><para unique="1092242" format="CellRowHeadR">
+       <string>S/X</string></para>
+      </th>
+     <th><para unique="1092250" format="CellRowHeadR">
+       <footnote><para unique="1092246" format="TableFootnote">
+         <string>#GP fault with no flag update if VIP=1 in EFLAGS register and IF=1 in FLAGS value on stack</string></para>
+        </footnote><superscript><string>,</string></superscript><footnote><para unique="1092249" format="TableFootnote">
+         <string>#GP fault with no flag update if TF=1 in FLAGS value on stack</string></para>
+        </footnote></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1092252" format="CellRowHeadC">
+       </para>
+      </th>
+     <th><para unique="1092254" format="CellRowHeadJ">
+       <string>16</string></para>
+      </th>
+     <th><para unique="1092256" format="CellRowHeadL">
+       <string>3</string></para>
+      </th>
+     <th><para unique="1092258" format="CellRowHeadR">
+       <string>3</string></para>
+      </th>
+     <th><para unique="1092260" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092262" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092264" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092266" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092268" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092270" format="CellRowHeadR">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1092272" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092274" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092276" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092278" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092280" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092282" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092284" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092286" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092288" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092290" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092292" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092294" format="CellRowHeadR">
+       </para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1092296" format="CellRowHeadC">
+       </para>
+      </th>
+     <th><para unique="1092298" format="CellRowHeadJ">
+       <string>32</string></para>
+      </th>
+     <th><para unique="1092300" format="CellRowHeadL">
+       <string>3</string></para>
+      </th>
+     <th><para unique="1092302" format="CellRowHeadR">
+       <string>0-2</string></para>
+      </th>
+     <th><para unique="1092304" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092306" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092308" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092310" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092312" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092314" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092316" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092318" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092320" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092322" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092324" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092326" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092328" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092330" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092332" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092334" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092336" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092338" format="CellRowHeadR">
+       <superscript><string>1</string></superscript></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1092340" format="CellRowHeadC">
+       </para>
+      </th>
+     <th><para unique="1092342" format="CellRowHeadJ">
+       <string>32</string></para>
+      </th>
+     <th><para unique="1092344" format="CellRowHeadL">
+       <string>3</string></para>
+      </th>
+     <th><para unique="1092346" format="CellRowHeadR">
+       <string>3</string></para>
+      </th>
+     <th><para unique="1092348" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092350" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092352" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092354" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092356" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092358" format="CellRowHeadR">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1092360" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092362" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092364" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092366" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092368" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092370" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092372" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092374" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092376" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092378" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092380" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092382" format="CellRowHeadR">
+       </para>
+      </th>
+     </tr>
+    </tbody>
+   </table>
+  <table>
+   <colgroup><col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <thead><tr>
+     <th colspan="2"><para unique="1092385" format="CellColHead">
+       <string>Key</string></para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <th><para unique="1092389" format="CellRowHeadR">
+       <string>S</string></para>
+      </th>
+     <th><para unique="1092391" format="CellRowHeadJ">
+       <string>Updated from stack</string></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1092393" format="CellRowHeadR">
+       <string>SV</string></para>
+      </th>
+     <th><para unique="1092395" format="CellRowHeadJ">
+       <string>Updated from IF (bit 9) in FLAGS value on stack</string></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1092397" format="CellRowHeadR">
+       <string>N</string></para>
+      </th>
+     <th><para unique="1092399" format="CellRowHeadJ">
+       <string>No change in value</string></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1092401" format="CellRowHeadR">
+       <string>X</string></para>
+      </th>
+     <th><para unique="1092403" format="CellRowHeadJ">
+       <string>No EFLAGS update</string></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1092405" format="CellRowHeadC">
+       <string>0</string></para>
+      </th>
+     <th><para unique="1092407" format="CellRowHeadJ">
+       <string>Value is cleared</string></para>
+      </th>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1092483">
+   <string>All flags may be affected; see the Operation section for details.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If the top of stack is not within the stack segment.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If an unaligned memory reference is made while CPL = 3 and alignment checking is enabled.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS</string></term>
+    <listitem><string>If the top of stack is not within the stack segment.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If IOPL &lt; 3 and VME is not enabled.</string></listitem>
+    <listitem><string>If IOPL &lt; 3 and the 32-bit operand size is used.</string></listitem>
+    <listitem><string>If IOPL &lt; 3, EFLAGS.VIP&#160;= 1, and bit 9 (IF) is set in the FLAGS value on the stack.</string></listitem>
+    <listitem><string>If IOPL &lt; 3 and bit 8 (TF) is set in the FLAGS value on the stack.</string></listitem>
+    <listitem><string>If an attempt is made to execute the POPF/POPFD instruction with an operand-size override prefix.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If the top of stack is not within the stack segment.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If an unaligned memory reference is made while alignment checking is enabled.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1092503" format="xIndent1">
+   <string>Same as for protected mode exceptions.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If the stack address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

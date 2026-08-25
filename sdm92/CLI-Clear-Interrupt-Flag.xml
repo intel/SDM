@@ -1,0 +1,192 @@
+<instruction name="CLI">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Clear Interrupt Flag</shortdesc>
+ <longdesc><para unique="1261242">
+   <string>In most cases, CLI clears the IF flag in the EFLAGS register and no other flags are affected. Clearing the IF flag causes the processor to ignore maskable external interrupts. The IF flag and the CLI and STI instruction have no effect on the generation of exceptions and NMI interrupts.</string></para>
+  <para unique="1261243">
+   <string>Operation is different in two modes defined as follows:</string></para>
+  <itemizedlist><listitem><para unique="1261244">
+     <bold><string>PVI mode</string></bold><string> (protected-mode virtual interrupts): CR0.PE&#160;= 1, EFLAGS.VM&#160;= 0, CPL&#160;= 3, and CR4.PVI&#160;= 1;</string></para>
+    </listitem>
+   <listitem><para unique="1261245">
+     <bold><string>VME mode</string></bold><string> (virtual-8086 mode extensions): CR0.PE&#160;= 1, EFLAGS.VM&#160;= 1, and CR4.VME&#160;= 1.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1261246">
+   <string>If IOPL&#160;&lt; 3 and either VME mode or PVI mode is active, CLI clears the VIF flag in the EFLAGS register, leaving IF unaffected.</string></para>
+  <para unique="1261249">
+   <link linkend="96913: 06_Table: Table 3-5. Decision Table for CLI Results"><string>Table 3&#8209;7</string></link><string> indicates the action of the CLI instruction depending on the processor operating mode, IOPL, and CPL. </string></para>
+  <table>
+   <caption>Table 3-7.  Decision Table for CLI Results</caption>
+   <colgroup><col width="183.83399999999997pt"/>
+    <col width="111.0672pt"/>
+    <col width="217.02528pt"/>
+    <col width="80.40312pt"/>
+    <col width="59.153040000000004pt"/>
+    <col width="53.52768pt"/>
+    </colgroup>
+   <thead><tr>
+     <th><para unique="1261260" format="CellRowHeadC">
+       <string>Mode</string></para>
+      </th>
+     <th><para unique="1261262" format="CellRowHeadC">
+       <string>IOPL</string></para>
+      </th>
+     <th><para unique="1261264" format="CellColHead">
+       <string>CLI Result</string></para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1261266" format="CellBodyC">
+       <string>Real-address</string></para>
+      </td>
+     <td><para unique="1261271" format="CellBodyC">
+       <string>X</string><footnote><para unique="1261270" format="TableFootnote">
+         <string>X = This setting has no effect on instruction operation.</string></para>
+        </footnote></para>
+      </td>
+     <th><para unique="1261273" format="CellRowHeadL">
+       <string>IF</string><sans><string> = </string></sans><string>0</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1261278" format="CellBodyC">
+       <string>Protected, not PVI</string><footnote><para unique="1261277" format="TableFootnote">
+         <string>For this table, &#8220;protected mode&#8221; applies whenever CR0.PE&#160;= 1 and EFLAGS.VM&#160;= 0; it includes compatibility mode and 64-bit mode.</string></para>
+        </footnote></para>
+      </td>
+     <td><para unique="1261280" format="CellBodyC">
+       <string>&#8293;</string><string> CPL</string></para>
+      </td>
+     <th><para unique="1261282" format="CellRowHeadL">
+       <string>IF </string><sans><string>= </string></sans><string>0</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1261284" format="CellBodyC">
+       </para>
+      </td>
+     <td><para unique="1261286" format="CellBodyC">
+       <string>&lt; CPL</string></para>
+      </td>
+     <th><para unique="1261288" format="CellRowHeadL">
+       <string>#GP fault</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1261294" format="CellBodyC">
+       <string>Protected, PVI</string><footnote><para unique="1261293" format="TableFootnote">
+         <anchor id="56467: TableFootnote: 3. PVI mode and virtual-8086 mode imply CPL\x11 = 3."/><string>PVI mode and virtual-8086 mode each imply CPL&#160;= 3.</string></para>
+        </footnote></para>
+      </td>
+     <td><para unique="1261296" format="CellBodyC">
+       <string>3</string></para>
+      </td>
+     <th><para unique="1261298" format="CellRowHeadL">
+       <string>IF </string><sans><string>=</string></sans><string> 0</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1261300" format="CellBodyC">
+       </para>
+      </td>
+     <td><para unique="1261302" format="CellBodyC">
+       <string>0&#8211;2</string></para>
+      </td>
+     <th><para unique="1261304" format="CellRowHeadL">
+       <string>VIF</string><sans><string> = </string></sans><string>0</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1261308" format="CellBodyC">
+       <string>Virtual-8086, not VME</string><superscript><link linkend="56467: TableFootnote: 3. PVI mode and virtual-8086 mode imply CPL\x11 = 3."><string>3</string></link></superscript></para>
+      </td>
+     <td><para unique="1261311" format="CellBodyC">
+       <string>3</string></para>
+      </td>
+     <th><para unique="1261313" format="CellRowHeadL">
+       <string>IF </string><sans><string>=</string></sans><string> 0</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1261315" format="CellBodyC">
+       </para>
+      </td>
+     <td><para unique="1261317" format="CellBodyC">
+       <string>0&#8211;2</string></para>
+      </td>
+     <th><para unique="1261319" format="CellRowHeadL">
+       <string>#GP fault</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1261323" format="CellBodyC">
+       <string>Virtual-8086, VME</string><superscript><link linkend="56467: TableFootnote: 3. PVI mode and virtual-8086 mode imply CPL\x11 = 3."><string>3</string></link></superscript></para>
+      </td>
+     <td><para unique="1261326" format="CellBodyC">
+       <string>3</string></para>
+      </td>
+     <th><para unique="1261328" format="CellRowHeadL">
+       <string>IF </string><sans><string>=</string></sans><string> 0</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1261330" format="CellBodyC">
+       </para>
+      </td>
+     <td><para unique="1261332" format="CellBodyC">
+       <string>0&#8211;2</string></para>
+      </td>
+     <th><para unique="1261334" format="CellRowHeadL">
+       <string>VIF</string><sans><string> = </string></sans><string>0</string></para>
+      </th>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1261350">
+   <string>Either the IF flag or the VIF flag is cleared to 0. Other flags are unaffected.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0) </string></term>
+    <listitem><string>If CPL is greater than IOPL and PVI mode is not active.</string></listitem>
+    <listitem><string>If CPL is greater than IOPL and less than 3.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0) </string></term>
+    <listitem><string>If IOPL is less than 3 and VME mode is not active.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261361" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <para unique="1261363" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ </instruction>

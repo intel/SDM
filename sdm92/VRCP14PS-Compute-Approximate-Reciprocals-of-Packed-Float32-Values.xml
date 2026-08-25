@@ -1,0 +1,139 @@
+<instruction name="VRCP14PS">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Compute Approximate Reciprocals of Packed Float32 Values</shortdesc>
+ <longdesc><para unique="1046173">
+   <string>This instruction performs a SIMD computation of the approximate reciprocals of the packed single precision floating-point values in the source operand (the second operand) and stores the packed single precision floating-point results in the destination operand (the first operand). The maximum relative error for this approximation is less than 2</string><superscript><string>-14</string></superscript><string>. </string></para>
+  <para unique="1046174">
+   <string>The source operand can be a ZMM register, a 512-bit memory location or a 512-bit vector broadcasted from a 32-bit memory location. The destination operand is a ZMM register conditionally updated according to the writemask.</string></para>
+  <para unique="1046175">
+   <string>The VRCP14PS instruction is not affected by the rounding control bits in the MXCSR register. When a source value is a 0.0, an </string><string>&#8734; with the sign of the source value is returned. A denormal source value will be treated as zero only in case of DAZ bit set in MXCSR. Otherwise it is treated correctly (i.e., not as a 0.0). Underflow results are flushed to zero only in case of FTZ bit set in MXCSR. Otherwise it will be treated correctly (i.e., correct underflow result is written) with the sign of the operand. When a source value is a SNaN or QNaN, the SNaN is converted to a QNaN or the source QNaN is returned.</string></para>
+  <para unique="1046176">
+   <string>EVEX.vvvv is reserved and must be 1111b otherwise instructions will #UD.</string></para>
+  <para unique="1046177">
+   <string>MXCSR exception flags are not affected by this instruction and floating-point exceptions are not reported.</string></para>
+  <table>
+   <caption>Table 5-25.  VRCP14PS/VRCP14SS Special Cases</caption>
+   <colgroup><col align="leftright"/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1046187" format="CellRowHeadL">
+       <string>Input value</string></para>
+      </th>
+     <th><para unique="1046189" format="CellRowHeadL">
+       <string>Result value</string></para>
+      </th>
+     <th><para unique="1046191" format="CellRowHeadL">
+       <string>Comments</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1046193" format="CellBodyL">
+       <string>0 &#8804; X &#8804; 2</string><superscript><string>-128</string></superscript></para>
+      </td>
+     <td><para unique="1046195" format="CellBodyL">
+       <string>INF</string></para>
+      </td>
+     <td><para unique="1046197" format="CellBodyL">
+       <string>Very small denormal</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046199" format="CellBodyL">
+       <string>-2</string><superscript><string>-128 </string></superscript><string>&#8804; X &#8804; -0</string></para>
+      </td>
+     <td><para unique="1046201" format="CellBodyL">
+       <string>-INF</string></para>
+      </td>
+     <td><para unique="1046203" format="CellBodyL">
+       <string>Very small denormal</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046205" format="CellBodyL">
+       <string>X &gt; 2</string><superscript><string>126</string></superscript></para>
+      </td>
+     <td><para unique="1046207" format="CellBodyL">
+       <string>Underflow</string></para>
+      </td>
+     <td><para unique="1046212" format="CellBodyL">
+       <string>Up to 18 bits of fractions are returned</string><footnote><para unique="1046211" format="TableFootnote">
+         <string>In this case, the mantissa is shifted right by one or two bits.</string></para>
+        </footnote></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046214" format="CellBodyL">
+       <string>X &lt; -2</string><superscript><string>126</string></superscript></para>
+      </td>
+     <td><para unique="1046216" format="CellBodyL">
+       <string>-Underflow</string></para>
+      </td>
+     <td><para unique="1046218" format="CellBodyL">
+       <string>Up to 18 bits of fractions are returned</string><superscript><string>1</string></superscript></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046220" format="CellBodyL">
+       <string>X = 2</string><superscript><string>-n</string></superscript></para>
+      </td>
+     <td><para unique="1046222" format="CellBodyL">
+       <string>2</string><superscript><string>n</string></superscript></para>
+      </td>
+     <td><para unique="1046224" format="CellBodyL">
+       </para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046226" format="CellBodyL">
+       <string>X = -2</string><superscript><string>-n</string></superscript></para>
+      </td>
+     <td><para unique="1046228" format="CellBodyL">
+       <string>-2</string><superscript><string>n</string></superscript></para>
+      </td>
+     <td><para unique="1046230" format="CellBodyL">
+       </para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  <para unique="1046232">
+   <string>A numerically exact implementation of VRCP14xx can be found at:</string></para>
+  <para unique="1046234">
+   <anchor id="message URL https://software.intel.com/en-us/articles/reference-implementations-for-IA-approximation-instructions-vrcp14-vrsqrt14-vrcp28-vrsqrt28-vexp2"/><underline><string>https://software.intel.com/en-us/articles/reference-implementations-for-IA-approximation-instructions-vrcp14-vrsqrt14-vrcp28-vrsqrt28-vexp2</string></underline><string>.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <para unique="1046255">
+   <string>VRCP14PS __m512 _mm512_rcp14_ps( __m512 a);</string></para>
+  <para unique="1046256">
+   <string>VRCP14PS __m512 _mm512_mask_rcp14_ps(__m512 s, __mmask16 k, __m512 a);</string></para>
+  <para unique="1046257">
+   <string>VRCP14PS __m512 _mm512_maskz_rcp14_ps( __mmask16 k, __m512 a);</string></para>
+  <para unique="1046258">
+   <string>VRCP14PS __m256 _mm256_rcp14_ps( __m256 a);</string></para>
+  <para unique="1046259">
+   <string>VRCP14PS __m256 _mm512_mask_rcp14_ps(__m256 s, __mmask8 k, __m256 a);</string></para>
+  <para unique="1046260">
+   <string>VRCP14PS __m256 _mm512_maskz_rcp14_ps( __mmask8 k, __m256 a);</string></para>
+  <para unique="1046261">
+   <string>VRCP14PS __m128 _mm_rcp14_ps( __m128 a);</string></para>
+  <para unique="1046262">
+   <string>VRCP14PS __m128 _mm_mask_rcp14_ps(__m128 s, __mmask8 k, __m128 a);</string></para>
+  <para unique="1046263">
+   <string>VRCP14PS __m128 _mm_maskz_rcp14_ps( __mmask8 k, __m128 a);</string></para>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046265">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046270" format="xIndent1">
+   <string>See </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

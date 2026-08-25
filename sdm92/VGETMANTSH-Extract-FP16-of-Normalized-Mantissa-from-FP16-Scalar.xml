@@ -1,0 +1,47 @@
+<instruction name="VGETMANTSH">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Extract FP16 of Normalized Mantissa from FP16 Scalar</shortdesc>
+ <longdesc><para unique="1045937">
+   <string>This instruction converts the FP16 value in the low element of the second source operand to FP16 values with the mantissa normalization and sign control specified by the imm8 byte, see </string><link linkend="70949: 06_Table: Table 2-2. imm8 Controls for VGETMANTPH"><string>Table 5&#8209;17</string></link><string>. The converted result is written to the low element of the destination operand using writemask k1. The normalized mantissa is specified by interv (imm8[1:0]) and the sign control (SC) is specified by bits 3:2 of the immediate byte.</string></para>
+  <para unique="1045941">
+   <string>Bits 127:16 of the destination operand are copied from the corresponding bits of the first source operand. Bits MAXVL-1:128 of the destination operand are zeroed. The low FP16 element of the destination is updated according to the writemask.</string></para>
+  <para unique="1045942">
+   <string>For each input FP16 value x, The conversion operation is:</string></para>
+  <para unique="1045943">
+   <string>	GetMant(x) = &#177;2</string><superscript><string>k</string></superscript><string>|x.significand|</string></para>
+  <para unique="1045944">
+   <string>where:</string></para>
+  <para unique="1045945">
+   <string>	1 </string><string>&#8804; |x.significand| &lt; 2</string></para>
+  <para unique="1045946">
+   <string>Unbiased exponent k depends on the interval range defined by interv and whether the exponent of the source is even or odd. The sign of the final result is determined by the sign control and the source sign and the leading frac&#173;tion bit.</string></para>
+  <para unique="1045949">
+   <string>The encoded value of imm8[1:0] and sign control are shown in </string><link linkend="70949: 06_Table: Table 2-2. imm8 Controls for VGETMANTPH"><string>Table 5&#8209;17</string></link><string>.</string></para>
+  <para unique="1045951">
+   <string>Each converted FP16 result is encoded according to the sign control, the unbiased exponent k (adding bias) and a mantissa normalized to the range specified by interv.</string></para>
+  <para unique="1045954">
+   <string>The GetMant() function follows </string><link linkend="41597: 06_Table: Table 5-10. GetMant() Special Float Values Behavior"><string>Table 5&#8209;18</string></link><string> when dealing with floating-point special numbers.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <para unique="1045972">
+   <string>VGETMANTSH __m128h _mm_getmant_round_sh (__m128h a, __m128h b, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign, const int sae);</string></para>
+  <para unique="1045973">
+   <string>VGETMANTSH __m128h _mm_mask_getmant_round_sh (__m128h src, __mmask8 k, __m128h a, __m128h b, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign, const int sae);</string></para>
+  <para unique="1045974">
+   <string>VGETMANTSH __m128h _mm_maskz_getmant_round_sh (__mmask8 k, __m128h a, __m128h b, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign, const int sae);</string></para>
+  <para unique="1045975">
+   <string>VGETMANTSH __m128h _mm_getmant_sh (__m128h a, __m128h b, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</string></para>
+  <para unique="1045976">
+   <string>VGETMANTSH __m128h _mm_mask_getmant_sh (__m128h src, __mmask8 k, __m128h a, __m128h b, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</string></para>
+  <para unique="1045977">
+   <string>VGETMANTSH __m128h _mm_maskz_getmant_sh (__mmask8 k, __m128h a, __m128h b, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</string></para>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1045979">
+   <string>Invalid, Denormal</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1045984" format="xIndent1">
+   <string>EVEX-encoded instructions, see </string><link linkend="63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions"><string>Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

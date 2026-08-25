@@ -1,0 +1,79 @@
+<instruction name="XBEGIN">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Transactional Begin</shortdesc>
+ <longdesc><para unique="1012604">
+   <string>The XBEGIN instruction specifies the start of an RTM code region. If the logical processor was not already in trans&#173;actional execution, then the XBEGIN instruction causes the logical processor to transition into transactional execu&#173;tion. The XBEGIN instruction that transitions the logical processor into transactional execution is referred to as the outermost XBEGIN instruction. The instruction also specifies a relative offset to compute the address of the fallback code path following a transactional abort. (Use of the 16-bit operand size does not cause this address to be trun&#173;cated to 16 bits, unlike a near jump to a relative offset.)</string></para>
+  <para unique="1012605">
+   <string>On an RTM abort, the logical processor discards all architectural register and memory updates performed during the RTM execution and restores architectural state to that corresponding to the outermost XBEGIN instruction. The fallback address following an abort is computed from the outermost XBEGIN instruction.</string></para>
+  <para unique="1012606">
+   <string>Execution of XBEGIN while in a suspend read address tracking region causes a transactional abort.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <programlisting><string>None.</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>XBEGIN unsigned int _xbegin( void );</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1012659">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If CPUID.07H.00H:EBX.RTM[11] = 0.</string></listitem>
+    <listitem><string>If LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the fallback address is outside the CS segment.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the fallback address is outside the address space 0000H and FFFFH.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If CPUID.07H.00H:EBX.RTM[11] = 0.</string></listitem>
+    <listitem><string>If LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the fallback address is outside the address space 0000H and FFFFH.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If CPUID.07H.00H:EBX.RTM[11] = 0.</string></listitem>
+    <listitem><string>If LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1012673" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If CPUID.07H.00H:EBX.RTM[11] = 0.</string></listitem>
+    <listitem><string>If LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the fallback address is non-canonical.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

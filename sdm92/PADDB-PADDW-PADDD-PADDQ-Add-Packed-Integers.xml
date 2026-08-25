@@ -1,0 +1,82 @@
+<instruction name="PADDB/PADDW/PADDD/PADDQ">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Add Packed Integers</shortdesc>
+ <longdesc><para unique="1091868">
+   <string>Performs a SIMD add of the packed integers from the source operand (second operand) and the destination operand (first operand), and stores the packed integer results in the destination operand. See Figure 9-4 in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for an illustration of a SIMD operation. Overflow is handled with wraparound, as described in the following paragraphs.</string></para>
+  <para unique="1091869">
+   <string>The PADDB and VPADDB instructions add packed byte integers from the first source operand and second source operand and store the packed integer results in the destination operand. When an individual result is too large to be represented in 8 bits (overflow), the result is wrapped around and the low 8 bits are written to the destination operand (that is, the carry is ignored).</string></para>
+  <para unique="1091870">
+   <string>The PADDW and VPADDW instructions add packed word integers from the first source operand and second source operand and store the packed integer results in the destination operand. When an individual result is too large to be represented in 16 bits (overflow), the result is wrapped around and the low 16 bits are written to the destination operand (that is, the carry is ignored).</string></para>
+  <para unique="1091871">
+   <string>The PADDD and VPADDD instructions add packed doubleword integers from the first source operand and second source operand and store the packed integer results in the destination operand. When an individual result is too large to be represented in 32 bits (overflow), the result is wrapped around and the low 32 bits are written to the destination operand (that is, the carry is ignored).</string></para>
+  <para unique="1091872">
+   <string>The PADDQ and VPADDQ instructions add packed quadword integers from the first source operand and second source operand and store the packed integer results in the destination operand. When a quadword result is too large to be represented in 64 bits (overflow), the result is wrapped around and the low 64 bits are written to the destination operand (that is, the carry is ignored).</string></para>
+  <para unique="1091873">
+   <string>Note that the (V)PADDB, (V)PADDW, (V)PADDD and (V)PADDQ instructions can operate on either unsigned or signed (two's complement notation) packed integers; however, it does not set bits in the EFLAGS register to indi&#173;cate overflow and/or a carry. To prevent undetected overflow conditions, software must control the ranges of values operated on.</string></para>
+  <para unique="1091874">
+   <string>EVEX encoded VPADDD/Q: The first source operand is a ZMM/YMM/XMM register. The second source operand is a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 32/64-bit memory location. The destination operand is a ZMM/YMM/XMM register updated according to the write&#173;mask.</string></para>
+  <para unique="1091875">
+   <string>EVEX encoded VPADDB/W: The first source operand is a ZMM/YMM/XMM register. The second source operand is a ZMM/YMM/XMM register, a 512/256/128-bit memory location. The destination operand is a ZMM/YMM/XMM register updated according to the writemask.</string></para>
+  <para unique="1091876">
+   <string>VEX.256 encoded version: The first source operand is a YMM register. The second source operand is a YMM register or a 256-bit memory location. The destination operand is a YMM register. the upper bits (MAXVL-1:256) of the destination are cleared.</string></para>
+  <para unique="1091877">
+   <string>VEX.128 encoded version: The first source operand is an XMM register. The second source operand is an XMM register or 128-bit memory location. The destination operand is an XMM register. The upper bits (MAXVL-1:128) of the corresponding ZMM register destination are zeroed.</string></para>
+  <para unique="1091878">
+   <string>128-bit Legacy SSE version: The first source operand is an XMM register. The second operand can be an XMM register or an 128-bit memory location. The destination is not distinct from the first source XMM register and the upper bits (MAXVL-1:128) of the corresponding ZMM register destination are unmodified.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalents">
+  <programlisting><string>VPADDB	__m512i _mm512_add_epi8 ( __m512i a, __m512i b)</string><string>
+</string><string>VPADDW	__m512i _mm512_add_epi16 ( __m512i a, __m512i b)</string><string>
+</string><string>VPADDB	__m512i _mm512_mask_add_epi8 ( __m512i s, __mmask64 m, __m512i a, __m512i b)</string><string>
+</string><string>VPADDW	__m512i _mm512_mask_add_epi16 ( __m512i s, __mmask32 m, __m512i a, __m512i b)</string><string>
+</string><string>VPADDB	__m512i _mm512_maskz_add_epi8 (__mmask64 m, __m512i a, __m512i b)</string><string>
+</string><string>VPADDW	__m512i _mm512_maskz_add_epi16 (__mmask32 m, __m512i a, __m512i b)</string><string>
+</string><string>VPADDB	__m256i _mm256_mask_add_epi8 (__m256i s, __mmask32 m, __m256i a, __m256i b)</string><string>
+</string><string>VPADDW	__m256i _mm256_mask_add_epi16 (__m256i s, __mmask16 m, __m256i a, __m256i b)</string><string>
+</string><string>VPADDB	__m256i _mm256_maskz_add_epi8 (__mmask32 m, __m256i a, __m256i b)</string><string>
+</string><string>VPADDW	__m256i _mm256_maskz_add_epi16 (__mmask16 m, __m256i a, __m256i b)</string><string>
+</string><string>VPADDB	__m128i _mm_mask_add_epi8 (__m128i s, __mmask16 m, __m128i a, __m128i b)</string><string>
+</string><string>VPADDW	__m128i _mm_mask_add_epi16 (__m128i s, __mmask8 m, __m128i a, __m128i b)</string><string>
+</string><string>VPADDB	__m128i _mm_maskz_add_epi8 (__mmask16 m, __m128i a, __m128i b)</string><string>
+</string><string>VPADDW	__m128i _mm_maskz_add_epi16 (__mmask8 m, __m128i a, __m128i b)</string><string>
+</string><string>VPADDD __m512i _mm512_add_epi32( __m512i a, __m512i b);</string><string>
+</string><string>VPADDD __m512i _mm512_mask_add_epi32(__m512i s, __mmask16 k, __m512i a, __m512i b);</string><string>
+</string><string>VPADDD __m512i _mm512_maskz_add_epi32( __mmask16 k, __m512i a, __m512i b);</string><string>
+</string><string>VPADDD __m256i _mm256_mask_add_epi32(__m256i s, __mmask8 k, __m256i a, __m256i b);</string><string>
+</string><string>VPADDD __m256i _mm256_maskz_add_epi32( __mmask8 k, __m256i a, __m256i b);</string><string>
+</string><string>VPADDD __m128i _mm_mask_add_epi32(__m128i s, __mmask8 k, __m128i a, __m128i b);</string><string>
+</string><string>VPADDD __m128i _mm_maskz_add_epi32( __mmask8 k, __m128i a, __m128i b);</string><string>
+</string><string>VPADDQ __m512i _mm512_add_epi64( __m512i a, __m512i b);</string><string>
+</string><string>VPADDQ __m512i _mm512_mask_add_epi64(__m512i s, __mmask8 k, __m512i a, __m512i b);</string><string>
+</string><string>VPADDQ __m512i _mm512_maskz_add_epi64( __mmask8 k, __m512i a, __m512i b);</string><string>
+</string><string>VPADDQ __m256i _mm256_mask_add_epi64(__m256i s, __mmask8 k, __m256i a, __m256i b);</string><string>
+</string><string>VPADDQ __m256i _mm256_maskz_add_epi64( __mmask8 k, __m256i a, __m256i b);</string><string>
+</string><string>VPADDQ __m128i _mm_mask_add_epi64(__m128i s, __mmask8 k, __m128i a, __m128i b);</string><string>
+</string><string>VPADDQ __m128i _mm_maskz_add_epi64( __mmask8 k, __m128i a, __m128i b);</string><string>
+</string><string>PADDB 	__m128i _mm_add_epi8 (__m128i a,__m128i b );</string><string>
+</string><string>PADDW 	__m128i _mm_add_epi16 ( __m128i a, __m128i b);</string><string>
+</string><string>PADDD 	 __m128i _mm_add_epi32 ( __m128i a, __m128i b);</string><string>
+</string><string>PADDQ 	__m128i _mm_add_epi64 ( __m128i a, __m128i b);</string><string>
+</string><string>VPADDB 	__m256i _mm256_add_epi8 (__m256ia,__m256i b );</string><string>
+</string><string>VPADDW 	__m256i _mm256_add_epi16 ( __m256i a, __m256i b);</string><string>
+</string><string>VPADDD 	__m256i _mm256_add_epi32 ( __m256i a, __m256i b);</string><string>
+</string><string>VPADDQ 	__m256i _mm256_add_epi64 ( __m256i a, __m256i b);</string><string>
+</string><string>PADDB	 __m64 _mm_add_pi8(__m64 m1, __m64 m2)</string><string>
+</string><string>PADDW	 __m64 _mm_add_pi16(__m64 m1, __m64 m2)</string><string>
+</string><string>PADDD	 __m64 _mm_add_pi32(__m64 m1, __m64 m2)</string><string>
+</string><string>PADDQ	 __m64 _mm_add_si64(__m64 m1, __m64 m2)</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1092079">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1092084" format="xIndent1">
+   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1092088">
+   <string>EVEX-encoded VPADDD/Q, see </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1092092">
+   <string>EVEX-encoded VPADDB/W, see Exceptions Type E4.nb in </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

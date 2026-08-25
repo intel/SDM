@@ -1,0 +1,242 @@
+<instruction name="FICOM/FICOMP">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Compare Integer</shortdesc>
+ <longdesc><para unique="1261245">
+   <string>Compares the value in ST(0) with an integer source operand and sets the condition code flags C0, C2, and C3 in the </string><indexterm><primary>x87 FPU status word:condition code flags</primary></indexterm><string>FPU status word according to the results (see table below). The integer value is converted to double extended-precision floating-point format before the comparison is made.</string></para>
+  <table>
+   <caption>Table 3-28.  FICOM/FICOMP Results</caption>
+   <colgroup><col align="center"/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <thead><tr>
+     <th><para unique="1261257" format="CellColHead">
+       <string>Condition</string></para>
+      </th>
+     <th><para unique="1261259" format="CellColHead">
+       <string>C3</string></para>
+      </th>
+     <th><para unique="1261261" format="CellColHead">
+       <string>C2</string></para>
+      </th>
+     <th><para unique="1261263" format="CellColHead">
+       <string>C0</string></para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1261265" format="CellBodyC">
+       <sans><string>ST(0) </string></sans><string>&gt;</string><sans><string> SRC</string></sans></para>
+      </td>
+     <td><para unique="1261267" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261269" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261271" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261273" format="CellBodyC">
+       <sans><string>ST(0)</string></sans><string> </string><string>&lt;</string><sans><string> SRC</string></sans></para>
+      </td>
+     <td><para unique="1261275" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261277" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261279" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261281" format="CellBodyC">
+       <sans><string>ST(0) </string></sans><string>= </string><sans><string>SRC</string></sans></para>
+      </td>
+     <td><para unique="1261283" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     <td><para unique="1261285" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261287" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261289" format="CellBodyC">
+       <string>Unordered</string></para>
+      </td>
+     <td><para unique="1261291" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     <td><para unique="1261293" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     <td><para unique="1261295" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  <para unique="1261297">
+   <string>These instructions perform an &#8220;unordered comparison.&#8221; An unordered comparison also checks the class of the numbers being compared (see </string><link linkend="21127: H5Heading: FXAM&#8212;Examine"><string>&#8220;FXAM&#8212;Examine Floating-Point&#8221;</string></link><string> in this chapter). If either operand is a NaN or is in an undefined format, the condition flags are set to &#8220;unordered.&#8221;</string></para>
+  <para unique="1261301">
+   <string>The sign of zero is ignored, so that &#8211;0.0</string><string> </string><sans><string>:= </string></sans><string>+0.0.</string></para>
+  <para unique="1261302">
+   <string>The FICOMP instructions pop the register stack following the comparison. To pop the register stack, the processor marks the ST(0) register empty and increments the stack pointer (TOP) by 1.</string></para>
+  <para unique="1261303">
+   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+  </longdesc>
+ <subsection title="FPU Flags Affected">
+  <variablelist>
+   <variablelistentry>
+    <term><string>C1</string></term>
+    <listitem><string>Set to 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>C0, C2, C3</string></term>
+    <listitem><string>See table on previous page.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Floating-Point Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#IS</string></term>
+    <listitem><string>Stack underflow occurred.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#IA</string></term>
+    <listitem><string>One or both operands are NaN values or have unsupported formats.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#D</string></term>
+    <listitem><string>One or both operands are denormal values.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261343" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#MF </string></term>
+    <listitem><string>If there is a pending x87 FPU exception.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="UIRET" xed_iform="UIRET" encoding="F3 0F 01 EC" opcode="01" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_UIRET</callee>
+   <var-used>CR4</var-used>
+   <var-used>CPUID_UINTR</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not ((Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPUID(UINTR)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>NotMode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_UINTR_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_UIRET?();</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="UIRET">
+    </assembly-syntax>
+   <cpuid-group name="UINTR"><cpuid-flag>UINTR</cpuid-flag></cpuid-group>
+   </iform>
+  </iform-group>
+ <operation name="UIRET" variant_kind="Standard variant" mnemonic="UIRET">
+  <code>let new_rip                  := Logical_Mem_Read?(SS, RSP +  0, 64);</code>
+  <code>let new_rflags : RFLAGS_Type := Logical_Mem_Read?(SS, RSP +  8, 64);</code>
+  <code>let new_rsp                  := Logical_Mem_Read?(SS, RSP + 16, 64);</code>
+  <code></code>
+  <code>if not Is_Canonical_Wrt_Paging_Mode_And_LAM(new_rip, 0) then</code>
+  <code>    Report_General_Protection_Exception!(Zero(32));</code>
+  <code>endif;</code>
+  <code></code>
+  <code>if CET::Is_Shadow_Stack_Enabled(CPL) then</code>
+  <code>    SSP := CET::Check_Return_RIP?(64, new_rip);</code>
+  <code>endif;</code>
+  <code></code>
+  <code>// A user-interrupt handler can return while maintaining UIF as 0</code>
+  <code>// if this feature is enabled. The RESERVED_ONE field of the saved</code>
+  <code>// RFLAGS is used to indicated the desired value of UIF after the return.</code>
+  <code>UIF := if CPUID_UIRET_UIF then new_rflags[1] else 0b1;</code>
+  <code></code>
+  <code>// update in RFLAGS only CF, PF, AF, ZF, SF, TF, DF, OF, NT, RF, AC, and ID</code>
+  <code>RFLAGS[21,18,16,14,11:10,8:6,4,2,0] := new_rflags[21,18,16,14,11:10,8:6,4,2,0];</code>
+  <code>RFLAGS.RESERVED_ONE := 0b1;</code>
+  <code></code>
+  <code>RSP := new_rsp;</code>
+  <code>Branch_Near(new_rip);</code>
+  <callee>Std::Boolean::Not</callee>
+  <callee>Std::Bits::Add_int</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>Branch_Near</callee>
+  <callee>CET::Check_Return_RIP</callee>
+  <callee>CET::Is_Shadow_Stack_Enabled</callee>
+  <callee>Is_Canonical_Wrt_Paging_Mode_And_LAM</callee>
+  <callee>Logical_Mem_Read</callee>
+  <callee>Report_General_Protection_Exception</callee>
+  <callee>RSP</callee>
+  <callee>RSP_write</callee>
+  <var-used>False</var-used>
+  <var-used>CPL</var-used>
+  <var-used>SSP</var-used>
+  <var-used>RFLAGS</var-used>
+  <var-used>Memory_Read</var-used>
+  <var-used>SS</var-used>
+  <var-used>Normal_Alignment</var-used>
+  <var-used>UIF</var-used>
+  <var-used>CPUID_UIRET_UIF</var-used>
+  </operation>
+ <category>interrupts</category>
+ </instruction>

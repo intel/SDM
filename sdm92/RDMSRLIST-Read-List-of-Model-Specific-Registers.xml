@@ -1,0 +1,88 @@
+<instruction name="RDMSRLIST">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Read List of Model Specific Registers</shortdesc>
+ <longdesc><para unique="1262557">
+   <string>This instruction reads a software-provided list of up to 64 MSRs and stores their values in memory.</string></para>
+  <para unique="1262558">
+   <string>RDMSRLIST takes three implied input operands:</string></para>
+  <itemizedlist><listitem><para unique="1262562">
+     <string>RSI: Linear address of a table of MSR addresses (8 bytes per address)</string><footnote><para unique="1262561">
+       <string>Since MSR addresses are only 32-bits wide, bits 63:32 of each MSR address table entry is reserved.</string></para>
+      </footnote><string>.</string></para>
+    </listitem>
+   <listitem><para unique="1262563">
+     <string>RDI: Linear address of a table into which MSR data is stored (8 bytes per MSR).</string></para>
+    </listitem>
+   <listitem><para unique="1262564">
+     <string>RCX: 64-bit bitmask of valid bits for the MSRs. Bit 0 is the valid bit for entry 0 in each table, etc.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1262565">
+   <string>For each RCX bit [n] from 0 to 63, if RCX[n] is 1, RDMSRLIST will read the MSR specified at entry [n] in the RSI-based table and write it out to memory at the entry [n] in the RDI-based table.</string></para>
+  <para unique="1262566">
+   <string>This implies a maximum of 64 MSRs that can be processed by this instruction. The processor will clear RCX[n] after it finishes handling that MSR. Similar to repeated string operations, RDMSRLIST supports partial completion for interrupts, exceptions, and traps. In these situations, the RIP register saved will point to the RDMSRLIST instruc&#173;tion while the RCX register will have cleared bits corresponding to all completed iterations.</string></para>
+  <para unique="1262567">
+   <string>This instruction must be executed at privilege level 0; otherwise, a general protection exception #GP(0) is gener&#173;ated. This instruction performs MSR-specific checks in the same manner as RDMSR. </string></para>
+  <para unique="1262568">
+   <string>Although RDMSRLIST accesses the entries in the two tables in order, the actual reads of the MSRs may be performed out of order: for table entries m &lt; n, the processor may read the MSR for entry n before reading the MSR for entry m. (This may be true also for a sequence of executions of RDMSR.) Ordering is guaranteed if the address of the IA32_BARRIER MSR (2FH) appears in the table of MSR addresses. Specifically, if IA32_BARRIER appears at entry m, then the MSR read for any entry n with n &gt; m will not occur until (1) all instructions prior to RDMSRLIST have completed locally; and (2) MSRs have been read for all table entries before entry m.</string></para>
+  <para unique="1262569">
+   <string>The processor is allowed (but not required) to &#8220;load ahead&#8221; in the list. For example, it may cause a page fault for an access to a table entry after the n</string><superscript><string>th</string></superscript><string>, despite the processor having read only n MSRs.</string><footnote><para unique="1262574">
+     <string>For example, the processor may take a page fault due to a linear address for the 10th entry in the MSR address table despite only having completed the MSR reads up to entry 5.</string></para>
+    </footnote></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1262600">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The RDMSRLIST instruction is not recognized in protected mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>The RDMSRLIST instruction is not recognized in real-address mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string> The RDMSRLIST instruction is not recognized in virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string> The RDMSRLIST instruction is not recognized in compatibility mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    <listitem><string>If RSI [2:0] </string><string>&#8800; 0, RDI [2:0] </string><string>&#8800; 0, or bits 63:32 of an MSR-address table entry are not all zero.</string></listitem>
+    <listitem><string>If an execution of RDMSR from a specified MSR would generate a general protection exception #GP(0).</string></listitem>
+    <listitem><string>If the memory address is in a non-canonical form. </string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <listitem><string>If CPUID.07H.01H:EAX.MSRLIST[27] = 0.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

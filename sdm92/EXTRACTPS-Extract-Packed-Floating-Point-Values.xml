@@ -1,0 +1,47 @@
+<instruction name="EXTRACTPS">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Extract Packed Floating-Point Values</shortdesc>
+ <longdesc><para unique="1261290">
+   <string>Extracts a single precision floating-point value from the source operand (second operand) at the 32-bit offset spec&#173;ified from imm8. Immediate bits higher than the most significant offset for the vector length are ignored.</string></para>
+  <para unique="1261291">
+   <string>The extracted single precision floating-point value is stored in the low 32-bits of the destination operand</string></para>
+  <para unique="1261292">
+   <string>In 64-bit mode, destination register operand has default operand size of 64 bits. The upper 32-bits of the register are filled with zero. REX.W is ignored.</string></para>
+  <para unique="1261293">
+   <string>VEX.128 and EVEX encoded version: When VEX.W1 or EVEX.W1 form is used in 64-bit mode with a general purpose register (GPR) as a destination operand, the packed single quantity is zero extended to 64 bits. </string></para>
+  <para unique="1261294">
+   <string>VEX.vvvv/EVEX.vvvv is reserved and must be 1111b otherwise instructions will #UD.</string></para>
+  <para unique="1261295">
+   <string>128-bit Legacy SSE version: When a REX.W prefix is used in 64-bit mode with a general purpose register (GPR) as a destination operand, the packed single quantity is zero extended to 64 bits.</string></para>
+  <para unique="1261296">
+   <string>The source register is an XMM register. Imm8[1:0] determine the starting DWORD offset from which to extract the 32-bit floating-point value.</string></para>
+  <para unique="1261297">
+   <string>If VEXTRACTPS is encoded with VEX.L= 1, an attempt to execute the instruction encoded with VEX.L= 1 will cause an #UD exception.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>EXTRACTPS int _mm_extract_ps (__m128 a, const int nidx);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1261319">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1261324" format="xIndent1">
+   <string>VEX-encoded instructions, see </string><link linkend="48385: 06_Table: Table 2-22. Type 5 Class Exception Conditions"><string>Table&#160;2&#8209;22, &#8220;Type 5 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1261328" format="xIndent1">
+   <string>EVEX-encoded instructions, see </string><link linkend="32485: 06_Table: Table 2-57. Type E9NF Class Exception Conditions"><string>Table&#160;2&#8209;59, &#8220;Type E9NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1261329" format="xIndent1">
+   <string>Additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>IF VEX.L = 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If VEX.vvvv != 1111B or EVEX.vvvv != 1111B.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

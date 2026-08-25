@@ -1,0 +1,215 @@
+<instruction name="VREDUCEPD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Perform Reduction Transformation on Packed Float64 Values</shortdesc>
+ <longdesc><para unique="1046164">
+   <string>Perform reduction transformation of the packed binary encoded double precision floating-point values in the source operand (the second operand) and store the reduced results in binary floating-point format to the destination operand (the first operand) under the writemask k1. </string></para>
+  <para unique="1046165">
+   <string>The reduction transformation subtracts the integer part and the leading M fractional bits from the binary floating-point source value, where M is a unsigned integer specified by imm8[7:4], see </string><link linkend="71477: 05_FigureFrame: Figure 5-41. Imm8 Controls for VREDUCEPD/SD/PS/SS"><string>Figure&#160;5&#8209;28</string></link><string>. Specifically, the reduc&#173;tion transformation can be expressed as:</string></para>
+  <para unique="1046169">
+   <string>dest = src &#8211; (ROUND(2</string><superscript><string>M</string></superscript><string>*src))*2</string><superscript><string>-M</string></superscript><string>;</string></para>
+  <para unique="1046170">
+   <string>where &#8220;Round()&#8221; treats &#8220;src&#8221;, &#8220;2</string><superscript><string>M</string></superscript><string>&#8221;, and their product as binary floating-point numbers with normalized signifi&#173;cand and biased exponents.</string></para>
+  <para unique="1046171">
+   <string>The magnitude of the reduced result can be expressed by considering src= 2</string><superscript><string>p</string></superscript><string>*man2,</string></para>
+  <para unique="1046172">
+   <string>where &#8216;man2&#8217; is the normalized significand and &#8216;p&#8217; is the unbiased exponent </string></para>
+  <para unique="1046173">
+   <string>Then if RC = RNE: 0&lt;=|Reduced Result|&lt;=2</string><superscript><string>p-M-1</string></superscript></para>
+  <para unique="1046174">
+   <string>Then if RC &#8800; RNE: 0&lt;=|Reduced Result|&lt;2</string><superscript><string>p-M</string></superscript></para>
+  <para unique="1046175">
+   <string>This instruction might end up with a precision exception set. However, in case of SPE set (i.e., Suppress Precision Exception, which is imm8[3]=1), no precision exception is reported.</string></para>
+  <para unique="1046176">
+   <string>EVEX.vvvv is reserved and must be 1111b otherwise instructions will #UD.</string></para>
+  <table>
+   <caption>Figure 5-28.  Imm8 Controls for VREDUCEPD/SD/PS/SS</caption>
+   <colgroup><col width="515.33352pt"/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <td><svg width="832.8450927734375" height="143.65" viewBox="0 0 832.8450927734375 143.65" name="imm8" shortdesc="Imm8 Controls for VREDUCEPD/SD/PS/SS">
+       <defs><marker id="arrow" viewBox="0 0 10 6" refX="7" refY="3" markerWidth="10" markerHeight="6" style="fill: dimgray;" orient="auto-start-reverse"><path d="M 0 0 L 10 3 L 0 6 L 2 3 z"/></marker></defs>
+       <rect x="110.10870838165283" y="8.25" width="320" height="15" fill="whitesmoke" stroke="dimgray"/>
+       <text x="270.10870838165283" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">Fixed Point Length</text>
+       <line x1="110.10870838165283" y1="8.25" x2="110.10870838165283" y2="0" stroke="gray"/><line x1="430.10870838165283" y1="8.25" x2="430.10870838165283" y2="0" stroke="gray"/><text x="112.10870838165283" y="6.25" font-family="Verdana" font-size="7.5" fill="gray">7</text>
+       <text x="428.10870838165283" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="end">4</text>
+       <rect x="430.10870838165283" y="8.25" width="80" height="15" fill="whitesmoke" stroke="dimgray"/>
+       <text x="470.10870838165283" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">SPE</text>
+       <line x1="430.10870838165283" y1="8.25" x2="430.10870838165283" y2="0" stroke="gray"/><line x1="510.10870838165283" y1="8.25" x2="510.10870838165283" y2="0" stroke="gray"/><text x="470.10870838165283" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="middle">3</text>
+       <rect x="510.10870838165283" y="8.25" width="80" height="15" fill="whitesmoke" stroke="dimgray"/>
+       <text x="550.1087083816528" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">RS</text>
+       <line x1="510.10870838165283" y1="8.25" x2="510.10870838165283" y2="0" stroke="gray"/><line x1="590.1087083816528" y1="8.25" x2="590.1087083816528" y2="0" stroke="gray"/><text x="550.1087083816528" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="middle">2</text>
+       <rect x="590.1087083816528" y="8.25" width="160" height="15" fill="whitesmoke" stroke="dimgray"/>
+       <text x="670.1087083816528" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">RC</text>
+       <line x1="590.1087083816528" y1="8.25" x2="590.1087083816528" y2="0" stroke="gray"/><line x1="750.1087083816528" y1="8.25" x2="750.1087083816528" y2="0" stroke="gray"/><text x="592.1087083816528" y="6.25" font-family="Verdana" font-size="7.5" fill="gray">1</text>
+       <text x="748.1087083816528" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="end">0</text>
+       <text x="76.73638439178467" y="8.25" font-family="Verdana" font-size="9.9" fill="black"><tspan x="76.73638439178467" dy="11.88" font-family="Verdana" text-anchor="start">imm8</tspan></text>
+       <text x="36.372323989868164" y="53" font-family="Verdana" font-size="9.9" fill="black"><tspan x="36.372323989868164" dy="11.88" font-family="Verdana" text-anchor="start">Fixed Point Length</tspan><tspan x="36.372323989868164" dy="11.88" font-family="Verdana" text-anchor="start">Number of fixed points to subtract</tspan></text>
+       <text x="223.87705421447754" y="53" font-family="Verdana" font-size="9.9" fill="black"><tspan x="223.87705421447754" dy="11.88" font-family="Verdana" text-anchor="start">Suppress Precision Exceptions (SPE)</tspan><tspan x="223.87705421447754" dy="11.88" font-family="Verdana" text-anchor="start">imm8[3] = 0b0 : Use MXCSR exception mask</tspan><tspan x="223.87705421447754" dy="11.88" font-family="Verdana" text-anchor="start">imm8[3] = 0b1 : Suppress</tspan></text>
+       <text x="470.9674015045166" y="53" font-family="Verdana" font-size="9.9" fill="black"><tspan x="470.9674015045166" dy="11.88" font-family="Verdana" text-anchor="start">Round Select (RS)</tspan><tspan x="470.9674015045166" dy="11.88" font-family="Verdana" text-anchor="start">imm8[2] = 0b0 : Use imm8[1:0]</tspan><tspan x="470.9674015045166" dy="11.88" font-family="Verdana" text-anchor="start">imm8[2] = 0b1 : Use MXCSR</tspan></text>
+       <text x="654.9007358551025" y="53" font-family="Verdana" font-size="9.9" fill="black"><tspan x="654.9007358551025" dy="11.88" font-family="Verdana" text-anchor="start">Round Control Override (RC)</tspan><tspan x="654.9007358551025" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b00 : Round nearest even</tspan><tspan x="654.9007358551025" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b01 : Round down</tspan><tspan x="654.9007358551025" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b10 : Round up</tspan><tspan x="654.9007358551025" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b11 : Truncate</tspan></text>
+       <line x1="270.10870838165283" y1="23.25" x2="53.52279701232911" y2="53" stroke="white" stroke-width="2.7" opacity="70%"/><line x1="270.10870838165283" y1="23.25" x2="53.52279701232911" y2="53" stroke="dimgray" stroke-width="0.7" fill="transparent"/><line x1="470.10870838165283" y1="23.25" x2="246.68608894348145" y2="53" stroke="white" stroke-width="2.7" opacity="70%"/><line x1="470.10870838165283" y1="23.25" x2="246.68608894348145" y2="53" stroke="dimgray" stroke-width="0.7" fill="transparent"/><line x1="550.1087083816528" y1="23.25" x2="487.4607349395752" y2="53" stroke="white" stroke-width="2.7" opacity="70%"/><line x1="550.1087083816528" y1="23.25" x2="487.4607349395752" y2="53" stroke="dimgray" stroke-width="0.7" fill="transparent"/><line x1="670.1087083816528" y1="23.25" x2="675.4324039459228" y2="53" stroke="white" stroke-width="2.7" opacity="70%"/><line x1="670.1087083816528" y1="23.25" x2="675.4324039459228" y2="53" stroke="dimgray" stroke-width="0.7" fill="transparent"/></svg></td>
+     </tr>
+    </tbody>
+   </table>
+  <para unique="1046225">
+   <string>Handling of special case of input values are listed in </string><link linkend="49295: 06_Table: Table 5-24. VREDUCEPD Special Cases"><string>Table 5&#8209;27</string></link><string>.</string></para>
+  <table>
+   <caption>Table 5-27.  VREDUCEPD/SD/PS/SS Special Cases</caption>
+   <colgroup><col align="leftright"/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1046236" format="CellColHeadL">
+       </para>
+      </th>
+     <th><para unique="1046238" format="CellRowHeadL">
+       <string>Round Mode</string></para>
+      </th>
+     <th><para unique="1046240" format="CellRowHeadL">
+       <string>Returned value </string></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1046242" format="CellColHeadL">
+       <string>|Src1| &lt; 2</string><superscript><string>-M-1</string></superscript></para>
+      </th>
+     <td><para unique="1046244" format="CellBodyL">
+       <string>RNE</string></para>
+      </td>
+     <td><para unique="1046246" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     </tr>
+    <tr>
+     <th><para unique="1046248" format="CellColHeadL">
+       <string>|Src1| &lt; 2</string><superscript><string>-M</string></superscript></para>
+      </th>
+     <td><para unique="1046250" format="CellBodyL">
+       <string>RPI, Src1 &gt; 0</string></para>
+      </td>
+     <td><para unique="1046252" format="CellBodyL">
+       <string>Round (Src1-2</string><superscript><string>-M</string></superscript><string>) *</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046254">
+       </para>
+      </td>
+     <td><para unique="1046256" format="CellBodyL">
+       <string>RPI, Src1 &#8804; 0</string></para>
+      </td>
+     <td><para unique="1046258" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046260">
+       </para>
+      </td>
+     <td><para unique="1046262" format="CellBodyL">
+       <string>RNI, Src1 &#8805; 0</string></para>
+      </td>
+     <td><para unique="1046264" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046266">
+       </para>
+      </td>
+     <td><para unique="1046268" format="CellBodyL">
+       <string>RNI, Src1 &lt; 0</string></para>
+      </td>
+     <td><para unique="1046270" format="CellBodyL">
+       <string>Round (Src1+2</string><superscript><string>-M</string></superscript><string>) *</string></para>
+      </td>
+     </tr>
+    <tr>
+     <th><para unique="1046272" format="CellColHeadL">
+       <string>Src1 = &#177;0, or</string></para>
+      <para unique="1046273" format="CellColHeadL">
+       <string>Dest = &#177;0 (Src1!=INF)</string></para>
+      </th>
+     <td><para unique="1046275" format="CellBodyL">
+       <string>NOT RNI</string></para>
+      </td>
+     <td><para unique="1046277" format="CellBodyL">
+       <string>+0.0</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046279">
+       </para>
+      </td>
+     <td><para unique="1046281" format="CellBodyL">
+       <string>RNI</string></para>
+      </td>
+     <td><para unique="1046283" format="CellBodyL">
+       <string>-0.0</string></para>
+      </td>
+     </tr>
+    <tr>
+     <th><para unique="1046285" format="CellColHeadL">
+       <string>Src1 = &#177;INF</string></para>
+      </th>
+     <td><para unique="1046287" format="CellBodyL">
+       <string>any</string></para>
+      </td>
+     <td><para unique="1046289" format="CellBodyL">
+       <string>+0.0</string></para>
+      </td>
+     </tr>
+    <tr>
+     <th><para unique="1046291" format="CellColHeadL">
+       <string>Src1= &#177;NAN</string></para>
+      </th>
+     <td><para unique="1046293" format="CellBodyL">
+       <string>n/a</string></para>
+      </td>
+     <td><para unique="1046295" format="CellBodyL">
+       <string>QNaN(Src1)</string></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  <programlisting><string>	</string><string>* Round control = (imm8.MS1)? MXCSR.RC: imm8.RC</string><string>
+</string></programlisting>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VREDUCEPD __m512d _mm512_mask_reduce_pd( __m512d a, int imm, int sae)</string><string>
+</string><string>VREDUCEPD __m512d _mm512_mask_reduce_pd(__m512d s, __mmask8 k, __m512d a, int imm, int sae)</string><string>
+</string><string>VREDUCEPD __m512d _mm512_maskz_reduce_pd(__mmask8 k, __m512d a, int imm, int sae)</string><string>
+</string><string>VREDUCEPD __m256d _mm256_mask_reduce_pd( __m256d a, int imm)</string><string>
+</string><string>VREDUCEPD __m256d _mm256_mask_reduce_pd(__m256d s, __mmask8 k, __m256d a, int imm)</string><string>
+</string><string>VREDUCEPD __m256d _mm256_maskz_reduce_pd(__mmask8 k, __m256d a, int imm)</string><string>
+</string><string>VREDUCEPD __m128d _mm_mask_reduce_pd( __m128d a, int imm)</string><string>
+</string><string>VREDUCEPD __m128d _mm_mask_reduce_pd(__m128d s, __mmask8 k, __m128d a, int imm)</string><string>
+</string><string>VREDUCEPD __m128d _mm_maskz_reduce_pd(__mmask8 k, __m128d a, int imm)</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046343">
+   <string>Invalid, Precision.</string></para>
+  <para unique="1046344">
+   <string>If SPE is enabled, precision exception is not reported (regardless of MXCSR exception mask).</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046349" format="xIndent1">
+   <string>See </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046350" format="xIndent1">
+   <string>Additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>	If EVEX.vvvv != 1111B.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

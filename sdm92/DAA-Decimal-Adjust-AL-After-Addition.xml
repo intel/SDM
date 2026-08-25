@@ -1,0 +1,62 @@
+<instruction name="DAA">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Decimal Adjust AL After Addition</shortdesc>
+ <longdesc><para unique="1261240">
+   <string>Adjusts the sum of two packed BCD values to create a packed BCD result. The AL register is the implied source and destination operand. The DAA instruction is only useful when it follows an ADD instruction that adds (binary addi&#173;tion) two 2-digit, packed BCD values and stores a byte result in the AL register. The DAA instruction then adjusts the contents of the AL register to contain the correct 2-digit, packed BCD result. If a decimal carry is detected, the CF and AF flags are set accordingly.</string></para>
+  <para unique="1261241">
+   <string>This instruction executes as described above in compatibility mode and legacy mode. It is not valid in 64-bit mode.</string></para>
+  </longdesc>
+ <subsection title="Example">
+  <programlisting><string>ADD 		AL, BL 		Before: AL</string><string>=79H BL</string><string>=35H EFLAGS(OSZAPC)</string><string>=XXXXXX</string><string>
+</string><string>				After: AL</string><string>=AEH BL</string><string>=35H EFLAGS(0SZAPC)</string><string>=110000</string><string>
+</string><string>DAA				Before: AL</string><string>=AEH BL</string><string>=35H EFLAGS(OSZAPC)</string><string>=110000</string><string>
+</string><string>				After: AL</string><string>=14H BL</string><string>=35H EFLAGS(0SZAPC)</string><string>=X00111</string><string>
+</string><string>DAA				Before: AL</string><string>=2EH BL</string><string>=35H EFLAGS(OSZAPC)</string><string>=110000</string><string>
+</string><string>				After: AL</string><string>=34H BL</string><string>=35H EFLAGS(0SZAPC)</string><string>=X00101</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Flags Affected">
+  <para unique="1261273">
+   <string>The CF and AF flags are set if the adjustment of the value results in a decimal carry in either digit of the result (see the &#8220;Operation&#8221; section above). The SF, ZF, and PF flags are set according to the result. The OF flag is undefined.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If in 64-bit mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

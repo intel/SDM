@@ -1,0 +1,325 @@
+<instruction name="VDBPSADBW">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Double Block Packed Sum-Absolute-Differences (SAD) on Unsigned Bytes</shortdesc>
+ <longdesc><para unique="1045969">
+   <string>Compute packed SAD (sum of absolute differences) word results of unsigned bytes from two 32-bit dword elements. Packed SAD word results are calculated in multiples of qword superblocks, producing 4 SAD word results in each 64-bit superblock of the destination register. </string></para>
+  <para unique="1045970">
+   <string>Within each super block of packed word results, the SAD results from two 32-bit dword elements are calculated as follows:</string></para>
+  <itemizedlist><listitem><para unique="1045971">
+     <string>The lower two word results are calculated each from the SAD operation between a sliding dword element within a qword superblock from an intermediate vector with a stationary dword element in the corresponding qword superblock of the first source operand. The intermediate vector, see &#8220;Tmp1&#8221; in </string><link linkend="88618: 05_FigureFrame: Figure 5-18. 64-bit Super Block of SAD Operation in VDBPSADBW"><string>Figure&#160;5&#8209;8</string></link><string>, is constructed from the second source operand the imm8 byte as shuffle control to select dword elements within a 128-bit lane of the second source operand. The two sliding dword elements in a qword superblock of Tmp1 are located at byte offset 0 and 1 within the superblock, respectively. The stationary dword element in the qword superblock from the first source operand is located at byte offset 0.</string></para>
+    </listitem>
+   <listitem><para unique="1045975">
+     <string>The next two word results are calculated each from the SAD operation between a sliding dword element within a qword superblock from the intermediate vector Tmp1 with a second stationary dword element in the corre&#173;sponding qword superblock of the first source operand. The two sliding dword elements in a qword superblock of Tmp1 are located at byte offset 2and 3 within the superblock, respectively. The stationary dword element in the qword superblock from the first source operand is located at byte offset 4.</string></para>
+    </listitem>
+   <listitem><para unique="1045976">
+     <string>The intermediate vector is constructed in 128-bits lanes. Within each 128-bit lane, each dword element of the intermediate vector is selected by a two-bit field within the imm8 byte on the corresponding 128-bits of the second source operand. The imm8 byte serves as dword shuffle control within each 128-bit lanes of the inter&#173;mediate vector and the second source operand, similarly to PSHUFD.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1045977">
+   <string>The first source operand is a ZMM/YMM/XMM register. The second source operand is a ZMM/YMM/XMM register, or a 512/256/128-bit memory location. The destination operand is conditionally updated based on writemask k1 at 16-bit word granularity.</string></para>
+  <table>
+   <caption>Figure 5-8.  64-bit Super Block of SAD Operation in VDBPSADBW </caption>
+   <colgroup><col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <td><para unique="1046314" format="05_FigureGraphic">
+       <svg width="1000" height="821.056569958382" viewBox="0 0 467.62488 383.94647999999995">
+        <defs>
+        <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+          <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
+        </marker>
+      </defs>
+        <rect width="288.0" height="13.248" x="98.61048000000001" y="358.20936" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="314.61048,358.45776 314.61048,371.45736" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="242.61048,358.45776 242.61048,371.45736" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="170.61048,358.45776 170.61048,371.45736" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="100.152" y="355.6728" font-size="6">63</text>
+        <text x="380.93328" y="355.6728" font-size="6">0</text>
+        <text x="319.43376" y="355.6728" font-size="6">15</text>
+        <text x="245.43431999999999" y="355.6728" font-size="6">31</text>
+        <text x="172.93464" y="355.6728" font-size="6">47</text>
+        <rect width="69.12" height="12.000240000000002" x="276.3" y="182.68776" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="293.58,182.68776 293.58,194.42376000000002" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="310.86,182.68776 310.86,194.42376000000002" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="328.14,182.68776 328.14,194.42376000000002" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <rect width="69.12" height="12.000240000000002" x="276.3" y="215.37216" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="293.58,215.37216 293.58,227.10744" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="310.86,215.37216 310.86,227.10744" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="328.14,215.37216 328.14,227.10744" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <rect width="69.12" height="12.000240000000002" x="276.8004" y="159.37199999999999" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="294.08040000000005,159.37199999999999 294.08040000000005,171.108" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="311.36039999999997,159.37199999999999 311.36039999999997,171.108" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="328.6404,159.37199999999999 328.6404,171.108" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="353.89656" y="189.41112" font-size="6">Src1 stationary dword 0</text>
+        <text x="351.54" y="166.19688" font-size="6">Tmp1 sliding dword </text>
+        <rect width="10.00008" height="9.576" x="173.50344" y="335.91959999999995" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="176.50367999999997" y="344.37528" font-size="6">+</text>
+        <rect width="10.00008" height="8.208" x="278.94455999999997" y="197.34768000000003" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="281.94408" y="200.37168" font-size="6">_</text>
+        <rect width="18.432000000000002" height="7.92" x="275.32008" y="206.27568" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="278.91071999999997" y="212.38272" font-size="6">abs</text>
+        <rect width="10.00008" height="8.208" x="333.66456" y="197.34768000000003" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="336.66408" y="200.37168" font-size="6">_</text>
+        <rect width="18.432000000000002" height="7.92" x="330.04008" y="206.27568" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="333.63072" y="212.38272" font-size="6">abs</text>
+        <rect width="10.00008" height="8.208" x="297.18432" y="197.34768000000003" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="300.18456" y="200.37168" font-size="6">_</text>
+        <rect width="18.432000000000002" height="7.92" x="293.56056" y="206.27568" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="297.15048" y="212.38272" font-size="6">abs</text>
+        <rect width="10.00008" height="8.208" x="315.42408" y="197.34768000000003" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="318.42431999999997" y="200.37168" font-size="6">_</text>
+        <rect width="18.432000000000002" height="7.92" x="311.80032" y="206.27568" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="315.39024" y="212.38272" font-size="6">abs</text>
+        <polyline points="338.32584,164.55456 338.32584,196.95456" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="285.32592,165.05424 285.32592,197.45424" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="301.82616,166.05432 301.82616,198.45432" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="320.32584,164.55456 320.32584,196.95456" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <rect width="10.00008" height="9.576" x="352.85976" y="341.13383999999996" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="355.85928" y="349.59024" font-size="6">+</text>
+        <polyline points="285.32592,229.554 302.32584,244.05336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="300.82608,227.05344 304.326,242.05392" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="316.32552000000004,226.55376 307.82592,242.5536" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="336.32568000000003,227.55384 312.32592,243.054" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <rect width="69.12" height="12.000240000000002" x="326.29967999999997" y="282.18672" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="343.57968,282.18672 343.57968,293.92271999999997" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="360.85968,282.18672 360.85968,293.92271999999997" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="378.13968,282.18672 378.13968,293.92271999999997" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <rect width="69.12" height="12.000240000000002" x="326.29967999999997" y="314.87112" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="343.57968,314.87112 343.57968,326.60711999999995" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="360.85968,314.87112 360.85968,326.60711999999995" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="378.13968,314.87112 378.13968,326.60711999999995" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <rect width="69.12" height="12.000240000000002" x="326.80008000000004" y="258.87167999999997" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="392.43312" y="256.17384" font-size="6">0</text>
+        <text x="361.93319999999994" y="256.17384" font-size="6">15</text>
+        <text x="326.4336" y="256.17384" font-size="6">31</text>
+        <polyline points="344.08007999999995,258.87167999999997 344.08007999999995,270.60767999999996" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="361.36008,258.87167999999997 361.36008,270.60767999999996" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="378.64008,258.87167999999997 378.64008,270.60767999999996" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="403.89624000000003" y="289.3392" font-size="6">Src1 stationary dword 0</text>
+        <text x="402.39648" y="266.12496" font-size="6">Tmp1 sliding dword </text>
+        <rect width="10.00008" height="8.208" x="328.94424" y="296.84736000000004" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="331.94376" y="299.87136" font-size="6">_</text>
+        <rect width="18.432000000000002" height="7.92" x="325.31976" y="305.77536" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="328.9104" y="311.88168" font-size="6">abs</text>
+        <rect width="10.00008" height="8.208" x="383.66424" y="296.84736000000004" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="386.66376" y="299.87136" font-size="6">_</text>
+        <rect width="18.432000000000002" height="7.92" x="380.03976" y="305.77536" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="383.6304" y="311.88168" font-size="6">abs</text>
+        <rect width="10.00008" height="8.208" x="347.184" y="296.84736000000004" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="350.18424" y="299.87136" font-size="6">_</text>
+        <rect width="18.432000000000002" height="7.92" x="343.56024" y="305.77536" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="347.15016" y="311.88168" font-size="6">abs</text>
+        <rect width="10.00008" height="8.208" x="365.42376" y="296.84736000000004" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="368.424" y="299.87136" font-size="6">_</text>
+        <rect width="18.432000000000002" height="7.92" x="361.8" y="305.77536" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="365.38992" y="311.88168" font-size="6">abs</text>
+        <polyline points="388.32552000000004,264.05352 388.32552000000004,296.45351999999997" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="335.3256,264.55392 335.3256,296.95392000000004" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="351.82584,265.554 351.82584,297.95327999999995" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="370.32552000000004,264.05352 370.32552000000004,296.45351999999997" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="335.3256,329.05296 352.32552000000004,343.55303999999995" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="350.82576,326.55312 354.32568000000003,341.55287999999996" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="366.32520000000005,326.05271999999997 357.8256,342.05328000000003" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="386.32536000000005,327.0528 362.3256,342.55296" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <rect width="69.12" height="12.000240000000002" x="146.22984" y="277.54416" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="163.50984,277.54416 163.50984,289.28016" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="180.78984,277.54416 180.78984,289.28016" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="198.06984,277.54416 198.06984,289.28016" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <rect width="69.12" height="12.000240000000002" x="146.22984" y="310.22855999999996" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="163.50984,310.22855999999996 163.50984,321.96456" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="180.78984,310.22855999999996 180.78984,321.96456" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="198.06984,310.22855999999996 198.06984,321.96456" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <rect width="69.12" height="12.000240000000002" x="146.73024" y="254.2284" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="164.01024,254.2284 164.01024,265.9644" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="181.29024,254.2284 181.29024,265.9644" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="198.57023999999998,254.2284 198.57023999999998,265.9644" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="222.5412" y="285.55343999999997" font-size="6">Src1 stationary dword 1</text>
+        <text x="222.32664" y="261.9108" font-size="6">Tmp1 sliding dword</text>
+        <rect width="10.00008" height="8.208" x="148.87439999999998" y="292.20408000000003" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="151.87392" y="295.22808" font-size="6">_</text>
+        <rect width="18.432000000000002" height="7.92" x="145.24992" y="301.13208" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="148.84055999999998" y="307.23912" font-size="6">abs</text>
+        <rect width="10.00008" height="8.208" x="203.5944" y="292.20408000000003" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="206.59392" y="295.22808" font-size="6">_</text>
+        <rect width="18.432000000000002" height="7.92" x="199.96992" y="301.13208" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="203.55984" y="307.23912" font-size="6">abs</text>
+        <rect width="10.00008" height="8.208" x="167.11416" y="292.20408000000003" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="170.1144" y="295.22808" font-size="6">_</text>
+        <rect width="18.432000000000002" height="7.92" x="163.49040000000002" y="301.13208" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="167.08032" y="307.23912" font-size="6">abs</text>
+        <rect width="10.00008" height="8.208" x="185.35392" y="292.20408000000003" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="188.35415999999998" y="295.22808" font-size="6">_</text>
+        <rect width="18.432000000000002" height="7.92" x="181.73016" y="301.13208" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="185.32008" y="307.23912" font-size="6">abs</text>
+        <polyline points="208.25568,259.41096 208.25568,291.81096" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="155.25576,259.91064 155.25576,292.31064000000003" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="171.756,260.91071999999997 171.756,293.31072" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="190.25568,259.41096 190.25568,291.81096" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="155.25576,324.4104 172.25568,338.91048" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="170.75592,321.91056 174.25584,336.91032" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="186.25536,321.41016 177.75576,337.41" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="206.25552000000002,322.41024 182.25576,337.9104" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <rect width="69.12" height="12.000240000000002" x="58.944959999999995" y="183.33072" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="76.22496000000001,183.33072 76.22496000000001,195.06672" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="93.50496000000001,183.33072 93.50496000000001,195.06672" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="110.78496,183.33072 110.78496,195.06672" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <rect width="69.12" height="12.000240000000002" x="58.944959999999995" y="216.0144" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="76.22496000000001,216.0144 76.22496000000001,227.75039999999998" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="93.50496000000001,216.0144 93.50496000000001,227.75039999999998" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="110.78496,216.0144 110.78496,227.75039999999998" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <rect width="69.12" height="12.000240000000002" x="59.44536" y="160.01496" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="76.72536000000001,160.01496 76.72536000000001,171.75096" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="94.00536000000001,160.01496 94.00536000000001,171.75096" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="111.28536,160.01496 111.28536,171.75096" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="135.68472" y="192.6252" font-size="6">Src1 stationary dword 1</text>
+        <text x="135.47016" y="167.26896" font-size="6">Tmp1 sliding dword </text>
+        <rect width="10.00008" height="8.208" x="61.58952" y="197.99064" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="64.58904" y="201.01463999999999" font-size="6">_</text>
+        <rect width="18.432000000000002" height="7.92" x="57.965039999999995" y="206.91864" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="61.554959999999994" y="213.02568" font-size="6">abs</text>
+        <rect width="10.00008" height="8.208" x="116.30879999999999" y="197.99064" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="119.30904000000001" y="201.01463999999999" font-size="6">_</text>
+        <rect width="18.432000000000002" height="7.92" x="112.68504" y="206.91864" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="116.27496" y="213.02568" font-size="6">abs</text>
+        <rect width="10.00008" height="8.208" x="79.82928000000001" y="197.99064" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="82.82952" y="201.01463999999999" font-size="6">_</text>
+        <rect width="18.432000000000002" height="7.92" x="76.20552" y="206.91864" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="79.79544000000001" y="213.02568" font-size="6">abs</text>
+        <rect width="10.00008" height="8.208" x="98.06903999999999" y="197.99064" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="101.06927999999999" y="201.01463999999999" font-size="6">_</text>
+        <rect width="18.432000000000002" height="7.92" x="94.44528" y="206.91864" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="98.03519999999999" y="213.02568" font-size="6">abs</text>
+        <polyline points="120.97008,165.19752 120.97008,197.59751999999997" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="67.97088,165.69719999999998 67.97088,198.0972" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="84.47112000000001,166.69728 84.47112000000001,199.09727999999998" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="102.9708,165.19752 102.9708,197.59751999999997" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="67.97088,230.19696 84.9708,244.69632" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="83.47032,227.6964 86.97095999999999,242.69688" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="98.97048,227.19672 90.47088,243.19656" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="118.97063999999999,228.1968 94.97088,243.69624" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <rect width="10.00008" height="9.576" x="302.57424000000003" y="242.13456" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="305.57376" y="250.59096" font-size="6">+</text>
+        <rect width="10.00008" height="9.576" x="85.43303999999999" y="242.4204" rx="18.0" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="88.43328" y="250.8768" font-size="6">+</text>
+        <polyline points="92.34935999999999,251.4816 144.82727999999997,361.05264" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="307.84752000000003,254.98152 288.91799999999995,362.67479999999995" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="357.3468,351.98064000000005 344.82528,364.55255999999997" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="184.34735999999998,343.818 207.82656,365.05296" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <text x="10.82808" y="366.55271999999997" font-size="6">Destination qword superblock</text>
+        <text x="380.10816" y="256.17384" font-size="6">7</text>
+        <text x="344.50488" y="256.17384" font-size="6">23</text>
+        <text x="392.29056" y="279.60264" font-size="6">0</text>
+        <text x="361.79064" y="279.60264" font-size="6">15</text>
+        <text x="326.29103999999995" y="279.60264" font-size="6">31</text>
+        <text x="379.96488" y="279.60264" font-size="6">7</text>
+        <text x="344.36231999999995" y="279.60264" font-size="6">23</text>
+        <text x="342.82584" y="156.62592" font-size="6">8</text>
+        <text x="312.32592" y="156.62592" font-size="6">23</text>
+        <text x="276.82632" y="156.62592" font-size="6">39</text>
+        <text x="330.50088000000005" y="156.62592" font-size="6">15</text>
+        <text x="294.89759999999995" y="156.62592" font-size="6">31</text>
+        <text x="342.25415999999996" y="180.05472" font-size="6">0</text>
+        <text x="311.75496" y="180.05472" font-size="6">15</text>
+        <text x="276.25536" y="180.05472" font-size="6">31</text>
+        <text x="329.9292" y="180.05472" font-size="6">7</text>
+        <text x="294.32664" y="180.05472" font-size="6">23</text>
+        <text x="124.6788" y="181.17504" font-size="6">32</text>
+        <text x="94.17888" y="181.17504" font-size="6">47</text>
+        <text x="58.67928" y="181.17504" font-size="6">63</text>
+        <text x="112.35384" y="181.17504" font-size="6">39</text>
+        <text x="76.75128" y="181.17504" font-size="6">55</text>
+        <text x="125.82216" y="157.032" font-size="6">24</text>
+        <text x="95.32224" y="157.032" font-size="6">39</text>
+        <text x="59.82264" y="157.032" font-size="6">55</text>
+        <text x="113.49648" y="157.032" font-size="6">31</text>
+        <text x="77.89392000000001" y="157.032" font-size="6">47</text>
+        <text x="212.32080000000002" y="275.60232" font-size="6">32</text>
+        <text x="181.82088" y="275.60232" font-size="6">47</text>
+        <text x="146.32128" y="275.60232" font-size="6">63</text>
+        <text x="199.99584" y="275.60232" font-size="6">39</text>
+        <text x="164.39328" y="275.60232" font-size="6">55</text>
+        <text x="212.60664" y="251.46" font-size="6">16</text>
+        <text x="182.10672" y="251.46" font-size="6">31</text>
+        <text x="146.60712" y="251.46" font-size="6">47</text>
+        <text x="200.28168000000002" y="251.46" font-size="6">23</text>
+        <text x="164.67912" y="251.46" font-size="6">39</text>
+        <rect width="288.0" height="13.248" x="108.73872" y="13.85424" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="324.73872,14.10264 324.73872,27.10224" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="252.73872,14.10264 252.73872,27.10224" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="180.73872,14.10264 180.73872,27.10224" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="98.06328" y="11.3184" font-size="6">127+128*n</text>
+        <text x="391.06152" y="11.3184" font-size="6">128*n</text>
+        <text x="329.562" y="11.3184" font-size="6">31+128*n</text>
+        <text x="255.56256" y="11.3184" font-size="6">63+128*n</text>
+        <text x="183.06287999999998" y="11.3184" font-size="6">95+128*n</text>
+        <text x="29.778480000000002" y="21.1032" font-size="6">128-bit Lane of Src2</text>
+        <rect width="69.12" height="12.000240000000002" x="238.34735999999998" y="49.45608" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="255.62736,49.45608 255.62736,61.192080000000004" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="272.90736,49.45608 272.90736,61.192080000000004" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="290.18736,49.45608 290.18736,61.192080000000004" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="303.77592" y="70.10352" font-size="6">0</text>
+        <text x="273.276" y="70.10352" font-size="6">3</text>
+        <text x="237.7764" y="70.10352" font-size="6">7</text>
+        <text x="291.45024" y="70.10352" font-size="6">1</text>
+        <text x="255.84768000000003" y="70.10352" font-size="6">5</text>
+        <polyline points="161.49168,25.1748 283.70376,52.32096" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="226.9908,23.17536 284.56056,51.46416" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="279.49104,22.17528 283.70376,53.60688" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="336.49055999999996,23.67504 284.98896,51.46416" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <text x="357.25464" y="40.412879999999994" font-size="6">00B: DW0</text>
+        <text x="357.25464" y="48.4128" font-size="6">01B: DW1</text>
+        <text x="357.25464" y="56.41272" font-size="6">10B: DW2</text>
+        <text x="357.25464" y="64.41264" font-size="6">11B: DW3</text>
+        <text x="136.82808" y="22.69944" font-size="6">DW3</text>
+        <text x="210.82752" y="22.985280000000003" font-size="6">DW2</text>
+        <text x="281.39832" y="22.842" font-size="6">DW1</text>
+        <text x="350.2548" y="21.84264" font-size="6">DW0</text>
+        <rect width="288.0" height="13.248" x="107.5248" y="98.28216" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="323.5248,98.53056 323.5248,111.53016" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="251.5248,98.53056 251.5248,111.53016" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <polyline points="179.5248,98.53056 179.5248,111.53016" style="stroke-width:0.5; stroke: #000000; fill: none;"/>
+        <text x="96.84935999999999" y="95.74632" font-size="6">127+128*n</text>
+        <text x="389.84688" y="95.74632" font-size="6">128*n</text>
+        <text x="328.34736000000004" y="95.74632" font-size="6">31+128*n</text>
+        <text x="254.34792" y="95.74632" font-size="6">63+128*n</text>
+        <text x="181.84896" y="95.74632" font-size="6">95+128*n</text>
+        <text x="32.85" y="106.74576" font-size="6">128-bit Lane of Tmp1</text>
+        <text x="162.49176" y="57.81744" font-size="6">imm8 shuffle control</text>
+        <polyline points="281.98944,63.46368 290.8476,104.74560000000001" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="305.13168,63.03528 368.34695999999997,106.24536" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="265.70376,62.17848 230.34816,107.24544" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="239.56128,62.60688 139.27679999999998,105.03504" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="252.36755999999997,117.21563999999995 252.36755999999997,122.96483999999998 394.6158,122.96483999999998 394.6158,117.34956" style="stroke-width:0.3; stroke: #000000; fill: none;"/>
+        <text x="284.82624" y="119.55456" font-size="6">Tmp1 qword superblock</text>
+        <polyline points="377.34695999999997,122.4828 344.34720000000004,162.98208" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="381.84695999999997,124.98264 355.84704,262.48176" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="267.84792,123.98256 124.84872,162.98208" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        <polyline points="275.84784,124.48296 192.348,256.482" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+        </svg></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VDBPSADBW __m512i _mm512_dbsad_epu8(__m512i a, __m512i b int imm8);</string><string>
+</string><string>VDBPSADBW __m512i _mm512_mask_dbsad_epu8(__m512i s, __mmask32 m, __m512i a, __m512i b int imm8);</string><string>
+</string><string>VDBPSADBW __m512i _mm512_maskz_dbsad_epu8(__mmask32 m, __m512i a, __m512i b int imm8);</string><string>
+</string><string>VDBPSADBW __m256i _mm256_dbsad_epu8(__m256i a, __m256i b int imm8);</string><string>
+</string><string>VDBPSADBW __m256i _mm256_mask_dbsad_epu8(__m256i s, __mmask16 m, __m256i a, __m256i b int imm8);</string><string>
+</string><string>VDBPSADBW __m256i _mm256_maskz_dbsad_epu8(__mmask16 m, __m256i a, __m256i b int imm8);</string><string>
+</string><string>VDBPSADBW __m128i _mm_dbsad_epu8(__m128i a, __m128i b int imm8);</string><string>
+</string><string>VDBPSADBW __m128i _mm_mask_dbsad_epu8(__m128i s, __mmask8 m, __m128i a, __m128i b int imm8);</string><string>
+</string><string>VDBPSADBW __m128i _mm_maskz_dbsad_epu8(__mmask8 m, __m128i a, __m128i b int imm8);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046377">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046382" format="xIndent1">
+   <string>See Exceptions Type E4NF.nb in </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

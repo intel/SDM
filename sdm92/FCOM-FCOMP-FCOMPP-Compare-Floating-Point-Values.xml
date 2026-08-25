@@ -1,0 +1,250 @@
+<instruction name="FCOM/FCOMP/FCOMPP">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Compare Floating-Point Values</shortdesc>
+ <longdesc><para unique="1261296">
+   <string>Compares the contents of register ST(0) and source value and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). The source operand can be a data register or a memory location. If no source operand is given, the value in ST(0) is compared with the value in ST(1). The sign of zero is ignored, so that &#8211;0.0 is equal to</string><string> +0.0. </string></para>
+  <table>
+   <caption>Table 3-23.  FCOM/FCOMP/FCOMPP Results</caption>
+   <colgroup><col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1261307" format="CellColHead">
+       <string>Condition</string></para>
+      </th>
+     <th><para unique="1261309" format="CellColHead">
+       <string>C3</string></para>
+      </th>
+     <th><para unique="1261311" format="CellColHead">
+       <string>C2</string></para>
+      </th>
+     <th><para unique="1261313" format="CellColHead">
+       <string>C0</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1261315" format="CellBodyC">
+       <sans><string>ST(0)</string></sans><string> </string><string>&gt; </string><sans><string>SRC</string></sans></para>
+      </td>
+     <td><para unique="1261317" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261319" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261321" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261323" format="CellBodyC">
+       <sans><string>ST(0)</string></sans><string> </string><string>&lt; </string><sans><string>SRC</string></sans></para>
+      </td>
+     <td><para unique="1261325" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261327" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261329" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261331" format="CellBodyC">
+       <sans><string>ST(0)</string></sans><string> </string><string>=</string><sans><string> SRC</string></sans></para>
+      </td>
+     <td><para unique="1261333" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     <td><para unique="1261335" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     <td><para unique="1261337" format="CellBodyC">
+       <string>0</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261339" format="CellBodyC">
+       <string>Unordered*</string></para>
+      </td>
+     <td><para unique="1261341" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     <td><para unique="1261343" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     <td><para unique="1261345" format="CellBodyC">
+       <string>1</string></para>
+      </td>
+     </tr>
+    </tbody>
+   <tfoot><tr>
+     <td colspan="4"><para unique="1261347" format="TableFootnoteBLUE">
+       <string>NOTES:</string></para>
+      <para unique="1261348" format="TableFootnote">
+       <string>*	Flags not set if unmasked invalid-arithmetic-operand (#IA) exception is generated.</string></para>
+      </td>
+     </tr>
+    </tfoot></table>
+  <para unique="1261359">
+   <string>This instruction </string><indexterm><primary>Unordered values;x87 FPU status word:condition code flags</primary></indexterm><string>checks the class of the numbers being compared (see </string><link linkend="21127: H5Heading: FXAM&#8212;Examine"><string>&#8220;FXAM&#8212;Examine Floating-Point&#8221;</string></link><string> in this chapter). If either operand is a NaN or is in an unsupported format, an invalid-arithmetic-operand exception (#IA) is raised and, if the exception is masked, the condition flags are set to &#8220;unordered.&#8221; If the invalid-arithmetic-operand exception is unmasked, the condition code flags are not set.</string></para>
+  <para unique="1261361">
+   <string>The FCOMP instruction pops the register stack following the comparison operation and the FCOMPP instruction pops the register stack twice following the comparison operation. To pop the register stack, the processor marks the ST(0) register as empty and increments the stack pointer (TOP) by 1.</string></para>
+  <para unique="1261362">
+   <string>The FCOM instructions perform the same operation as the FUCOM instructions. The only difference is how they handle QNaN operands. The FCOM instructions raise an invalid-arithmetic-operand exception (#IA) when either or both of the operands is a NaN value or is in an unsupported format. The FUCOM instructions perform the same operation as the FCOM instructions, except that they do not generate an invalid-arithmetic-operand exception for QNaNs.</string></para>
+  <para unique="1261363">
+   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+  </longdesc>
+ <subsection title="FPU Flags Affected">
+  <variablelist>
+   <variablelistentry>
+    <term><string>C1</string></term>
+    <listitem><string>Set to 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>C0, C2, C3</string></term>
+    <listitem><string>See table on previous page.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Floating-Point Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#IS</string></term>
+    <listitem><string>Stack underflow occurred.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#IA</string></term>
+    <listitem><string>One or both operands are NaN values or have unsupported formats.</string></listitem>
+    <listitem><string>Register is marked empty.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#D</string></term>
+    <listitem><string>One or both operands are denormal values.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261416" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#MF </string></term>
+    <listitem><string>If there is a pending x87 FPU exception.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

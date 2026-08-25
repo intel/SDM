@@ -1,0 +1,173 @@
+<instruction name="PCMPESTRI">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Packed Compare Explicit Length Strings, Return Index</shortdesc>
+ <longdesc><para unique="1091453">
+   <string>The instruction compares and processes data from two string fragments based on the encoded value in the imm8 control byte (see </string><link linkend="83691: 02_Level: 5.3 Imm8 Control Byte Operation for PCMPESTRI / PCMPESTRM / PCMPISTRI / PCMPISTRM\x0d "><string>Section 4.1, &#8220;Imm8 Control Byte Operation for PCMPESTRI / PCMPESTRM / PCMPISTRI / PCMP&#173;ISTRM&#8221;</string></link><string>), and generates an index stored to the count register (ECX).</string></para>
+  <para unique="1091457">
+   <string>Each string fragment is represented by two values. The first value is an xmm (or possibly m128 for the second operand) which contains the data elements of the string (byte or word data). The second value is stored in an input length register. The input length register is EAX/RAX (for xmm1) or EDX/RDX (for xmm2/m128). The length represents the number of bytes/words which are valid for the respective xmm/m128 data. </string></para>
+  <para unique="1091458">
+   <string>The length of each input is interpreted as being the absolute-value of the value in the length register. The absolute-value computation saturates to 16 (for bytes) and 8 (for words), based on the value of imm8[bit3] when the value in the length register is greater than 16 (8) or less than -16 (-8).</string></para>
+  <para unique="1091459">
+   <string>The comparison and aggregation operations are performed according to the encoded value of imm8 bit fields (see </string><link linkend="83691: 02_Level: 5.3 Imm8 Control Byte Operation for PCMPESTRI / PCMPESTRM / PCMPISTRI / PCMPISTRM\x0d "><string>Section 4.1</string></link><string>). The index of the first (or last, according to imm8[6]) set bit of IntRes2 (see </string><link linkend="80804: 04_Level: 3.1.2.4 Polarity\x0d "><string>Section 4.1.4</string></link><string>) is returned in ECX. If no bits are set in IntRes2, ECX is set to 16 (8).</string></para>
+  <para unique="1091466">
+   <string>Note that the Arithmetic Flags are written in a non-standard manner in order to supply the most relevant informa&#173;tion:</string></para>
+  <programlisting><string>	CFlag &#8211; Reset if IntRes2 is equal to zero, set otherwise</string><string>
+</string><string>	ZFlag &#8211; Set if absolute-value of EDX is &lt; 16 (8), reset otherwise</string><string>
+</string><string>	SFlag &#8211; Set if absolute-value of EAX is &lt; 16 (8), reset otherwise</string><string>
+</string><string>	OFlag &#8211; IntRes2[0]</string><string>
+</string><string>	AFlag &#8211; Reset</string><string>
+</string><string>	PFlag &#8211; Reset</string><string>
+</string></programlisting>
+  <section level="7">
+   <title unique="1091534"><string>Effective Operand Size</string></title>
+   <table>
+    <colgroup><col align="leftright"/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     </colgroup>
+    <tbody>
+     <tr>
+      <td><para unique="1091487" format="CellBodyL">
+        <string>16 bit</string></para>
+       </td>
+      <td><para unique="1091489" format="CellBodyL">
+        <string>xmm</string></para>
+       </td>
+      <td><para unique="1091491" format="CellBodyL">
+        <string>xmm/m128</string></para>
+       </td>
+      <td><para unique="1091493" format="CellBodyL">
+        <string>EAX</string></para>
+       </td>
+      <td><para unique="1091495" format="CellBodyL">
+        <string>EDX</string></para>
+       </td>
+      <td><para unique="1091497" format="CellBodyL">
+        <string>ECX</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1091499" format="CellBodyL">
+        <string>32 bit</string></para>
+       </td>
+      <td><para unique="1091501" format="CellBodyL">
+        <string>xmm</string></para>
+       </td>
+      <td><para unique="1091503" format="CellBodyL">
+        <string>xmm/m128</string></para>
+       </td>
+      <td><para unique="1091505" format="CellBodyL">
+        <string>EAX</string></para>
+       </td>
+      <td><para unique="1091507" format="CellBodyL">
+        <string>EDX</string></para>
+       </td>
+      <td><para unique="1091509" format="CellBodyL">
+        <string>ECX</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1091511" format="CellBodyL">
+        <string>64 bit</string></para>
+       </td>
+      <td><para unique="1091513" format="CellBodyL">
+        <string>xmm</string></para>
+       </td>
+      <td><para unique="1091515" format="CellBodyL">
+        <string>xmm/m128</string></para>
+       </td>
+      <td><para unique="1091517" format="CellBodyL">
+        <string>EAX</string></para>
+       </td>
+      <td><para unique="1091519" format="CellBodyL">
+        <string>EDX</string></para>
+       </td>
+      <td><para unique="1091521" format="CellBodyL">
+        <string>ECX</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1091523" format="CellBodyL">
+        <string>64 bit + REX.W</string></para>
+       </td>
+      <td><para unique="1091525" format="CellBodyL">
+        <string>xmm</string></para>
+       </td>
+      <td><para unique="1091527" format="CellBodyL">
+        <string>xmm/m128</string></para>
+       </td>
+      <td><para unique="1091529" format="CellBodyL">
+        <string>RAX</string></para>
+       </td>
+      <td><para unique="1091531" format="CellBodyL">
+        <string>RDX</string></para>
+       </td>
+      <td><para unique="1091533" format="CellBodyL">
+        <string>ECX</string></para>
+       </td>
+      </tr>
+     </tbody>
+    <thead><tr>
+      <th><para unique="1091475" format="CellRowHeadL">
+        <string>Operating mode/size</string></para>
+       </th>
+      <th><para unique="1091477" format="CellRowHeadL">
+        <string>Operand 1</string></para>
+       </th>
+      <th><para unique="1091479" format="CellRowHeadL">
+        <string>Operand 2</string></para>
+       </th>
+      <th><para unique="1091481" format="CellRowHeadL">
+        <string>Length 1</string></para>
+       </th>
+      <th><para unique="1091483" format="CellRowHeadL">
+        <string>Length 2</string></para>
+       </th>
+      <th><para unique="1091485" format="CellRowHeadL">
+        <string>Result</string></para>
+       </th>
+      </tr>
+     </thead></table>
+   </section>
+  <section level="7">
+   <title unique="1091535"><string>Intel C/C++ Compiler Intrinsic Equivalent For Returning Index </string></title>
+   <programlisting><string>int _mm_cmpestri (__m128i a, int la, __m128i b, int lb, const int mode);</string><string>
+</string></programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091537"><string>Intel C/C++ Compiler Intrinsics For Reading EFlag Results</string></title>
+   <programlisting><string>int _mm_cmpestra (__m128i a, int la, __m128i b, int lb, const int mode);</string><string>
+</string><string>int _mm_cmpestrc (__m128i a, int la, __m128i b, int lb, const int mode);</string><string>
+</string><string>int _mm_cmpestro (__m128i a, int la, __m128i b, int lb, const int mode);</string><string>
+</string><string>int _mm_cmpestrs (__m128i a, int la, __m128i b, int lb, const int mode);</string><string>
+</string><string>int _mm_cmpestrz (__m128i a, int la, __m128i b, int lb, const int mode);</string><string>
+</string></programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091543"><string>SIMD Floating-Point Exceptions</string></title>
+   <para unique="1091544">
+    <string>None.</string></para>
+   </section>
+  <section level="7">
+   <title unique="1091545"><string>Other Exceptions</string></title>
+   <para unique="1091549" format="xIndent1">
+    <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions,&#8221;</string></link><string> additionally, this instruction does not cause #GP if the memory operand is not aligned to 16 Byte boundary, and:</string></para>
+   <variablelist>
+    <variablelistentry>
+     <term><string>#UD</string></term>
+     <listitem><string>If VEX.L = 1.</string></listitem>
+     <listitem><string>If VEX.vvvv &#8800; 1111B.</string></listitem>
+     </variablelistentry>
+    </variablelist>
+   </section>
+  </longdesc>
+ </instruction>

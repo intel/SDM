@@ -1,0 +1,174 @@
+<instruction name="RET">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Return From Procedure</shortdesc>
+ <longdesc><para unique="1091486">
+   <string>Transfers program control to a return address located on the top of the stack. The address is usually placed on the stack by a CALL instruction, and the return is made to the instruction that follows the CALL instruction.</string></para>
+  <para unique="1091487">
+   <string>The optional source operand specifies the number of stack bytes to be released after the return address is popped; the default is none. This operand can be used to release parameters from the stack that were passed to the called procedure and are no longer needed. It must be used when the CALL instruction used to switch to a new procedure uses a call gate with a non-zero word count to access the new procedure. Here, the source operand for the RET instruction must specify the same number of bytes as is specified in the word count field of the call gate.</string></para>
+  <para unique="1091488">
+   <string>The RET instruction can be used to execute three different types of returns:</string></para>
+  <itemizedlist><listitem><para unique="1091490">
+     <indexterm><primary>Near:return, RET instruction</primary></indexterm><bold><string>Near return</string></bold><string> &#8212; A return to a calling procedure within the current code segment (the segment currently pointed to by the CS register), sometimes referred to as an intrasegment return.</string></para>
+    </listitem>
+   <listitem><para unique="1091492">
+     <indexterm><primary>Far return, RET instruction</primary></indexterm><bold><string>Far return</string></bold><string> &#8212; A return to a calling procedure located in a different segment than the current code segment, sometimes referred to as an intersegment return.</string></para>
+    </listitem>
+   <listitem><para unique="1091494">
+     <indexterm><primary>Inter-privilege level:return, RET instruction</primary></indexterm><bold><string>Inter-privilege-level far return</string></bold><string> &#8212; A far return to a different privilege level than that of the currently executing program or procedure.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1091495">
+   <string>The inter-privilege-level return type can only be executed in protected mode. See the section titled &#8220;Calling Proce&#173;dures Using Call and RET&#8221; in </string><link linkend="26958: H1Heading: Chapter 4 Procedure Calls, Interrupts, and Exceptions"><string>Chapter 6</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for detailed information on near, far, and inter-privilege-level returns.</string></para>
+  <para unique="1091499">
+   <string>When executing a near return, the processor pops the return instruction pointer (offset) from the top of the stack into the EIP register and begins program execution at the new instruction pointer. The CS register is unchanged. </string></para>
+  <para unique="1091500">
+   <string>When executing a far return, the processor pops the return instruction pointer from the top of the stack into the EIP register, then pops the segment selector from the top of the stack into the CS register. The processor then begins program execution in the new code segment at the new instruction pointer.</string></para>
+  <para unique="1091501">
+   <string>The mechanics of an inter-privilege-level far return are similar to an intersegment return, except that the processor examines the privilege levels and access rights of the code and stack segments being returned to deter&#173;mine if the control transfer is allowed to be made. The DS, ES, FS, and GS segment registers are cleared by the RET instruction during an inter-privilege-level return if they refer to segments that are not allowed to be accessed at the new privilege level. Since a stack switch also occurs on an inter-privilege level return, the ESP and SS registers are loaded from the stack. </string></para>
+  <para unique="1091502">
+   <string>If parameters are passed to the called procedure during an inter-privilege level call, the optional source operand must be used with the RET instruction to release the parameters on the return. Here, the parameters are released both from the called procedure&#8217;s stack and the calling procedure&#8217;s stack (that is, the stack being returned to).</string></para>
+  <para unique="1091503">
+   <string>In 64-bit mode, the default operation size of this instruction is the stack-address size, i.e., 64 bits. This applies to near returns, not far returns; the default operation size of far returns is 32 bits.</string></para>
+  <para unique="1091509">
+   <string>Refer to </string><link linkend="26958: H1Heading: Chapter 4 Procedure Calls, Interrupts, and Exceptions"><string>Chapter 6, &#8220;Procedure Calls, Interrupts, and Exceptions&#8218;&#8221;</string></link><string> and </string><link linkend="40469: H1Heading: Chapter 16 Input/Output"><string>Chapter 18, &#8220;Control-flow Enforcement Technology (CET)&#8218;&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for CET details.</string></para>
+  <para unique="1092699">
+   <string>When FRED transitions are enabled, an execution of far RET that would change CPL causes a general-protection exception, as does an execution of far RET that would enter compatibility mode when CPL is 0.</string></para>
+  <para unique="1091511">
+   <string>Instruction ordering. Instructions following a far return may be fetched from memory before earlier instructions complete execution, but they will not execute (even speculatively) until all instructions prior to the far return have completed execution (the later instructions may execute before data stored by the earlier instructions have become globally visible).</string></para>
+  <para unique="1091512">
+   <string>Unlike near indirect CALL and near indirect JMP, the processor will not speculatively execute the next sequential instruction after a near RET unless that instruction is also the target of a jump or is a target in a branch predictor.</string></para>
+  </longdesc>
+ <subsection title="Flags Affected">
+  <para unique="1092045">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the return code or stack segment selector is NULL.</string></listitem>
+    <listitem><string>If the return instruction pointer is not within the return code segment limit.</string></listitem>
+    <listitem><string>If returning to 32-bit or compatibility mode and the previous SSP from shadow stack (when returning to CPL &lt;3) or from IA32_PL3_SSP (returning to CPL 3) is beyond 4GB.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(selector)</string></term>
+    <listitem><string>If the RPL of the return code segment selector is less then the CPL.</string></listitem>
+    <listitem><string>If the return code or stack segment selector index is not within its descriptor table limits.</string></listitem>
+    <listitem><string>If the return code segment descriptor does not indicate a code segment.</string></listitem>
+    <listitem><string>If the return code segment is non-conforming and the segment selector&#8217;s DPL is not equal to the RPL of the code segment&#8217;s segment selector</string></listitem>
+    <listitem><string>If the return code segment is conforming and the segment selector&#8217;s DPL greater than the RPL of the code segment&#8217;s segment selector</string></listitem>
+    <listitem><string>If the stack segment is not a writable data segment.</string></listitem>
+    <listitem><string>If the stack segment selector RPL is not equal to the RPL of the return code segment selector.</string></listitem>
+    <listitem><string>If the stack segment descriptor DPL is not equal to the RPL of the return code segment selector.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If the top bytes of stack are not within stack limits.</string></listitem>
+    <listitem><string>If the return stack segment is not present.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NP(selector)</string></term>
+    <listitem><string>If the return code segment is not present.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If an unaligned memory access occurs when the CPL is 3 and alignment checking is enabled.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#CP(Far-RET/IRET)</string></term>
+    <listitem><string>If the previous SSP from shadow stack (when returning to CPL &lt;3) or from IA32_PL3_SSP (returning to CPL 3) is not 4 byte aligned.</string></listitem>
+    <listitem><string>If return instruction pointer from stack and shadow stack do not match.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If the return instruction pointer is not within the return code segment limit </string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS</string></term>
+    <listitem><string>If the top bytes of stack are not within stack limits.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the return instruction pointer is not within the return code segment limit </string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If the top bytes of stack are not within stack limits.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If an unaligned memory access occurs when alignment checking is enabled.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1092074" format="xIndent1">
+   <string>Same as 64-bit mode exceptions.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the return instruction pointer is non-canonical.</string></listitem>
+    <listitem><string>If the return instruction pointer is not within the return code segment limit.</string></listitem>
+    <listitem><string>If the stack segment selector is NULL going back to compatibility mode.</string></listitem>
+    <listitem><string>If the stack segment selector is NULL going back to CPL3 64-bit mode.</string></listitem>
+    <listitem><string>If a NULL stack segment selector RPL is not equal to CPL going back to non-CPL3 64-bit mode.</string></listitem>
+    <listitem><string>If the return code segment selector is NULL.</string></listitem>
+    <listitem><string>If returning to 32-bit or compatibility mode and the previous SSP from shadow stack (when returning to CPL &lt;3) or from IA32_PL3_SSP (returning to CPL 3) is beyond 4GB.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(selector)</string></term>
+    <listitem><string>If the proposed segment descriptor for a code segment does not indicate it is a code segment. </string></listitem>
+    <listitem><string>If the proposed new code segment descriptor has both the D-bit and L-bit set.</string></listitem>
+    <listitem><string>If the DPL for a nonconforming-code segment is not equal to the RPL of the code segment selector.</string></listitem>
+    <listitem><string>If CPL is greater than the RPL of the code segment selector.</string></listitem>
+    <listitem><string>If FRED transitions are enabled and CPL is less than the RPL of the code segment selector.</string></listitem>
+    <listitem><string>If FRED transitions are enabled and CPL = 0 and far RET would enter compatibility mode.</string></listitem>
+    <listitem><string>If the DPL of a conforming-code segment is greater than the return code segment selector RPL.</string></listitem>
+    <listitem><string>If a segment selector index is outside its descriptor table limits.</string></listitem>
+    <listitem><string>If a segment descriptor memory address is non-canonical.</string></listitem>
+    <listitem><string>If the stack segment is not a writable data segment.</string></listitem>
+    <listitem><string>If the stack segment descriptor DPL is not equal to the RPL of the return code segment selector.</string></listitem>
+    <listitem><string>If the stack segment selector RPL is not equal to the RPL of the return code segment selector. </string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If an attempt to pop a value off the stack violates the SS limit.</string></listitem>
+    <listitem><string>If an attempt to pop a value off the stack causes a non-canonical address to be referenced.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NP(selector)</string></term>
+    <listitem><string>If the return code or stack segment is not present.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#CP(Far-RET/IRET)</string></term>
+    <listitem><string>If the previous SSP from shadow stack (when returning to CPL &lt;3) or from IA32_PL3_SSP (returning to CPL 3) is not 4 byte aligned.</string></listitem>
+    <listitem><string>If return instruction pointer from stack and shadow stack do not match.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

@@ -1,0 +1,1738 @@
+<instruction name="FXSAVE">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Save x87 FPU, MMX Technology, and SSE State</shortdesc>
+ <longdesc><para unique="1261257">
+   <string>Saves the current state of the x87 FPU, MMX technology, XMM, and MXCSR registers to a 512-byte memory loca&#173;tion specified in the destination operand. The content layout of the 512 byte region depends on whether the processor is operating in non-64-bit operating modes or 64&#8209;bit sub-mode of IA-32e mode. </string></para>
+  <para unique="1261258">
+   <string>Bytes 464:511 are available to software use. The processor does not write to bytes 464:511 of an FXSAVE area. </string></para>
+  <para unique="1261259">
+   <string>The operation of FXSAVE in non-64-bit modes is described first.</string></para>
+  <section level="7">
+   <title unique="1261260"><string>Non-64-Bit Mode Operation</string></title>
+   <para unique="1261263">
+    <link linkend="34456: 06_Table: Table 3-13. Layout of FXSAVE and FXRSTOR Memory Region"><string>Table 3&#8209;45</string></link><string> shows the layout of the state information in memory when the processor is operating in legacy modes.
+
+The destination operand contains the first byte of the memory image, and it must be aligned on a 16-byte boundary. A misaligned destination operand will result in a general-protection (#GP) exception being generated (or in some cases, an alignment check exception [#AC]).</string></para>
+   <table>
+    <caption>Table 3-45.  Non-64-Bit-Mode Layout of FXSAVE and FXRSTOR Memory Region</caption>
+    <colgroup><col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     </colgroup>
+    <thead><tr>
+      <th><para unique="1261291" format="CellColHead">
+        <string>15&#160;&#160;&#160;&#160;&#160;&#160;14</string></para>
+       </th>
+      <th><para unique="1261293" format="CellColHead">
+        <string>13&#160;&#160;&#160;&#160;&#160; 12</string></para>
+       </th>
+      <th><para unique="1261295" format="CellColHead">
+        <string>11&#160;&#160;&#160;&#160;10</string></para>
+       </th>
+      <th><para unique="1261297" format="CellColHead">
+        <string>9&#160;&#160;&#160;&#160;&#160;&#160; 8</string></para>
+       </th>
+      <th><para unique="1261299" format="CellColHead">
+        <string>7&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;6</string></para>
+       </th>
+      <th><para unique="1261301" format="CellColHead">
+        <string>5 </string></para>
+       </th>
+      <th><para unique="1261303" format="CellColHead">
+        <string>4</string></para>
+       </th>
+      <th><para unique="1261305" format="CellColHead">
+        <string>3&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2</string></para>
+       </th>
+      <th><para unique="1261307" format="CellColHead">
+        <string>1&#160;&#160;&#160;&#160;&#160;&#160;0</string></para>
+       </th>
+      <th><para unique="1261309" format="CellColHead">
+        </para>
+       </th>
+      </tr>
+     </thead><tbody>
+     <tr>
+      <td><para unique="1261311" format="CellBodyC">
+        <string>Rsvd</string></para>
+       </td>
+      <td><para unique="1261313" format="CellBodyC">
+        <string>FCS</string></para>
+       </td>
+      <td colspan="2"><para unique="1261315" format="CellBodyC">
+        <string>FIP[31:0]</string></para>
+       </td>
+      <td><para unique="1261319" format="CellBodyC">
+        <string>FOP</string></para>
+       </td>
+      <td><para unique="1261321" format="CellBodyC">
+        <string>Rsvd</string></para>
+       </td>
+      <td><para unique="1261323" format="CellBody">
+        <string>FTW</string></para>
+       </td>
+      <td><para unique="1261325" format="CellBodyC">
+        <string>FSW</string></para>
+       </td>
+      <td><para unique="1261327" format="CellBodyC">
+        <string>FCW</string></para>
+       </td>
+      <th><para unique="1261329" format="CellColHead">
+        <string>0</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="2"><para unique="1261331" format="CellBodyC">
+        <string>MXCSR_MASK</string></para>
+       </td>
+      <td colspan="2"><para unique="1261335" format="CellBodyC">
+        <string>MXCSR</string></para>
+       </td>
+      <td><para unique="1261339" format="CellBodyC">
+        <string>Rsrvd</string></para>
+       </td>
+      <td colspan="2"><para unique="1261341" format="CellBodyC">
+        <string>FDS</string></para>
+       </td>
+      <td colspan="2"><para unique="1261345" format="CellBodyC">
+        <string>FDP[31:0]</string></para>
+       </td>
+      <th><para unique="1261349" format="CellColHead">
+        <string>16</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1261351" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1261357" format="CellBodyC">
+        <string>ST0/MM0</string></para>
+       </td>
+      <th><para unique="1261369" format="CellColHead">
+        <string>32</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1261371" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1261377" format="CellBodyC">
+        <string>ST1/MM1</string></para>
+       </td>
+      <th><para unique="1261389" format="CellColHead">
+        <string>48</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1261391" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1261397" format="CellBodyC">
+        <string>ST2/MM2</string></para>
+       </td>
+      <th><para unique="1261409" format="CellColHead">
+        <string>64</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1261411" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1261417" format="CellBodyC">
+        <string>ST3/MM3</string></para>
+       </td>
+      <th><para unique="1261429" format="CellColHead">
+        <string>80</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1261431" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1261437" format="CellBodyC">
+        <string>ST4/MM4</string></para>
+       </td>
+      <th><para unique="1261449" format="CellColHead">
+        <string>96</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1261451" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1261457" format="CellBodyC">
+        <string>ST5/MM5</string></para>
+       </td>
+      <th><para unique="1261469" format="CellColHead">
+        <string>112</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1261471" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1261477" format="CellBodyC">
+        <string>ST6/MM6</string></para>
+       </td>
+      <th><para unique="1261489" format="CellColHead">
+        <string>128</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1261491" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1261497" format="CellBodyC">
+        <string>ST7/MM7</string></para>
+       </td>
+      <th><para unique="1261509" format="CellColHead">
+        <string>144</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261511" format="CellBodyC">
+        <string>XMM0</string></para>
+       </td>
+      <th><para unique="1261529" format="CellColHead">
+        <string>160</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261531" format="CellBodyC">
+        <string>XMM1</string></para>
+       </td>
+      <th><para unique="1261549" format="CellColHead">
+        <string>176</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261551" format="CellBodyC">
+        <string>XMM2</string></para>
+       </td>
+      <th><para unique="1261569" format="CellColHead">
+        <string>192</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261571" format="CellBodyC">
+        <string>XMM3</string></para>
+       </td>
+      <th><para unique="1261589" format="CellColHead">
+        <string>208</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261591" format="CellBodyC">
+        <string>XMM4</string></para>
+       </td>
+      <th><para unique="1261609" format="CellColHead">
+        <string>224</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261611" format="CellBodyC">
+        <string>XMM5</string></para>
+       </td>
+      <th><para unique="1261629" format="CellColHead">
+        <string>240</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261631" format="CellBodyC">
+        <string>XMM6</string></para>
+       </td>
+      <th><para unique="1261649" format="CellColHead">
+        <string>256</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261651" format="CellBodyC">
+        <string>XMM7</string></para>
+       </td>
+      <th><para unique="1261669" format="CellColHead">
+        <string>272</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261671" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <th><para unique="1261689" format="CellColHead">
+        <string>288</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261691" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <th><para unique="1261709" format="CellColHead">
+        <string>304</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261711" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <th><para unique="1261729" format="CellColHead">
+        <string>320</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261731" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <th><para unique="1261749" format="CellColHead">
+        <string>336</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261751" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <th><para unique="1261769" format="CellColHead">
+        <string>352</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261771" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <th><para unique="1261789" format="CellColHead">
+        <string>368</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261791" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <th><para unique="1261809" format="CellColHead">
+        <string>384</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261811" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <th><para unique="1261829" format="CellColHead">
+        <string>400</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261831" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <th><para unique="1261849" format="CellColHead">
+        <string>416</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261851" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <th><para unique="1261869" format="CellColHead">
+        <string>432</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261871" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <th><para unique="1261889" format="CellColHead">
+        <string>448</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261891" format="CellBodyC">
+        <string>Available</string></para>
+       </td>
+      <th><para unique="1261909" format="CellColHead">
+        <string>464</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261911" format="CellBodyC">
+        <string>Available</string></para>
+       </td>
+      <th><para unique="1261929" format="CellColHead">
+        <string>480</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1261931" format="CellBodyC">
+        <string>Available</string></para>
+       </td>
+      <th><para unique="1261949" format="CellColHead">
+        <string>496</string></para>
+       </th>
+      </tr>
+     </tbody>
+    </table>
+   <para unique="1261950">
+    <string>The FXSAVE instruction is used when an operating system needs to perform a context switch or when an exception handler needs to save and examine the current state of the x87 FPU, MMX technology, and/or XMM and MXCSR registers.</string></para>
+   <para unique="1261953">
+    <string>The fields in </string><link linkend="34456: 06_Table: Table 3-13. Layout of FXSAVE and FXRSTOR Memory Region"><string>Table 3&#8209;45</string></link><string> are defined in </string><link linkend="36832: 06_Table: Table 3-50. Field Definitions \x11 "><string>Table 3&#8209;46</string></link><string>.</string></para>
+   <table>
+    <caption>Table 3-46.  Field Definitions </caption>
+    <colgroup><col width="111.54527999999999pt"/>
+     <col width="400.41864pt"/>
+     <col width="57.230639999999994pt"/>
+     <col width="57.230639999999994pt"/>
+     <col width="57.230639999999994pt"/>
+     <col width="45.058319999999995pt"/>
+     <col width="47.13624pt" align="left"/>
+     </colgroup>
+    <thead><tr>
+      <th><para unique="1261968" format="CellRowHeadL">
+        <string>Field</string></para>
+       </th>
+      <th><para unique="1261970" format="CellRowHeadL">
+        <string>Definition</string></para>
+       </th>
+      </tr>
+     </thead><tbody>
+     <tr>
+      <td><para unique="1261972" format="CellBodyL">
+        <string>FCW</string></para>
+       </td>
+      <td><para unique="1261977" format="CellBodyL">
+        <string>x87 FPU Control Word (16 bits). See </string><string>Figure 8-6</string><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for the layout of the x87 FPU control word.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1261979" format="CellBodyL">
+        <string>FSW</string></para>
+       </td>
+      <td><para unique="1261984" format="CellBodyL">
+        <string>x87 FPU Status Word (16 bits). See </string><string>Figure 8-4</string><string> in the </string><string>Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for the layout of the x87 FPU status word.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1261986" format="CellBodyL">
+        <string>Abridged FTW</string></para>
+       </td>
+      <td><para unique="1261988" format="CellBodyL">
+        <string>x87 FPU Tag Word (8 bits). The tag information saved here is abridged, as described in the following paragraphs.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1261990" format="CellBodyL">
+        <string>FOP</string></para>
+       </td>
+      <td><para unique="1261992" format="CellBodyL">
+        <string>x87 FPU Opcode (16 bits). The lower 11 bits of this field contain the opcode, upper 5 bits are reserved. See </string><string>Figure 8-8</string><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for the layout of the x87 FPU opcode field.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1261997" format="CellBodyL">
+        <string>FIP</string></para>
+       </td>
+      <td><para unique="1261999" format="CellBodyL">
+        <string>x87 FPU Instruction Pointer Offset (64 bits). The contents of this field differ depending on the current addressing mode (32-bit, 16-bit, or 64-bit) of the processor when the FXSAVE instruction was executed:</string></para>
+       <para unique="1262000" format="CellBodyL">
+        <string>32-bit mode &#8212; 32-bit IP offset.</string></para>
+       <para unique="1262001" format="CellBodyL">
+        <string>16-bit mode &#8212; low 16 bits are IP offset; high 16 bits are reserved.</string></para>
+       <para unique="1262002" format="CellBodyL">
+        <string>64-bit mode with REX.W &#8212; 64-bit IP offset.</string></para>
+       <para unique="1262003" format="CellBodyL">
+        <string>64-bit mode without REX.W &#8212; 32-bit IP offset.</string></para>
+       <para unique="1262010" format="CellBodyL">
+        <string>See </string><string>&#8220;x87 FPU Instruction and Operand (Data) Pointers&#8221;</string><string> in </string><link linkend="12935: H1Heading: Chapter 7 Numeric Programming Environment"><string>Chapter 8</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for a description of the x87 FPU instruction pointer.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262012" format="CellBodyL">
+        <string>FCS</string></para>
+       </td>
+      <td><para unique="1262014" format="CellBodyL">
+        <string>x87 FPU Instruction Pointer Selector (16 bits). If CPUID.07H.00H:EBX[13] = 1, the processor deprecates FCS and FDS, and this field is saved as 0000H.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262016" format="CellBodyL">
+        <string>FDP</string></para>
+       </td>
+      <td><para unique="1262018" format="CellBodyL">
+        <string>x87 FPU Instruction Operand (Data) Pointer Offset (64 bits). The contents of this field differ depending on the current addressing mode (32-bit, 16-bit, or 64-bit) of the processor when the FXSAVE instruction was executed:</string></para>
+       <para unique="1262019" format="CellBodyL">
+        <string>32-bit mode &#8212; 32-bit DP offset.</string></para>
+       <para unique="1262020" format="CellBodyL">
+        <string>16-bit mode &#8212; low 16 bits are DP offset; high 16 bits are reserved.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262022" format="CellBodyL">
+        </para>
+       </td>
+      <td><para unique="1262024" format="CellBodyL">
+        <string>64-bit mode with REX.W &#8212; 64-bit DP offset.</string></para>
+       <para unique="1262025" format="CellBodyL">
+        <string>64-bit mode without REX.W &#8212; 32-bit DP offset.</string></para>
+       <para unique="1262032" format="CellBodyL">
+        <string>See </string><string>&#8220;x87 FPU Instruction and Operand (Data) Pointers&#8221;</string><string> in </string><link linkend="12935: H1Heading: Chapter 7 Numeric Programming Environment"><string>Chapter 8</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for a description of the x87 FPU operand pointer.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262034" format="CellBodyL">
+        <string>FDS</string></para>
+       </td>
+      <td><para unique="1262036" format="CellBodyL">
+        <string>x87 FPU Instruction Operand (Data) Pointer Selector (16 bits). If CPUID.07H.00H:EBX[13]&#160;= 1, the processor deprecates FCS and FDS, and this field is saved as 0000H.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262038" format="CellBodyL">
+        <string>MXCSR</string></para>
+       </td>
+      <td><para unique="1262043" format="CellBodyL">
+        <string>MXCSR Register State (32 bits). See </string><string>Figure 10-3</string><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for the layout of the MXCSR register. If the OSFXSR bit in control register CR4 is not set, the FXSAVE instruction may not save this register. This behavior is implementation dependent.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262045" format="CellBodyL">
+        <string>MXCSR_
+MASK</string></para>
+       </td>
+      <td><para unique="1262047" format="CellBodyL">
+        <string>MXCSR_MASK (32 bits). This mask can be used to adjust values written to the MXCSR register, ensuring that reserved bits are set to 0. Set the mask bits and flags in MXCSR to the mode of operation desired for SSE and SSE2 SIMD floating-point instructions. See </string><string>&#8220;Guidelines for Writing to the MXCSR Register&#8221;</string><string> in </string><link linkend="40469: H1Heading: Chapter 8 Input/Output"><string>Chapter 11</string></link><string> of the </string><string>Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for instructions for how to determine and use the MXCSR_MASK value.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262055" format="CellBodyL">
+        <string>ST0/MM0 through ST7/MM7</string></para>
+       </td>
+      <td><para unique="1262057" format="CellBodyL">
+        <string>x87 FPU or MMX technology registers. These 80-bit fields contain the x87 FPU data registers or the MMX technology registers, depending on the state of the processor prior to the execution of the FXSAVE instruction. If the processor had been executing x87 FPU instruction prior to the FXSAVE instruction, the x87 FPU data registers are saved; if it had been executing MMX instructions (or SSE or SSE2 instructions that operated on the MMX technology registers), the MMX technology registers are saved. When the MMX technology registers are saved, the high 16 bits of the field are reserved.</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262059" format="CellBodyL">
+        <string>XMM0 through XMM7</string></para>
+       </td>
+      <td><para unique="1262061" format="CellBodyL">
+        <string>XMM registers (128 bits per field). If the OSFXSR bit in control register CR4 is not set, the FXSAVE instruction may not save these registers. This behavior is implementation dependent.</string></para>
+       </td>
+      </tr>
+     </tbody>
+    </table>
+   <para unique="1262063">
+    <string>The FXSAVE instruction saves an abridged version of the x87 FPU tag word in the FTW field (unlike the FSAVE instruction, which saves the complete tag word). The tag information is saved in physical register order (R0 through R7), rather than in top-of-stack (TOS) order. With the FXSAVE instruction, however, only a single bit (1 for valid or 0 for empty) is saved for each tag. For example, assume that the tag word is currently set as follows:</string></para>
+   <programlisting><string>	R7	R6	R5	R4	R3	R2	R1	R0</string><string>
+</string><string>	11	xx	xx	xx	11	11	11	11</string><string>
+</string></programlisting>
+   <para unique="1262066">
+    <string>Here, 11B indicates empty stack elements and &#8220;xx&#8221; indicates valid (00B), zero (01B), or special (10B). </string></para>
+   <para unique="1262067">
+    <string>For this example, the FXSAVE instruction saves only the following 8 bits of information:</string></para>
+   <programlisting><string>	R7	R6	R5	R4	R3	R2	R1	R0</string><string>
+</string><string>	0	1	1	1	0	0	0	0</string><string>
+</string></programlisting>
+   <para unique="1262070">
+    <string>Here, a 1 is saved for any valid, zero, or special tag, and a 0 is saved for any empty tag.</string></para>
+   <para unique="1262071">
+    <string>The operation of the FXSAVE instruction differs from that of the FSAVE instruction, the as follows:</string></para>
+   <itemizedlist><listitem><para unique="1262072">
+      <string>FXSAVE instruction does not check for pending unmasked floating-point exceptions. (The FXSAVE operation in this regard is similar to the operation of the FNSAVE instruction). </string></para>
+     </listitem>
+    <listitem><para unique="1262073">
+      <string>After the FXSAVE instruction has saved the state of the x87 FPU, MMX technology, XMM, and MXCSR registers, the processor retains the contents of the registers. Because of this behavior, the FXSAVE instruction cannot be used by an application program to pass a &#8220;clean&#8221; x87 FPU state to a procedure, since it retains the current state. To clean the x87 FPU state, an application must explicitly execute an FINIT instruction after an FXSAVE instruction to reinitialize the x87 FPU state.</string></para>
+     </listitem>
+    <listitem><para unique="1262074">
+      <string>The format of the memory image saved with the FXSAVE instruction is the same regardless of the current addressing mode (32-bit or 16-bit) and operating mode (protected, real address, or system management). This behavior differs from the FSAVE instructions, where the memory image format is different depending on the addressing mode and operating mode. Because of the different image formats, the memory image saved with the FXSAVE instruction cannot be restored correctly with the FRSTOR instruction, and likewise the state saved with the FSAVE instruction cannot be restored correctly with the FXRSTOR instruction.</string></para>
+     </listitem>
+    </itemizedlist><para unique="1262075">
+    <string>The FSAVE format for FTW can be recreated from the FTW valid bits and the stored 80-bit floating-point data (assuming the stored data was not the contents of MMX technology registers) using </string><link linkend="48745: 06_Table: Table 3-47. Format Details"><string>Table 3&#8209;47</string></link><string>.
+</string></para>
+   <table>
+    <caption>Table 3-47.  Recreating FSAVE Format </caption>
+    <colgroup><col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col align="left"/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     </colgroup>
+    <thead><tr>
+      <th><para unique="1262099" format="CellRowHeadC">
+        <string>Exponent
+all 1&#8217;s</string></para>
+       </th>
+      <th><para unique="1262101" format="CellRowHeadC">
+        <string>Exponent
+all 0&#8217;s</string></para>
+       </th>
+      <th><para unique="1262103" format="CellRowHeadC">
+        <string>Fraction
+all 0&#8217;s</string></para>
+       </th>
+      <th><para unique="1262105" format="CellRowHeadC">
+        <string>J and M
+bits</string></para>
+       </th>
+      <th><para unique="1262107" format="CellRowHeadC">
+        <string>FTW valid bit</string></para>
+       </th>
+      <th colspan="2"><para unique="1262109" format="CellRowHeadC">
+        <string>
+x87 FTW</string></para>
+       </th>
+      </tr>
+     </thead><tbody>
+     <tr>
+      <td><para unique="1262113" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262115" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262117" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262119" format="CellBodyC">
+        <string>0x</string></para>
+       </td>
+      <td><para unique="1262121" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262123" format="CellBodyL">
+        <string>Special</string></para>
+       </td>
+      <td><para unique="1262125" format="CellBodyC">
+        <string>10</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262127" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262129" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262131" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262133" format="CellBodyC">
+        <string>1x</string></para>
+       </td>
+      <td><para unique="1262135" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262137" format="CellBodyL">
+        <string>Valid</string></para>
+       </td>
+      <td><para unique="1262139" format="CellBodyC">
+        <string>00</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262141" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262143" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262145" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262147" format="CellBodyC">
+        <string>00</string></para>
+       </td>
+      <td><para unique="1262149" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262151" format="CellBodyL">
+        <string>Special</string></para>
+       </td>
+      <td><para unique="1262153" format="CellBodyC">
+        <string>10</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262155" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262157" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262159" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262161" format="CellBodyC">
+        <string>10</string></para>
+       </td>
+      <td><para unique="1262163" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262165" format="CellBodyL">
+        <string>Valid</string></para>
+       </td>
+      <td><para unique="1262167" format="CellBodyC">
+        <string>00</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262169" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262171" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262173" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262175" format="CellBodyC">
+        <string>0x</string></para>
+       </td>
+      <td><para unique="1262177" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262179" format="CellBodyL">
+        <string>Special</string></para>
+       </td>
+      <td><para unique="1262181" format="CellBodyC">
+        <string>10</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262183" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262185" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262187" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262189" format="CellBodyC">
+        <string>1x</string></para>
+       </td>
+      <td><para unique="1262191" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262193" format="CellBodyL">
+        <string>Special</string></para>
+       </td>
+      <td><para unique="1262195" format="CellBodyC">
+        <string>10</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262197" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262199" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262201" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262203" format="CellBodyC">
+        <string>00</string></para>
+       </td>
+      <td><para unique="1262205" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262207" format="CellBodyL">
+        <string>Zero</string></para>
+       </td>
+      <td><para unique="1262209" format="CellBodyC">
+        <string>01</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262211" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262213" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262215" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262217" format="CellBodyC">
+        <string>10</string></para>
+       </td>
+      <td><para unique="1262219" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262221" format="CellBodyL">
+        <string>Special</string></para>
+       </td>
+      <td><para unique="1262223" format="CellBodyC">
+        <string>10</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262225" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262227" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262229" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262231" format="CellBodyC">
+        <string>1x</string></para>
+       </td>
+      <td><para unique="1262233" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262235" format="CellBodyL">
+        <string>Special</string></para>
+       </td>
+      <td><para unique="1262237" format="CellBodyC">
+        <string>10</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262239" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262241" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262243" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262245" format="CellBodyC">
+        <string>1x</string></para>
+       </td>
+      <td><para unique="1262247" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262249" format="CellBodyL">
+        <string>Special</string></para>
+       </td>
+      <td><para unique="1262251" format="CellBodyC">
+        <string>10</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262253" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262255" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262257" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262259" format="CellBodyC">
+        <string>00</string></para>
+       </td>
+      <td><para unique="1262261" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262263" format="CellBodyL">
+        <string>Special</string></para>
+       </td>
+      <td><para unique="1262265" format="CellBodyC">
+        <string>10</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td><para unique="1262267" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262269" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262271" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262273" format="CellBodyC">
+        <string>10</string></para>
+       </td>
+      <td><para unique="1262275" format="CellBodyC">
+        <string>1</string></para>
+       </td>
+      <td><para unique="1262277" format="CellBodyL">
+        <string>Special</string></para>
+       </td>
+      <td><para unique="1262279" format="CellBodyC">
+        <string>10</string></para>
+       </td>
+      </tr>
+     <tr>
+      <td colspan="4"><para unique="1262281" format="CellBodyL">
+        <string>For all legal combinations above.</string></para>
+       </td>
+      <td><para unique="1262289" format="CellBodyC">
+        <string>0</string></para>
+       </td>
+      <td><para unique="1262291" format="CellBodyL">
+        <string>Empty</string></para>
+       </td>
+      <td><para unique="1262293" format="CellBodyC">
+        <string>11</string></para>
+       </td>
+      </tr>
+     </tbody>
+    </table>
+   <para unique="1262294">
+    <string>The J-bit is defined to be the 1-bit binary integer to the left of the decimal place in the significand. The M-bit is defined to be the most significant bit of the fractional portion of the significand (i.e., the bit immediately to the right of the decimal place).</string></para>
+   <para unique="1262295">
+    <string>When the M-bit is the most significant bit of the fractional portion of the significand, it must be 0 if the fraction is all 0&#8217;s.</string></para>
+   </section>
+  <section level="7">
+   <title unique="1262296"><string>IA-32e Mode Operation</string></title>
+   <para unique="1262297">
+    <string>In compatibility sub-mode of IA-32e mode, legacy SSE registers, XMM0 through XMM7, are saved according to the legacy FXSAVE map. In 64-bit mode, all of the SSE registers, XMM0 through XMM15, are saved. Additionally, there are two different layouts of the FXSAVE map in 64-bit mode, corresponding to FXSAVE64 (which requires REX.W=1) and FXSAVE (REX.W=0). In the FXSAVE64 map (</string><link linkend="50794: 06_Table: Table 2-13. Table Needs Title \x11 "><string>Table&#160;3&#8209;48</string></link><string>), the FPU IP and FPU DP pointers are 64-bit wide. In the FXSAVE map for 64-bit mode (</string><link linkend="54347: 06_Table: Table 2-14. Table Needs Title\x11 "><string>Table&#160;3&#8209;49</string></link><string>), the FPU IP and FPU DP pointers are 32-bits.
+</string></para>
+   <table>
+    <caption>Table 3-48.  Layout of the 64-Bit Mode FXSAVE64 Map (Requires REX.W = 1)</caption>
+    <colgroup><col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     </colgroup>
+    <thead><tr>
+      <td><para unique="1262330" format="CellBodyC_8">
+        <string>15&#160;&#160;&#160;&#160;&#160;14</string></para>
+       </td>
+      <td><para unique="1262332" format="CellBodyC_8">
+        <string>13&#160;&#160;&#160;&#160;&#160;12</string></para>
+       </td>
+      <td><para unique="1262334" format="CellBodyC_8">
+        <string>11&#160;&#160;&#160;&#160;&#160;10</string></para>
+       </td>
+      <td><para unique="1262336" format="CellBodyC_8">
+        <string>9&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;8</string></para>
+       </td>
+      <td><para unique="1262338" format="CellBodyC_8">
+        <string>7&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;6</string></para>
+       </td>
+      <td><para unique="1262340" format="CellBodyC_8">
+        <string>&#160;5 </string></para>
+       </td>
+      <td><para unique="1262342" format="CellBodyC_8">
+        <string>4</string></para>
+       </td>
+      <td><para unique="1262344" format="CellBodyC_8">
+        <string>3&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;2</string></para>
+       </td>
+      <td><para unique="1262346" format="CellBodyC_8">
+        <string>1&#160;&#160;&#160;&#160;&#160;&#160;&#160;0</string></para>
+       </td>
+      <td><para unique="1262348" format="CellBodyC_8">
+        </para>
+       </td>
+      </tr>
+     </thead><tbody>
+     <tr>
+      <td colspan="4"><para unique="1262350" format="CellBodyC">
+        <string>FIP</string></para>
+       </td>
+      <td><para unique="1262358" format="CellBodyC">
+        <string>FOP</string></para>
+       </td>
+      <td><para unique="1262360" format="CellBodyC-8">
+        <string>Reserved</string></para>
+       </td>
+      <td><para unique="1262362" format="CellBodyC">
+        <string>FTW</string></para>
+       </td>
+      <td><para unique="1262364" format="CellBodyC">
+        <string>FSW</string></para>
+       </td>
+      <td><para unique="1262366" format="CellBodyC">
+        <string>FCW</string></para>
+       </td>
+      <th><para unique="1262368" format="CellColHead">
+        <string>0</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="2"><para unique="1262370" format="CellBodyC">
+        <string>MXCSR_MASK</string></para>
+       </td>
+      <td colspan="2"><para unique="1262374" format="CellBodyC">
+        <string>MXCSR</string></para>
+       </td>
+      <td colspan="5"><para unique="1262378" format="CellBodyC">
+        <string>FDP</string></para>
+       </td>
+      <th><para unique="1262388" format="CellColHead">
+        <string>16</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1262390" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1262396" format="CellBodyC">
+        <string>ST0/MM0</string></para>
+       </td>
+      <th><para unique="1262408" format="CellColHead">
+        <string>32</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1262410" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1262416" format="CellBodyC">
+        <string>ST1/MM1</string></para>
+       </td>
+      <th><para unique="1262428" format="CellColHead">
+        <string>48</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1262430" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1262436" format="CellBodyC">
+        <string>ST2/MM2</string></para>
+       </td>
+      <th><para unique="1262448" format="CellColHead">
+        <string>64</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1262450" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1262456" format="CellBodyC">
+        <string>ST3/MM3</string></para>
+       </td>
+      <th><para unique="1262468" format="CellColHead">
+        <string>80</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1262470" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1262476" format="CellBodyC">
+        <string>ST4/MM4</string></para>
+       </td>
+      <th><para unique="1262488" format="CellColHead">
+        <string>96</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1262490" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1262496" format="CellBodyC">
+        <string>ST5/MM5</string></para>
+       </td>
+      <th><para unique="1262508" format="CellColHead">
+        <string>112</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1262510" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1262516" format="CellBodyC">
+        <string>ST6/MM6</string></para>
+       </td>
+      <th><para unique="1262528" format="CellColHead">
+        <string>128</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1262530" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1262536" format="CellBodyC">
+        <string>ST7/MM7</string></para>
+       </td>
+      <th><para unique="1262548" format="CellColHead">
+        <string>144</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262550" format="CellBodyC">
+        <string>XMM0</string></para>
+       </td>
+      <th><para unique="1262568" format="CellColHead">
+        <string>160</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262570" format="CellBodyC">
+        <string>XMM1</string></para>
+       </td>
+      <th><para unique="1262588" format="CellColHead">
+        <string>176</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262590" format="CellBodyC">
+        <string>XMM2</string></para>
+       </td>
+      <th><para unique="1262608" format="CellColHead">
+        <string>192</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262610" format="CellBodyC">
+        <string>XMM3</string></para>
+       </td>
+      <th><para unique="1262628" format="CellColHead">
+        <string>208</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262630" format="CellBodyC">
+        <string>XMM4</string></para>
+       </td>
+      <th><para unique="1262648" format="CellColHead">
+        <string>224</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262650" format="CellBodyC">
+        <string>XMM5</string></para>
+       </td>
+      <th><para unique="1262668" format="CellColHead">
+        <string>240</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262670" format="CellBodyC">
+        <string>XMM6</string></para>
+       </td>
+      <th><para unique="1262688" format="CellColHead">
+        <string>256</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262690" format="CellBodyC">
+        <string>XMM7</string></para>
+       </td>
+      <th><para unique="1262708" format="CellColHead">
+        <string>272</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262710" format="CellBodyC">
+        <string>XMM8</string></para>
+       </td>
+      <th><para unique="1262728" format="CellColHead">
+        <string>288</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262730" format="CellBodyC">
+        <string>XMM9</string></para>
+       </td>
+      <th><para unique="1262748" format="CellColHead">
+        <string>304</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262750" format="CellBodyC">
+        <string>XMM10</string></para>
+       </td>
+      <th><para unique="1262768" format="CellColHead">
+        <string>320</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262770" format="CellBodyC">
+        <string>XMM11</string></para>
+       </td>
+      <th><para unique="1262788" format="CellColHead">
+        <string>336</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262790" format="CellBodyC">
+        <string>XMM12</string></para>
+       </td>
+      <th><para unique="1262808" format="CellColHead">
+        <string>352</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262810" format="CellBodyC">
+        <string>XMM13</string></para>
+       </td>
+      <th><para unique="1262828" format="CellColHead">
+        <string>368</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262830" format="CellBodyC">
+        <string>XMM14</string></para>
+       </td>
+      <th><para unique="1262848" format="CellColHead">
+        <string>384</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262850" format="CellBodyC">
+        <string>XMM15</string></para>
+       </td>
+      <th><para unique="1262868" format="CellColHead">
+        <string>400</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262870" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <th><para unique="1262888" format="CellColHead">
+        <string>416</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262890" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <th><para unique="1262908" format="CellColHead">
+        <string>432</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262910" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <th><para unique="1262928" format="CellColHead">
+        <string>448</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262930" format="CellBodyC">
+        <string>Available</string></para>
+       </td>
+      <th><para unique="1262948" format="CellColHead">
+        <string>464</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262950" format="CellBodyC">
+        <string>Available</string></para>
+       </td>
+      <th><para unique="1262968" format="CellColHead">
+        <string>480</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1262970" format="CellBodyC">
+        <string>Available</string></para>
+       </td>
+      <th><para unique="1262988" format="CellColHead">
+        <string>496</string></para>
+       </th>
+      </tr>
+     </tbody>
+    </table>
+   <table>
+    <caption>Table 3-49.  Layout of the 64-Bit Mode FXSAVE Map (REX.W = 0)</caption>
+    <colgroup><col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     <col/>
+     </colgroup>
+    <thead><tr>
+      <td><para unique="1263015" format="CellBodyC-8">
+        <string>15&#160;&#160;&#160;&#160;&#160;14</string></para>
+       </td>
+      <td><para unique="1263017" format="CellBodyC-8">
+        <string>13&#160;&#160; &#160;&#160;12</string></para>
+       </td>
+      <td><para unique="1263019" format="CellBodyC-8">
+        <string>11&#160;&#160;&#160;&#160;&#160;10</string></para>
+       </td>
+      <td><para unique="1263021" format="CellBodyC-8">
+        <string>9&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;8</string></para>
+       </td>
+      <td><para unique="1263023" format="CellBodyC-8">
+        <string>7&#160;&#160;&#160;&#160;&#160;&#160;&#160;6</string></para>
+       </td>
+      <td><para unique="1263025" format="CellBodyC-8">
+        <string>5 </string></para>
+       </td>
+      <td><para unique="1263027" format="CellBodyC-8">
+        <string>4</string></para>
+       </td>
+      <td><para unique="1263029" format="CellBodyC-8">
+        <string>3&#160;&#160;&#160;&#160;&#160;&#160;2</string></para>
+       </td>
+      <td><para unique="1263031" format="CellBodyC-8">
+        <string>1&#160;&#160;&#160;&#160;&#160;&#160;0</string></para>
+       </td>
+      <td><para unique="1263033" format="CellBodyC-8">
+        </para>
+       </td>
+      </tr>
+     </thead><tbody>
+     <tr>
+      <td><para unique="1263035" format="CellBodyC-8">
+        <string>Reserved</string></para>
+       </td>
+      <td><para unique="1263037" format="CellBodyC">
+        <string>FCS</string></para>
+       </td>
+      <td colspan="2"><para unique="1263039" format="CellBodyC">
+        <string>FIP[31:0]</string></para>
+       </td>
+      <td><para unique="1263043" format="CellBodyC">
+        <string>FOP</string></para>
+       </td>
+      <td><para unique="1263045" format="CellBodyC-8">
+        <string>Reserved</string></para>
+       </td>
+      <td><para unique="1263047" format="CellBodyC">
+        <string>FTW</string></para>
+       </td>
+      <td><para unique="1263049" format="CellBodyC">
+        <string>FSW</string></para>
+       </td>
+      <td><para unique="1263051" format="CellBodyC">
+        <string>FCW</string></para>
+       </td>
+      <th><para unique="1263053" format="CellColHead">
+        <string>0</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="2"><para unique="1263055" format="CellBodyC">
+        <string>MXCSR_MASK</string></para>
+       </td>
+      <td colspan="2"><para unique="1263059" format="CellBodyC">
+        <string>MXCSR</string></para>
+       </td>
+      <td><para unique="1263063" format="CellBodyC-8">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="2"><para unique="1263065" format="CellBody">
+        <string>FDS</string></para>
+       </td>
+      <td colspan="2"><para unique="1263069" format="CellBodyC">
+        <string>FDP[31:0]</string></para>
+       </td>
+      <th><para unique="1263073" format="CellColHead">
+        <string>16</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1263075" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1263081" format="CellBodyC">
+        <string>ST0/MM0</string></para>
+       </td>
+      <th><para unique="1263093" format="CellColHead">
+        <string>32</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1263095" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1263101" format="CellBodyC">
+        <string>ST1/MM1</string></para>
+       </td>
+      <th><para unique="1263113" format="CellColHead">
+        <string>48</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1263115" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1263121" format="CellBodyC">
+        <string>ST2/MM2</string></para>
+       </td>
+      <th><para unique="1263133" format="CellColHead">
+        <string>64</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1263135" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1263141" format="CellBodyC">
+        <string>ST3/MM3</string></para>
+       </td>
+      <th><para unique="1263153" format="CellColHead">
+        <string>80</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1263155" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1263161" format="CellBodyC">
+        <string>ST4/MM4</string></para>
+       </td>
+      <th><para unique="1263173" format="CellColHead">
+        <string>96</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1263175" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1263181" format="CellBodyC">
+        <string>ST5/MM5</string></para>
+       </td>
+      <th><para unique="1263193" format="CellColHead">
+        <string>112</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1263195" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1263201" format="CellBodyC">
+        <string>ST6/MM6</string></para>
+       </td>
+      <th><para unique="1263213" format="CellColHead">
+        <string>128</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="3"><para unique="1263215" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <td colspan="6"><para unique="1263221" format="CellBodyC">
+        <string>ST7/MM7</string></para>
+       </td>
+      <th><para unique="1263233" format="CellColHead">
+        <string>144</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263235" format="CellBodyC">
+        <string>XMM0</string></para>
+       </td>
+      <th><para unique="1263253" format="CellColHead">
+        <string>160</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263255" format="CellBodyC">
+        <string>XMM1</string></para>
+       </td>
+      <th><para unique="1263273" format="CellColHead">
+        <string>176</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263275" format="CellBodyC">
+        <string>XMM2</string></para>
+       </td>
+      <th><para unique="1263293" format="CellColHead">
+        <string>192</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263295" format="CellBodyC">
+        <string>XMM3</string></para>
+       </td>
+      <th><para unique="1263313" format="CellColHead">
+        <string>208</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263315" format="CellBodyC">
+        <string>XMM4</string></para>
+       </td>
+      <th><para unique="1263333" format="CellColHead">
+        <string>224</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263335" format="CellBodyC">
+        <string>XMM5</string></para>
+       </td>
+      <th><para unique="1263353" format="CellColHead">
+        <string>240</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263355" format="CellBodyC">
+        <string>XMM6</string></para>
+       </td>
+      <th><para unique="1263373" format="CellColHead">
+        <string>256</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263375" format="CellBodyC">
+        <string>XMM7</string></para>
+       </td>
+      <th><para unique="1263393" format="CellColHead">
+        <string>272</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263395" format="CellBodyC">
+        <string>XMM8</string></para>
+       </td>
+      <th><para unique="1263413" format="CellColHead">
+        <string>288</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263415" format="CellBodyC">
+        <string>XMM9</string></para>
+       </td>
+      <th><para unique="1263433" format="CellColHead">
+        <string>304</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263435" format="CellBodyC">
+        <string>XMM10</string></para>
+       </td>
+      <th><para unique="1263453" format="CellColHead">
+        <string>320</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263455" format="CellBodyC">
+        <string>XMM11</string></para>
+       </td>
+      <th><para unique="1263473" format="CellColHead">
+        <string>336</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263475" format="CellBodyC">
+        <string>XMM12</string></para>
+       </td>
+      <th><para unique="1263493" format="CellColHead">
+        <string>352</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263495" format="CellBodyC">
+        <string>XMM13</string></para>
+       </td>
+      <th><para unique="1263513" format="CellColHead">
+        <string>368</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263515" format="CellBodyC">
+        <string>XMM14</string></para>
+       </td>
+      <th><para unique="1263533" format="CellColHead">
+        <string>384</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263535" format="CellBodyC">
+        <string>XMM15</string></para>
+       </td>
+      <th><para unique="1263553" format="CellColHead">
+        <string>400</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263555" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <th><para unique="1263573" format="CellColHead">
+        <string>416</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263575" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <th><para unique="1263593" format="CellColHead">
+        <string>432</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263595" format="CellBodyC">
+        <string>Reserved</string></para>
+       </td>
+      <th><para unique="1263613" format="CellColHead">
+        <string>448</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263615" format="CellBodyC">
+        <string>Available</string></para>
+       </td>
+      <th><para unique="1263633" format="CellColHead">
+        <string>464</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263635" format="CellBodyC">
+        <string>Available</string></para>
+       </td>
+      <th><para unique="1263653" format="CellColHead">
+        <string>480</string></para>
+       </th>
+      </tr>
+     <tr>
+      <td colspan="9"><para unique="1263655" format="CellBodyC">
+        <string>Available</string></para>
+       </td>
+      <th><para unique="1263673" format="CellColHead">
+        <string>496</string></para>
+       </th>
+      </tr>
+     </tbody>
+    </table>
+   </section>
+  </longdesc>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>For an illegal memory operand effective address in the CS, DS, ES, FS or GS segments.</string></listitem>
+    <listitem><string>If a memory operand is not aligned on a 16-byte boundary, regardless of segment. (See the description of the alignment check exception [#AC] below.)</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0) </string></term>
+    <listitem><string>For an illegal address in the SS segment. </string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code) </string></term>
+    <listitem><string>For a page fault.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>If CR0.TS[bit 3] = 1. </string></listitem>
+    <listitem><string>If CR0.EM[bit 2] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If CPUID.01H:EDX.FXSR[24] = 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC </string></term>
+    <listitem><string>If this exception is disabled a general protection exception (#GP) is signaled if the memory operand is not aligned on a 16&#8209;byte boundary, as described above. If the alignment check exception (#AC) is enabled (and the CPL is 3), signaling of #AC is not guaranteed and may vary with implementation, as follows. In all implementations where #AC is not signaled, a general protection exception is signaled in its place. In addition, the width of the alignment check may also vary with implementation. For instance, for a given implementation, an align&#173;ment check exception might be signaled for a 2-byte misalignment, whereas a general protec&#173;tion exception might be signaled for all other misalignments (4-, 8-, or 16-byte misalignments).</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If a memory operand is not aligned on a 16-byte boundary, regardless of segment.</string></listitem>
+    <listitem><string>If any part of the operand lies outside the effective address space from 0 to FFFFH.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM </string></term>
+    <listitem><string>If CR0.TS[bit 3] = 1. </string></listitem>
+    <listitem><string>If CR0.EM[bit 2] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If CPUID.01H:EDX.FXSR[24] = 0.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <para unique="1263705">
+   <string>Same exceptions as in real address mode.</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#PF(fault-code) </string></term>
+    <listitem><string>For a page fault.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC </string></term>
+    <listitem><string>For unaligned memory reference.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1263710" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <listitem><string>If memory operand is not aligned on a 16-byte boundary, regardless of segment.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code) </string></term>
+    <listitem><string>For a page fault.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>If CR0.TS[bit 3] = 1. </string></listitem>
+    <listitem><string>If CR0.EM[bit 2] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If CPUID.01H:EDX.FXSR[24] = 0.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC </string></term>
+    <listitem><string>If this exception is disabled a general protection exception (#GP) is signaled if the memory operand is not aligned on a 16&#8209;byte boundary, as described above. If the alignment check exception (#AC) is enabled (and the CPL is 3), signaling of #AC is not guaranteed and may vary with implementation, as follows. In all implementations where #AC is not signaled, a general protection exception is signaled in its place. In addition, the width of the alignment check may also vary with implementation. For instance, for a given implementation, an align&#173;ment check exception might be signaled for a 2-byte misalignment, whereas a general protec&#173;tion exception might be signaled for all other misalignments (4-, 8-, or 16-byte misalignments).</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Implementation Note">
+  <para unique="1263722">
+   <string>The order in which the processor signals general-protection (#GP) and page-fault (#PF) exceptions when they both occur on an instruction boundary is given in </string><string>Table 5-2</string><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Devel&#173;oper&#8217;s Manual, Volume 3B. This order vary for FXSAVE for different processor implementations.</string></para>
+  </subsection>
+ </instruction>

@@ -1,0 +1,126 @@
+<instruction name="SYSCALL">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Fast System Call</shortdesc>
+ <longdesc><para unique="1092329">
+   <string>SYSCALL invokes an OS system-call handler at privilege level 0. Its operation depends on whether FRED transitions are enabled.</string></para>
+  </longdesc>
+ <subsection title="When FRED Transitions are Enabled">
+  <para unique="1092308">
+   <string>When FRED transitions are enabled, SYSCALL invokes the OS handler by performing FRED event delivery. See </string><link linkend="83159: 02_Level: 7.4 FRED Event Delivery"><string>Section 8.3, &#8220;FRED Event Delivery,&#8221;</string></link><string> in the Intel&#174; 64 and IA-32 Architectures Software Developer&#8217;s Manual, Volume 3. The event is delivered using event type 7 and vector 1. With FRED transitions, the OS handler uses the ERETU instruction to return to calling code operating at CPL 3.</string></para>
+  <para unique="1091451">
+   <string>Instruction ordering. Instructions following a SYSCALL may be fetched from memory before earlier instructions complete execution, but they will not execute (even speculatively) until all instructions prior to the SYSCALL have completed execution (the later instructions may execute before data stored by the earlier instructions have become globally visible).</string></para>
+  </subsection>
+ <subsection title="Operation">
+  <programlisting><string>IF IA32_EFER.LMA = 0 OR CS.L = 0								(* SYSCALL can be used only in 64-bit mode *)</string><string>
+</string><string>	THEN #UD;</string><string>
+</string><string>ELSE IF CR4.FRED = 0</string><string>
+</string><string>	THEN</string><string>
+</string><string>		IF IA32_EFER.SCE = 0</string><string>
+</string><string>			THEN #UD;</string><string>
+</string><string>			ELSE</string><string>
+</string><string>				RCX </string><sans><string>:= </string></sans><string>RIP;									(* Will contain address of next instruction *)</string><string>
+</string><string>				RIP </string><sans><string>:= </string></sans><string>IA32_LSTAR;</string><string>
+</string><string>				R11 </string><sans><string>:= </string></sans><string>RFLAGS;</string><string>
+</string><string>				RFLAGS </string><sans><string>:= </string></sans><string>RFLAGS AND NOT(IA32_FMASK);</string><string>
+</string><string>				CS.Selector </string><sans><string>:= </string></sans><string>IA32_STAR[47:32] AND FFFCH										(* Operating system provides CS; RPL forced to 0 *)</string><string>
+</string><string>				(* Set rest of CS to a fixed value *)</string><string>
+</string><string>				CS.Base </string><sans><string>:= </string></sans><string>0;										(* Flat segment *)</string><string>
+</string><string>				CS.Limit </string><sans><string>:= </string></sans><string>FFFFFH;										(* With 4-KByte granularity, implies a 4-GByte limit *)</string><string>
+</string><string>				CS.Type </string><sans><string>:= </string></sans><string>11;										(* Execute/read code, accessed *)</string><string>
+</string><string>				CS.S </string><sans><string>:= </string></sans><string>1;</string><string>
+</string><string>				CS.DPL </string><sans><string>:= </string></sans><string>0;</string><string>
+</string><string>				CS.P </string><sans><string>:= </string></sans><string>1;</string><string>
+</string><string>				CS.L </string><sans><string>:= </string></sans><string>1;										(* Entry is to 64-bit mode *)</string><string>
+</string><string>				CS.D </string><sans><string>:= </string></sans><string>0;										(* Required if CS.L = 1 *)</string><string>
+</string><string>				CS.G </string><sans><string>:= </string></sans><string>1;										(* 4-KByte granularity *)</string><string>
+</string><string>				IF ShadowStackEnabled(CPL)</string><string>
+</string><string>					THEN (* adjust so bits 63:N get the value of bit N&#8211;1, where N is the CPU&#8217;s maximum linear-address width *)</string><string>
+</string><string>						IA32_PL3_SSP </string><sans><string>:= </string></sans><string>LA_adjust(SSP);</string><string>
+</string><string>						(* With shadow stacks enabled the system call is supported from Ring 3 to Ring 0 *)</string><string>
+</string><string>						(* OS supporting Ring 0 to Ring 0 system calls or Ring 1/2 to ring 0 system call *)</string><string>
+</string><string>						(* Must preserve the contents of IA32_PL3_SSP to avoid losing ring 3 state *)</string><string>
+</string><string>				FI;</string><string>
+</string><string>				CPL </string><sans><string>:= </string></sans><string>0;</string><string>
+</string><string>				IF ShadowStackEnabled(CPL)</string><string>
+</string><string>					SSP </string><sans><string>:= </string></sans><string>0;</string><string>
+</string><string>				FI;</string><string>
+</string><string>				IF EndbranchEnabled(CPL)</string><string>
+</string><string>					IA32_S_CET.TRACKER = WAIT_FOR_ENDBRANCH</string><string>
+</string><string>					IA32_S_CET.SUPPRESS = 0</string><string>
+</string><string>				FI;</string><string>
+</string><string>				SS.Selector </string><sans><string>:= </string></sans><string>IA32_STAR[47:32] </string><string>+ 8;									(* SS just above CS *)</string><string>
+</string><string>				(* Set rest of SS to a fixed value *)</string><string>
+</string><string>				SS.Base </string><sans><string>:= </string></sans><string>0;										(* Flat segment *)</string><string>
+</string><string>				SS.Limit </string><sans><string>:= </string></sans><string>FFFFFH;										(* With 4-KByte granularity, implies a 4-GByte limit *)</string><string>
+</string><string>				SS.Type </string><sans><string>:= </string></sans><string>3;										(* Read/write data, accessed *)</string><string>
+</string><string>				SS.S </string><sans><string>:= </string></sans><string>1;</string><string>
+</string><string>				SS.DPL </string><sans><string>:= </string></sans><string>0;</string><string>
+</string><string>				SS.P </string><sans><string>:= </string></sans><string>1;</string><string>
+</string><string>				SS.B </string><sans><string>:= </string></sans><string>1;										(* 32-bit stack segment *)</string><string>
+</string><string>				SS.G </string><sans><string>:= </string></sans><string>1;										(* 4-KByte granularity *)</string><string>
+</string><string>		FI;</string><string>
+</string><string>	ELSE (* CR4.FRED = 1 *)</string><string>
+</string><string>		FRED event delivery of SYSCALL;											(* save instruction length on stack *)</string><string>
+</string><string>FI;</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Flags Affected">
+  <para unique="1091500">
+   <string>All.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The SYSCALL instruction is not recognized in protected mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The SYSCALL instruction is not recognized in real-address mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The SYSCALL instruction is not recognized in virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>The SYSCALL instruction is not recognized in compatibility mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If IA32_EFER.SCE = 0.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If FRED event delivery of SYSCALL would load RIP with a non-canonical address.</string></listitem>
+    <listitem><string>If FRED event delivery of SYSCALL would load SSP with an address that is not 8-byte aligned.</string></listitem>
+    <listitem><string>If a shadow-stack access performed by FRED event delivery of SYSCALL uses a non-canonical address or causes a LASS violation.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If an ordinary stack access performed by FRED event delivery of SYSCALL uses a non-canon&#173;ical address or causes a LASS violation.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF</string></term>
+    <listitem><string>If a memory access performed by FRED event delivery of SYSCALL causes a page fault.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

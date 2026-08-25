@@ -1,0 +1,46 @@
+<instruction name="MOVSD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Move or Merge Scalar Double Precision Floating-Point Value</shortdesc>
+ <longdesc><para unique="1091671">
+   <string>Moves a scalar double precision floating-point value from the source operand (second operand) to the destination operand (first operand). The source and destination operands can be XMM registers or 64-bit memory locations. This instruction can be used to move a double precision floating-point value to and from the low quadword of an XMM register and a 64-bit memory location, or to move a double precision floating-point value between the low quadwords of two XMM registers. The instruction cannot be used to transfer data between memory locations.</string></para>
+  <para unique="1091672">
+   <string>Legacy version: When the source and destination operands are XMM registers, bits MAXVL:64 of the destination operand remains unchanged. When the source operand is a memory location and destination operand is an XMM registers, the quadword at bits 127:64 of the destination operand is cleared to all 0s, bits MAXVL:128 of the desti&#173;nation operand remains unchanged. </string></para>
+  <para unique="1091673">
+   <string>VEX and EVEX encoded register-register syntax: Moves a scalar double precision floating-point value from the second source operand (the third operand) to the low quadword element of the destination operand (the first operand). Bits 127:64 of the destination operand are copied from the first source operand (the second operand). Bits (MAXVL-1:128) of the corresponding destination register are zeroed.</string></para>
+  <para unique="1091674">
+   <string>VEX and EVEX encoded memory store syntax: When the source operand is a memory location and destination operand is an XMM registers, bits MAXVL:64 of the destination operand is cleared to all 0s.</string></para>
+  <para unique="1091675">
+   <string>EVEX encoded versions: The low quadword of the destination is updated according to the writemask.</string></para>
+  <para unique="1091676">
+   <string>Note: For VMOVSD (memory store and load forms), VEX.vvvv and EVEX.vvvv are reserved and must be 1111b, otherwise instruction will #UD.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VMOVSD __m128d _mm_mask_load_sd(__m128d s, __mmask8 k, double * p); </string><string>
+</string><string>VMOVSD __m128d _mm_maskz_load_sd( __mmask8 k, double * p); </string><string>
+</string><string>VMOVSD __m128d _mm_mask_move_sd(__m128d sh, __mmask8 k, __m128d sl, __m128d a); </string><string>
+</string><string>VMOVSD __m128d _mm_maskz_move_sd( __mmask8 k, __m128d s, __m128d a); </string><string>
+</string><string>VMOVSD void _mm_mask_store_sd(double * p, __mmask8 k, __m128d s); </string><string>
+</string><string>MOVSD __m128d _mm_load_sd (double *p)</string><string>
+</string><string>MOVSD void _mm_store_sd (double *p, __m128d a)</string><string>
+</string><string>MOVSD __m128d _mm_move_sd ( __m128d a, __m128d b)</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1091744">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1091749" format="xIndent1">
+   <string>Non-EVEX-encoded instruction, see </string><link linkend="48385: 06_Table: Table 2-22. Type 5 Class Exception Conditions"><string>Table&#160;2&#8209;22, &#8220;Type 5 Class Exception Conditions,&#8221;</string></link><string> additionally:</string></para>
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD</string></term>
+    <listitem><string>If VEX.vvvv != 1111B.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>EVEX-encoded instruction, see </string></term>
+    <listitem><link linkend="31368: 06_Table: Table 2-58. Type E10 Class Exception Conditions"><string>Table&#160;2&#8209;60, &#8220;Type E10 Class Exception Conditions.&#8221;</string></link></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

@@ -1,0 +1,188 @@
+<instruction name="VREDUCEPH">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Perform Reduction Transformation on Packed FP16 Values</shortdesc>
+ <longdesc><para unique="1046155">
+   <string>This instruction performs a reduction transformation of the packed binary encoded FP16 values in the source operand (the second operand) and store the reduced results in binary FP format to the destination operand (the first operand) under the writemask k1.</string></para>
+  <para unique="1046156">
+   <string>The reduction transformation subtracts the integer part and the leading M fractional bits from the binary FP source value, where M is a unsigned integer specified by imm8[7:4]. Specifically, the reduction transformation can be expressed as:</string></para>
+  <para unique="1046157">
+   <string>dest = src &#8722; (ROUND(2</string><superscript><string>M</string></superscript><string> * src)) * 2</string><superscript><string>&#8722;M</string></superscript></para>
+  <para unique="1046158">
+   <string>where ROUND() treats src, 2</string><superscript><string>M</string></superscript><string>, and their product as binary FP numbers with normalized significand and biased exponents.</string></para>
+  <para unique="1046159">
+   <string>The magnitude of the reduced result can be expressed by considering src = 2</string><superscript><string>p</string></superscript><string> * man2, where &#8216;man2&#8217; is the normal&#173;ized significand and &#8216;p&#8217; is the unbiased exponent.</string></para>
+  <para unique="1046160">
+   <string>Then if RC=RNE: 0 &#8804; |ReducedResult| &#8804; 2</string><superscript><string>&#8722;M&#8722;1</string></superscript><string>.</string></para>
+  <para unique="1046161">
+   <string>Then if RC </string><string>&#8800; RNE: 0 &#8804; |ReducedResult| &lt; 2</string><superscript><string>&#8722;M</string></superscript><string>.</string></para>
+  <para unique="1046162">
+   <string>This instruction might end up with a precision exception set. However, in case of SPE set (i.e., Suppress Precision Exception, which is imm8[3]=1), no precision exception is reported.</string></para>
+  <para unique="1046163">
+   <string>This instruction may generate tiny non-zero result. If it does so, it does not report underflow exception, even if underflow exceptions are unmasked (UM flag in MXCSR register is 0).</string></para>
+  <para unique="1046166">
+   <string>For special cases, see </string><link linkend="19996: 06_Table: Table 5-20. VREDUCEPH/VREDUCESH Special Cases"><string>Table 5&#8209;28</string></link><string>.</string></para>
+  <table>
+   <caption>Table 5-28.  VREDUCEPH/VREDUCESH Special Cases</caption>
+   <colgroup><col align="leftright"/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1046177" format="CellRowHeadL">
+       <string>Input value</string></para>
+      </th>
+     <th><para unique="1046179" format="CellRowHeadL">
+       <string>Round Mode</string></para>
+      </th>
+     <th><para unique="1046181" format="CellRowHeadL">
+       <string>Returned Value</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1046183" format="CellBodyL">
+       <string>|Src1| &lt; 2</string><italic><string>&#8722;</string></italic><string>M</string><italic><string>&#8722;</string></italic><string>1</string></para>
+      </td>
+     <td><para unique="1046185" format="CellBodyL">
+       <string>RNE</string></para>
+      </td>
+     <td><para unique="1046187" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046189" format="CellBodyL">
+       <string>|Src1|</string><string> </string><string>&lt; 2</string><string>&#8722;M</string></para>
+      </td>
+     <td><para unique="1046191" format="CellBodyL">
+       <string>RU, Src1 </string><string>&gt; 0</string></para>
+      </td>
+     <td><para unique="1046196" format="CellBodyL">
+       <string>Round(Src1</string><string> </string><string>&#8722; 2</string><string>&#8722;</string><superscript><string>M</string></superscript><string>)</string><footnote><para unique="1046195" format="TableFootnote">
+         <string>The Round(.) function uses rounding controls specified by (imm8[2]? MXCSR.RC: imm8[1:0]).</string></para>
+        </footnote></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046198" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1046200" format="CellBodyL">
+       <string>RU, Src1</string><string> </string><string>&#8804; 0</string></para>
+      </td>
+     <td><para unique="1046202" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046204" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1046206" format="CellBodyL">
+       <string>RD, Src1 </string><string>&#8805; 0</string></para>
+      </td>
+     <td><para unique="1046208" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046210" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1046212" format="CellBodyL">
+       <string>RD, Src1</string><string> </string><string>&lt; 0</string></para>
+      </td>
+     <td><para unique="1046214" format="CellBodyL">
+       <string>Round(Src1</string><string> + 2</string><string>&#8722;</string><superscript><string>M</string></superscript><string>)</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046216" format="CellBodyL">
+       <string>Src1 =</string><string> </string><string>&#177;0 or</string></para>
+      <para unique="1046217" format="CellBodyL">
+       <string>Dest =</string><string> </string><string>&#177;0 (Src1 </string><string>&#8800;</string><string> </string><string>&#8734;)</string></para>
+      </td>
+     <td><para unique="1046219" format="CellBodyL">
+       <string>NOT RD</string></para>
+      </td>
+     <td><para unique="1046221" format="CellBodyL">
+       <string>+0.0</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046223" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1046225" format="CellBodyL">
+       <string>RD</string></para>
+      </td>
+     <td><para unique="1046227" format="CellBodyL">
+       <string>&#8722;0.0</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046229" format="CellBodyL">
+       <string>Src1 =</string><string> </string><string>&#177;&#8734;</string></para>
+      </td>
+     <td><para unique="1046231" format="CellBodyL">
+       <string>Any</string></para>
+      </td>
+     <td><para unique="1046233" format="CellBodyL">
+       <string>+0.0</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046235" format="CellBodyL">
+       <string>Src1 =</string><string> </string><string>&#177;NAN</string></para>
+      </td>
+     <td><para unique="1046237" format="CellBodyL">
+       <string>Any</string></para>
+      </td>
+     <td><para unique="1046239" format="CellBodyL">
+       <string>QNaN (Src1)</string></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <para unique="1046271">
+   <string>VREDUCEPH __m128h _mm_mask_reduce_ph (__m128h src, __mmask8 k, __m128h a, int imm8);</string></para>
+  <para unique="1046272">
+   <string>VREDUCEPH __m128h _mm_maskz_reduce_ph (__mmask8 k, __m128h a, int imm8);</string></para>
+  <para unique="1046273">
+   <string>VREDUCEPH __m128h _mm_reduce_ph (__m128h a, int imm8);</string></para>
+  <para unique="1046274">
+   <string>VREDUCEPH __m256h _mm256_mask_reduce_ph (__m256h src, __mmask16 k, __m256h a, int imm8);</string></para>
+  <para unique="1046275">
+   <string>VREDUCEPH __m256h _mm256_maskz_reduce_ph (__mmask16 k, __m256h a, int imm8);</string></para>
+  <para unique="1046276">
+   <string>VREDUCEPH __m256h _mm256_reduce_ph (__m256h a, int imm8);</string></para>
+  <para unique="1046277">
+   <string>VREDUCEPH __m512h _mm512_mask_reduce_ph (__m512h src, __mmask32 k, __m512h a, int imm8);</string></para>
+  <para unique="1046278">
+   <string>VREDUCEPH __m512h _mm512_maskz_reduce_ph (__mmask32 k, __m512h a, int imm8);</string></para>
+  <para unique="1046279">
+   <string>VREDUCEPH __m512h _mm512_reduce_ph (__m512h a, int imm8);</string></para>
+  <para unique="1046280">
+   <string>VREDUCEPH __m512h _mm512_mask_reduce_round_ph (__m512h src, __mmask32 k, __m512h a, int imm8, const int sae);</string></para>
+  <para unique="1046281">
+   <string>VREDUCEPH __m512h _mm512_maskz_reduce_round_ph (__mmask32 k, __m512h a, int imm8, const int sae);</string></para>
+  <para unique="1046282">
+   <string>VREDUCEPH __m512h _mm512_reduce_round_ph (__m512h a, int imm8, const int sae);</string></para>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046284">
+   <string>Invalid, Precision.</string></para>
+  <para unique="1046795">
+   <string>If SPE is enabled, precision exception is not reported (regardless of MXCSR exception mask). </string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046289" format="xIndent1">
+   <string>EVEX-encoded instruction, see </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

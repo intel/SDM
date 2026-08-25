@@ -1,0 +1,448 @@
+<instruction name="FSUB/FSUBP/FISUB">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Subtract</shortdesc>
+ <longdesc><para unique="1261286">
+   <string>Subtracts the source operand from the destination operand and stores the difference in the destination location. The destination operand is always an FPU data register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.</string></para>
+  <para unique="1261287">
+   <string>The no-operand version of the instruction subtracts the contents of the ST(0) register from the ST(1) register and stores the result in ST(1). The one-operand version subtracts the contents of a memory location (either a floating-point or an integer value) from the contents of the ST(0) register and stores the result in ST(0). The two-operand version, subtracts the contents of the ST(0) register from the ST(i) register or vice versa.</string></para>
+  <para unique="1261288">
+   <string>The FSUBP instructions perform the additional operation of popping the FPU register stack following the subtrac&#173;tion. To pop the register stack, the processor marks the ST(0) register as empty and increments the stack pointer (TOP) by 1. The no-operand version of the floating-point subtract instructions always results in the register stack being popped. In some assemblers, the mnemonic for this instruction is FSUB rather than FSUBP.</string></para>
+  <para unique="1261289">
+   <string>The FISUB instructions convert an integer source operand to double extended-precision floating-point format before performing the subtraction.</string></para>
+  <para unique="1261292">
+   <link linkend="32191: 06_Table: Table 3-41. FSUB/FSUBP/FISUB Results"><string>Table 3&#8209;40</string></link><string> shows the results obtained when subtracting various classes of numbers from one another, assuming that neither overflow nor underflow occurs. Here, the SRC value is subtracted from the DEST value (DEST </string><string>&#8722; SRC</string><string> </string><string>=</string><string> result).</string></para>
+  <para unique="1261294">
+   <string>When the difference between two operands of like sign is 0, the result is </string><string>+0, except for the round toward </string><string>&#8722;&#8734; mode, in which case the result is </string><string>&#8722;0. This instruction also guarantees that </string><string>+0 </string><string>&#8722; (</string><string>&#8722;0)</string><string> </string><string>=</string><string> </string><string>+0, and that </string><string>&#8722;0 </string><string>&#8722; (</string><string>+0)</string><string> </string><string>=</string><string> </string><string>&#8722;0. When the source operand is an integer 0, it is treated as a </string><string>+0.</string></para>
+  <para unique="1261295">
+   <string>When one operand is </string><string>&#8734;, the result is </string><string>&#8734; of the expected sign. If both operands are </string><string>&#8734; of the same sign, an invalid-operation exception is generated.</string></para>
+  <table>
+   <caption>Table 3-40.  FSUB/FSUBP/FISUB Results</caption>
+   <colgroup><col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <td><para unique="1261317" format="CellBodyL">
+       </para>
+      </td>
+     <th colspan="8"><para unique="1261319" format="CellRowHeadC">
+       <string>SRC</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1261335" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1261337" format="CellBodyC">
+       </para>
+      </td>
+     <td><para unique="1261339" format="CellBodyC">
+       <string>&#8722; </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261341" format="CellBodyC">
+       <string>&#8722; F or </string><string>&#8722; I</string></para>
+      </td>
+     <td><para unique="1261343" format="CellBodyC">
+       <string>&#8722; 0</string></para>
+      </td>
+     <td><para unique="1261345" format="CellBodyC">
+       <string>+ 0</string></para>
+      </td>
+     <td><para unique="1261347" format="CellBodyC">
+       <string>+ F or </string><string>+ I</string></para>
+      </td>
+     <td><para unique="1261349" format="CellBodyC">
+       <string>+ &#8734;</string></para>
+      </td>
+     <td><para unique="1261351" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261353" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1261355" format="CellBodyC">
+       <string>&#8722; </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261357" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261359" format="CellBodyC">
+       <string>&#8722; &#8734;</string></para>
+      </td>
+     <td><para unique="1261361" format="CellBodyC">
+       <string>&#8722; </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261363" format="CellBodyC">
+       <string>&#8722; </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261365" format="CellBodyC">
+       <string>&#8722; </string><string>&#8734;</string></para>
+      </td>
+     <td><para unique="1261367" format="CellBodyC">
+       <string>&#8722; &#8734;</string></para>
+      </td>
+     <td><para unique="1261369" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261371" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1261373" format="CellBodyC">
+       <string>&#8722; F</string></para>
+      </td>
+     <td><para unique="1261375" format="CellBodyC">
+       <string>+ &#8734;</string></para>
+      </td>
+     <td><para unique="1261377" format="CellBodyC">
+       <string>&#177;F or </string><string>&#177;0</string></para>
+      </td>
+     <td><para unique="1261379" format="CellBodyC">
+       <string>DEST</string></para>
+      </td>
+     <td><para unique="1261381" format="CellBodyC">
+       <string>DEST</string></para>
+      </td>
+     <td><para unique="1261383" format="CellBodyC">
+       <string>&#8722; F</string></para>
+      </td>
+     <td><para unique="1261385" format="CellBodyC">
+       <string>&#8722; &#8734;</string></para>
+      </td>
+     <td><para unique="1261387" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <th><para unique="1261389" format="CellRowHeadL">
+       <string>DEST</string></para>
+      </th>
+     <td><para unique="1261391" format="CellBodyC">
+       <string>&#8722; 0</string></para>
+      </td>
+     <td><para unique="1261393" format="CellBodyC">
+       <string>+ &#8734;</string></para>
+      </td>
+     <td><para unique="1261395" format="CellBodyC">
+       <string>&#8722;SRC</string></para>
+      </td>
+     <td><para unique="1261397" format="CellBodyC">
+       <string>&#177;0</string></para>
+      </td>
+     <td><para unique="1261399" format="CellBodyC">
+       <string>&#8722; 0</string></para>
+      </td>
+     <td><para unique="1261401" format="CellBodyC">
+       <string>&#8722; SRC</string></para>
+      </td>
+     <td><para unique="1261403" format="CellBodyC">
+       <string>&#8722; &#8734;</string></para>
+      </td>
+     <td><para unique="1261405" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261407" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1261409" format="CellBodyC">
+       <string>+ 0</string></para>
+      </td>
+     <td><para unique="1261411" format="CellBodyC">
+       <string>+ &#8734;</string></para>
+      </td>
+     <td><para unique="1261413" format="CellBodyC">
+       <string>&#8722;SRC</string></para>
+      </td>
+     <td><para unique="1261415" format="CellBodyC">
+       <string>+ 0</string></para>
+      </td>
+     <td><para unique="1261417" format="CellBodyC">
+       <string>&#177;0</string></para>
+      </td>
+     <td><para unique="1261419" format="CellBodyC">
+       <string>&#8722; SRC</string></para>
+      </td>
+     <td><para unique="1261421" format="CellBodyC">
+       <string>&#8722; &#8734;</string></para>
+      </td>
+     <td><para unique="1261423" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261425" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1261427" format="CellBodyC">
+       <string>+ F</string></para>
+      </td>
+     <td><para unique="1261429" format="CellBodyC">
+       <string>+ &#8734;</string></para>
+      </td>
+     <td><para unique="1261431" format="CellBodyC">
+       <string>+ F</string></para>
+      </td>
+     <td><para unique="1261433" format="CellBodyC">
+       <string>DEST</string></para>
+      </td>
+     <td><para unique="1261435" format="CellBodyC">
+       <string>DEST</string></para>
+      </td>
+     <td><para unique="1261437" format="CellBodyC">
+       <string>&#177;F or </string><string>&#177;0</string></para>
+      </td>
+     <td><para unique="1261439" format="CellBodyC">
+       <string>&#8722; &#8734;</string></para>
+      </td>
+     <td><para unique="1261441" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261443" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1261445" format="CellBodyC">
+       <string>+ &#8734;</string></para>
+      </td>
+     <td><para unique="1261447" format="CellBodyC">
+       <string>+ &#8734;</string></para>
+      </td>
+     <td><para unique="1261449" format="CellBodyC">
+       <string>+ &#8734;</string></para>
+      </td>
+     <td><para unique="1261451" format="CellBodyC">
+       <string>+ &#8734;</string></para>
+      </td>
+     <td><para unique="1261453" format="CellBodyC">
+       <string>+ &#8734;</string></para>
+      </td>
+     <td><para unique="1261455" format="CellBodyC">
+       <string>+ &#8734;</string></para>
+      </td>
+     <td><para unique="1261457" format="CellBodyC">
+       <string>*</string></para>
+      </td>
+     <td><para unique="1261459" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261461" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1261463" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261465" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261467" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261469" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261471" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261473" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261475" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     <td><para unique="1261477" format="CellBodyC">
+       <string>NaN</string></para>
+      </td>
+     </tr>
+    </tbody>
+   <tfoot><tr>
+     <td colspan="9"><para unique="1261479" format="TableFootnoteBLUE">
+       <string>NOTES:</string></para>
+      <para unique="1261480" format="TableFootnote">
+       <string>F	Means finite floating-point value.</string></para>
+      <para unique="1261481" format="TableFootnote">
+       <string>I	Means integer.</string></para>
+      <para unique="1261482" format="TableFootnote">
+       <string>*	Indicates floating-point invalid-arithmetic-operand (#IA) exception.</string></para>
+      </td>
+     </tr>
+    </tfoot></table>
+  <para unique="1261500">
+   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+  </longdesc>
+ <subsection title="FPU Flags Affected">
+  <variablelist>
+   <variablelistentry>
+    <term><string>C1</string></term>
+    <listitem><string>Set to 0 if stack underflow occurred.</string></listitem>
+    <listitem><string>Set if result was rounded up; cleared otherwise.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>C0, C2, C3 </string></term>
+    <listitem><string>Undefined.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Floating-Point Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#IS</string></term>
+    <listitem><string>Stack underflow occurred.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#IA</string></term>
+    <listitem><string>Operand is an SNaN value or unsupported format.</string></listitem>
+    <listitem><string>Operands are infinities of like sign.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#D</string></term>
+    <listitem><string>Source operand is a denormal value.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#U</string></term>
+    <listitem><string>Result is too small for destination format.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#O</string></term>
+    <listitem><string>Result is too large for destination format.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#P</string></term>
+    <listitem><string>Value cannot be represented exactly in destination format.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <listitem><string>If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261545" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0)</string></term>
+    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#NM</string></term>
+    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#MF </string></term>
+    <listitem><string>If there is a pending x87 FPU exception.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code)</string></term>
+    <listitem><string>If a page fault occurs.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#AC(0)</string></term>
+    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

@@ -1,0 +1,127 @@
+<instruction name="ENQCMDS">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Enqueue Command Supervisor</shortdesc>
+ <longdesc><para unique="1261246">
+   <string>The ENQCMDS instruction allows system software to write commands to </string><bold><string>enqueue registers</string></bold><string>, which are special device registers accessed using memory-mapped I/O (MMIO).</string></para>
+  <para unique="1261249">
+   <string>Enqueue registers expect writes to have the format given in </string><link linkend="96818: 05_FigureFrame: Figure 2-1. 64-Byte Data Written to Enqueue Registers"><string>Figure&#160;3&#8209;11</string></link><string> and explained in the section on </string><link linkend="18173: 05_Level: ENQCMD&#8212;Enqueue Command"><string>&#8220;ENQCMD&#8212;Enqueue Command.&#8221;</string></link></para>
+  <para unique="1261254">
+   <string>The ENQCMDS instruction begins by reading 64 bytes of command data from its source memory operand. This is an ordinary load with cacheability and memory ordering implied normally by the memory type. The source operand need not be aligned, and there is no guarantee that all 64 bytes are loaded atomically. Bits 30:20 of the source operand must be zero.</string></para>
+  <para unique="1261255">
+   <string>ENQCMDS formats its source data differently from ENQCMD. Specifically, it formats them into </string><bold><string>command data</string></bold><string> as follows:</string></para>
+  <itemizedlist><listitem><para unique="1261256">
+     <string>Command[19:0] get bits&#160;19:0 of the source operand that was read from memory. These 20 bits communicate a process address-space identifier (PASID). </string></para>
+    </listitem>
+   <listitem><para unique="1261257">
+     <string>Command[30:20] are zero.</string></para>
+    </listitem>
+   <listitem><para unique="1261258">
+     <string>Command[511:31] get bits&#160;511:31 of the source operand that was read from memory. Bit&#160;31 communicates a privilege identification (0 = user; 1 = supervisor).</string></para>
+    </listitem>
+   </itemizedlist><para unique="1261259">
+   <string>The ENQCMDS instruction then uses an </string><bold><string>enqueue store</string></bold><string> (defined below) to write this command data to the desti&#173;nation operand. The address of the destination operand is specified in a general-purpose register as an offset into the ES segment (the segment cannot be overridden).</string><footnote><para unique="1261262">
+     <string>In 64-bit mode, the width of the register operand is 64 bits (32 bits with a 67H prefix). Outside 64-bit mode when CS.D = 1, the width is 32 bits (16 bits with a 67H prefix). Outside 64-bit mode when CS.D=0, the width is 16 bits (32 bits with a 67H prefix).</string></para>
+    </footnote><string> The destination linear address must be 64-byte aligned. The operation of an enqueue store disregards the memory type of the destination memory address.</string></para>
+  <para unique="1261263">
+   <string>An enqueue store is not ordered relative to older stores to WB or WC memory (including non-temporal stores) or to executions of the CLFLUSHOPT or CLWB (when applied to addresses other than that of the enqueue store). Soft&#173;ware can enforce such ordering by executing a fencing instruction such as SFENCE or MFENCE before the enqueue store.</string></para>
+  <para unique="1261264" format="xIndent1">
+   <string>An enqueue store does not write the data into the cache hierarchy, nor does it fetch any data into the cache hier&#173;archy. An enqueue store&#8217;s command data is never combined with that of any other store to the same address.</string></para>
+  <para unique="1261265">
+   <string>Unlike other stores, an enqueue store returns a status, which the ENQCMDS instruction loads into the ZF flag in the RFLAGS register:</string></para>
+  <itemizedlist><listitem><para unique="1261266">
+     <string>ZF&#160;= 0 (success) reports that the 64-byte command data was written atomically to a device&#8217;s enqueue register and has been accepted by the device. (It does not guarantee that the device has acted on the command; it may have queued it for later execution.)</string></para>
+    </listitem>
+   <listitem><para unique="1261267">
+     <string>ZF&#160;= 1 (retry) reports that the command data was not accepted. This status is returned if the destination address is an enqueue register but the command was not accepted due to capacity or other temporal reasons. This status is also returned if the destination address was not an enqueue register (including the case of a memory address); in these cases, the store is dropped and is written neither to MMIO nor to memory.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1261268">
+   <string>The ENQCMDS instruction may be executed only if CPL= 0. Availability of the ENQCMDS instruction is indicated by the presence of the CPUID feature flag ENQCMD (CPUID.07H.00H:ECX[29]).</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>ENQCMDS int_enqcmds(void *dst, const void *src)</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="Flags Affected">
+  <para unique="1261274">
+   <string>The ZF flag is set if the enqueue-store completion returns the retry status; otherwise it is cleared. All other flags are cleared.</string></para>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1261276">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0) </string></term>
+    <listitem><string>For an illegal memory operand effective address in the CS, DS, ES, FS or GS segments.</string></listitem>
+    <listitem><string>If destination linear address is not aligned to a 64-byte boundary.</string></listitem>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    <listitem><string>If bits 30:20 of the source operand are not all zero.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#SS(0) </string></term>
+    <listitem><string>For an illegal address in the SS segment.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code) </string></term>
+    <listitem><string>For a page fault.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If CPUID.07H.00H:ECX.ENQCMD[29] = 0.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP </string></term>
+    <listitem><string>If any part of the operand lies outside the effective address space from 0 to FFFFH.</string></listitem>
+    <listitem><string>If destination linear address is not aligned to a 64-byte boundary.</string></listitem>
+    <listitem><string>If bits 30:20 of the source operand are not all zero.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If CPUID.07H.00H:ECX.ENQCMD[29] = 0.</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0) </string></term>
+    <listitem><string>The ENQCMDS instruction is not recognized in virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261295" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#SS(0) </string></term>
+    <listitem><string>If a memory address referencing the SS segment is in non-canonical form.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#GP(0) </string></term>
+    <listitem><string>If the memory address is in non-canonical form.</string></listitem>
+    <listitem><string>If destination linear address is not aligned to a 64-byte boundary.</string></listitem>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    <listitem><string>If bits 30:20 of the source operand are not all zero.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#PF(fault-code) </string></term>
+    <listitem><string>For a page fault.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If CPUID.07H.00H:ECX.ENQCMD[29].</string></listitem>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

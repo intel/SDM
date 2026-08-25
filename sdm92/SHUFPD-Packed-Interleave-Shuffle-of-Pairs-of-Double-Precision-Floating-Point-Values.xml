@@ -1,0 +1,93 @@
+<instruction name="SHUFPD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Packed Interleave Shuffle of Pairs of Double Precision Floating-Point Values</shortdesc>
+ <longdesc><para unique="1091551">
+   <string>Selects a double precision floating-point value of an input pair using a bit control and move to a designated element of the destination operand. The low-to-high order of double precision element of the destination operand is inter&#173;leaved between the first source operand and the second source operand at the granularity of input pair of 128 bits. Each bit in the imm8 byte, starting from bit 0, is the select control of the corresponding element of the destination to received the shuffled result of an input pair. </string></para>
+  <para unique="1091552">
+   <string>EVEX encoded versions: The first source operand is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 64-bit memory location The destination operand is a ZMM/YMM/XMM register updated according to the writemask. The select controls are the lower 8/4/2 bits of the imm8 byte.</string></para>
+  <para unique="1091553">
+   <string>VEX.256 encoded version: The first source operand is a YMM register. The second source operand can be a YMM register or a 256-bit memory location. The destination operand is a YMM register. The select controls are the bit 3:0 of the imm8 byte, imm8[7:4) are ignored.</string></para>
+  <para unique="1091554">
+   <string>VEX.128 encoded version: The first source operand is a XMM register. The second source operand can be a XMM register or a 128-bit memory location. The destination operand is a XMM register. The upper bits (MAXVL-1:128) of the corresponding ZMM register destination are zeroed. The select controls are the bit 1:0 of the imm8 byte, imm8[7:2) are ignored.</string></para>
+  <para unique="1091555">
+   <string>128-bit Legacy SSE version: The second source can be an XMM register or an 128-bit memory location. The desti&#173;nation operand and the first source operand is the same and is an XMM register. The upper bits (MAXVL-1:128) of the corresponding ZMM register destination are unmodified. The select controls are the bit 1:0 of the imm8 byte, imm8[7:2) are ignored.</string></para>
+  <table>
+   <caption>Figure 4-25.  256-bit VSHUFPD Operation of Four Pairs of Double Precision Floating-Point Values</caption>
+   <colgroup><col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <td><para unique="1091599" format="05_FigureGraphic">
+       <svg width="1000" height="252.39656142882288" viewBox="0 0 413.16696 104.28192000000001">
+        <defs>
+        <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+          <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
+        </marker>
+      </defs>
+        <rect width="74.25" height="13.5" x="59.45832" y="76.83336" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="83.08295999999999" y="85.36967999999999" font-size="6">Y2 or Y3</text>
+        <rect width="74.25" height="13.5" x="133.70832" y="76.83336" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="157.33295999999999" y="85.36967999999999" font-size="6">X2 or X3</text>
+        <rect width="74.25" height="13.5" x="207.95832000000001" y="76.83336" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="231.58295999999999" y="85.36967999999999" font-size="6">Y0 or Y1</text>
+        <rect width="74.25" height="13.5" x="282.20832" y="76.83336" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="305.83296" y="85.36967999999999" font-size="6">X0 or X1</text>
+        <text x="39.20832" y="85.36967999999999" font-size="6">DEST</text>
+        <rect width="74.25" height="13.5" x="59.45832" y="9.333359999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="95.29776" y="17.83944" font-size="6">X3</text>
+        <rect width="74.25" height="13.5" x="133.70832" y="9.333359999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="169.54776" y="17.83944" font-size="6">X2</text>
+        <text x="39.4668" y="19.49256" font-size="6">SRC1</text>
+        <polyline points="248.45832000000001,53.20872 248.45832000000001,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <rect width="74.25" height="13.5" x="207.95832000000001" y="9.333359999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="243.79776" y="17.83944" font-size="6">X1</text>
+        <rect width="74.25" height="13.5" x="282.20832" y="9.333359999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="318.04776" y="17.83944" font-size="6">X0</text>
+        <polyline points="322.70831999999996,22.833360000000003 322.70831999999996,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="174.20832000000001,49.83336 99.95832,49.83336" style="stroke-width:2.0; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="322.70831999999996,49.83336 248.45832000000001,49.83336" style="stroke-width:2.0; stroke: #000000; fill: #ffffff;"/>
+        <rect width="74.25" height="13.5" x="59.45832" y="39.70872" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="95.29776" y="48.2148" font-size="6">Y3</text>
+        <rect width="74.25" height="13.5" x="133.70832" y="39.70872" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="169.54776" y="48.2148" font-size="6">Y2</text>
+        <rect width="74.25" height="13.5" x="207.95832000000001" y="39.70872" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="243.79776" y="48.2148" font-size="6">Y1</text>
+        <rect width="74.25" height="13.5" x="282.20832" y="39.70872" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+        <text x="318.04776" y="48.2148" font-size="6">Y0</text>
+        <text x="39.20832" y="49.86792" font-size="6">SRC2</text>
+        <polyline points="245.08295999999999,22.833360000000003 322.70831999999996,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="319.33296,53.20872 248.45832000000001,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="96.58295999999999,53.20872 96.58295999999999,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="93.20832,22.833360000000003 170.83295999999999,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="167.45832000000001,53.20872 96.58295999999999,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        <polyline points="170.83295999999999,22.833360000000003 170.83295999999999,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+        </svg></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VSHUFPD __m512d _mm512_shuffle_pd(__m512d a, __m512d b, int imm);</string><string>
+</string><string>VSHUFPD __m512d _mm512_mask_shuffle_pd(__m512d s, __mmask8 k, __m512d a, __m512d b, int imm);</string><string>
+</string><string>VSHUFPD __m512d _mm512_maskz_shuffle_pd( __mmask8 k, __m512d a, __m512d b, int imm);</string><string>
+</string><string>VSHUFPD __m256d _mm256_shuffle_pd (__m256d a, __m256d b, const int select);</string><string>
+</string><string>VSHUFPD __m256d _mm256_mask_shuffle_pd(__m256d s, __mmask8 k, __m256d a, __m256d b, int imm);</string><string>
+</string><string>VSHUFPD __m256d _mm256_maskz_shuffle_pd( __mmask8 k, __m256d a, __m256d b, int imm);</string><string>
+</string><string>SHUFPD __m128d _mm_shuffle_pd (__m128d a, __m128d b, const int select);</string><string>
+</string><string>VSHUFPD __m128d _mm_mask_shuffle_pd(__m128d s, __mmask8 k, __m128d a, __m128d b, int imm);</string><string>
+</string><string>VSHUFPD __m128d _mm_maskz_shuffle_pd( __mmask8 k, __m128d a, __m128d b, int imm);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1091744">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1091749" format="xIndent1">
+   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091753" format="xIndent1">
+   <string>EVEX-encoded instruction, see </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

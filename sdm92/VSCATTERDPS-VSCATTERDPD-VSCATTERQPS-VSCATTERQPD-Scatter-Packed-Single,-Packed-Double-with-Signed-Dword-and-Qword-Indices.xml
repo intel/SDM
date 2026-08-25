@@ -1,0 +1,75 @@
+<instruction name="VSCATTERDPS/VSCATTERDPD/VSCATTERQPS/VSCATTERQPD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Scatter Packed Single Precision, Packed Double Precision Floating-Point Values with Signed Dword and Qword Indices</shortdesc>
+ <longdesc><para unique="1046324">
+   <string>Stores up to four, eight, or 16 single precision elements (or two, four, or eight double precision elements) in double&#173;word/quadword vector xmm1, ymm1, or zmm1, to the memory locations pointed by base address BASE_ADDR and index vector VINDEX, with scale SCALE. The elements are specified via the VSIB (i.e., the index register is a vector register, holding packed indices). Elements will only be stored if their corresponding mask bit is one. The entire mask register will be set to zero by this instruction unless it triggers an exception.</string></para>
+  <para unique="1046325">
+   <string>This instruction can be suspended by an exception if at least one element is already scattered (i.e., if the exception is triggered by an element other than the rightmost one with its mask bit set). When this happens, the destination register and the mask register (k1) are partially updated. If any traps or interrupts are pending from already scat&#173;tered elements, they will be delivered in lieu of the exception; in this case, EFLAG.RF is set to one so an instruction breakpoint is not re-triggered when the instruction is continued.</string></para>
+  <para unique="1046326">
+   <string>Note that:</string></para>
+  <itemizedlist><listitem><para unique="1046327">
+     <string>Only writes to overlapping vector indices are guaranteed to be ordered with respect to each other (from LSB to MSB of the source registers). Note that this also include partially overlapping vector indices. Writes that are not overlapped may happen in any order. Memory ordering with other instructions follows the Intel-64 memory ordering model. Note that this does not account for non-overlapping indices that map into the same physical address locations.</string></para>
+    </listitem>
+   <listitem><para unique="1046328">
+     <string>If two or more destination indices completely overlap, the &#8220;earlier&#8221; write(s) may be skipped.</string></para>
+    </listitem>
+   <listitem><para unique="1046329">
+     <string>Faults are delivered in a right-to-left manner. That is, if a fault is triggered by an element and delivered, all elements closer to the LSB of the source register xmm, ymm, or zmm will be completed (and non-faulting). Individual elements closer to the MSB may or may not be completed. If a given element triggers multiple faults, they are delivered in the conventional order.</string></para>
+    </listitem>
+   <listitem><para unique="1046330">
+     <string>Elements may be scattered in any order, but faults must be delivered in a right-to left order; thus, elements to the left of a faulting one may be scattered before the fault is delivered. A given implementation of this instruction is repeatable - given the same input values and architectural state, the same set of elements to the left of the faulting one will be scattered.</string></para>
+    </listitem>
+   <listitem><para unique="1046331">
+     <string>This instruction does not perform AC checks, and so will never deliver an AC fault.</string></para>
+    </listitem>
+   <listitem><para unique="1046332">
+     <string>Not valid with 16-bit effective addresses. Will deliver a #UD fault.</string></para>
+    </listitem>
+   <listitem><para unique="1046333">
+     <string>If this instruction overwrites itself and then takes a fault, only a subset of elements may be completed before the fault is delivered (as described above). If the fault handler completes and attempts to re-execute this instruction, the new instruction will be executed, and the scatter will not complete.</string></para>
+    </listitem>
+   </itemizedlist><para unique="1046334">
+   <string>Note that the presence of VSIB byte is enforced in this instruction. Hence, the instruction will #UD fault if ModRM.rm is different than 100b.</string></para>
+  <para unique="1046335">
+   <string>This instruction has special disp8*N and alignment rules. N is considered to be the size of a single vector element.</string></para>
+  <para unique="1046336">
+   <string>The scaled index may require more bits to represent than the address bits used by the processor (e.g., in 32-bit mode, if the scale is greater than one). In this case, the most significant bits beyond the number of address bits are ignored.</string></para>
+  <para unique="1046337">
+   <string>The instruction will #UD fault if the k0 mask register is specified.</string></para>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VSCATTERDPD void _mm512_i32scatter_pd(void * base, __m512i vdx, __m512d a, int scale);</string><string>
+</string><string>VSCATTERDPD void _mm512_mask_i32scatter_pd(void * base, __mmask8 k, __m512i vdx, __m512d a, int scale);</string><string>
+</string><string>VSCATTERDPS void _mm512_i32scatter_ps(void * base, __m512i vdx, __m512 a, int scale);</string><string>
+</string><string>VSCATTERDPS void _mm512_mask_i32scatter_ps(void * base, __mmask16 k, __m512i vdx, __m512 a, int scale);</string><string>
+</string><string>VSCATTERQPD void _mm512_i64scatter_pd(void * base, __m512i vdx, __m512d a, int scale);</string><string>
+</string><string>VSCATTERQPD void _mm512_mask_i64scatter_pd(void * base, __mmask8 k, __m512i vdx, __m512d a, int scale);</string><string>
+</string><string>VSCATTERQPS void _mm512_i64scatter_ps(void * base, __m512i vdx, __m512 a, int scale);</string><string>
+</string><string>VSCATTERQPS void _mm512_mask_i64scatter_ps(void * base, __mmask8 k, __m512i vdx, __m512 a, int scale);</string><string>
+</string><string>VSCATTERDPD void _mm256_i32scatter_pd(void * base, __m256i vdx, __m256d a, int scale);</string><string>
+</string><string>VSCATTERDPD void _mm256_mask_i32scatter_pd(void * base, __mmask8 k, __m256i vdx, __m256d a, int scale);</string><string>
+</string><string>VSCATTERDPS void _mm256_i32scatter_ps(void * base, __m256i vdx, __m256 a, int scale);</string><string>
+</string><string>VSCATTERDPS void _mm256_mask_i32scatter_ps(void * base, __mmask8 k, __m256i vdx, __m256 a, int scale);</string><string>
+</string><string>VSCATTERQPD void _mm256_i64scatter_pd(void * base, __m256i vdx, __m256d a, int scale);</string><string>
+</string><string>VSCATTERQPD void _mm256_mask_i64scatter_pd(void * base, __mmask8 k, __m256i vdx, __m256d a, int scale);</string><string>
+</string><string>VSCATTERQPS void _mm256_i64scatter_ps(void * base, __m256i vdx, __m256 a, int scale);</string><string>
+</string><string>VSCATTERQPS void _mm256_mask_i64scatter_ps(void * base, __mmask8 k, __m256i vdx, __m256 a, int scale);</string><string>
+</string><string>VSCATTERDPD void _mm_i32scatter_pd(void * base, __m128i vdx, __m128d a, int scale);</string><string>
+</string><string>VSCATTERDPD void _mm_mask_i32scatter_pd(void * base, __mmask8 k, __m128i vdx, __m128d a, int scale);</string><string>
+</string><string>VSCATTERDPS void _mm_i32scatter_ps(void * base, __m128i vdx, __m128 a, int scale);</string><string>
+</string><string>VSCATTERDPS void _mm_mask_i32scatter_ps(void * base, __mmask8 k, __m128i vdx, __m128 a, int scale);</string><string>
+</string><string>VSCATTERQPD void _mm_i64scatter_pd(void * base, __m128i vdx, __m128d a, int scale);</string><string>
+</string><string>VSCATTERQPD void _mm_mask_i64scatter_pd(void * base, __mmask8 k, __m128i vdx, __m128d a, int scale);</string><string>
+</string><string>VSCATTERQPS void _mm_i64scatter_ps(void * base, __m128i vdx, __m128 a, int scale);</string><string>
+</string><string>VSCATTERQPS void _mm_mask_i64scatter_ps(void * base, __mmask8 k, __m128i vdx, __m128 a, int scale);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046418">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046423" format="xIndent1">
+   <string>See </string><link linkend="91096: 06_Table: Table 2-61. Type E12 Class Exception Conditions"><string>Table&#160;2&#8209;63, &#8220;Type E12 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="ENCODEKEY128_GPR32u8_GPR32u8" xed_iform="ENCODEKEY128_GPR32u8_GPR32u8" encoding="F3 0F 38 FA /r" opcode="fa" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_ENCODEKEY128</callee>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>SMM::In_SMM</var-used>
+   <var-used>CPUID_KEY_LOCKER</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>FEATURE_CONFIG</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr><code>let src := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, 32);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rep_prefix == Unsigned(0xF3))) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPUID(KEY_LOCKER)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>IN_SMM</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_EM_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSFXSR_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_KL_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>AES_Disabled_In_MSR</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_ENCODEKEY128?(src);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="ENCODEKEY128">
+    <asm-operand><varname>r32<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>r32<subscript>2</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="KEYLOCKER"><cpuid-flag>KLSUPPORTED</cpuid-flag><cpuid-flag>KLENABLED</cpuid-flag></cpuid-group>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>r32<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r32<subscript>2</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="ENCODEKEY128" variant_kind="Standard variant" mnemonic="ENCODEKEY128">
+  <code>if not Is_Zero(src[31:3])</code>
+  <code>    or (src[0] == 0b1 and not CPUID_CPL0_RESTRICT)</code>
+  <code>    or (src[1] == 0b1 and not CPUID_NO_ENCRYPT_RESTRICT)</code>
+  <code>    or (src[2] == 0b1 and not CPUID_NO_DECRYPT_RESTRICT) then</code>
+  <code>    Report_General_Protection_Exception!(Zero(32));</code>
+  <code>endif;</code>
+  <code></code>
+  <code>let input_key := XMM[0];</code>
+  <code>let aad := Zero_Extend(src[2:0], 128);</code>
+  <code></code>
+  <code>let handle := AES::Wrap_Key_128(input_key, aad, IWKey);</code>
+  <code></code>
+  <code>var result := Zero(32);</code>
+  <code>result[0] := if IWKey.No_Backup then 0b1 else 0b0;</code>
+  <code>result[4:1] := IWKey.Key_Source;</code>
+  <code></code>
+  <code>XMM[0] := handle.AAD;</code>
+  <code>XMM[1] := handle.Integrity_Tag;</code>
+  <code>XMM[2] := handle.Cipher_Text;</code>
+  <code></code>
+  <code>XMM[4] := Zero(128); // reserved for future usage</code>
+  <code>XMM[5] := Zero(128); // reserved for future usage</code>
+  <code>XMM[6] := Zero(128); // reserved for future usage</code>
+  <code></code>
+  <code>RFLAGS.OF := 0b0;</code>
+  <code>RFLAGS.SF := 0b0;</code>
+  <code>RFLAGS.ZF := 0b0;</code>
+  <code>RFLAGS.AF := 0b0;</code>
+  <code>RFLAGS.PF := 0b0;</code>
+  <code>RFLAGS.CF := 0b0;</code>
+  <callee>Std::Boolean::Not</callee>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Boolean::Strict_Or</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Is_Zero</callee>
+  <callee>Std::Bits::Zero_Extend</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>AES::Wrap_Key_128</callee>
+  <callee>Report_General_Protection_Exception</callee>
+  <callee>XMM</callee>
+  <callee>XMM_write</callee>
+  <var-used>RFLAGS</var-used>
+  <var-used>IWKey</var-used>
+  <var-used>CPUID_CPL0_RESTRICT</var-used>
+  <var-used>CPUID_NO_ENCRYPT_RESTRICT</var-used>
+  <var-used>CPUID_NO_DECRYPT_RESTRICT</var-used>
+  </operation>
+ <category>cryptography/aes/keylocker</category>
+ <input name="src"/>
+ <output name="result"/>
+ </instruction>

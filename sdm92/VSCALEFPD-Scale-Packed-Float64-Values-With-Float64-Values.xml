@@ -1,0 +1,260 @@
+<instruction name="VSCALEFPD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Scale Packed Float64 Values With Float64 Values</shortdesc>
+ <longdesc><para unique="1046173">
+   <string>Performs a floating-point scale of the packed double precision floating-point values in the first source operand by multiplying them by 2 to the power of the double precision floating-point values in second source operand.</string></para>
+  <para unique="1046174">
+   <string>The equation of this operation is given by:</string></para>
+  <para unique="1046175">
+   <string>zmm1 := zmm2*2</string><superscript><string>floor(zmm3)</string></superscript><string>.</string></para>
+  <para unique="1046176">
+   <string>Floor(zmm3) means maximum integer value &#8804; zmm3.</string></para>
+  <para unique="1046177">
+   <string>If the result cannot be represented in double precision, then the proper overflow response (for positive scaling operand), or the proper underflow response (for negative scaling operand) is issued. The overflow and underflow responses are dependent on the rounding mode (for IEEE-compliant rounding), as well as on other settings in MXCSR (exception mask bits, FTZ bit), and on the SAE bit.</string></para>
+  <para unique="1046178">
+   <string>The first source operand is a ZMM/YMM/XMM register. The second source operand is a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 64-bit memory location. The destination operand is a ZMM/YMM/XMM register conditionally updated with writemask k1.</string></para>
+  <para unique="1046181">
+   <string>Handling of special-case input values are listed in </string><link linkend="43524: 06_Table: Table 5-30. \VSCALEFPD Special Cases"><string>Table 5&#8209;37</string></link><string> and </string><link linkend="36948: 06_Table: Table 5-31. Additional VSCALEFPD/SD Special Cases"><string>Table 5&#8209;38</string></link><string>.</string></para>
+  <para unique="1046300" format="06_Table">
+   <anchor id="43524: 06_Table: Table 5-30. \VSCALEFPD Special Cases"/><string>VSCALEFPD/SD/PS/SS Special Cases</string></para>
+  <table>
+   <caption></caption>
+   <colgroup><col align="leftright"/>
+    <col align="left"/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1046203" format="CellRowHeadL">
+       </para>
+      </th>
+     <th><para unique="1046205" format="CellRowHeadL">
+       </para>
+      </th>
+     <th colspan="4"><para unique="1046207" format="CellColHeadC">
+       <string>Src2</string></para>
+      </th>
+     <th><para unique="1046215" format="CellRowHeadL">
+       <string>Set IE</string></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1046217" format="CellRowHeadL">
+       </para>
+      </th>
+     <th><para unique="1046219" format="CellRowHeadL">
+       </para>
+      </th>
+     <th><para unique="1046221" format="CellRowHeadL">
+       <string>&#177;NaN</string></para>
+      </th>
+     <th><para unique="1046223" format="CellRowHeadL">
+       <string>+Inf</string></para>
+      </th>
+     <th><para unique="1046225" format="CellRowHeadL">
+       <string>-Inf</string></para>
+      </th>
+     <th><para unique="1046227" format="CellRowHeadL">
+       <string>0/Denorm/Norm</string></para>
+      </th>
+     <th><para unique="1046229" format="CellRowHeadL">
+       </para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1046231" format="CellColHeadC">
+       <string>Src1</string></para>
+      </th>
+     <td><para unique="1046233" format="CellBodyL">
+       <string>&#177;QNaN</string></para>
+      </td>
+     <td><para unique="1046235" format="CellBodyL">
+       <string>QNaN(Src1)</string></para>
+      </td>
+     <td><para unique="1046237" format="CellBodyL">
+       <string>+INF</string></para>
+      </td>
+     <td><para unique="1046239" format="CellBodyL">
+       <string>+0</string></para>
+      </td>
+     <td><para unique="1046241" format="CellBodyL">
+       <string>QNaN(Src1)</string></para>
+      </td>
+     <td><para unique="1046243" format="CellBodyL">
+       <string>IF either source is SNAN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046245" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1046247" format="CellBodyL">
+       <string>&#177;SNaN</string></para>
+      </td>
+     <td><para unique="1046249" format="CellBodyL">
+       <string>QNaN(Src1)</string></para>
+      </td>
+     <td><para unique="1046251" format="CellBodyL">
+       <string>QNaN(Src1)</string></para>
+      </td>
+     <td><para unique="1046253" format="CellBodyL">
+       <string>QNaN(Src1)</string></para>
+      </td>
+     <td><para unique="1046255" format="CellBodyL">
+       <string>QNaN(Src1)</string></para>
+      </td>
+     <td><para unique="1046257" format="CellBodyL">
+       <string>YES</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046259" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1046261" format="CellBodyL">
+       <string>&#177;Inf</string></para>
+      </td>
+     <td><para unique="1046263" format="CellBodyL">
+       <string>QNaN(Src2)</string></para>
+      </td>
+     <td><para unique="1046265" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     <td><para unique="1046267" format="CellBodyL">
+       <string>QNaN_Indefinite</string></para>
+      </td>
+     <td><para unique="1046269" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     <td><para unique="1046271" format="CellBodyL">
+       <string>IF Src2 is SNAN or -INF</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046273" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1046275" format="CellBodyL">
+       <string>&#177;0</string></para>
+      </td>
+     <td><para unique="1046277" format="CellBodyL">
+       <string>QNaN(Src2)</string></para>
+      </td>
+     <td><para unique="1046279" format="CellBodyL">
+       <string>QNaN_Indefinite</string></para>
+      </td>
+     <td><para unique="1046281" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     <td><para unique="1046283" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     <td><para unique="1046285" format="CellBodyL">
+       <string>IF Src2 is SNAN or +INF</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046287" format="CellBodyL">
+       </para>
+      </td>
+     <td><para unique="1046289" format="CellBodyL">
+       <string>Denorm/Norm</string></para>
+      </td>
+     <td><para unique="1046291" format="CellBodyL">
+       <string>QNaN(Src2)</string></para>
+      </td>
+     <td><para unique="1046293" format="CellBodyL">
+       <string>&#177;INF (Src1 sign)</string></para>
+      </td>
+     <td><para unique="1046295" format="CellBodyL">
+       <string>&#177;0 (Src1 sign)</string></para>
+      </td>
+     <td><para unique="1046297" format="CellBodyL">
+       <string>Compute Result</string></para>
+      </td>
+     <td><para unique="1046299" format="CellBodyL">
+       <string>IF Src2 is SNAN</string></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  <table>
+   <caption>Table 5-38.  Additional VSCALEFPD/SD Special Cases</caption>
+   <colgroup><col width="133.85952pt" align="leftright"/>
+    <col width="267.2928pt"/>
+    <col width="110.4984pt"/>
+    <col width="80.40312pt"/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1046311" format="CellRowHeadL">
+       <string>Special Case</string></para>
+      </th>
+     <th><para unique="1046313" format="CellRowHeadL">
+       <string> Returned value </string></para>
+      </th>
+     <th><para unique="1046315" format="CellRowHeadL">
+       <string>Faults</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1046317" format="CellBodyL">
+       <string>|result| &lt; 2</string><superscript><string>-1074</string></superscript></para>
+      </td>
+     <td><para unique="1046319" format="CellBodyL">
+       <string>&#177;0 or &#177;Min-Denormal (Src1 sign)</string></para>
+      </td>
+     <td><para unique="1046321" format="CellBodyL">
+       <string>Underflow</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046323" format="CellBodyL">
+       <string>|result| &#8805; 2</string><superscript><string>1024</string></superscript></para>
+      </td>
+     <td><para unique="1046325" format="CellBodyL">
+       <string>&#177;INF (Src1 sign) or &#177;Max-normal (Src1 sign)</string></para>
+      </td>
+     <td><para unique="1046327" format="CellBodyL">
+       <string>Overflow</string></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting><string>VSCALEFPD __m512d _mm512_scalef_round_pd(__m512d a, __m512d b, int rounding);</string><string>
+</string><string>VSCALEFPD __m512d _mm512_mask_scalef_round_pd(__m512d s, __mmask8 k, __m512d a, __m512d b, int rounding);</string><string>
+</string><string>VSCALEFPD __m512d _mm512_maskz_scalef_round_pd(__mmask8 k, __m512d a, __m512d b, int rounding);</string><string>
+</string><string>VSCALEFPD __m512d _mm512_scalef_pd(__m512d a, __m512d b);</string><string>
+</string><string>VSCALEFPD __m512d _mm512_mask_scalef_pd(__m512d s, __mmask8 k, __m512d a, __m512d b);</string><string>
+</string><string>VSCALEFPD __m512d _mm512_maskz_scalef_pd(__mmask8 k, __m512d a, __m512d b);</string><string>
+</string><string>VSCALEFPD __m256d _mm256_scalef_pd(__m256d a, __m256d b);</string><string>
+</string><string>VSCALEFPD __m256d _mm256_mask_scalef_pd(__m256d s, __mmask8 k, __m256d a, __m256d b);</string><string>
+</string><string>VSCALEFPD __m256d _mm256_maskz_scalef_pd(__mmask8 k, __m256d a, __m256d b);</string><string>
+</string><string>VSCALEFPD __m128d _mm_scalef_pd(__m128d a, __m128d b);</string><string>
+</string><string>VSCALEFPD __m128d _mm_mask_scalef_pd(__m128d s, __mmask8 k, __m128d a, __m128d b);</string><string>
+</string><string>VSCALEFPD __m128d _mm_maskz_scalef_pd(__mmask8 k, __m128d a, __m128d b);</string><string>
+</string></programlisting>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046378">
+   <string>Overflow, Underflow, Invalid, Precision, Denormal (for Src1).</string></para>
+  <para unique="1046379">
+   <string>Denormal is not reported for Src2.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046384">
+   <string>See </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  </subsection>
+ </instruction>

@@ -1,0 +1,672 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="VRNDSCALESS_XMMf32_MASKmskw_XMMf32_MEMf32_IMM8_AVX512_MASK" xed_iform="VRNDSCALESS_XMMf32_MASKmskw_XMMf32_MEMf32_IMM8_AVX512" encoding="EVEX.128.66.0F3A.W0 0A /r ib" opcode="0a" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_RNDSCALESf_m</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 32;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := element_size / 8;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let old := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let imm8 := Mem_Fetch?(next_ip0, 8);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0 + 1);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 :=</code>
+     <code>    if k[0] == 0b1 then</code>
+     <code>        Logical_Mem_Read?(segment, effective_address, src_size)</code>
+     <code>    else</code>
+     <code>        Zero(src_size);</code>
+     <code>Next_IP := next_ip0 + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_RNDSCALESf_m?(element_size, register_size, src_size, old, k, src1, src2, imm8, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VRNDSCALESS">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m32<subscript>3</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512F_SCALAR"><cpuid-flag>AVX512F</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512F_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m32<subscript>3</subscript></varname><footnoteref linkend="c"/></label>
+    </operand>
+   </iform>
+  <iform name="VRNDSCALESS_XMMf32_MASKmskw_XMMf32_XMMf32_IMM8_AVX512_MASK_0" xed_iform="VRNDSCALESS_XMMf32_MASKmskw_XMMf32_XMMf32_IMM8_AVX512" encoding="EVEX.128.66.0F3A.W0 0A /r ib" opcode="0a" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_RNDSCALESf_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let old := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src2 := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     <code>let imm8 := Mem_Fetch?(ip, 8);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_RNDSCALESf_m?(element_size, register_size, src_size, old, k, src1, src2, imm8, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VRNDSCALESS">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512F_SCALAR"><cpuid-flag>AVX512F</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512F_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="128"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="VRNDSCALESS_XMMf32_MASKmskw_XMMf32_MEMf32_IMM8_AVX512_ZERO" xed_iform="VRNDSCALESS_XMMf32_MASKmskw_XMMf32_MEMf32_IMM8_AVX512" encoding="EVEX.128.66.0F3A.W0 0A /r ib" opcode="0a" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Le</callee>
+   <callee>Std::Integer::Positive_Divide</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_RNDSCALESf_z</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 32;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := element_size / 8;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let imm8 := Mem_Fetch?(next_ip0, 8);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0 + 1);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 :=</code>
+     <code>    if k[0] == 0b1 then</code>
+     <code>        Logical_Mem_Read?(segment, effective_address, src_size)</code>
+     <code>    else</code>
+     <code>        Zero(src_size);</code>
+     <code>Next_IP := next_ip0 + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_RNDSCALESf_z?(element_size, register_size, src_size, k, src1, src2, imm8, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VRNDSCALESS">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m32<subscript>3</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512F_SCALAR"><cpuid-flag>AVX512F</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512F_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m32<subscript>3</subscript></varname><footnoteref linkend="c"/></label>
+    </operand>
+   </iform>
+  <iform name="VRNDSCALESS_XMMf32_MASKmskw_XMMf32_XMMf32_IMM8_AVX512_ZERO_0" xed_iform="VRNDSCALESS_XMMf32_MASKmskw_XMMf32_XMMf32_IMM8_AVX512" encoding="EVEX.128.66.0F3A.W0 0A /r ib" opcode="0a" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_RNDSCALESf_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src2 := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     <code>let imm8 := Mem_Fetch?(ip, 8);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_RNDSCALESf_z?(element_size, register_size, src_size, k, src1, src2, imm8, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VRNDSCALESS">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512F_SCALAR"><cpuid-flag>AVX512F</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512F_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="128"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="RNDSCALESf_m" variant_kind="Masking variant" mnemonic="VRNDSCALESS">
+  <code>let frac := Unsigned(imm8[7:4]);</code>
+  <code>let suppress_precise_exceptions := imm8[3] == 0b1;</code>
+  <code>let rc := if imm8[2] == 0b1 then MXCSR.RC else imm8[1:0];</code>
+  <code>let rounding_mode := FP::Decode_Rounding_Mode(rc);</code>
+  <code>let denormals_are_zeros := FP::Get_DAZ(element_size);</code>
+  <code>let exception_masks := MXCSR.Exception_Masks;</code>
+  <code>let suppress_all_exceptions := (context.evex_b == 0b1) and (mod == 0b11);</code>
+  <code>var result := Zero(register_size);</code>
+  <code>if k[0] == 0b1 then</code>
+  <code>    let op2 := src2[0 +: element_size];</code>
+  <code>    let (r, exceptions) := FP::Round_To_Fraction(op2, frac, suppress_precise_exceptions, denormals_are_zeros, rounding_mode);</code>
+  <code>    let reported_exceptions := if suppress_all_exceptions then Zero(6) else exceptions;</code>
+  <code>    FP::Check_Exceptions?(reported_exceptions, exception_masks);</code>
+  <code>    result[0 +: element_size] := r;</code>
+  <code>else</code>
+  <code>    result[0 +: element_size] := old[0 +: element_size];</code>
+  <code>endif;</code>
+  <code>result[register_size-1 : element_size] := src1[register_size-1 : element_size];</code>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Integer::Add</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Unsigned</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>FP::Check_Exceptions</callee>
+  <callee>FP::Decode_Rounding_Mode</callee>
+  <callee>FP::Get_DAZ</callee>
+  <callee>FP::Round_To_Fraction</callee>
+  <var-used>MXCSR</var-used>
+  <other-copy>VRNDSCALESD</other-copy>
+  <other-copy>VRNDSCALESH</other-copy>
+  </operation>
+ <operation name="RNDSCALESf_z" variant_kind="Zeroing variant" mnemonic="VRNDSCALESS">
+  <code>let frac := Unsigned(imm8[7:4]);</code>
+  <code>let suppress_precise_exceptions := imm8[3] == 0b1;</code>
+  <code>let rc := if imm8[2] == 0b1 then MXCSR.RC else imm8[1:0];</code>
+  <code>let rounding_mode := FP::Decode_Rounding_Mode(rc);</code>
+  <code>let denormals_are_zeros := FP::Get_DAZ(element_size);</code>
+  <code>let exception_masks := MXCSR.Exception_Masks;</code>
+  <code>let suppress_all_exceptions := (context.evex_b == 0b1) and (mod == 0b11);</code>
+  <code>var result := Zero(register_size);</code>
+  <code>if k[0] == 0b1 then</code>
+  <code>    let op2 := src2[0 +: element_size];</code>
+  <code>    let (r, exceptions) := FP::Round_To_Fraction(op2, frac, suppress_precise_exceptions, denormals_are_zeros, rounding_mode);</code>
+  <code>    let reported_exceptions := if suppress_all_exceptions then Zero(6) else exceptions;</code>
+  <code>    FP::Check_Exceptions?(reported_exceptions, exception_masks);</code>
+  <code>    result[0 +: element_size] := r;</code>
+  <code>else</code>
+  <code>    result[0 +: element_size] := Zero(element_size);</code>
+  <code>endif;</code>
+  <code>result[register_size-1 : element_size] := src1[register_size-1 : element_size];</code>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Integer::Add</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Unsigned</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>FP::Check_Exceptions</callee>
+  <callee>FP::Decode_Rounding_Mode</callee>
+  <callee>FP::Get_DAZ</callee>
+  <callee>FP::Round_To_Fraction</callee>
+  <var-used>MXCSR</var-used>
+  <other-copy>VRNDSCALESD</other-copy>
+  <other-copy>VRNDSCALESH</other-copy>
+  </operation>
+ <iform-group>
+  <iform name="VRNDSCALESS_XMMf32_MASKmskw_XMMf32_XMMf32_IMM8_AVX512_MASK_1" xed_iform="VRNDSCALESS_XMMf32_MASKmskw_XMMf32_XMMf32_IMM8_AVX512" encoding="EVEX.128.66.0F3A.W0 0A /r ib" opcode="0a" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_RNDSCALESf_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let old := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src2 := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     <code>let imm8 := Mem_Fetch?(ip, 8);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_RNDSCALESf_m?(element_size, register_size, src_size, old, k, src1, src2, imm8, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VRNDSCALESS">
+    <asm-modifier priority="2">{sae}</asm-modifier>
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512F_SCALAR"><cpuid-flag>AVX512F</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512F_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="128"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="VRNDSCALESS_XMMf32_MASKmskw_XMMf32_XMMf32_IMM8_AVX512_ZERO_1" xed_iform="VRNDSCALESS_XMMf32_MASKmskw_XMMf32_XMMf32_IMM8_AVX512" encoding="EVEX.128.66.0F3A.W0 0A /r ib" opcode="0a" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_RNDSCALESf_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 128;</code>
+     <code>let element_size := 32;</code>
+     </decode_args>
+    <read_instr><code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src2 := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     <code>let imm8 := Mem_Fetch?(ip, 8);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.rex_w == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_RNDSCALESf_z?(element_size, register_size, src_size, k, src1, src2, imm8, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VRNDSCALESS">
+    <asm-modifier priority="2">{sae}</asm-modifier>
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX512F_SCALAR"><cpuid-flag>AVX512F</cpuid-flag></cpuid-group>
+   <cpuid-group name="AVX512F_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="128"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <category>scalar</category>
+ <category>fp/round</category>
+ <size name="element_size"/>
+ <size name="register_size"/>
+ <size name="src_size"/>
+ <input name="src1"/>
+ <input name="src2"/>
+ <output name="result"/>
+ <footnote id="c"><para>Operand is only read if Check_Mask_Scalar</para>
+  </footnote>
+ <footnote id="o"><para>If EVEX.z == 0b0, the previous value of the result is read into `old` and the masking variant of the operation is used; if EVEX.z == 0b1, the zeroing variant of the operation is used.</para>
+  </footnote>
+ </instruction>

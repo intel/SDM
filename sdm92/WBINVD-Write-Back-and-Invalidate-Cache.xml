@@ -1,0 +1,60 @@
+<instruction name="WBINVD">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Write Back and Invalidate Cache</shortdesc>
+ <longdesc><para unique="1012593">
+   <string>Writes back all modified cache lines in the processor&#8217;s internal cache to main memory and </string><indexterm><primary>Caches, invalidating (flushing);Write-back and invalidate caches</primary></indexterm><indexterm><primary>Flushing:caches</primary></indexterm><string>invalidates (flushes) the internal caches. The instruction then issues a special-function bus cycle that directs external caches to also write back modified data and another bus cycle to indicate that the external caches should be invalidated.</string></para>
+  <para unique="1012594">
+   <string>After executing this instruction, the processor does not wait for the external caches to complete their write-back and flushing operations before proceeding with instruction execution. It is the responsibility of hardware to respond to the cache write-back and flush signals. The amount of time or cycles for WBINVD to complete will vary due to size and other factors of different cache hierarchies. As a consequence, the use of the WBINVD instruction can have an impact on logical processor interrupt/event response time. Additional information of WBINVD behavior in a cache hierarchy with hierarchical sharing topology can be found in Chapter 2 of the Intel</string><string>&#174; 64 and IA&#8209;32 Architec&#173;tures Software Developer&#8217;s Manual, Volume 3A.</string></para>
+  <para unique="1012595">
+   <string>The WBINVD instruction is a privileged instruction. When the processor is running in protected mode, the CPL of a program or procedure must be 0 to execute this instruction. This instruction is also a serializing instruction (see &#8220;Serializing Instructions&#8221; in Chapter 9 of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A).</string></para>
+  <para unique="1012596">
+   <string>In situations where cache coherency with main memory is not a concern, software can use the INVD instruction. </string></para>
+  <para unique="1012597">
+   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+  <section level="7">
+   <title unique="1012598"><string>IA-32 Architecture Compatibility</string></title>
+   <para unique="1012599">
+    <string>The WBINVD instruction is implementation dependent, and its function may be implemented differently on future Intel 64 and IA-32 processors. The instruction is not supported on IA-32 processors earlier than the Intel486 processor.</string></para>
+   </section>
+  </longdesc>
+ <subsection title="void _wbinvd(void)Flags Affected">
+  <para unique="1012609">
+   <string>None.</string></para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#UD </string></term>
+    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term><string>#GP(0)</string></term>
+    <listitem><string>WBINVD cannot be executed at the virtual-8086 mode.</string></listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1012618" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <para unique="1012620" format="xIndent1">
+   <string>Same exceptions as in protected mode.</string></para>
+  </subsection>
+ </instruction>

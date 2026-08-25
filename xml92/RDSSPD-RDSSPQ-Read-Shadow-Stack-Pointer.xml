@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="RDSSPD_GPR32u32" xed_iform="RDSSPD_GPR32u32" encoding="F3 0F 1E /1" opcode="1e" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_RDSSP</callee>
+   <var-used>CPUID_CET_SS</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let result_size := 32;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not (CPUID_CET_SS) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result, write_result) := Instr_RDSSP(result_size);</code>
+     </execute>
+    <post_execute>
+     <code>if write_result then</code>
+     <code>    Write_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, result);</code>
+     <code>endif;</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="RDSSPD">
+    <asm-operand><varname>r32</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CET"><cpuid-flag>CET</cpuid-flag></cpuid-group>
+   <encoding-size name="result_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   </iform>
+  <iform name="RDSSPQ_GPR64u64" xed_iform="RDSSPQ_GPR64u64" encoding="F3 0F 1E /1" opcode="1e" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_RDSSP</callee>
+   <var-used>CPUID_CET_SS</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let result_size := 64;</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not ((Data_Size_Of_Current_Mode() == 64) and CPUID_CET_SS) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let (result, write_result) := Instr_RDSSP(result_size);</code>
+     </execute>
+    <post_execute>
+     <code>if write_result then</code>
+     <code>    Write_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, result);</code>
+     <code>endif;</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="RDSSPQ">
+    <asm-operand><varname>r64</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="CET"><cpuid-flag>CET</cpuid-flag></cpuid-group>
+   <encoding-size name="result_size" size="64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r64</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="RDSSP" variant_kind="Standard variant" mnemonic="RDSSPD">
+  <code>var result : Bits(result_size);</code>
+  <code>var write_result : Boolean;</code>
+  <code></code>
+  <code>if CR4.CET == 0b1 and IA32_CET[CPL].SH_STK_EN == 0b1 then</code>
+  <code>    result := SSP[0 +: result_size];</code>
+  <code>    write_result := True;</code>
+  <code>else</code>
+  <code>    write_result := False;</code>
+  <code>endif;</code>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>IA32_CET</callee>
+  <var-used>True</var-used>
+  <var-used>False</var-used>
+  <var-used>CPL</var-used>
+  <var-used>SSP</var-used>
+  <var-used>CR4</var-used>
+  </operation>
+ <category>cet</category>
+ <size name="result_size"/>
+ <output name="result"/>
+ </instruction>

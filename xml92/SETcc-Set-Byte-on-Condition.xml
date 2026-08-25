@@ -1,0 +1,1525 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="SETO_GPR8" xed_iform="SETO_GPR8" encoding="0F 90 /r" opcode="90" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR8</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present), result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETO">
+    <asm-operand><varname>r8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8</varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="SETO_MEMb" xed_iform="SETO_MEMb" encoding="0F 90 /r" opcode="90" valid32="V" valid64="V">
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>False</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETO">
+    <asm-operand><varname>m8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="SETcc" variant_kind="Standard variant" mnemonic="SETO">
+  <code>let result := if Condition_Holds(cond) then 1[7:0] else 0[7:0];</code>
+  <callee>Condition_Holds</callee>
+  </operation>
+ <iform-group>
+  <iform name="SETNO_GPR8" xed_iform="SETNO_GPR8" encoding="0F 91 /r" opcode="91" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR8</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present), result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETNO">
+    <asm-operand><varname>r8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8</varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="SETNO_MEMb" xed_iform="SETNO_MEMb" encoding="0F 91 /r" opcode="91" valid32="V" valid64="V">
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>False</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETNO">
+    <asm-operand><varname>m8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="SETB_GPR8" xed_iform="SETB_GPR8" encoding="0F 92 /r" opcode="92" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR8</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present), result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETB">
+    <asm-operand><varname>r8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8</varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="SETB_MEMb" xed_iform="SETB_MEMb" encoding="0F 92 /r" opcode="92" valid32="V" valid64="V">
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>False</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETB">
+    <asm-operand><varname>m8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="SETNB_GPR8" xed_iform="SETNB_GPR8" encoding="0F 93 /r" opcode="93" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR8</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present), result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETNB">
+    <asm-operand><varname>r8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8</varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="SETNB_MEMb" xed_iform="SETNB_MEMb" encoding="0F 93 /r" opcode="93" valid32="V" valid64="V">
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>False</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETNB">
+    <asm-operand><varname>m8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="SETZ_GPR8" xed_iform="SETZ_GPR8" encoding="0F 94 /r" opcode="94" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR8</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present), result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETZ">
+    <asm-operand><varname>r8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8</varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="SETZ_MEMb" xed_iform="SETZ_MEMb" encoding="0F 94 /r" opcode="94" valid32="V" valid64="V">
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>False</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETZ">
+    <asm-operand><varname>m8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="SETNZ_GPR8" xed_iform="SETNZ_GPR8" encoding="0F 95 /r" opcode="95" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR8</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present), result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETNZ">
+    <asm-operand><varname>r8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8</varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="SETNZ_MEMb" xed_iform="SETNZ_MEMb" encoding="0F 95 /r" opcode="95" valid32="V" valid64="V">
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>False</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETNZ">
+    <asm-operand><varname>m8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="SETBE_GPR8" xed_iform="SETBE_GPR8" encoding="0F 96 /r" opcode="96" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR8</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present), result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETBE">
+    <asm-operand><varname>r8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8</varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="SETBE_MEMb" xed_iform="SETBE_MEMb" encoding="0F 96 /r" opcode="96" valid32="V" valid64="V">
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>False</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETBE">
+    <asm-operand><varname>m8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="SETNBE_GPR8" xed_iform="SETNBE_GPR8" encoding="0F 97 /r" opcode="97" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR8</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present), result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETNBE">
+    <asm-operand><varname>r8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8</varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="SETNBE_MEMb" xed_iform="SETNBE_MEMb" encoding="0F 97 /r" opcode="97" valid32="V" valid64="V">
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>False</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETNBE">
+    <asm-operand><varname>m8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="SETS_GPR8" xed_iform="SETS_GPR8" encoding="0F 98 /r" opcode="98" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR8</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present), result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETS">
+    <asm-operand><varname>r8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8</varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="SETS_MEMb" xed_iform="SETS_MEMb" encoding="0F 98 /r" opcode="98" valid32="V" valid64="V">
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>False</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETS">
+    <asm-operand><varname>m8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="SETNS_GPR8" xed_iform="SETNS_GPR8" encoding="0F 99 /r" opcode="99" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR8</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present), result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETNS">
+    <asm-operand><varname>r8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8</varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="SETNS_MEMb" xed_iform="SETNS_MEMb" encoding="0F 99 /r" opcode="99" valid32="V" valid64="V">
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>False</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETNS">
+    <asm-operand><varname>m8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="SETP_GPR8" xed_iform="SETP_GPR8" encoding="0F 9A /r" opcode="9a" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR8</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present), result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETP">
+    <asm-operand><varname>r8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8</varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="SETP_MEMb" xed_iform="SETP_MEMb" encoding="0F 9A /r" opcode="9a" valid32="V" valid64="V">
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>False</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETP">
+    <asm-operand><varname>m8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="SETNP_GPR8" xed_iform="SETNP_GPR8" encoding="0F 9B /r" opcode="9b" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR8</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present), result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETNP">
+    <asm-operand><varname>r8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8</varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="SETNP_MEMb" xed_iform="SETNP_MEMb" encoding="0F 9B /r" opcode="9b" valid32="V" valid64="V">
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>False</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETNP">
+    <asm-operand><varname>m8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="SETL_GPR8" xed_iform="SETL_GPR8" encoding="0F 9C /r" opcode="9c" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR8</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present), result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETL">
+    <asm-operand><varname>r8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8</varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="SETL_MEMb" xed_iform="SETL_MEMb" encoding="0F 9C /r" opcode="9c" valid32="V" valid64="V">
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>False</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETL">
+    <asm-operand><varname>m8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="SETNL_GPR8" xed_iform="SETNL_GPR8" encoding="0F 9D /r" opcode="9d" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR8</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present), result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETNL">
+    <asm-operand><varname>r8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8</varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="SETNL_MEMb" xed_iform="SETNL_MEMb" encoding="0F 9D /r" opcode="9d" valid32="V" valid64="V">
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>False</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETNL">
+    <asm-operand><varname>m8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="SETLE_GPR8" xed_iform="SETLE_GPR8" encoding="0F 9E /r" opcode="9e" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR8</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present), result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETLE">
+    <asm-operand><varname>r8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8</varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="SETLE_MEMb" xed_iform="SETLE_MEMb" encoding="0F 9E /r" opcode="9e" valid32="V" valid64="V">
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>False</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETLE">
+    <asm-operand><varname>m8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="SETNLE_GPR8" xed_iform="SETNLE_GPR8" encoding="0F 9F /r" opcode="9f" valid32="V" valid64="V">
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_GPR8</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr/><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR8(context.rex_b4 ++ context.rex_b3 ++ rm, (context.rex_prefix_present or context.rex2_prefix_present or context.vex_prefix_present or context.evex_prefix_present), result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETNLE">
+    <asm-operand><varname>r8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r8</varname><footnoteref linkend="r"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="SETNLE_MEMb" xed_iform="SETNLE_MEMb" encoding="0F 9F /r" opcode="9f" valid32="V" valid64="V">
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Write</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_SETcc</callee>
+   <var-used>False</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>Memory_Type_Unknown</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let operand_size := 8;</code>
+     <code>let cond := opcode[3:0];</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_SETcc(cond);</code>
+     </execute>
+    <post_execute>
+     <code>Logical_Mem_Write?(segment, effective_address, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="SETNLE">
+    <asm-operand><varname>m8</varname></asm-operand>
+    </assembly-syntax>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cond</name>
+    <label><literal>opcode[3:0]</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <category>flags</category>
+ <output name="result"/>
+ <footnote id="r"><para>With a REX prefix in 64-bit mode, attempts to access AH, BH, CH, or DH will instead access SPL, DIL, BPL, or SIL, respectively.</para>
+  </footnote>
+ </instruction>

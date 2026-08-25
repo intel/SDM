@@ -1,0 +1,247 @@
+<instruction name="VSCALEFPH">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Scale Packed FP16 Values with FP16 Values</shortdesc>
+ <longdesc><para unique="1046155">
+   <string>This instruction performs a floating-point scale of the packed FP16 values in the first source operand by multiplying it by 2 to the power of the FP16 values in second source operand. The destination elements are updated according to the writemask.</string></para>
+  <para unique="1046156">
+   <string>The equation of this operation is given by:</string></para>
+  <para unique="1046157">
+   <string>	zmm1 := zmm2 * 2</string><superscript><string>floor(zmm3)</string></superscript><string>.</string></para>
+  <para unique="1046158">
+   <string>Floor(zmm3) means maximum integer value &#8804; zmm3.</string></para>
+  <para unique="1046159">
+   <string>If the result cannot be represented in FP16, then the proper overflow response (for positive scaling operand), or the proper underflow response (for negative scaling operand), is issued. The overflow and underflow responses are dependent on the rounding mode (for IEEE-compliant rounding), as well as on other settings in MXCSR (exception mask bits), and on the SAE bit.</string></para>
+  <para unique="1046162">
+   <string>Handling of special-case input values are listed in </string><link linkend="51332: 06_Table: Table 5-31. VSCALEFPH/VSCALEFSH Special Cases"><string>Table 5&#8209;39</string></link><string> and </string><link linkend="25332: 06_Table: Table 5-32. Additional VSCALEFPH/VSCALEFSH Special Cases"><string>Table 5&#8209;40</string></link><string>.</string></para>
+  <para unique="1046265" format="06_Table">
+   <anchor id="51332: 06_Table: Table 5-31. VSCALEFPH/VSCALEFSH Special Cases"/><string>VSCALEFPH/VSCALEFSH Special Cases</string></para>
+  <table>
+   <caption></caption>
+   <colgroup><col align="leftright"/>
+    <col align="left"/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    <col/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1046182" format="CellRowHeadL">
+       <string>Src1</string></para>
+      </th>
+     <th colspan="4"><para unique="1046184" format="CellColHeadC">
+       <string>Src2</string></para>
+      </th>
+     <th><para unique="1046192" format="CellRowHeadL">
+       <string>Set IE</string></para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1046194" format="CellRowHeadL">
+       </para>
+      </th>
+     <th><para unique="1046196" format="CellRowHeadL">
+       <string>&#177;NaN</string></para>
+      </th>
+     <th><para unique="1046198" format="CellRowHeadL">
+       <string>+INF</string></para>
+      </th>
+     <th><para unique="1046200" format="CellRowHeadL">
+       <string>&#8722;INF</string></para>
+      </th>
+     <th><para unique="1046202" format="CellRowHeadL">
+       <string>0/Denorm/Norm</string></para>
+      </th>
+     <th><para unique="1046204" format="CellRowHeadL">
+       </para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1046206" format="CellBodyL">
+       <string>&#177;QNaN</string></para>
+      </td>
+     <td><para unique="1046208" format="CellBodyL">
+       <string>QNaN(Src1)</string></para>
+      </td>
+     <td><para unique="1046210" format="CellBodyL">
+       <string>+INF</string></para>
+      </td>
+     <td><para unique="1046212" format="CellBodyL">
+       <string>+0</string></para>
+      </td>
+     <td><para unique="1046214" format="CellBodyL">
+       <string>QNaN(Src1)</string></para>
+      </td>
+     <td><para unique="1046216" format="CellBodyL">
+       <string>IF either source is SNaN</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046218" format="CellBodyL">
+       <string>&#177;SNaN</string></para>
+      </td>
+     <td><para unique="1046220" format="CellBodyL">
+       <string>QNaN(Src1)</string></para>
+      </td>
+     <td><para unique="1046222" format="CellBodyL">
+       <string>QNaN(Src1)</string></para>
+      </td>
+     <td><para unique="1046224" format="CellBodyL">
+       <string>QNaN(Src1)</string></para>
+      </td>
+     <td><para unique="1046226" format="CellBodyL">
+       <string>QNaN(Src1)</string></para>
+      </td>
+     <td><para unique="1046228" format="CellBodyL">
+       <string>YES</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046230" format="CellBodyL">
+       <string>&#177;INF</string></para>
+      </td>
+     <td><para unique="1046232" format="CellBodyL">
+       <string>QNaN(Src2)</string></para>
+      </td>
+     <td><para unique="1046234" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     <td><para unique="1046236" format="CellBodyL">
+       <string>QNaN_Indefinite</string></para>
+      </td>
+     <td><para unique="1046238" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     <td><para unique="1046240" format="CellBodyL">
+       <string>IF Src2 is SNaN or &#8722;INF</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046242" format="CellBodyL">
+       <string>&#177;0</string></para>
+      </td>
+     <td><para unique="1046244" format="CellBodyL">
+       <string>QNaN(Src2)</string></para>
+      </td>
+     <td><para unique="1046246" format="CellBodyL">
+       <string>QNaN_Indefinite</string></para>
+      </td>
+     <td><para unique="1046248" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     <td><para unique="1046250" format="CellBodyL">
+       <string>Src1</string></para>
+      </td>
+     <td><para unique="1046252" format="CellBodyL">
+       <string>IF Src2 is SNaN or +INF</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046254" format="CellBodyL">
+       <string>Denorm/Norm</string></para>
+      </td>
+     <td><para unique="1046256" format="CellBodyL">
+       <string>QNaN(Src2)</string></para>
+      </td>
+     <td><para unique="1046258" format="CellBodyL">
+       <string>&#177;INF (Src1 sign)</string></para>
+      </td>
+     <td><para unique="1046260" format="CellBodyL">
+       <string>&#177;0 (Src1 sign)</string></para>
+      </td>
+     <td><para unique="1046262" format="CellBodyL">
+       <string>Compute Result</string></para>
+      </td>
+     <td><para unique="1046264" format="CellBodyL">
+       <string>IF Src2 is SNaN</string></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  <table>
+   <caption>Table 5-40.  Additional VSCALEFPH/VSCALEFSH Special Cases</caption>
+   <colgroup><col width="133.85952pt" align="leftright"/>
+    <col width="267.2928pt"/>
+    <col width="110.4984pt"/>
+    <col width="80.40312pt"/>
+    </colgroup>
+   <tbody>
+    <tr>
+     <th><para unique="1046275" format="CellRowHeadL">
+       <string>Special Case</string></para>
+      </th>
+     <th><para unique="1046277" format="CellRowHeadL">
+       <string> Returned Value </string></para>
+      </th>
+     <th><para unique="1046279" format="CellRowHeadL">
+       <string>Faults</string></para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1046281" format="CellBodyL">
+       <string>|result| &lt; 2</string><superscript><string>-24</string></superscript></para>
+      </td>
+     <td><para unique="1046283" format="CellBodyL">
+       <string>&#177;0 or &#177;Min</string><string>-Denormal (Src1 sign)</string></para>
+      </td>
+     <td><para unique="1046285" format="CellBodyL">
+       <string>Underflow</string></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046287" format="CellBodyL">
+       <string>|result| &#8805; 2</string><superscript><string>16</string></superscript></para>
+      </td>
+     <td><para unique="1046289" format="CellBodyL">
+       <string>&#177;INF (Src1 sign) or &#177;Max</string><string>-Denormal (Src1 sign)</string></para>
+      </td>
+     <td><para unique="1046291" format="CellBodyL">
+       <string>Overflow</string></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </longdesc>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <para unique="1046321">
+   <string>VSCALEFPH __m128h _mm_mask_scalef_ph (__m128h src, __mmask8 k, __m128h a, __m128h b);</string></para>
+  <para unique="1046322">
+   <string>VSCALEFPH __m128h _mm_maskz_scalef_ph (__mmask8 k, __m128h a, __m128h b);</string></para>
+  <para unique="1046323">
+   <string>VSCALEFPH __m128h _mm_scalef_ph (__m128h a, __m128h b);</string></para>
+  <para unique="1046324">
+   <string>VSCALEFPH __m256h _mm256_mask_scalef_ph (__m256h src, __mmask16 k, __m256h a, __m256h b);</string></para>
+  <para unique="1046325">
+   <string>VSCALEFPH __m256h _mm256_maskz_scalef_ph (__mmask16 k, __m256h a, __m256h b);</string></para>
+  <para unique="1046326">
+   <string>VSCALEFPH __m256h _mm256_scalef_ph (__m256h a, __m256h b);</string></para>
+  <para unique="1046327">
+   <string>VSCALEFPH __m512h _mm512_mask_scalef_ph (__m512h src, __mmask32 k, __m512h a, __m512h b);</string></para>
+  <para unique="1046328">
+   <string>VSCALEFPH __m512h _mm512_maskz_scalef_ph (__mmask32 k, __m512h a, __m512h b);</string></para>
+  <para unique="1046329">
+   <string>VSCALEFPH __m512h _mm512_scalef_ph (__m512h a, __m512h b);</string></para>
+  <para unique="1046330">
+   <string>VSCALEFPH __m512h _mm512_mask_scalef_round_ph (__m512h src, __mmask32 k, __m512h a, __m512h b, const int rounding);</string></para>
+  <para unique="1046331">
+   <string>VSCALEFPH __m512h _mm512_maskz_scalef_round_ph (__mmask32 k, __m512h a, __m512h b, const int;</string></para>
+  <para unique="1046332">
+   <string>VSCALEFPH __m512h _mm512_scalef_round_ph (__m512h a, __m512h b, const int rounding);</string></para>
+  </subsection>
+ <subsection title="SIMD Floating-Point Exceptions">
+  <para unique="1046838">
+   <string>Overflow, Underflow, Invalid, Precision, Denormal (for Src1).</string></para>
+  <para unique="1046839">
+   <string>Denormal is not reported for Src2.</string></para>
+  </subsection>
+ <subsection title="Other Exceptions">
+  <para unique="1046339">
+   <string>EVEX-encoded instruction, see </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions&#8221;</string></link><string>. </string></para>
+  </subsection>
+ </instruction>
