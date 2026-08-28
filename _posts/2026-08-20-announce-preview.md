@@ -18,7 +18,7 @@ description of the Intel&reg; Architecture.
 While much of the website is derived from the latest SDM, there are
 some important changes
 
-- It is [a webpage](/sdm.html) to promote easier searching and exploration.
+- It is [a webpage]({{ site.sdm_html }}) to promote easier searching and exploration.
 
   In the future, Intel will use both the website and the existing PDF format
   to describe the architecture.
