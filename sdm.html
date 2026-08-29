@@ -279,6 +279,19 @@ formaltable > title, figure > title {
     }
 }
 
+.dmenu {
+    cursor: default;
+    summary {
+        display: block;
+    }
+    details {
+        background-color: var(--color-menu-background);
+    }
+    ul {
+        background-color: var(--color-menu-background);
+    }
+}
+
 .submenu {
     list-style-type: none;
     font-family: inherit;
@@ -446,7 +459,9 @@ a {
           <img src='assets/images/intel-header-logo.png' alt='Intel logo' style='float:left; vertical-align:top; height: 2em;'></img>
         </a>
     </li>
-    <li id='select_menu_parent'>Page
+    <li id='select_menu_parent'>
+      <details class="dmenu" id="select_menu_details">
+          <summary>Page</summary>
 
       <menu id='select_menu' class='submenu'>
 
@@ -496,9 +511,12 @@ a {
         </details>
 
       </menu>
+      </details>
 
     </li>
-    <li style='display: none;'>View
+    <li style='display: none;'>
+      <details class="dmenu" name="top_menu">
+        <summary>View</summary>
       <ul class='submenu' style='overflow-y: auto;'>
         <li id='menu_pdf_toggle' style='display: none;'>
             <input type="checkbox" id="enable_pdf" name="enable_pdf" onchange="toggle_pdf_view(event)">
@@ -516,8 +534,11 @@ a {
         </li>
         -->
       </ul>
+      </details>
     </li>
-    <li>About
+    <li>
+      <details class="dmenu" name="top_menu">
+        <summary>About</summary>
       <ul class='submenu'>
     <!--
         <li><a href='reading-specs.html'>Introduction to reading specifications</a></li>
@@ -531,14 +552,18 @@ a {
         <li><a href='https://github.com/Intel/SDM/issues'>Issues and Feedback</a></li>
         <li><a href='https://forms.office.com/Pages/ResponsePage.aspx?id=iI3JRkTj1E6Elk7XcS4lXWpU_Qd_c_9DpD2_0d9GI6tUNU9KT0FRNVpUNUtEQUwyMktQWk5XRE8wUS4u'>Usability survey</a></li>
       </ul>
+      </details>
     </li>
-    <li>Other resources
+    <li>
+      <details class="dmenu" name="top_menu">
+        <summary>Other resources</summary>
       <ul class='submenu'>
         <li><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html">Intel&reg; 64 and IA-32 Architectures Software Development Manual</a> </li>
         <li><a href="https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html">Intel&reg; Intrinsics Guide</a></li>
         <li><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html#inpage-nav-5">Intel&reg; 64 and IA-32 Architectures Optimization Reference Manual</a></li>
         <li><a href="https://cdrdv2.intel.com/v1/dl/getContent/723498">Intel&reg; Processors and Processor Cores based on Golden Cove Microarchitecture Instruction Throughput and Latency (.zip)</a></li>
       </ul>
+      </details>
     </li>
   </menu>
 
@@ -563,7 +588,6 @@ a {
 
       <p>
       Please report user interface bugs using <a href='https://github.com/Intel/SDM/issues'>GitHub issues</a>.
-      We are aware that the menus require a long press on iPhone/iPad (and maybe Android) and we are working to fix that.
       </p>
 
       <p>
@@ -2614,10 +2638,11 @@ addEventListener("popstate", (event) => { check_for_query(); })
 // Adapt whether menu/sidebar is active based on screen width
 function adapt_width(narrow) {
     const top = document.getElementById("select_menu_parent");
+    const top_details = document.getElementById("select_menu_details");
     const side = document.getElementById("side_menu_parent");
     const menu = document.getElementById("select_menu");
     if (narrow.matches) {
-        top.append(menu);
+        top_details.append(menu);
         top.style.display = "block";
         side.style.display = "none";
         menu.style.display = "";
