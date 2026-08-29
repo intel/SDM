@@ -207,7 +207,7 @@ function patch_long_urls(xml) {
             let pieces = url.split('/');
             if (pieces.length > 1) {
                 x.textContent = pieces[0];
-                for (const i = 1; i < pieces.length; i++) {
+                for (let i = 1; i < pieces.length; i++) {
                     x.appendChild(document.createElement('wbr'));
                     x.appendChild(document.createTextNode('/' + pieces[i]));
                 }
