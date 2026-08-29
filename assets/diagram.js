@@ -454,7 +454,7 @@ function fieldname_overflows(config, field, hscale, vscale) {
 // choose display style for register
 // (based on size of text, etc.)
 function choose_style(config, reg_spec, hscale=1, vscale=1) {
-    if (reg_spec.fields.some(f => fieldname_overflows(config, f, hscale, vscale)) < 0) {
+    if (reg_spec.fields.some(f => fieldname_overflows(config, f, hscale, vscale))) {
         return "outline";
     }
     return "inline"; // default if nothing bad
