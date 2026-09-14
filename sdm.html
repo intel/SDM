@@ -2092,8 +2092,7 @@ async function read_xml_file(url) {
     if (!url) {
         return;
     }
-    const headers = { 'Cache-Control': 'no-cache' };
-    const response = await fetch(url, { 'headers': headers });
+    const response = await fetch(url);
     const str = await response.text();
     const doc = await new DOMParser().parseFromString(str, "text/xml").documentElement;
     return doc;
@@ -2577,8 +2576,11 @@ async function show_aux(screen, what, name) {
     // todo: there seems to be a race condition: removing this log command can
     // sometimes cause failures
     console.log('loading', textfile, datafile);
-    const text_xml = textfile && await read_xml_file(textfile);
-    const data_xml = datafile && await read_xml_file(datafile);
+    // Fetch the text and data files in parallel.
+    const [text_xml, data_xml] = await Promise.all([
+        textfile && read_xml_file(textfile),
+        datafile && read_xml_file(datafile),
+    ]);
     let html = null;
     if (text_xml && data_xml) {
         html = render_instruction(text_xml, data_xml);
