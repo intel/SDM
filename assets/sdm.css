@@ -1,0 +1,420 @@
+/* Copyright (C) 2025-2026 Intel Corporation */
+
+:root {
+      color-scheme: light dark;
+      --color-intel-blue: rgb(8, 114, 197);
+
+      /* Most colors that we use are a blend of Canvas and CanvasText to allow
+       * the colors to work in dark mode. */
+      --color-headings: color-mix(in srgb, CanvasText, var(--color-intel-blue) 80%);
+      --color-footnote-background: color-mix(in srgb, Canvas, CanvasText 10%);
+      --color-code-background: color-mix(in srgb, Canvas, CanvasText 1%);
+      --color-menu-text: color-mix(in srgb, CanvasText, var(--color-intel-blue) 60%);
+      --color-menu-background: color-mix(in srgb, Canvas, CanvasText 1%);
+      --color-menu-background-active: color-mix(in srgb, Canvas, CanvasText 4%);
+      --color-code: color-mix(in srgb, Canvas, CanvasText 1%);
+      --color-iform-name: color-mix(in srgb, Canvas, CanvasText 70%);
+      --color-line-number: color-mix(in srgb, Canvas, CanvasText 30%);
+      --color-not-sample: color-mix(in srgb, Canvas, CanvasText 30%);
+      --color-keyword: color-mix(in srgb, Canvas, CanvasText 80%);
+      --color-tooltip: color-mix(in srgb, Canvas, CanvasText 60%);
+      --color-tooltip-text: color-mix(in srgb, Canvas, CanvasText 5%);
+}
+
+body {
+    font-family: "Intel Clear", "Intel Clear IE", "Helvetica Neue", Tahoma, sans-serif;
+    font-size: 100%;
+    background-attachment: fixed;
+    height: 100%;
+}
+
+/* In dark mode, invert colors */
+@media (prefers-color-scheme: dark) {
+    svg {
+        filter: invert();
+    }
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Intel Clear", "Intel Clear IE", "Helvetica Neue", Tahoma, sans-serif;
+}
+
+.subleaf > summary {
+    color: var(--color-intel-blue);
+    font-family: "Intel Clear", "Intel Clear IE", "Helvetica Neue", Tahoma, sans-serif;
+    font-size: 1.2em;
+}
+
+summary > h1, h2, h3, h4, h5, h6 {
+    display: inline-block;
+}
+
+summary::marker {
+    color: var(--color-intel-blue);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--color-headings);
+}
+
+table {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    border-top: medium solid dimgray;
+    border-collapse: collapse;
+    thead {
+        border-bottom: thin solid gray;
+    }
+    tbody {
+        border-bottom: medium solid dimgray;
+    }
+    th, td {
+        border: none;
+        vertical-align: top;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+    tfoot {
+        border: 0px;
+        tr, th, td {
+            border: 0px;
+            text-align: left;
+            font-weight: normal;
+        }
+        .table-notes {
+            font-weight: bold;
+            color: var(--color-intel-blue);
+        }
+        .footnotes {
+          display: grid;
+          grid-template-columns: max-content auto;
+          column-gap: 0.2em;
+        }
+        .footmark {
+          grid-column-start: 1;
+        }
+        .footnote {
+          grid-column-start: 2;
+          para { margin-top: 0em; }
+          para { margin-bottom: 0em; }
+        }
+    }
+}
+
+}
+
+.encoding-table {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    border-collapse: collapse;
+    th, td {
+        border: thin solid lightgray;
+    }
+    & tfoot td {
+        border-width: 0pt;
+    }
+}
+.encoding-table tbody { border: thin solid lightgray; }
+
+.definition-table {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    th { padding-right: 1em; }
+    th, td {
+        border-style: none;
+        text-align: left;
+        vertical-align: top;
+    }
+}
+
+.iform {
+    border-left: 10px solid;
+    border-right: 10px solid;
+    border-top: 1px solid;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin: 2px 0px 1px 0px;
+    border-color: var(--color-menu-background-active);
+    summary {
+        color: var(--color-iform-name);
+        .iform-asm { }
+        .iform-name { float: right; }
+    }
+}
+
+caption {
+    caption-side: top;
+    color: var(--color-intel-blue);
+    font-weight: bold;
+}
+
+
+.note {
+    font-size: 80%;
+    color: var(--color-notes);
+}
+
+formaltable {
+    display: table;
+}
+
+formaltable > title, figure > title {
+    display: block;
+    color: var(--color-intel-blue);
+}
+
+.encoding-table {
+    border-collapse: collapse;
+    border: 0px;
+    th, td {
+        border: thin solid lightgray;
+        padding: 3px;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+        vertical-align: top;
+    }
+    td {
+        font-weight: normal;
+    }
+    tfoot {
+        border: 0px;
+        tr, th, td {
+            border: 0px;
+            text-align: left;
+            font-weight: normal;
+        }
+        .table-notes {
+            font-weight: bold;
+            color: var(--color-intel-blue);
+        }
+        .footnotes {
+          display: grid;
+          grid-template-columns: max-content auto;
+          column-gap: 0.2em;
+        }
+        .footmark {
+          grid-column-start: 1;
+        }
+        .footnote {
+          grid-column-start: 2;
+          para { margin-top: 0em; }
+          para { margin-bottom: 0em; }
+        }
+    }
+}
+
+/*****************************************************************
+ * Main page layout
+ *****************************************************************/
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0px;
+    width: 97%; /* Not 100% so that any scrollbar is visible */
+    background-color: var(--color-menu-background);
+    max-height: 4vh;
+    overflow: auto;
+}
+
+/*****************************************************************
+ * Top menu
+ * A fairly conventional two-level top menu with
+ * a logo in the top left corner.
+ *****************************************************************/
+
+.menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: var(--color-menu-background);
+    color: var(--color-menu-text);
+    text-align: left;
+
+    li {
+      float: left;
+      padding: 6px 14px;
+    }
+
+    a {
+      display: block;
+      padding: 0;
+      text-decoration: none;
+    }
+
+    li:hover, li:focus {
+        background-color: var(--color-menu-background);
+        .submenu {
+            display: block;
+        }
+    }
+}
+
+.dmenu {
+    cursor: default;
+    summary {
+        display: block;
+    }
+    details {
+        background-color: var(--color-menu-background);
+    }
+    ul {
+        background-color: var(--color-menu-background);
+    }
+}
+
+.submenu {
+    list-style-type: none;
+    font-family: inherit;
+    background-color: inherit;
+    padding: 0;
+    width: 14rem;
+    position: absolute;
+    display: none;
+    z-index: 1;
+    max-height: 90vh;
+}
+
+/*****************************************************************
+ * Side menu
+ * Contains sub-menus that are expected to be very long
+ * and that operate as an accordion
+ *****************************************************************/
+
+.side-nav {
+    height: 100vh;
+    max-width: 14rem;
+    padding: 0px;
+    margin: 0px;
+    background-color: var(--color-menu-background);
+    color: var(--color-menu-text);
+    z-index: 0;
+}
+
+.nav-list-title {
+    font-weight: 900;
+}
+.nav-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-color: var(--color-menu-background);
+    color: var(--color-menu-text);
+
+    li {
+      padding: 0 0.5rem 0 0.25rem;
+      position: relative;
+      background-color: var(--color-menu-background);
+
+      button {
+        text-decoration: none;
+        border: none;
+        display: block;
+        padding: 0.1rem;
+        font-family: "Intel Clear", "Intel Clear IE", "Helvetica Neue", Tahoma, sans-serif;
+        font-size: 110%;
+        /* white-space: nowrap; */
+        text-align: left;
+        background-color: transparent;
+        color: var(--color-menu-text);
+      }
+    }
+    li:hover, li:focus {
+      background-color: var(--color-menu-background-active);
+    }
+
+    display: flex;
+    flex-direction: column;
+}
+
+.sub-nav > summary {
+    display: block; /* suppress addition of the usual summary::marker */
+}
+
+.sub-nav {
+    flex: 1;
+    flex-direction: column;
+    display: flex;
+    min-height: 1.5em;
+    max-height: 80vh;
+}
+
+.sub-nav:open {
+    overflow-x: auto;
+}
+
+
+/*****************************************************************
+ * Content display area: up to 3 panels.
+ * The third panel is intended as a PDF viewer so it does not scroll
+ *****************************************************************/
+
+#main-displays {
+    display: flex;
+    flex-direction: row;
+}
+
+#main-displays > * {
+    flex: 1;
+    padding: 0px;
+}
+
+.main-display1, .main-display2 {
+    margin-left: 4px;
+    overflow-x: scroll;
+    height: 95vh;
+}
+
+.main-display3 {
+}
+
+/*****************************************************************
+ * End of page layout
+ *****************************************************************/
+
+verbatim {
+    padding-left: 10px;
+    white-space: pre;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    background-color: var(--color-tooltip);
+    color: var(--color-tooltip-text);
+    text-align: left;
+    white-space: pre-wrap;
+    border-radius: 6px;
+
+    top: 100%;
+    left: 50%;
+    padding: 2px 10px 2px 10px;
+    width: 30em;
+
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+a {
+    color: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: lightblue;
+}
+
+.callgraph {
+    font-size: 80%;
+}
