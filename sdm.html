@@ -457,6 +457,14 @@ a {
 
       <menu id='select_menu' class='submenu'>
 
+        <input id='sdm_search'
+               type='search'
+               name="q"
+               placeholder='Search'
+               spellcheck='false'
+               incremental='true'>
+        </input>
+
         <details class="sub-nav" name="page_menu" open>
           <summary class="nav-list-title">Instructions</summary>
           <menu class="nav-list" id='instruction_menu'> </menu>
@@ -2651,6 +2659,53 @@ function adapt_width(narrow) {
 var narrow_screen = window.matchMedia("(max-width: 70rem)");
 adapt_width(narrow_screen);
 narrow_screen.addEventListener("change", function() { adapt_width(narrow_screen); });
+</script>
+
+<script type="text/javascript">
+
+function filter_menus(search) {
+    const index_menu = document.getElementById("select_menu");
+    if (search == "") { // reset search, close all but one sub-menu
+        let first = true;
+        for(const submenu of index_menu.children) {
+            if (submenu.tagName == 'DETAILS') {
+                submenu.open = first;
+                submenu.setAttribute('name', 'page_menu');
+                first = false;
+                for(const menu of submenu.children) {
+                    for(const entry of menu.children) {
+                        entry.style.display = "block";
+                    }
+                }
+            }
+        }
+    } else { // filter all menus by search, open all menus
+        search = search.toUpperCase();
+        console.log("Searching for", search);
+        for(const submenu of index_menu.children) {
+            if (submenu.tagName == 'DETAILS') {
+                submenu.removeAttribute('name');
+                submenu.open = true;
+                for(const menu of submenu.children) {
+                    for(const entry of menu.children) {
+                        const text = entry.children[0].innerHTML.toUpperCase();
+                        const match = text.includes(search);
+                        entry.style.display = match ? "block" : "none";
+                    }
+                }
+            }
+        }
+    }
+}
+
+async function init_search() {
+    const search_box = document.getElementById("sdm_search");
+    search_box.addEventListener("input", (event) => {
+        filter_menus(search_box.value);
+    })
+}
+
+(init_search)();
 </script>
 
 </body>
