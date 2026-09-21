@@ -27,6 +27,379 @@ If you give Intel any comments or suggestions related to this document or the in
 </notices_and_disclaimers>
  <code_status>The code in this file is not 'Sample Code'.</code_status>
  <iform-group>
+  <iform name="VCVTSI2SH_XMMf16_XMMf16_GPR32i32_0" xed_iform="VCVTSI2SH_XMMf16_XMMf16_GPR32i32" encoding="VEX.LIG.F3.MAP5.W0 2A /r" opcode="2a" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_GPR</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_CVTSI2Sf</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 32;</code>
+     <code>let element_size := 32;</code>
+     <code>let result_element_size := 16;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, 32);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b10)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, src_size, result_element_size, src1, src2, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VCVTSI2SH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>r32</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX_FP16"><cpuid-flag>AVX_FP16</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="32"/>
+   <encoding-size name="result_element_size" size="16"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   </iform>
+  <iform name="VCVTSI2SH_XMMf16_XMMf16_MEMi32_0" xed_iform="VCVTSI2SH_XMMf16_XMMf16_MEMi32" encoding="VEX.LIG.F3.MAP5.W0 2A /r" opcode="2a" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_CVTSI2Sf</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 32;</code>
+     <code>let element_size := 32;</code>
+     <code>let result_element_size := 16;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b10)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_1</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, src_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, src_size, result_element_size, src1, src2, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VCVTSI2SH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m32</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX_FP16"><cpuid-flag>AVX_FP16</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="32"/>
+   <encoding-size name="result_element_size" size="16"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m32</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="CVTSI2Sf" variant_kind="Standard variant" mnemonic="VCVTSI2SH">
+  <code>let exception_masks := MXCSR.Exception_Masks;</code>
+  <code>let suppress_all_exceptions := (context.evex_b == 0b1) and (mod == 0b11);</code>
+  <code>let rc := if (context.evex_b == 0b1) and (mod == 0b11) then context.evex_LLRC else MXCSR.RC;</code>
+  <code>let rounding_mode := FP::Decode_Rounding_Mode(rc);</code>
+  <code>var result := Zero(register_size);</code>
+  <code>let op2 := src2[0 +: element_size];</code>
+  <code>let (r, exceptions) := FP::From_Int(op2, True, result_element_size, rounding_mode);</code>
+  <code>let reported_exceptions := if suppress_all_exceptions then Zero(6) else exceptions;</code>
+  <code>FP::Check_Exceptions?(reported_exceptions, exception_masks);</code>
+  <code>result[0 +: result_element_size] := r;</code>
+  <code>result[register_size-1 : result_element_size] := src1[register_size-1 : result_element_size];</code>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Integer::Add</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>FP::Check_Exceptions</callee>
+  <callee>FP::Decode_Rounding_Mode</callee>
+  <callee>FP::From_Int</callee>
+  <var-used>True</var-used>
+  <var-used>MXCSR</var-used>
+  <other-copy>CVTSI2SD</other-copy>
+  <other-copy>CVTSI2SS</other-copy>
+  </operation>
+ <iform-group>
+  <iform name="VCVTSI2SH_XMMf16_XMMf16_GPR32i32_1" xed_iform="VCVTSI2SH_XMMf16_XMMf16_GPR32i32" encoding="VEX.LIG.F3.MAP5.WIG 2A /r" opcode="2a" valid32="V" valid64="N.E.">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Read_GPR</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_CVTSI2Sf</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 32;</code>
+     <code>let element_size := 32;</code>
+     <code>let result_element_size := 16;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, 32);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b10)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Mode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, src_size, result_element_size, src1, src2, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VCVTSI2SH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>r32</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX_FP16"><cpuid-flag>AVX_FP16</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="32"/>
+   <encoding-size name="result_element_size" size="16"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   </iform>
+  <iform name="VCVTSI2SH_XMMf16_XMMf16_MEMi32_1" xed_iform="VCVTSI2SH_XMMf16_XMMf16_MEMi32" encoding="VEX.LIG.F3.MAP5.WIG 2A /r" opcode="2a" valid32="V" valid64="N.E.">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_CVTSI2Sf</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 32;</code>
+     <code>let element_size := 32;</code>
+     <code>let result_element_size := 16;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b10)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Mode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, src_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, src_size, result_element_size, src1, src2, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VCVTSI2SH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m32</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX_FP16"><cpuid-flag>AVX_FP16</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="32"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="32"/>
+   <encoding-size name="result_element_size" size="16"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m32</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
   <iform name="VCVTSI2SH_XMMf16_XMMf16_GPR32i32_AVX512_0" xed_iform="VCVTSI2SH_XMMf16_XMMf16_GPR32i32_AVX512" encoding="EVEX.128.F3.MAP5.W0 2A /r" opcode="2a" valid32="N.E." valid64="V">
    <callee>Std::Boolean::Not</callee>
    <callee>Std::Boolean::Strict_And</callee>
@@ -77,7 +450,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, result_element_size, src_size, src1, src2, context, mod);</code>
+     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, src_size, result_element_size, src1, src2, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -92,8 +465,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_element_size" size="16"/>
    <encoding-size name="src_size" size="32"/>
+   <encoding-size name="result_element_size" size="16"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -170,7 +543,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, result_element_size, src_size, src1, src2, context, mod);</code>
+     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, src_size, result_element_size, src1, src2, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -185,8 +558,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_element_size" size="16"/>
    <encoding-size name="src_size" size="32"/>
+   <encoding-size name="result_element_size" size="16"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -204,33 +577,6 @@ If you give Intel any comments or suggestions related to this document or the in
     </operand>
    </iform>
   </iform-group>
- <operation name="CVTSI2Sf" variant_kind="Standard variant" mnemonic="VCVTSI2SH">
-  <code>let exception_masks := MXCSR.Exception_Masks;</code>
-  <code>let suppress_all_exceptions := (context.evex_b == 0b1) and (mod == 0b11);</code>
-  <code>let rc := if (context.evex_b == 0b1) and (mod == 0b11) then context.evex_LLRC else MXCSR.RC;</code>
-  <code>let rounding_mode := FP::Decode_Rounding_Mode(rc);</code>
-  <code>var result := Zero(register_size);</code>
-  <code>let op2 := src2[0 +: element_size];</code>
-  <code>let (r, exceptions) := FP::From_Int(op2, True, result_element_size, rounding_mode);</code>
-  <code>let reported_exceptions := if suppress_all_exceptions then Zero(6) else exceptions;</code>
-  <code>FP::Check_Exceptions?(reported_exceptions, exception_masks);</code>
-  <code>result[0 +: result_element_size] := r;</code>
-  <code>result[register_size-1 : result_element_size] := src1[register_size-1 : result_element_size];</code>
-  <callee>Std::Boolean::Strict_And</callee>
-  <callee>Std::Integer::Add</callee>
-  <callee>Std::Integer::Le</callee>
-  <callee>Std::Integer::Lt</callee>
-  <callee>Std::Integer::Subtract</callee>
-  <callee>Std::Bits::Eq</callee>
-  <callee>Std::Bits::Zero</callee>
-  <callee>FP::Check_Exceptions</callee>
-  <callee>FP::Decode_Rounding_Mode</callee>
-  <callee>FP::From_Int</callee>
-  <var-used>True</var-used>
-  <var-used>MXCSR</var-used>
-  <other-copy>CVTSI2SD</other-copy>
-  <other-copy>CVTSI2SS</other-copy>
-  </operation>
  <iform-group>
   <iform name="VCVTSI2SH_XMMf16_XMMf16_GPR32i32_AVX512_1" xed_iform="VCVTSI2SH_XMMf16_XMMf16_GPR32i32_AVX512" encoding="EVEX.128.F3.MAP5.W0 2A /r" opcode="2a" valid32="N.E." valid64="V">
    <callee>Std::Boolean::Not</callee>
@@ -282,7 +628,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, result_element_size, src_size, src1, src2, context, mod);</code>
+     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, src_size, result_element_size, src1, src2, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -298,8 +644,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_element_size" size="16"/>
    <encoding-size name="src_size" size="32"/>
+   <encoding-size name="result_element_size" size="16"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -369,7 +715,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, result_element_size, src_size, src1, src2, context, mod);</code>
+     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, src_size, result_element_size, src1, src2, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -384,8 +730,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_element_size" size="16"/>
    <encoding-size name="src_size" size="32"/>
+   <encoding-size name="result_element_size" size="16"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -463,7 +809,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, result_element_size, src_size, src1, src2, context, mod);</code>
+     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, src_size, result_element_size, src1, src2, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -478,8 +824,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_element_size" size="16"/>
    <encoding-size name="src_size" size="32"/>
+   <encoding-size name="result_element_size" size="16"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -549,7 +895,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, result_element_size, src_size, src1, src2, context, mod);</code>
+     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, src_size, result_element_size, src1, src2, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -565,8 +911,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_element_size" size="16"/>
    <encoding-size name="src_size" size="32"/>
+   <encoding-size name="result_element_size" size="16"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -581,6 +927,178 @@ If you give Intel any comments or suggestions related to this document or the in
     <name>src2</name>
     <encoding>ModRM:r/m</encoding>
     <label><varname>r32</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="VCVTSI2SH_XMMf16_XMMf16_GPR64i64" xed_iform="VCVTSI2SH_XMMf16_XMMf16_GPR64i64" encoding="VEX.LIG.F3.MAP5.W1 2A /r" opcode="2a" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_GPR</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_CVTSI2Sf</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 64;</code>
+     <code>let element_size := 64;</code>
+     <code>let result_element_size := 16;</code>
+     </decode_args>
+    <read_instr><code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let src2 := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, 64);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b10)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, src_size, result_element_size, src1, src2, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VCVTSI2SH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>r64</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX_FP16"><cpuid-flag>AVX_FP16</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="64"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="64"/>
+   <encoding-size name="result_element_size" size="16"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r64</varname></label>
+    </operand>
+   </iform>
+  <iform name="VCVTSI2SH_XMMf16_XMMf16_MEMi64" xed_iform="VCVTSI2SH_XMMf16_XMMf16_MEMi64" encoding="VEX.LIG.F3.MAP5.W1 2A /r" opcode="2a" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_CVTSI2Sf</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let src_size := 64;</code>
+     <code>let element_size := 64;</code>
+     <code>let result_element_size := 16;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 1;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b10)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VEX_W_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src2 := Logical_Mem_Read?(segment, effective_address, src_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, src_size, result_element_size, src1, src2, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VCVTSI2SH">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m64</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX_FP16"><cpuid-flag>AVX_FP16</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="64"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="src_size" size="64"/>
+   <encoding-size name="result_element_size" size="16"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src2</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m64</varname></label>
     </operand>
    </iform>
   </iform-group>
@@ -635,7 +1153,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, result_element_size, src_size, src1, src2, context, mod);</code>
+     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, src_size, result_element_size, src1, src2, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -650,8 +1168,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="64"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_element_size" size="16"/>
    <encoding-size name="src_size" size="64"/>
+   <encoding-size name="result_element_size" size="16"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -728,7 +1246,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, result_element_size, src_size, src1, src2, context, mod);</code>
+     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, src_size, result_element_size, src1, src2, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -743,8 +1261,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="64"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_element_size" size="16"/>
    <encoding-size name="src_size" size="64"/>
+   <encoding-size name="result_element_size" size="16"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -813,7 +1331,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, result_element_size, src_size, src1, src2, context, mod);</code>
+     <code>let result := Instr_CVTSI2Sf?(element_size, register_size, src_size, result_element_size, src1, src2, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -829,8 +1347,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="64"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_element_size" size="16"/>
    <encoding-size name="src_size" size="64"/>
+   <encoding-size name="result_element_size" size="16"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -853,8 +1371,8 @@ If you give Intel any comments or suggestions related to this document or the in
  <category>integer/conversion</category>
  <size name="element_size"/>
  <size name="register_size"/>
- <size name="result_element_size"/>
  <size name="src_size"/>
+ <size name="result_element_size"/>
  <input name="src1"/>
  <input name="src2"/>
  <output name="result"/>

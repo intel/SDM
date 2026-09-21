@@ -1,0 +1,60 @@
+<category>
+    <name>memory/tsx</name>
+    <shortdesc>Transactional Synchronization Extensions (TSX)</shortdesc>
+    <longdesc>
+        <para>
+            Intel® Transactional Synchronization Extensions (Intel® TSX) allow
+            the processor to determine dynamically whether threads need to
+            serialize through lock-protected critical sections, and to perform
+            serialization only when required.
+
+            This lets the hardware expose and exploit concurrency hidden in an
+            application due to dynamically unnecessary synchronization through a
+            technique known as lock elision.
+        </para>
+        <para>
+            With lock elision, the hardware executes the programmer-specified
+            critical sections (also referred to as transactional regions)
+            transactionally.
+
+            In such an execution, the lock variable is only read within the
+            transactional region; it is not written to (and therefore not
+            acquired) with the expectation that the lock variable remains
+            unchanged after the transactional region, thus exposing concurrency.
+        </para>
+        <para>
+            If the transactional execution completes successfully, then the
+            hardware ensures that all memory operations
+            performed within the transactional region will appear to have
+            occurred instantaneously when viewed from other
+            logical processors, a process referred to as an atomic commit.
+
+            Any updates performed within the transactional region are made
+            visible to other processors only on an atomic commit.
+        </para>
+        <para>
+            Since a successful transactional execution ensures an atomic commit,
+            the processor can execute the programmerspecified code section
+            optimistically without synchronization.
+
+            If synchronization was unnecessary for that specific execution,
+            execution can commit without any cross-thread serialization.
+        </para>
+        <para>
+            If the transactional execution is unsuccessful, the processor cannot
+            commit the updates atomically.
+
+            When this happens, the processor will roll back the execution, a
+            process referred to as a transactional abort.
+
+            On a transactional abort, the processor will discard all updates
+            performed in the region, restore architectural state to appear as if
+            the optimistic execution never occurred, and resume execution
+            non-transactionally.
+
+            Depending on the policy in place, lock elision may be retried or the
+            lock may be explicitly acquired to ensure forward progress.
+        </para>
+    </longdesc>
+</category>
+

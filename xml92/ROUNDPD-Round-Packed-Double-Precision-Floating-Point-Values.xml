@@ -189,7 +189,7 @@ If you give Intel any comments or suggestions related to this document or the in
   <code>for i := 0 to elements-1 do</code>
   <code>    let op1 := src1[i *: element_size];</code>
   <code>    let (temp, exceptions) := FP::To_Int(op1, True, element_size, denormals_are_zeros, rounding_mode, suppress_precise_exceptions=&gt;suppress_precise_exceptions);</code>
-  <code>    Unimplemented_Feature("FP round", True);</code>
+  <code>    Unimplemented_Feature("FP round");</code>
   <code>    let (r, _) := FP::From_Int(temp, True, element_size, rounding_mode);</code>
   <code>    all_exceptions := all_exceptions or FP::Prioritize_Operand_Exceptions(exceptions, exception_masks);</code>
   <code>    result[i *: element_size] := r;</code>
@@ -211,6 +211,7 @@ If you give Intel any comments or suggestions related to this document or the in
   <callee>FP::To_Int</callee>
   <callee>Unimplemented_Feature</callee>
   <var-used>True</var-used>
+  <var-used>False</var-used>
   <var-used>MXCSR</var-used>
   <other-copy>ROUNDPS</other-copy>
   </operation>
@@ -252,7 +253,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let imm8 := Mem_Fetch?(next_ip0, 8);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0 + 1);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     <code>if not ((not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>
@@ -327,7 +328,7 @@ If you give Intel any comments or suggestions related to this document or the in
     <read_instr><code>let src1 := Read_XMM(Calculate_RM(mod, rm, context), register_size);</code>
      <code>let imm8 := Mem_Fetch?(ip, 8);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     <code>if not ((not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>
@@ -409,7 +410,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let imm8 := Mem_Fetch?(next_ip0, 8);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0 + 1);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     <code>if not ((not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>
@@ -484,7 +485,7 @@ If you give Intel any comments or suggestions related to this document or the in
     <read_instr><code>let src1 := Read_YMM(Calculate_RM(mod, rm, context));</code>
      <code>let imm8 := Mem_Fetch?(ip, 8);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01) and (not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
+     <code>if not ((not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>

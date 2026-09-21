@@ -2975,6 +2975,743 @@ If you give Intel any comments or suggestions related to this document or the in
    </iform>
   </iform-group>
  <iform-group>
+  <iform name="VPSLLB_XMMu8_MASKmskw_MEMu8_IMM8_AVX512_MASK" xed_iform="VPSLLB_XMMu8_MASKmskw_MEMu8_IMM8_AVX512" encoding="EVEX.L0.66.0F.WIG 71 /7 ib" opcode="71" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Sign_Extend</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Masked_Vector_Mem_Read</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_PSLL_m</callee>
+   <var-used>True</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let shift_size := 8;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 16;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let old := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let shift_distance := Sign_Extend(Mem_Fetch?(next_ip0, 8), shift_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0 + 1);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Masked_Vector_Mem_Read?(register_size, element_size, context.evex_b == 0b1, k, segment, effective_address, fault_suppression=&gt;True);</code>
+     <code>Next_IP := next_ip0 + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_m(element_size, register_size, shift_size, old, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.evex_v4 ++ context.vvvv, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>m128<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_128_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="shift_size" size="8"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m128<subscript>2</subscript></varname><footnoteref linkend="b"/><footnoteref linkend="f"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding/>
+    <label><varname>imm8</varname><footnoteref linkend="s"/></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_XMMu8_MASKmskw_XMMu8_IMM8_AVX512_MASK" xed_iform="VPSLLB_XMMu8_MASKmskw_XMMu8_IMM8_AVX512" encoding="EVEX.L0.66.0F.WIG 71 /7 ib" opcode="71" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Sign_Extend</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_PSLL_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let shift_size := 8;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let old := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_XMM(Calculate_RM(mod, rm, context), register_size);</code>
+     <code>let shift_distance := Sign_Extend(Mem_Fetch?(ip, 8), shift_size);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_m(element_size, register_size, shift_size, old, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.evex_v4 ++ context.vvvv, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_128_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="shift_size" size="8"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding/>
+    <label><varname>imm8</varname><footnoteref linkend="s"/></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_XMMu8_MASKmskw_MEMu8_IMM8_AVX512_ZERO" xed_iform="VPSLLB_XMMu8_MASKmskw_MEMu8_IMM8_AVX512" encoding="EVEX.L0.66.0F.WIG 71 /7 ib" opcode="71" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Sign_Extend</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Masked_Vector_Mem_Read</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_PSLL_z</callee>
+   <var-used>True</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let shift_size := 8;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 16;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let shift_distance := Sign_Extend(Mem_Fetch?(next_ip0, 8), shift_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0 + 1);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Masked_Vector_Mem_Read?(register_size, element_size, context.evex_b == 0b1, k, segment, effective_address, fault_suppression=&gt;True);</code>
+     <code>Next_IP := next_ip0 + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_z(element_size, register_size, shift_size, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.evex_v4 ++ context.vvvv, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>m128<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_128_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="shift_size" size="8"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m128<subscript>2</subscript></varname><footnoteref linkend="b"/><footnoteref linkend="f"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding/>
+    <label><varname>imm8</varname><footnoteref linkend="s"/></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_XMMu8_MASKmskw_XMMu8_IMM8_AVX512_ZERO" xed_iform="VPSLLB_XMMu8_MASKmskw_XMMu8_IMM8_AVX512" encoding="EVEX.L0.66.0F.WIG 71 /7 ib" opcode="71" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Sign_Extend</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_PSLL_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let shift_size := 8;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_XMM(Calculate_RM(mod, rm, context), register_size);</code>
+     <code>let shift_distance := Sign_Extend(Mem_Fetch?(ip, 8), shift_size);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_z(element_size, register_size, shift_size, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.evex_v4 ++ context.vvvv, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_128_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="shift_size" size="8"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding/>
+    <label><varname>imm8</varname><footnoteref linkend="s"/></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="PSLL_m" variant_kind="Masking variant" mnemonic="VPSLLB">
+  <code>let elements := register_size / element_size;</code>
+  <code>var result := Zero(register_size);</code>
+  <code>for i := 0 to elements-1 do</code>
+  <code>    if k[i] == 0b1 then</code>
+  <code>        let op1 := src1[i *: element_size];</code>
+  <code>        let count := if shift_size &gt; 64 then Unsigned(shift_distance[0 +: 64]) else Unsigned(shift_distance);</code>
+  <code>        let r := Shift_Left_Logical(op1, count);</code>
+  <code>        result[i *: element_size] := r;</code>
+  <code>    else</code>
+  <code>        result[i *: element_size] := old[i *: element_size];</code>
+  <code>    endif;</code>
+  <code>endfor;</code>
+  <callee>Std::Integer::Gt</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Multiply</callee>
+  <callee>Std::Integer::Positive_Divide</callee>
+  <callee>Std::Integer::Power2</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Unsigned</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>Std::Bits::Shift_Left_Logical</callee>
+  </operation>
+ <operation name="PSLL_z" variant_kind="Zeroing variant" mnemonic="VPSLLB">
+  <code>let elements := register_size / element_size;</code>
+  <code>var result := Zero(register_size);</code>
+  <code>for i := 0 to elements-1 do</code>
+  <code>    if k[i] == 0b1 then</code>
+  <code>        let op1 := src1[i *: element_size];</code>
+  <code>        let count := if shift_size &gt; 64 then Unsigned(shift_distance[0 +: 64]) else Unsigned(shift_distance);</code>
+  <code>        let r := Shift_Left_Logical(op1, count);</code>
+  <code>        result[i *: element_size] := r;</code>
+  <code>    else</code>
+  <code>        result[i *: element_size] := Zero(element_size);</code>
+  <code>    endif;</code>
+  <code>endfor;</code>
+  <callee>Std::Integer::Gt</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Integer::Multiply</callee>
+  <callee>Std::Integer::Positive_Divide</callee>
+  <callee>Std::Integer::Power2</callee>
+  <callee>Std::Integer::Subtract</callee>
+  <callee>Std::Bits::Unsigned</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>Std::Bits::Shift_Left_Logical</callee>
+  </operation>
+ <iform-group>
+  <iform name="VPSLLB_XMMu8_MASKmskw_XMMu8_MEMu8_AVX512_MASK" xed_iform="VPSLLB_XMMu8_MASKmskw_XMMu8_MEMu8_AVX512" encoding="EVEX.L0.F2.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_PSLL_m</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let shift_size := 128;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 16;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let old := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let shift_distance := Logical_Mem_Read?(segment, effective_address, shift_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_m(element_size, register_size, shift_size, old, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m128<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_128_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="shift_size" size="128"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m128<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_XMMu8_MASKmskw_XMMu8_XMMu8_AVX512_MASK" xed_iform="VPSLLB_XMMu8_MASKmskw_XMMu8_XMMu8_AVX512" encoding="EVEX.L0.F2.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_PSLL_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let shift_size := 128;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let old := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let shift_distance := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_m(element_size, register_size, shift_size, old, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_128_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="shift_size" size="128"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_XMMu8_MASKmskw_XMMu8_MEMu8_AVX512_ZERO" xed_iform="VPSLLB_XMMu8_MASKmskw_XMMu8_MEMu8_AVX512" encoding="EVEX.L0.F2.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_PSLL_z</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let shift_size := 128;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 16;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let shift_distance := Logical_Mem_Read?(segment, effective_address, shift_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_z(element_size, register_size, shift_size, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m128<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_128_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="shift_size" size="128"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m128<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_XMMu8_MASKmskw_XMMu8_XMMu8_AVX512_ZERO" xed_iform="VPSLLB_XMMu8_MASKmskw_XMMu8_XMMu8_AVX512" encoding="EVEX.L0.F2.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_XMM</callee>
+   <callee>Instr_PSLL_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 128;</code>
+     <code>let shift_size := 128;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
+     <code>let shift_distance := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_z(element_size, register_size, shift_size, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>xmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm<subscript>3</subscript></varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_128_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="128"/>
+   <encoding-size name="shift_size" size="128"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>xmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>xmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm<subscript>3</subscript></varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
   <iform name="VPSLLW_XMMu16_MASKmskw_MEMu16_IMM8_AVX512_MASK" xed_iform="VPSLLW_XMMu16_MASKmskw_MEMu16_IMM8_AVX512" encoding="EVEX.L0.66.0F.WIG 71 /6 ib" opcode="71" valid32="V" valid64="V">
    <callee>Std::Boolean::Not</callee>
    <callee>Std::Boolean::Strict_And</callee>
@@ -3325,60 +4062,9 @@ If you give Intel any comments or suggestions related to this document or the in
     </operand>
    </iform>
   </iform-group>
- <operation name="PSLL_m" variant_kind="Masking variant" mnemonic="VPSLLW">
-  <code>let elements := register_size / element_size;</code>
-  <code>var result := Zero(register_size);</code>
-  <code>for i := 0 to elements-1 do</code>
-  <code>    if k[i] == 0b1 then</code>
-  <code>        let op1 := src1[i *: element_size];</code>
-  <code>        let count := if shift_size &gt; 64 then Unsigned(shift_distance[0 +: 64]) else Unsigned(shift_distance);</code>
-  <code>        let r := Shift_Left_Logical(op1, count);</code>
-  <code>        result[i *: element_size] := r;</code>
-  <code>    else</code>
-  <code>        result[i *: element_size] := old[i *: element_size];</code>
-  <code>    endif;</code>
-  <code>endfor;</code>
-  <callee>Std::Integer::Gt</callee>
-  <callee>Std::Integer::Le</callee>
-  <callee>Std::Integer::Lt</callee>
-  <callee>Std::Integer::Multiply</callee>
-  <callee>Std::Integer::Positive_Divide</callee>
-  <callee>Std::Integer::Power2</callee>
-  <callee>Std::Integer::Subtract</callee>
-  <callee>Std::Bits::Unsigned</callee>
-  <callee>Std::Bits::Eq</callee>
-  <callee>Std::Bits::Zero</callee>
-  <callee>Std::Bits::Shift_Left_Logical</callee>
-  </operation>
- <operation name="PSLL_z" variant_kind="Zeroing variant" mnemonic="VPSLLW">
-  <code>let elements := register_size / element_size;</code>
-  <code>var result := Zero(register_size);</code>
-  <code>for i := 0 to elements-1 do</code>
-  <code>    if k[i] == 0b1 then</code>
-  <code>        let op1 := src1[i *: element_size];</code>
-  <code>        let count := if shift_size &gt; 64 then Unsigned(shift_distance[0 +: 64]) else Unsigned(shift_distance);</code>
-  <code>        let r := Shift_Left_Logical(op1, count);</code>
-  <code>        result[i *: element_size] := r;</code>
-  <code>    else</code>
-  <code>        result[i *: element_size] := Zero(element_size);</code>
-  <code>    endif;</code>
-  <code>endfor;</code>
-  <callee>Std::Integer::Gt</callee>
-  <callee>Std::Integer::Le</callee>
-  <callee>Std::Integer::Lt</callee>
-  <callee>Std::Integer::Multiply</callee>
-  <callee>Std::Integer::Positive_Divide</callee>
-  <callee>Std::Integer::Power2</callee>
-  <callee>Std::Integer::Subtract</callee>
-  <callee>Std::Bits::Unsigned</callee>
-  <callee>Std::Bits::Eq</callee>
-  <callee>Std::Bits::Zero</callee>
-  <callee>Std::Bits::Shift_Left_Logical</callee>
-  </operation>
  <iform-group>
   <iform name="VPSLLW_XMMu16_MASKmskw_XMMu16_MEMu16_AVX512_MASK" xed_iform="VPSLLW_XMMu16_MASKmskw_XMMu16_MEMu16_AVX512" encoding="EVEX.L0.66.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
    <callee>Std::Boolean::Not</callee>
-   <callee>Std::Boolean::Strict_And</callee>
    <callee>Std::Boolean::Strict_Or</callee>
    <callee>Std::Integer::Add</callee>
    <callee>Std::Bits::Append</callee>
@@ -3415,7 +4101,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>
@@ -3469,7 +4155,6 @@ If you give Intel any comments or suggestions related to this document or the in
    </iform>
   <iform name="VPSLLW_XMMu16_MASKmskw_XMMu16_XMMu16_AVX512_MASK" xed_iform="VPSLLW_XMMu16_MASKmskw_XMMu16_XMMu16_AVX512" encoding="EVEX.L0.66.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
    <callee>Std::Boolean::Not</callee>
-   <callee>Std::Boolean::Strict_And</callee>
    <callee>Std::Boolean::Strict_Or</callee>
    <callee>Std::Integer::Add</callee>
    <callee>Std::Bits::Append</callee>
@@ -3499,7 +4184,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
      <code>let shift_distance := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>
@@ -3552,7 +4237,6 @@ If you give Intel any comments or suggestions related to this document or the in
    </iform>
   <iform name="VPSLLW_XMMu16_MASKmskw_XMMu16_MEMu16_AVX512_ZERO" xed_iform="VPSLLW_XMMu16_MASKmskw_XMMu16_MEMu16_AVX512" encoding="EVEX.L0.66.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
    <callee>Std::Boolean::Not</callee>
-   <callee>Std::Boolean::Strict_And</callee>
    <callee>Std::Boolean::Strict_Or</callee>
    <callee>Std::Integer::Add</callee>
    <callee>Std::Bits::Append</callee>
@@ -3588,7 +4272,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>
@@ -3642,7 +4326,6 @@ If you give Intel any comments or suggestions related to this document or the in
    </iform>
   <iform name="VPSLLW_XMMu16_MASKmskw_XMMu16_XMMu16_AVX512_ZERO" xed_iform="VPSLLW_XMMu16_MASKmskw_XMMu16_XMMu16_AVX512" encoding="EVEX.L0.66.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
    <callee>Std::Boolean::Not</callee>
-   <callee>Std::Boolean::Strict_And</callee>
    <callee>Std::Boolean::Strict_Or</callee>
    <callee>Std::Integer::Add</callee>
    <callee>Std::Bits::Append</callee>
@@ -3671,7 +4354,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let src1 := Read_XMM(context.evex_v4 ++ context.vvvv, register_size);</code>
      <code>let shift_distance := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>
@@ -5160,6 +5843,695 @@ If you give Intel any comments or suggestions related to this document or the in
    </iform>
   </iform-group>
  <iform-group>
+  <iform name="VPSLLB_YMMu8_MASKmskw_MEMu8_IMM8_AVX512_MASK" xed_iform="VPSLLB_YMMu8_MASKmskw_MEMu8_IMM8_AVX512" encoding="EVEX.L1.66.0F.WIG 71 /7 ib" opcode="71" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Sign_Extend</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Masked_Vector_Mem_Read</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_YMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_YMM</callee>
+   <callee>Instr_PSLL_m</callee>
+   <var-used>True</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 256;</code>
+     <code>let shift_size := 8;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 32;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let old := Read_YMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let shift_distance := Sign_Extend(Mem_Fetch?(next_ip0, 8), shift_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0 + 1);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Masked_Vector_Mem_Read?(register_size, element_size, context.evex_b == 0b1, k, segment, effective_address, fault_suppression=&gt;True);</code>
+     <code>Next_IP := next_ip0 + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_m(element_size, register_size, shift_size, old, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_YMM(context.evex_v4 ++ context.vvvv, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>ymm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>m256<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_256_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="256"/>
+   <encoding-size name="shift_size" size="8"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>vvvv</encoding>
+    <label><varname>ymm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m256<subscript>2</subscript></varname><footnoteref linkend="b"/><footnoteref linkend="f"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding/>
+    <label><varname>imm8</varname><footnoteref linkend="s"/></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_YMMu8_MASKmskw_YMMu8_IMM8_AVX512_MASK" xed_iform="VPSLLB_YMMu8_MASKmskw_YMMu8_IMM8_AVX512" encoding="EVEX.L1.66.0F.WIG 71 /7 ib" opcode="71" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Sign_Extend</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_YMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_YMM</callee>
+   <callee>Instr_PSLL_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 256;</code>
+     <code>let shift_size := 8;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let old := Read_YMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_YMM(Calculate_RM(mod, rm, context));</code>
+     <code>let shift_distance := Sign_Extend(Mem_Fetch?(ip, 8), shift_size);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_m(element_size, register_size, shift_size, old, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_YMM(context.evex_v4 ++ context.vvvv, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>ymm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>ymm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_256_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="256"/>
+   <encoding-size name="shift_size" size="8"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>vvvv</encoding>
+    <label><varname>ymm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>ymm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding/>
+    <label><varname>imm8</varname><footnoteref linkend="s"/></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_YMMu8_MASKmskw_MEMu8_IMM8_AVX512_ZERO" xed_iform="VPSLLB_YMMu8_MASKmskw_MEMu8_IMM8_AVX512" encoding="EVEX.L1.66.0F.WIG 71 /7 ib" opcode="71" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Sign_Extend</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Masked_Vector_Mem_Read</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_YMM</callee>
+   <callee>Instr_PSLL_z</callee>
+   <var-used>True</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 256;</code>
+     <code>let shift_size := 8;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 32;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let shift_distance := Sign_Extend(Mem_Fetch?(next_ip0, 8), shift_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0 + 1);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Masked_Vector_Mem_Read?(register_size, element_size, context.evex_b == 0b1, k, segment, effective_address, fault_suppression=&gt;True);</code>
+     <code>Next_IP := next_ip0 + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_z(element_size, register_size, shift_size, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_YMM(context.evex_v4 ++ context.vvvv, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>ymm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>m256<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_256_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="256"/>
+   <encoding-size name="shift_size" size="8"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>vvvv</encoding>
+    <label><varname>ymm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m256<subscript>2</subscript></varname><footnoteref linkend="b"/><footnoteref linkend="f"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding/>
+    <label><varname>imm8</varname><footnoteref linkend="s"/></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_YMMu8_MASKmskw_YMMu8_IMM8_AVX512_ZERO" xed_iform="VPSLLB_YMMu8_MASKmskw_YMMu8_IMM8_AVX512" encoding="EVEX.L1.66.0F.WIG 71 /7 ib" opcode="71" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Sign_Extend</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_YMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_YMM</callee>
+   <callee>Instr_PSLL_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 256;</code>
+     <code>let shift_size := 8;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_YMM(Calculate_RM(mod, rm, context));</code>
+     <code>let shift_distance := Sign_Extend(Mem_Fetch?(ip, 8), shift_size);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_z(element_size, register_size, shift_size, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_YMM(context.evex_v4 ++ context.vvvv, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>ymm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>ymm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_256_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="256"/>
+   <encoding-size name="shift_size" size="8"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>vvvv</encoding>
+    <label><varname>ymm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>ymm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding/>
+    <label><varname>imm8</varname><footnoteref linkend="s"/></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="VPSLLB_YMMu8_MASKmskw_YMMu8_MEMu8_AVX512_MASK" xed_iform="VPSLLB_YMMu8_MASKmskw_YMMu8_MEMu8_AVX512" encoding="EVEX.L1.F2.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_YMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_YMM</callee>
+   <callee>Instr_PSLL_m</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 256;</code>
+     <code>let shift_size := 128;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 16;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let old := Read_YMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_YMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let shift_distance := Logical_Mem_Read?(segment, effective_address, shift_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_m(element_size, register_size, shift_size, old, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_YMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>ymm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>ymm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m128</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_256_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="256"/>
+   <encoding-size name="shift_size" size="128"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>ymm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>ymm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m128</varname></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_YMMu8_MASKmskw_YMMu8_XMMu8_AVX512_MASK" xed_iform="VPSLLB_YMMu8_MASKmskw_YMMu8_XMMu8_AVX512" encoding="EVEX.L1.F2.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Read_YMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_YMM</callee>
+   <callee>Instr_PSLL_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 256;</code>
+     <code>let shift_size := 128;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let old := Read_YMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_YMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let shift_distance := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_m(element_size, register_size, shift_size, old, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_YMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>ymm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>ymm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_256_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="256"/>
+   <encoding-size name="shift_size" size="128"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>ymm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>ymm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm</varname></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_YMMu8_MASKmskw_YMMu8_MEMu8_AVX512_ZERO" xed_iform="VPSLLB_YMMu8_MASKmskw_YMMu8_MEMu8_AVX512" encoding="EVEX.L1.F2.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_YMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_YMM</callee>
+   <callee>Instr_PSLL_z</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 256;</code>
+     <code>let shift_size := 128;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 16;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_YMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let shift_distance := Logical_Mem_Read?(segment, effective_address, shift_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_z(element_size, register_size, shift_size, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_YMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>ymm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>ymm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m128</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_256_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="256"/>
+   <encoding-size name="shift_size" size="128"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>ymm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>ymm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m128</varname></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_YMMu8_MASKmskw_YMMu8_XMMu8_AVX512_ZERO" xed_iform="VPSLLB_YMMu8_MASKmskw_YMMu8_XMMu8_AVX512" encoding="EVEX.L1.F2.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Read_YMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_YMM</callee>
+   <callee>Instr_PSLL_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 256;</code>
+     <code>let shift_size := 128;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_YMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let shift_distance := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_z(element_size, register_size, shift_size, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_YMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>ymm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>ymm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_256_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="256"/>
+   <encoding-size name="shift_size" size="128"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>ymm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>ymm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
   <iform name="VPSLLW_YMMu16_MASKmskw_MEMu16_IMM8_AVX512_MASK" xed_iform="VPSLLW_YMMu16_MASKmskw_MEMu16_IMM8_AVX512" encoding="EVEX.L1.66.0F.WIG 71 /6 ib" opcode="71" valid32="V" valid64="V">
    <callee>Std::Boolean::Not</callee>
    <callee>Std::Boolean::Strict_And</callee>
@@ -5513,7 +6885,6 @@ If you give Intel any comments or suggestions related to this document or the in
  <iform-group>
   <iform name="VPSLLW_YMMu16_MASKmskw_YMMu16_MEMu16_AVX512_MASK" xed_iform="VPSLLW_YMMu16_MASKmskw_YMMu16_MEMu16_AVX512" encoding="EVEX.L1.66.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
    <callee>Std::Boolean::Not</callee>
-   <callee>Std::Boolean::Strict_And</callee>
    <callee>Std::Boolean::Strict_Or</callee>
    <callee>Std::Integer::Add</callee>
    <callee>Std::Bits::Append</callee>
@@ -5550,7 +6921,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let src1 := Read_YMM(context.evex_v4 ++ context.vvvv);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>
@@ -5604,7 +6975,6 @@ If you give Intel any comments or suggestions related to this document or the in
    </iform>
   <iform name="VPSLLW_YMMu16_MASKmskw_YMMu16_XMMu16_AVX512_MASK" xed_iform="VPSLLW_YMMu16_MASKmskw_YMMu16_XMMu16_AVX512" encoding="EVEX.L1.66.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
    <callee>Std::Boolean::Not</callee>
-   <callee>Std::Boolean::Strict_And</callee>
    <callee>Std::Boolean::Strict_Or</callee>
    <callee>Std::Integer::Add</callee>
    <callee>Std::Bits::Append</callee>
@@ -5635,7 +7005,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let src1 := Read_YMM(context.evex_v4 ++ context.vvvv);</code>
      <code>let shift_distance := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>
@@ -5688,7 +7058,6 @@ If you give Intel any comments or suggestions related to this document or the in
    </iform>
   <iform name="VPSLLW_YMMu16_MASKmskw_YMMu16_MEMu16_AVX512_ZERO" xed_iform="VPSLLW_YMMu16_MASKmskw_YMMu16_MEMu16_AVX512" encoding="EVEX.L1.66.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
    <callee>Std::Boolean::Not</callee>
-   <callee>Std::Boolean::Strict_And</callee>
    <callee>Std::Boolean::Strict_Or</callee>
    <callee>Std::Integer::Add</callee>
    <callee>Std::Bits::Append</callee>
@@ -5724,7 +7093,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let src1 := Read_YMM(context.evex_v4 ++ context.vvvv);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>
@@ -5778,7 +7147,6 @@ If you give Intel any comments or suggestions related to this document or the in
    </iform>
   <iform name="VPSLLW_YMMu16_MASKmskw_YMMu16_XMMu16_AVX512_ZERO" xed_iform="VPSLLW_YMMu16_MASKmskw_YMMu16_XMMu16_AVX512" encoding="EVEX.L1.66.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
    <callee>Std::Boolean::Not</callee>
-   <callee>Std::Boolean::Strict_And</callee>
    <callee>Std::Boolean::Strict_Or</callee>
    <callee>Std::Integer::Add</callee>
    <callee>Std::Bits::Append</callee>
@@ -5808,7 +7176,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let src1 := Read_YMM(context.evex_v4 ++ context.vvvv);</code>
      <code>let shift_distance := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>
@@ -7301,6 +8669,695 @@ If you give Intel any comments or suggestions related to this document or the in
    </iform>
   </iform-group>
  <iform-group>
+  <iform name="VPSLLB_ZMMu8_MASKmskw_MEMu8_IMM8_AVX512_MASK" xed_iform="VPSLLB_ZMMu8_MASKmskw_MEMu8_IMM8_AVX512" encoding="EVEX.L2.66.0F.WIG 71 /7 ib" opcode="71" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Sign_Extend</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Masked_Vector_Mem_Read</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_ZMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_ZMM</callee>
+   <callee>Instr_PSLL_m</callee>
+   <var-used>True</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 512;</code>
+     <code>let shift_size := 8;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 64;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let old := Read_ZMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let shift_distance := Sign_Extend(Mem_Fetch?(next_ip0, 8), shift_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0 + 1);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Masked_Vector_Mem_Read?(register_size, element_size, context.evex_b == 0b1, k, segment, effective_address, fault_suppression=&gt;True);</code>
+     <code>Next_IP := next_ip0 + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_m(element_size, register_size, shift_size, old, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_ZMM(context.evex_v4 ++ context.vvvv, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>zmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>m512<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_512_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="512"/>
+   <encoding-size name="shift_size" size="8"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>vvvv</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m512<subscript>2</subscript></varname><footnoteref linkend="b"/><footnoteref linkend="f"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding/>
+    <label><varname>imm8</varname><footnoteref linkend="s"/></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_ZMMu8_MASKmskw_ZMMu8_IMM8_AVX512_MASK" xed_iform="VPSLLB_ZMMu8_MASKmskw_ZMMu8_IMM8_AVX512" encoding="EVEX.L2.66.0F.WIG 71 /7 ib" opcode="71" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Sign_Extend</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_ZMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_ZMM</callee>
+   <callee>Instr_PSLL_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 512;</code>
+     <code>let shift_size := 8;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let old := Read_ZMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_ZMM(Calculate_RM(mod, rm, context));</code>
+     <code>let shift_distance := Sign_Extend(Mem_Fetch?(ip, 8), shift_size);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_m(element_size, register_size, shift_size, old, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_ZMM(context.evex_v4 ++ context.vvvv, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>zmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>zmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_512_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="512"/>
+   <encoding-size name="shift_size" size="8"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>vvvv</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>zmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding/>
+    <label><varname>imm8</varname><footnoteref linkend="s"/></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_ZMMu8_MASKmskw_MEMu8_IMM8_AVX512_ZERO" xed_iform="VPSLLB_ZMMu8_MASKmskw_MEMu8_IMM8_AVX512" encoding="EVEX.L2.66.0F.WIG 71 /7 ib" opcode="71" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Sign_Extend</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Masked_Vector_Mem_Read</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_ZMM</callee>
+   <callee>Instr_PSLL_z</callee>
+   <var-used>True</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 512;</code>
+     <code>let shift_size := 8;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 64;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let shift_distance := Sign_Extend(Mem_Fetch?(next_ip0, 8), shift_size);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0 + 1);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let src1 := Masked_Vector_Mem_Read?(register_size, element_size, context.evex_b == 0b1, k, segment, effective_address, fault_suppression=&gt;True);</code>
+     <code>Next_IP := next_ip0 + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_z(element_size, register_size, shift_size, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_ZMM(context.evex_v4 ++ context.vvvv, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>zmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>m512<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_512_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="512"/>
+   <encoding-size name="shift_size" size="8"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>vvvv</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m512<subscript>2</subscript></varname><footnoteref linkend="b"/><footnoteref linkend="f"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding/>
+    <label><varname>imm8</varname><footnoteref linkend="s"/></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_ZMMu8_MASKmskw_ZMMu8_IMM8_AVX512_ZERO" xed_iform="VPSLLB_ZMMu8_MASKmskw_ZMMu8_IMM8_AVX512" encoding="EVEX.L2.66.0F.WIG 71 /7 ib" opcode="71" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Bits::Add_int</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Sign_Extend</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Mem_Fetch</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_ZMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_ZMM</callee>
+   <callee>Instr_PSLL_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 512;</code>
+     <code>let shift_size := 8;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_ZMM(Calculate_RM(mod, rm, context));</code>
+     <code>let shift_distance := Sign_Extend(Mem_Fetch?(ip, 8), shift_size);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip + 1;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_z(element_size, register_size, shift_size, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_ZMM(context.evex_v4 ++ context.vvvv, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>zmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>zmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>imm8</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_512_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="512"/>
+   <encoding-size name="shift_size" size="8"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>vvvv</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>zmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding/>
+    <label><varname>imm8</varname><footnoteref linkend="s"/></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
+  <iform name="VPSLLB_ZMMu8_MASKmskw_ZMMu8_MEMu8_AVX512_MASK" xed_iform="VPSLLB_ZMMu8_MASKmskw_ZMMu8_MEMu8_AVX512" encoding="EVEX.L2.F2.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_ZMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_ZMM</callee>
+   <callee>Instr_PSLL_m</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 512;</code>
+     <code>let shift_size := 128;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 16;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let old := Read_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_ZMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let shift_distance := Logical_Mem_Read?(segment, effective_address, shift_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_m(element_size, register_size, shift_size, old, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>zmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>zmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m128</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_512_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="512"/>
+   <encoding-size name="shift_size" size="128"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>zmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m128</varname></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_ZMMu8_MASKmskw_ZMMu8_XMMu8_AVX512_MASK" xed_iform="VPSLLB_ZMMu8_MASKmskw_ZMMu8_XMMu8_AVX512" encoding="EVEX.L2.F2.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Read_ZMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_ZMM</callee>
+   <callee>Instr_PSLL_m</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 512;</code>
+     <code>let shift_size := 128;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let old := Read_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_ZMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let shift_distance := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_m(element_size, register_size, shift_size, old, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>zmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>zmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_512_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="512"/>
+   <encoding-size name="shift_size" size="128"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>zmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm</varname></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_ZMMu8_MASKmskw_ZMMu8_MEMu8_AVX512_ZERO" xed_iform="VPSLLB_ZMMu8_MASKmskw_ZMMu8_MEMu8_AVX512" encoding="EVEX.L2.F2.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Current_Mode</callee>
+   <callee>Effective_Address</callee>
+   <callee>Handle_RIP_Relative_Address</callee>
+   <callee>Logical_Mem_Read</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_ZMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_ZMM</callee>
+   <callee>Instr_PSLL_z</callee>
+   <var-used>False</var-used>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>Memory_Read</var-used>
+   <var-used>Normal_Alignment</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 512;</code>
+     <code>let shift_size := 128;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let disp8n := 16;</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_ZMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>let shift_distance := Logical_Mem_Read?(segment, effective_address, shift_size);</code>
+     <code>Next_IP := next_ip0;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_z(element_size, register_size, shift_size, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>zmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>zmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>m128</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_512_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="512"/>
+   <encoding-size name="shift_size" size="128"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>zmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>m128</varname></label>
+    </operand>
+   </iform>
+  <iform name="VPSLLB_ZMMu8_MASKmskw_ZMMu8_XMMu8_AVX512_ZERO" xed_iform="VPSLLB_ZMMu8_MASKmskw_ZMMu8_XMMu8_AVX512" encoding="EVEX.L2.F2.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Boolean::Strict_Or</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Calculate_RM</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_Mask</callee>
+   <callee>Read_XMM</callee>
+   <callee>Read_ZMM</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Report_Not_Available_Exception</callee>
+   <callee>Write_ZMM</callee>
+   <callee>Instr_PSLL_z</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>CR0</var-used>
+   <var-used>XCR0</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let register_size := 512;</code>
+     <code>let shift_size := 128;</code>
+     <code>let element_size := 8;</code>
+     </decode_args>
+    <read_instr><code>let k := Read_Mask(context.evex_aaa);</code>
+     <code>let src1 := Read_ZMM(context.evex_v4 ++ context.vvvv);</code>
+     <code>let shift_distance := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
+     </read_instr><decode_checks>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeRealOrVirtual</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_OSXSAVE_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>XCR0_AVX_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR0_TS_1</exception_condition>
+     <exception_fault>#NM</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_PSLL_z(element_size, register_size, shift_size, k, src1, shift_distance, context, mod);</code>
+     </execute>
+    <post_execute>
+     <code>Write_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="VPSLLB">
+    <asm-operand><varname>zmm<subscript>1</subscript></varname></asm-operand>
+    <asm-operand><varname>{k1}{z}</varname></asm-operand>
+    <asm-operand><varname>zmm<subscript>2</subscript></varname></asm-operand>
+    <asm-operand><varname>xmm</varname></asm-operand>
+    </assembly-syntax>
+   <cpuid-group name="AVX10_BYTESHIFT_512_AVX10"><cpuid-flag>AVX10_BYTESHIFT</cpuid-flag></cpuid-group>
+   <encoding-size name="element_size" size="8"/>
+   <encoding-size name="register_size" size="512"/>
+   <encoding-size name="shift_size" size="128"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>zmm<subscript>1</subscript></varname><footnoteref linkend="o"/></label>
+    </operand>
+   <operand is_read="True">
+    <name>src1</name>
+    <encoding>vvvv</encoding>
+    <label><varname>zmm<subscript>2</subscript></varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>shift_distance</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>xmm</varname></label>
+    </operand>
+   </iform>
+  </iform-group>
+ <iform-group>
   <iform name="VPSLLW_ZMMu16_MASKmskw_MEMu16_IMM8_AVX512_MASK" xed_iform="VPSLLW_ZMMu16_MASKmskw_MEMu16_IMM8_AVX512" encoding="EVEX.L2.66.0F.WIG 71 /6 ib" opcode="71" valid32="V" valid64="V">
    <callee>Std::Boolean::Not</callee>
    <callee>Std::Boolean::Strict_And</callee>
@@ -7654,7 +9711,6 @@ If you give Intel any comments or suggestions related to this document or the in
  <iform-group>
   <iform name="VPSLLW_ZMMu16_MASKmskw_ZMMu16_MEMu16_AVX512_MASK" xed_iform="VPSLLW_ZMMu16_MASKmskw_ZMMu16_MEMu16_AVX512" encoding="EVEX.L2.66.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
    <callee>Std::Boolean::Not</callee>
-   <callee>Std::Boolean::Strict_And</callee>
    <callee>Std::Boolean::Strict_Or</callee>
    <callee>Std::Integer::Add</callee>
    <callee>Std::Bits::Append</callee>
@@ -7691,7 +9747,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let src1 := Read_ZMM(context.evex_v4 ++ context.vvvv);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>
@@ -7745,7 +9801,6 @@ If you give Intel any comments or suggestions related to this document or the in
    </iform>
   <iform name="VPSLLW_ZMMu16_MASKmskw_ZMMu16_XMMu16_AVX512_MASK" xed_iform="VPSLLW_ZMMu16_MASKmskw_ZMMu16_XMMu16_AVX512" encoding="EVEX.L2.66.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
    <callee>Std::Boolean::Not</callee>
-   <callee>Std::Boolean::Strict_And</callee>
    <callee>Std::Boolean::Strict_Or</callee>
    <callee>Std::Integer::Add</callee>
    <callee>Std::Bits::Append</callee>
@@ -7776,7 +9831,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let src1 := Read_ZMM(context.evex_v4 ++ context.vvvv);</code>
      <code>let shift_distance := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>
@@ -7829,7 +9884,6 @@ If you give Intel any comments or suggestions related to this document or the in
    </iform>
   <iform name="VPSLLW_ZMMu16_MASKmskw_ZMMu16_MEMu16_AVX512_ZERO" xed_iform="VPSLLW_ZMMu16_MASKmskw_ZMMu16_MEMu16_AVX512" encoding="EVEX.L2.66.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
    <callee>Std::Boolean::Not</callee>
-   <callee>Std::Boolean::Strict_And</callee>
    <callee>Std::Boolean::Strict_Or</callee>
    <callee>Std::Integer::Add</callee>
    <callee>Std::Bits::Append</callee>
@@ -7865,7 +9919,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let src1 := Read_ZMM(context.evex_v4 ++ context.vvvv);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>
@@ -7919,7 +9973,6 @@ If you give Intel any comments or suggestions related to this document or the in
    </iform>
   <iform name="VPSLLW_ZMMu16_MASKmskw_ZMMu16_XMMu16_AVX512_ZERO" xed_iform="VPSLLW_ZMMu16_MASKmskw_ZMMu16_XMMu16_AVX512" encoding="EVEX.L2.66.0F.WIG F1 /r" opcode="f1" valid32="V" valid64="V">
    <callee>Std::Boolean::Not</callee>
-   <callee>Std::Boolean::Strict_And</callee>
    <callee>Std::Boolean::Strict_Or</callee>
    <callee>Std::Integer::Add</callee>
    <callee>Std::Bits::Append</callee>
@@ -7949,7 +10002,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let src1 := Read_ZMM(context.evex_v4 ++ context.vvvv);</code>
      <code>let shift_distance := Read_XMM(Calculate_RM(mod, rm, context), 128);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01) and (context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
+     <code>if not ((context.evex_b == 0b0)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>

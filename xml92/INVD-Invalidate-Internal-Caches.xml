@@ -56,7 +56,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>Instr_INVD();</code>
+     <code>Instr_INVD?();</code>
      </execute>
     <post_execute>
      </post_execute>
@@ -66,8 +66,21 @@ If you give Intel any comments or suggestions related to this document or the in
    </iform>
   </iform-group>
  <operation name="INVD" variant_kind="Standard variant" mnemonic="INVD">
+  <code>if (CPUID_INVD_DISABLE_POST_BIOS_DONE and BIOS_DONE.ENABLE_IA_UNTRUSTED == 0b1)</code>
+  <code>    or PRMRR_PHYS_MASK.VALID == 0b1 then</code>
+  <code>    Report_General_Protection_Exception!(Zero(32));</code>
+  <code>endif;</code>
+  <code></code>
   <code>Cache::Invalidate();</code>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Boolean::Strict_Or</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Zero</callee>
   <callee>Cache::Invalidate</callee>
+  <callee>Report_General_Protection_Exception</callee>
+  <var-used>PRMRR_PHYS_MASK</var-used>
+  <var-used>CPUID_INVD_DISABLE_POST_BIOS_DONE</var-used>
+  <var-used>BIOS_DONE</var-used>
   </operation>
  <category>memory/caching</category>
  </instruction>

@@ -394,6 +394,7 @@ If you give Intel any comments or suggestions related to this document or the in
   <callee>FP::Get_DAZ</callee>
   <var-used>MXCSR</var-used>
   <other-copy>CMPSS</other-copy>
+  <other-copy>VCMPSH</other-copy>
   </operation>
  <iform-group>
   <iform name="VCMPSD_MASKmskw_MASKmskw_XMMf64_MEMf64_IMM8_AVX512_ZERO" xed_iform="VCMPSD_MASKmskw_MASKmskw_XMMf64_MEMf64_IMM8_AVX512" encoding="EVEX.128.F2.0F.W1 C2 /r ib" opcode="c2" valid32="V" valid64="V">
@@ -595,7 +596,7 @@ If you give Intel any comments or suggestions related to this document or the in
   <code>    let op1 := src1[0 +: element_size];</code>
   <code>    let op2 := src2[0 +: element_size];</code>
   <code>    let (e, exceptions) := FP::Compare5(op1, op2, imm8[4:0], denormals_are_zeros);</code>
-  <code>    let r := if e then 0b1 else 0b0;</code>
+  <code>    let r := Bit(e);</code>
   <code>    let reported_exceptions := if suppress_all_exceptions then Zero(6) else exceptions;</code>
   <code>    FP::Check_Exceptions?(reported_exceptions, exception_masks);</code>
   <code>    result[0 +: 1] := r;</code>
@@ -606,6 +607,7 @@ If you give Intel any comments or suggestions related to this document or the in
   <callee>Std::Integer::Le</callee>
   <callee>Std::Bits::Eq</callee>
   <callee>Std::Bits::Zero</callee>
+  <callee>Bit</callee>
   <callee>FP::Check_Exceptions</callee>
   <callee>FP::Compare5</callee>
   <callee>FP::Get_DAZ</callee>

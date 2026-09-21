@@ -203,7 +203,7 @@ If you give Intel any comments or suggestions related to this document or the in
   <code>var result := Zero(register_size);</code>
   <code>let op2 := src2[0 +: element_size];</code>
   <code>let (temp, exceptions) := FP::To_Int(op2, True, element_size, denormals_are_zeros, rounding_mode, suppress_precise_exceptions=&gt;suppress_precise_exceptions);</code>
-  <code>Unimplemented_Feature("FP round", True);</code>
+  <code>Unimplemented_Feature("FP round");</code>
   <code>let (r, _) := FP::From_Int(temp, True, element_size, rounding_mode);</code>
   <code>FP::Check_Exceptions?(exceptions, exception_masks);</code>
   <code>result[0 +: element_size] := r;</code>
@@ -221,12 +221,12 @@ If you give Intel any comments or suggestions related to this document or the in
   <callee>FP::To_Int</callee>
   <callee>Unimplemented_Feature</callee>
   <var-used>True</var-used>
+  <var-used>False</var-used>
   <var-used>MXCSR</var-used>
   <other-copy>ROUNDSD</other-copy>
   </operation>
  <iform-group>
   <iform name="VROUNDSS_XMMdq_XMMdq_MEMd_IMMb" xed_iform="VROUNDSS_XMMdq_XMMdq_MEMd_IMMb" encoding="VEX.LIG.66.0F3A.WIG 0A /r ib" opcode="0a" valid32="V" valid64="V">
-   <callee>Std::Boolean::Not</callee>
    <callee>Std::Boolean::Strict_Or</callee>
    <callee>Std::Integer::Add</callee>
    <callee>Std::Bits::Add_int</callee>
@@ -263,7 +263,6 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let imm8 := Mem_Fetch?(next_ip0, 8);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0 + 1);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>
@@ -315,7 +314,6 @@ If you give Intel any comments or suggestions related to this document or the in
     </operand>
    </iform>
   <iform name="VROUNDSS_XMMdq_XMMdq_XMMd_IMMb" xed_iform="VROUNDSS_XMMdq_XMMdq_XMMd_IMMb" encoding="VEX.LIG.66.0F3A.WIG 0A /r ib" opcode="0a" valid32="V" valid64="V">
-   <callee>Std::Boolean::Not</callee>
    <callee>Std::Boolean::Strict_Or</callee>
    <callee>Std::Integer::Add</callee>
    <callee>Std::Bits::Add_int</callee>
@@ -345,7 +343,6 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let src2 := Read_XMM(Calculate_RM(mod, rm, context), 32);</code>
      <code>let imm8 := Mem_Fetch?(ip, 8);</code>
      </read_instr><decode_checks>
-     <code>if not ((context.vex_pp == 0b01)) then Report_Invalid_Opcode!(); endif;</code>
      </decode_checks>
     <exception_checks>
      </exception_checks>
