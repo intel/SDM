@@ -6,7 +6,7 @@ categories: announcement
 sticky: true
 ---
 
-This [website]({{ site.sdm_html }}) contains a preview of how Intel intends to document and present
+This website contains a preview of how Intel intends to document and present
 the Intel® Architecture in the future.
 Our goal is a specification that is more accurate and accessible.
 We would like to receive feedback on how well we meet this goal before we apply this
@@ -18,7 +18,7 @@ description of the Intel&reg; Architecture.
 While much of the website is derived from the latest SDM, there are
 some important changes
 
-- It is [a webpage]({{ site.sdm_html }}) to promote easier searching and exploration.
+- It is [a webpage](/sdm.html) to promote easier searching and exploration.
 
   In the future, Intel will use both the website and the existing PDF format
   to describe the architecture.

@@ -1,28 +1,6 @@
 "use strict";
 
 ////////////////////////////////////////////////////////////////
-// PDF support
-////////////////////////////////////////////////////////////////
-
-var pdf_find_section = null; // will be overwritten by sdm_viewer.js
-var pdf_render = null; // will be overwritten by sdm_viewer.js
-var pdf_select_page = null; // will be overwritten by sdm_viewer.js
-
-function toggle_pdf_view(event) {
-    const viewer = document.getElementById("pdf-viewer");
-    if (viewer) {
-        if (event.target.checked) {
-            viewer.style.display = "block";
-            if (pdf_render) { pdf_render(); }
-            check_for_query(); // trigger a redraw
-        } else {
-            viewer.style.display = "none";
-        }
-    }
-}
-
-
-////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////
 
@@ -682,7 +660,7 @@ function render_related(name, data_xml) {
     const others = Array.from(data_xml.getElementsByTagName('other-copy'));
     const rs = others.map((x) => {
         const name = x.textContent;
-        return make_code_link(name, name, 'Instruction', 'instr');
+        return make_code_link(name, name, 'instruction');
     });
 
     if (rs.length > 0) {
@@ -721,7 +699,6 @@ function render_instruction(text_xml, data_xml) {
     }
     if (cpuids.size > 0 && current_isa_sets) {
         section += "Relevant CPUID groups:";
-        console.log(chips);
         for (const cpuid of cpuids) {
             let name = cpuid;
             let select = 'select_cpuid_' + name;
@@ -782,20 +759,6 @@ function render_instruction(text_xml, data_xml) {
 
     section += "<p>Copyright &copy; Intel Corporation.</p>";
 
-    if (pdf_select_page) {
-        const viewer = document.getElementById("pdf-viewer");
-        if (viewer.style.display == "block") {
-            const regex = new RegExp(`^${name}\s*[—-]`);
-            const page = pdf_find_section(regex);
-            if (page) {
-                const title = `${name}—${shortdesc}`;
-                pdf_select_page(page);
-            } else {
-                console.log("Unable to find PDF page with title matching", regex)
-            }
-        }
-    }
-
     return section;
 }
 
@@ -812,14 +775,14 @@ function render_categories(prefix, parent) {
     }
 }
 
-function render_helper(helper) {
-    const name = helper.getAttribute('name');
-    const kind = helper.getAttribute('kind');
-    const shortdesc = helper.getElementsByTagName('shortdesc')[0];
-    const longdesc = helper.getElementsByTagName('longdesc');
-    const examples = helper.getElementsByTagName('example');
-    const operation = helper.getElementsByTagName('operation');
-    const extra_links = make_instruction_highlighting_table(helper)
+function render_definition(definition) {
+    const name = definition.getAttribute('name');
+    const kind = definition.getAttribute('kind');
+    const shortdesc = definition.getElementsByTagName('shortdesc')[0];
+    const longdesc = definition.getElementsByTagName('longdesc');
+    const examples = definition.getElementsByTagName('example');
+    const operation = definition.getElementsByTagName('operation');
+    const extra_links = make_instruction_highlighting_table(definition)
 
     let title = "";
     if (shortdesc.textContent) {
@@ -840,7 +803,7 @@ function render_helper(helper) {
         section += "</ul>";
     }
 
-    section += render_categories("Categories: ", helper);
+    section += render_categories("Categories: ", definition);
     if (operation.length > 0) {
         section += render_operation(operation[0], extra_links);
     }
@@ -849,7 +812,8 @@ function render_helper(helper) {
 }
 
 
-function render_category(name, text_xml, data_xml) {
+function render_category(text_xml) {
+    const name = text_xml.getElementsByTagName('name')[0].innerHTML;
     const short = patch_docbook(text_xml.getElementsByTagName('shortdesc')[0], false);
     const long = patch_docbook(text_xml.getElementsByTagName('longdesc')[0], false);
     let s = `<h1>${short.innerHTML}</h1>`;
@@ -857,32 +821,33 @@ function render_category(name, text_xml, data_xml) {
 
     const index = index1['instructions'];
     let instrs = [];
-    for (const [label, instr_name, shortdesc, categories, textfile, datafile] of index) {
+    for (const [label, instr_name, shortdesc, categories, isa_sets, textfile, datafile] of index) {
         if (categories.includes(name)) {
-            instrs.push([make_code_link(label, label, 'Instruction', 'instr'), shortdesc]);
+            instrs.push([make_code_link(label, label, 'instruction'), shortdesc]);
         }
     }
     s += render_definition_table('<h2>Instructions</h2>', instrs);
 
-    let helpers = [];
-    for (const [helper_name, helper] of helper_index.entries()) {
-        const categories = Array.from(helper.getElementsByTagName('category')).map((x) => x.textContent);
+    let definitions = [];
+    for (const [definition_name, definition] of definition_index.entries()) {
+        const categories = Array.from(definition.getElementsByTagName('category')).map((x) => x.textContent);
         if (categories.includes(name)) {
-            const shortdesc = helper.getElementsByTagName('shortdesc')[0].innerHTML;
-            helpers.push([make_code_link(helper_name, helper_name, 'Helper', 'helper'), shortdesc]);
+            const shortdesc = definition.getElementsByTagName('shortdesc')[0].innerHTML;
+            definitions.push([make_code_link(definition_name, definition_name, 'definition'), shortdesc]);
         }
     }
-    s += render_definition_table('<h2>Helpers</h2>', helpers);
+    s += render_definition_table('<h2>Definitions</h2>', definitions);
 
     // Find ancestor and descendent categories
     let above = [];
     let below = [];
-    for (const [c_name, c_shortdesc, _] of index1['categories']) {
+    console.log(name);
+    for (const [c_name, c_shortdesc, f] of index1['categories']) {
         if (c_name && name != c_name) {
             if (name.startsWith(c_name)) {
-                above.push([make_link('category', c_name, c_name), c_shortdesc]);
+                above.push([make_link('category', f, c_name), c_shortdesc]);
             } else if (c_name.startsWith(name)) {
-                below.push([make_link('category', c_name, c_name), c_shortdesc]);
+                below.push([make_link('category', f, c_name), c_shortdesc]);
             }
         }
     }
@@ -1314,88 +1279,56 @@ function render_cpuid_output(parent, leaf) {
     parent.appendChild(render_reg_fields(leaf, true));
 }
 
+function make_link(kind, filename, display_name) {
+    filename = filename.replaceAll("/", "-");
+    return `<a href="/${kind}/${filename}.html">${display_name}</a>`;
+}
+
+function make_menu_entry(kind, filename, display_name) {
+    const id = `${kind}_entry_${filename}`;
+    return `<li id='${id}' class='menu-entry'>${make_link(kind, filename, display_name)}</li>`;
+}
+
 function set_instruction_menu(menu, index) {
     for (const entry of index) {
         const name = entry[0];
-        const filename = entry[4];
-        const screen = 0;
         const display_name = name.replaceAll("/", "/<wbr>");
-        const id = 'instruction_entry_' + name;
-        const menu_entry = `<li id='${id}' onclick="show_instruction(${screen}, 'instr', '${name}')"><button class='menu-entry'>${display_name}</button></li>`;
+        const menu_entry = make_menu_entry('instruction', name, display_name);
         menu.insertAdjacentHTML("beforeend", menu_entry);
     };
 }
 
 function set_docbook_menu(menu, index) {
     for (const entry of index) {
-        const screen = 0;
-        const menu_entry = `<li onclick="show_instruction(${screen}, 'docbook', '${entry[0]}')"><button class='menu-entry'>${entry[0]}</button></li>`;
+        const filename = entry[1];
+        const display_name = entry[0];
+        const menu_entry = make_menu_entry('chapter', filename, display_name);
         menu.insertAdjacentHTML("beforeend", menu_entry);
     };
 }
 
-function make_link(kind, name, shown_name) {
-    const screen = 0;
-    return `<a onclick="show_instruction(${screen}, '${kind}', '${name}')">${shown_name}</a>`
-}
+let definition_index = new Map();
 
-function set_category_menu(menu, index) {
-    for (const entry of index) {
-        const screen = 0;
-        const menu_entry = `<li onclick="show_instruction(${screen}, 'category', '${entry[0]}')"><button class='menu-entry'>${entry[1]}</button></li>`;
-        menu.insertAdjacentHTML("beforeend", menu_entry);
-    };
-}
-
-function set_query(query, title) {
-    // Note that it is critical that this does not generate a reload
-    // because a reload can trigger redisplay of the window which can
-    // often result in calling this function again - which results in
-    // continuous re-loading of the page.
-    if (window.history.state != query) {
-        window.history.pushState(query, "", query);
-    }
-    if (title) {
-        document.title = title;
-    }
-}
-
-let helper_index = new Map();
-function set_helper_menu(menu, helpers) {
-    for (const helper of helpers.getElementsByTagName('helper')) {
-        const name = helper.getAttribute('name');
-        const id = `select_${name}`;
-        const screen = 0;
-        // const kind = helper.getAttribute('kind');
-        // const shortdesc = helper.getElementsByTagName('shortdesc')
-        // const longdesc = helper.getElementsByTagName('longdesc')
-        // const code = helper.getElementsByTagName('operation')
-        for (const dnm of helper.getElementsByTagName('defines')) {
+function set_definition_menu(menu, definitions) {
+    for (const definition of definitions.getElementsByTagName('definition')) {
+        const name = definition.getAttribute('name');
+        for (const dnm of definition.getElementsByTagName('defines')) {
             const nm = dnm.innerHTML
             const display_name = nm.replaceAll("_", "&shy;_");
-            const menu_entry = `<li id=${id} onclick="show_helper(${screen}, null, '${nm}')"><button class='menu-entry'>${display_name}</button></li>`;
+            const menu_entry = make_menu_entry('definition', nm, display_name);
             menu.insertAdjacentHTML("beforeend", menu_entry);
-            helper_index.set(nm, helper);
+            definition_index.set(nm, definition);
         }
     };
 }
 
-function check_for_query() {
-    const paramsString = window.location.search;
-    const searchParams = new URLSearchParams(paramsString);
-    const screen = 0;
-
-    if (searchParams.has('instr')) {
-        show_instruction(screen, 'instr', searchParams.get('instr'));
-    } else if (searchParams.has('docbook')) {
-        show_instruction(screen, 'docbook', searchParams.get('docbook'));
-    } else if (searchParams.has('category')) {
-        show_instruction(screen, 'category', searchParams.get('category'));
-    } else if (searchParams.has('reg')) {
-        show_instruction(screen, 'reg', searchParams.get('reg'));
-    } else if (searchParams.has('helper')) {
-        show_helper(screen, null, searchParams.get('helper'))
-    }
+function set_category_menu(menu, index) {
+    for (const entry of index) {
+        const name = entry[0].replaceAll("/", "-");
+        const display_name = entry[1];
+        const menu_entry = make_menu_entry('category', name, display_name);
+        menu.insertAdjacentHTML("beforeend", menu_entry);
+    };
 }
 
 async function read_xml_file(url) {
@@ -1408,10 +1341,11 @@ async function read_xml_file(url) {
     return doc;
 }
 
-let spec_directory1 = "xml92";
-let spec_directory2 = "xml91";
-let spec_directory3 = "xml90";
-let spec_directory4 = "xml76";
+async function read_json_file(url) {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+}
 
 async function read_index(directory) {
     const response = await fetch(`${directory}/index.json`);
@@ -1419,36 +1353,43 @@ async function read_index(directory) {
     return data;
 }
 
+let spec_directory = "/data";
+
 let index1 = [];
 (async () => {
-    index1 = await read_index(spec_directory1);
+    index1 = await read_index(spec_directory);
     make_instruction_highlighting_table2(index1['instructions']);
     set_instruction_menu(document.getElementById("instruction_menu"), index1['instructions']);
-    set_docbook_menu(document.getElementById("docs_list"), index1['docbook']);
+    set_docbook_menu(document.getElementById("docs_list"), index1['chapters']);
     set_category_menu(document.getElementById("category_list"), index1['categories']);
 })();
 
-(async () => {
-    const helpers = await read_xml_file(`${spec_directory1}/helpers.xml`);
-    make_code_highlighting_table(helpers);
-    set_helper_menu(document.getElementById("helper_list"), helpers);
-    check_for_query();
-})();
+async function load_definitions() {
+    if (definition_index.size == 0) {
+        const definitions = await read_xml_file(`${spec_directory}/definitions.xml`);
+        make_code_highlighting_table(definitions);
+        set_definition_menu(document.getElementById("definition_list"), definitions);
+    }
+}
 
 // Read instrinsics database
 var intrinsics = [];
-(async () => {
-    const response = await fetch(`${spec_directory1}/intrinsics.xml`);
-    const data = await response.text();
-    const parser = new DOMParser();
-    intrinsics = parser.parseFromString(data, "text/xml");
-})();
+async function load_intrinsics() {
+    if (intrinsics.length == 0) {
+        const response = await fetch(`${spec_directory}/intrinsics.xml`);
+        const data = await response.text();
+        const parser = new DOMParser();
+        intrinsics = parser.parseFromString(data, "text/xml");
+    }
+}
 
 let performance = {};
-(async () => {
-    const response = await fetch(`perf2.json`);
-    performance = await response.json();
-})();
+async function load_performance() {
+    if (performance.length == 0) {
+        const response = await fetch(`${spec_directory}/perf2.json`);
+        performance = await response.json();
+    }
+}
 
 function format_chip_name(s) {
     if (  s.includes('LAKE')
@@ -1491,42 +1432,51 @@ function isEmptyObject(obj) {
 let current_isa_sets = null;
 
 let chips = {};
-(async () => {
-    const response = await fetch(`chips.json`);
-    let isa_sets = new Set([]);
-    if (response.ok) {
-        chips = await response.json();
-        const chips_menu = document.getElementById("chip_list");
-        for (const [chip, cpuid_groups] of Object.entries(chips)) {
-            for (const [cpuid, expansion] of Object.entries(cpuid_groups)) {
-                isa_sets.add(cpuid);
-                let ex = [];
-                for (const [key, e] of Object.entries(expansion)) {
-                    ex.push(...e);
+async function load_chips() {
+    if (chips.length == 0) {
+        const response = await fetch(`/chips.json`);
+        let isa_sets = new Set([]);
+        if (response.ok) {
+            chips = await response.json();
+            const chips_menu = document.getElementById("chip_list");
+            for (const [chip, cpuid_groups] of Object.entries(chips)) {
+                for (const [cpuid, expansion] of Object.entries(cpuid_groups)) {
+                    isa_sets.add(cpuid);
+                    let ex = [];
+                    for (const [key, e] of Object.entries(expansion)) {
+                        ex.push(...e);
+                    }
+                    cpuid_expansions[cpuid] = ex;
                 }
-                cpuid_expansions[cpuid] = ex;
+                let id = 'chip_' + chip;
+                let select = 'select_chip_' + chip;
+                let display_name = format_chip_name(chip);
+                // const input = `<button class='menu-entry'>${display_name}</button>`;
+                const input = `<input type='radio' id='${select}' name='chip'/><label for='${select}' class='menu_entry'>${display_name}</label>`;
+                const menu_entry = `<li id=${id} onclick="set_chip_filter('${chip}')">${input}</li>`;
+                chips_menu.insertAdjacentHTML("afterbegin", menu_entry);
             }
-            let id = 'chip_' + chip;
-            let select = 'select_chip_' + chip;
-            let display_name = format_chip_name(chip);
-            // const input = `<button class='menu-entry'>${display_name}</button>`;
-            const input = `<input type='radio' id='${select}' name='chip'/><label for='${select}' class='menu_entry'>${display_name}</label>`;
-            const menu_entry = `<li id=${id} onclick="set_chip_filter('${chip}')">${input}</li>`;
-            chips_menu.insertAdjacentHTML("afterbegin", menu_entry);
-        }
-        current_isa_sets = isa_sets;
-        if (! isEmptyObject(chips)) {
-            console.log("Making chips visible", chips_menu);
-            // Iterate up stack marking all parents as visible
-            for (let node = chips_menu; node; node = node.parentNode) {
-                console.log("Making chips visible", node, node.style);
-                if (node.style && node.style.display == 'none') {
-                    node.style.display = 'block';
+            current_isa_sets = isa_sets;
+            if (! isEmptyObject(chips)) {
+                // Iterate up stack marking all parents as visible
+                for (let node = chips_menu; node; node = node.parentNode) {
+                    if (node.style && node.style.display == 'none') {
+                        node.style.display = 'block';
+                    }
                 }
             }
         }
     }
-})();
+}
+
+async function load_all_data() {
+    await Promise.all([
+        load_definitions(),
+        load_intrinsics(),
+        load_performance(),
+        load_chips(),
+    ]);
+}
 
 function set_chip_filter(chip) {
     const cpuid_groups = chips[chip];
@@ -1559,7 +1509,6 @@ function update_filter() {
         const menu_entry = document.getElementById(id);
         menu_entry.style.display = match ? 'block' : 'none';
     }
-    check_for_query(); // trigger a redraw
 }
 
 function filter_iforms(iform_groups) {
@@ -1586,7 +1535,7 @@ let cpuids = [];
 let msrs = [];
 
 // Load File of registers (if not already loaded)
-async function load_register_file(filename, menu_by_name, menu_by_number) {
+async function load_register_file(filename, kind, menu_by_name, menu_by_number) {
     const response = await fetch(filename);
     if (!response.ok) {
         return [];
@@ -1597,19 +1546,18 @@ async function load_register_file(filename, menu_by_name, menu_by_number) {
     let number_entries = [];
     for (const reg of regs) {
         const name = reg.name;
+        const filename = kind == "cpuid" ? reg.EAX : name;
         const display_name = name.replaceAll("_", "&shy;_"); // enable line breaks in long names
         const number = render_register_number(reg);
         const display_number = `${number} &mdash; ${name}`;
 
-        const id = `select_${name}`;
-        const screen = 0;
-        name_entries.push([name, `<li onclick="show_instruction(${screen}, 'reg', '${name}')"><button class='menu-entry'>${display_name}</button></li>`]);
-        number_entries.push([number, `<li onclick="show_instruction(${screen}, 'reg', '${name}')"><button class='menu-entry'>${display_number}</button></li>`]);
+        name_entries.push([name, make_menu_entry(kind, filename, display_name)]);
+        number_entries.push([number, make_menu_entry(kind, filename, display_number)]);
 
         // on hover, display the register longdesc
         const longdesc = document.createElement('para');
         longdesc.textContent = reg.longdesc;
-        definition_links[name] = make_code_ref(name, name, 'Register', 'reg', null, [longdesc]);
+        definition_links[name] = make_code_ref(name, name, 'Register', kind, null, [longdesc]);
     }
 
     add_menu_entries(menu_by_name, name_entries);
@@ -1661,6 +1609,7 @@ function add_cpuid_fields(menu, regs) {
         for (const field of fields) {
             if (field.name && field.name != "Reserved") {
                 const reg_name = reg.name;
+                const filename = reg.EAX;
                 const field_name = `CPUID_${field.name}`;
                 const display_name = field_name.replaceAll("_", "&shy;_"); // enable line breaks in long names
                 const longdesc = document.createElement('longdesc');
@@ -1668,7 +1617,7 @@ function add_cpuid_fields(menu, regs) {
                 definition_links[field_name] = make_code_ref(reg_name, field_name, 'Register', 'reg', null, [longdesc]);
 
                 const screen = 0;
-                entries.push([field_name, `<li onclick="show_instruction(${screen}, 'reg', '${reg_name}')"><button class='menu-entry'>${display_name}</button></li>`]);
+                entries.push([field_name, make_menu_entry('cpuid', filename, display_name)]);
             }
         }
     }
@@ -1679,7 +1628,7 @@ async function load_registers() {
     const msr_list_by_name = document.getElementById("msr_list_by_name");
     const msr_list_by_number = document.getElementById("msr_list_by_number");
     if (msrs.length == 0) {
-        msrs = await load_register_file(`${spec_directory1}/msrs.json`, msr_list_by_name, msr_list_by_number);
+        msrs = await load_register_file(`${spec_directory}/msrs.json`, 'msr', msr_list_by_name, msr_list_by_number);
     }
     msr_list_by_name.parentNode.style.display = msrs.length == 0 ? 'none' : 'block';
     msr_list_by_number.parentNode.style.display = msrs.length == 0 ? 'none' : 'block';
@@ -1688,7 +1637,7 @@ async function load_registers() {
     const cpuid_list_by_number = document.getElementById("cpuid_list_by_number");
     const cpuid_list_fields = document.getElementById("cpuid_list_fields");
     if (cpuids.length == 0) {
-        cpuids = await load_register_file(`${spec_directory1}/cpuid.json`, cpuid_list_by_name, cpuid_list_by_number);
+        cpuids = await load_register_file(`${spec_directory}/cpuid.json`, 'cpuid', cpuid_list_by_name, cpuid_list_by_number);
         add_cpuid_fields(cpuid_list_fields, cpuids);
     }
     cpuid_list_by_name.parentNode.style.display = cpuids.length == 0 ? 'none' : 'block';
@@ -1714,20 +1663,6 @@ const output0 = document.getElementById("iaspec1");
 const output1 = document.getElementById("iaspec2");
 const outputs = [output0, output1];
 
-let index2 = null;
-let current_what = null;
-let current_instruction = null;
-
-async function toggle_diff_view(event) {
-    if (event.target.checked) {
-        index2 = await read_index(spec_directory2);
-        show_instruction(1, current_what, current_instruction);
-        output1.style.display = "block";
-    } else {
-        output1.style.display = "none";
-    }
-}
-
 async function toggle_visibility(event, id) {
     const thing = document.getElementById(id);
     if (thing) {
@@ -1746,42 +1681,6 @@ async function toggle_class_visibility(event, cls) {
         } else {
             thing.style.display = "none";
         }
-    }
-}
-
-function get_instr_info(screen, what, instr) {
-    if (what == 'instr') {
-        let index = [ index1, index2 ];
-        for (const [name, instr_funcs, shortdesc, category, isa_sets, textfile, datafile] of index[screen]['instructions']) {
-            if (name === instr) {
-                return [shortdesc, textfile, datafile];
-            }
-        }
-    } else if (what == 'category') {
-        let index = [ index1, index2 ];
-        for (const [name, shortdesc, textfile] of index[screen]['categories']) {
-            if (name === instr) {
-                return [shortdesc, textfile, null];
-            }
-        }
-    } else {
-        let index = [ index1, index2 ];
-        for (const [name, textfile] of index[screen]['docbook']) {
-            if (name === instr) {
-                return [name, textfile, null];
-            }
-        }
-    }
-    return [null, null, null];
-}
-
-
-async function show_helper(screen, ignored, name) {
-    const helper = helper_index.get(name);
-    if (helper) {
-        outputs[screen].innerHTML = render_helper(helper);
-        if (screen == 0) { outputs[1].innerHTML = ''; }
-        set_query(`?helper=${name}`, name);
     }
 }
 
@@ -1863,81 +1762,57 @@ function render_definition_table(heading, pairs) {
     return s;
 }
 
-async function show_aux(screen, what, name) {
-    if (what == 'reg') {
-        await load_registers();
-        for (const reg of msrs) {
-            if (reg.name === name) {
-                const html = render_reg(reg);
-                set_query(`?${what}=${name}`, name);
-                return html.innerHTML; // todo: converting html back to a string is not optimal
-            }
-        }
-        for (const cpuid of cpuids) {
-            if (cpuid.name === name) {
-                const html = render_cpuid(cpuid);
-                set_query(`?${what}=${name}`, name);
-                return html.innerHTML; // todo: converting html back to a string is not optimal
-            }
-        }
-        return "";
-    }
-    const [shortdesc, textfile, datafile] = get_instr_info(screen, what, name);
-    // todo: there seems to be a race condition: removing this log command can
-    // sometimes cause failures
-    console.log('loading', textfile, datafile);
-    // Fetch the text and data files in parallel.
-    const [text_xml, data_xml] = await Promise.all([
-        textfile && read_xml_file(textfile),
-        datafile && read_xml_file(datafile),
-    ]);
-    let html = null;
-    if (text_xml && data_xml) {
-        html = render_instruction(text_xml, data_xml);
-        set_query(`?${what}=${name}`, shortdesc);
-    } else if (what == 'category') {
-            html = render_category(name, text_xml, data_xml);
-            set_query(`?${what}=${name}`, shortdesc);
-    } else if (text_xml) {
-        const text = patch_docbook(text_xml, false && what == 'docbook');
-        html = text.innerHTML;
-        set_query(`?${what}=${name}`, shortdesc);
-    } else {
-        console.log("Error while loading instruction", what, name);
-    }
-    return html;
-}
+async function patch_page() {
+    await load_all_data();
+    for (const x of Array.from(document.getElementsByTagName('sdm_entry'))) {
+        let kind = x.getAttribute('kind');
+        if (kind == "category") {
+            let textfile = x.getAttribute('file');
+            console.log("Replacing with", textfile);
+            const text = await read_xml_file(textfile);
+            x.innerHTML = render_category(text);
 
-async function show_instruction(screen, what, name) {
-    const output = outputs[screen];
-    const do_diff = output1.style.display != 'none';
+        } else if (kind == "chapter") {
+            let textfile = x.getAttribute('file');
+            let what = 'docbook';
+            const text = await read_xml_file(textfile);
+            x.replaceWith(patch_docbook(text, what == 'docbook'));
 
-    try {
-        if (do_diff) {
-            const html0 = await show_aux(0, what, name);
-            if (html0) {
-                output0.innerHTML = html0;
+        } else if (kind == "definition") {
+            let name = x.getAttribute('name');
+            const definition = definition_index.get(name);
+            console.log(name, definition, definition_index)
+            x.innerHTML = render_definition(definition);
+
+        } else if (kind == "instruction") {
+            let textfile = x.getAttribute('sdm_file');
+            let datafile = x.getAttribute('data_file');
+            const [text, data] = await Promise.all([
+                read_xml_file(textfile),
+                read_xml_file(datafile),
+            ]);
+            x.innerHTML = render_instruction(text, data);
+
+        } else if (kind == "msr") {
+            let name = x.getAttribute('name');
+            await load_registers();
+            for (const reg of msrs) {
+                if (reg.name === name) {
+                    x.replaceWith(render_reg(reg));
+                }
             }
-            const html1 = await show_aux(1, what, name);
-            output1.innerHTML = "";
-            if (html1) {
-                output1.innerHTML = html1;
-            }
-            diff_html(output0, output1);
-        } else {
-            const html = await show_aux(0, what, name);
-            if (html) {
-                output0.innerHTML = html;
+        } else if (kind == "cpuid") {
+            let leaf = x.getAttribute('leaf');
+            await load_registers();
+            for (const reg of cpuids) {
+                if (reg.EAX === leaf) {
+                    x.replaceWith(render_cpuid(reg));
+                }
             }
         }
-        set_query(`?${what}=${name}`, name);
-    } catch (err) {
-        console.log("Error while loading", name);
-        console.log(err);
     }
 }
-
-addEventListener("popstate", (event) => { check_for_query(); })
+(patch_page)();
 
 // Adapt whether menu/sidebar is active based on screen width
 function adapt_width(narrow) {

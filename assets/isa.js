@@ -105,18 +105,15 @@ function make_instruction_highlighting_table(f)
     return table;
 }
 
-function make_code_link(name, shown_name, kind, kind2) {
-    const show_fun = kind == "Instruction" ? "show_instruction"
-                     : kind == "Register" ? "show_instruction"
-                     : "show_helper";
-    const screen = 0;
-    const link = `<a onclick="${show_fun}(${screen}, '${kind2 || 'instr'}', '${name}')">${shown_name}</a>`;
+function make_code_link(filename, display_name, kind) {
+    filename = filename.replaceAll("/", "-");
+    const link = `<a href="/${kind}/${filename}.html">${display_name}</a>`;
     return link;
 }
 
 function make_code_ref(name, shown_name, kind, kind2, shortdesc, longdesc) {
     const screen = 0;
-    let link = make_code_link(name, shown_name, kind, kind2);
+    let link = make_code_link(name, shown_name, kind2);
     let tip = "";
     if (shortdesc && shortdesc != "<shortdesc><phrase/></shortdesc>") {
         tip = `${tip}${shortdesc}`;
@@ -138,24 +135,24 @@ let definition_links = {};
 function make_instruction_highlighting_table2(instructions) {
     for (const [label, instr_funcs, shortdesc, filename] of instructions) {
         for (const func of instr_funcs) {
-            definition_links[func] = make_code_ref(label, label, 'Instruction', 'instr', shortdesc, '');
+            definition_links[func] = make_code_ref(label, label, 'Instruction', 'instruction', shortdesc, '');
         }
     }
 }
 
-function make_code_highlighting_table(helpers)
+function make_code_highlighting_table(definitions)
 {
-    for (const helper of helpers.getElementsByTagName('helper')) {
-        const name = helper.getAttribute('name');
-        const kind = helper.getAttribute('kind');
-        const func = helper.getAttribute('func');
-        const use_as = helper.getAttribute('use_as');
-        const shortdesc = helper.getElementsByTagName('shortdesc')[0].outerHTML;
-        const longdesc = helper.getElementsByTagName('longdesc');
-        const fields = helper.getElementsByTagName('fields');
+    for (const definition of definitions.getElementsByTagName('definition')) {
+        const name = definition.getAttribute('name');
+        const kind = definition.getAttribute('kind');
+        const func = definition.getAttribute('func');
+        const use_as = definition.getAttribute('use_as');
+        const shortdesc = definition.getElementsByTagName('shortdesc')[0].outerHTML;
+        const longdesc = definition.getElementsByTagName('longdesc');
+        const fields = definition.getElementsByTagName('fields');
 
         const shown_name = use_as ? use_as : name;
-        const link = make_code_ref(name, shown_name, kind, 'helper', shortdesc, longdesc);
+        const link = make_code_ref(name, shown_name, kind, 'definition', shortdesc, longdesc);
         if (func) {
             definition_links[func] = link;
         } else {
@@ -166,11 +163,11 @@ function make_code_highlighting_table(helpers)
             definition_links[use_as] = link;
         }
 
-        // Register all other names defined in helper
-        for (const def of helper.getElementsByTagName('defines')) {
+        // Register all other names defined in definition
+        for (const def of definition.getElementsByTagName('defines')) {
             const dname = def.innerHTML;
             if (dname != def) {
-                definition_links[dname] = make_code_ref(dname, dname, kind, 'helper', shortdesc, longdesc);
+                definition_links[dname] = make_code_ref(dname, dname, kind, 'definition', shortdesc, longdesc);
             }
         }
 
