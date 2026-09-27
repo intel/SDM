@@ -212,7 +212,7 @@ For the official description of the Intel® Architecture, please see
       things that are illegal) and the exact meaning of tricky corner cases.
 
       We recommend that you read
-      <a href="sdm.html?docbook=The%20Intel®%20ISA%20Specification%20Language">The Intel® ISA Specification Language Reference Manual</a>
+      <a href="{{site.baseurl}}/chapter/ISA_LRM.html">The Intel® ISA Specification Language Reference Manual</a>
       and that you base tools on
       <a href="https://github.com/IntelLabs/isa-tools">ISA tools</a> (our interpreter/compiler for the language).
 

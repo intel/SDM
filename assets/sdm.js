@@ -53,7 +53,7 @@ function render_intrinsic(intrinsics) {
 function add_tooltip(text, tip, url) {
     let link = text;
     if (url) {
-        link = "<a href='" + url + "'>" + link + "</a>";
+        link = `<a href='${url}'>${link}</a>`;
     }
     if (tip) {
         link = `<div class='tooltip'>${link}<span class='tooltiptext'>${tip}</span></div>`;
@@ -1276,7 +1276,7 @@ function render_cpuid_output(parent, leaf) {
 
 function make_link(kind, filename, display_name) {
     filename = filename.replaceAll("/", "-");
-    return `<a href="/${kind}/${filename}.html">${display_name}</a>`;
+    return `<a href="${subdomain}/${kind}/${filename}.html">${display_name}</a>`;
 }
 
 function make_menu_entry(kind, filename, display_name) {
@@ -1372,7 +1372,7 @@ async function read_index(directory) {
     return await read_compressed_json_file(`${directory}/index.json.gz`);
 }
 
-let spec_directory = "/data";
+let spec_directory = `${subdomain}/data`;
 
 let main_index = [];
 (async () => {
@@ -1774,13 +1774,13 @@ async function patch_page() {
         let kind = x.getAttribute('kind');
         if (kind == "category") {
             let textfile = x.getAttribute('file');
-            const text = await read_xml_file(textfile);
+            const text = await read_xml_file(`${subdomain}/${textfile}`);
             x.innerHTML = render_category(main_index, text);
 
         } else if (kind == "chapter") {
             let textfile = x.getAttribute('file');
             let what = 'docbook';
-            const text = await read_xml_file(textfile);
+            const text = await read_xml_file(`${subdomain}/${textfile}`);
             x.replaceWith(patch_docbook(text, what == 'docbook'));
 
         } else if (kind == "definition") {
@@ -1792,8 +1792,8 @@ async function patch_page() {
             let textfile = x.getAttribute('sdm_file');
             let datafile = x.getAttribute('data_file');
             const [text, data, _i, _p] = await Promise.all([
-                read_xml_file(textfile),
-                read_xml_file(datafile),
+                read_xml_file(`${subdomain}/${textfile}`),
+                read_xml_file(`${subdomain}/${datafile}`),
                 load_intrinsics(),
                 load_performance(),
             ]);

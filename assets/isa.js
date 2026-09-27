@@ -107,7 +107,7 @@ function make_instruction_highlighting_table(f)
 
 function make_code_link(filename, display_name, kind) {
     filename = filename.replaceAll("/", "-");
-    const link = `<a href="/${kind}/${filename}.html">${display_name}</a>`;
+    const link = `<a href="${subdomain}/${kind}/${filename}.html">${display_name}</a>`;
     return link;
 }
 
