@@ -1336,16 +1336,40 @@ async function read_xml_file(url) {
     return doc;
 }
 
+async function read_compressed_xml_file(url) {
+    if (!url) {
+        return;
+    }
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const decompressed = blob.stream().pipeThrough(new DecompressionStream("gzip"));
+    const str = await new Response(decompressed).text();
+    const doc = await new DOMParser().parseFromString(str, "text/xml").documentElement;
+    return doc;
+}
+
+async function read_compressed_json_file(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+        return null;
+    }
+    const blob = await response.blob();
+    const decompressed = blob.stream().pipeThrough(new DecompressionStream("gzip"));
+    const data = await new Response(decompressed).json();
+    return data;
+}
+
 async function read_json_file(url) {
     const response = await fetch(url);
+    if (!response.ok) {
+        return null;
+    }
     const data = await response.json();
     return data;
 }
 
 async function read_index(directory) {
-    const response = await fetch(`${directory}/index.json`);
-    const data = await response.json();
-    return data;
+    return await read_compressed_json_file(`${directory}/index.json.gz`);
 }
 
 let spec_directory = "/data";
@@ -1361,7 +1385,7 @@ let main_index = [];
 
 async function load_definitions() {
     if (definition_index.size == 0) {
-        const definitions = await read_xml_file(`${spec_directory}/definitions.xml`);
+        const definitions = await read_compressed_xml_file(`${spec_directory}/definitions.xml.gz`);
         make_code_highlighting_table(definitions);
         set_definition_menu(document.getElementById("definition_list"), definitions);
     }
@@ -1371,18 +1395,14 @@ async function load_definitions() {
 var intrinsics_index = [];
 async function load_intrinsics() {
     if (intrinsics_index.length == 0) {
-        const response = await fetch(`${spec_directory}/intrinsics.xml`);
-        const data = await response.text();
-        const parser = new DOMParser();
-        intrinsics_index = parser.parseFromString(data, "text/xml");
+        intrinsics_index = await read_compressed_xml_file(`${spec_directory}/intrinsics.xml.gz`);
     }
 }
 
 let performance_index = {};
 async function load_performance() {
     if (performance_index.length == 0) {
-        const response = await fetch(`${spec_directory}/perf2.json`);
-        performance_index = await response.json();
+        performance_index = await read_compressed_json_file(`${spec_directory}/perf2.json.gz`) || {};
     }
 }
 
@@ -1429,35 +1449,32 @@ let current_isa_sets = null;
 let chips = {};
 async function load_chips() {
     if (chips.length == 0) {
-        const response = await fetch(`/chips.json`);
+        chips = await read_json_file(`/chips.json`) || {};
+        const chips_menu = document.getElementById("chip_list");
         let isa_sets = new Set([]);
-        if (response.ok) {
-            chips = await response.json();
-            const chips_menu = document.getElementById("chip_list");
-            for (const [chip, cpuid_groups] of Object.entries(chips)) {
-                for (const [cpuid, expansion] of Object.entries(cpuid_groups)) {
-                    isa_sets.add(cpuid);
-                    let ex = [];
-                    for (const [key, e] of Object.entries(expansion)) {
-                        ex.push(...e);
-                    }
-                    cpuid_expansions[cpuid] = ex;
+        for (const [chip, cpuid_groups] of Object.entries(chips)) {
+            for (const [cpuid, expansion] of Object.entries(cpuid_groups)) {
+                isa_sets.add(cpuid);
+                let ex = [];
+                for (const [key, e] of Object.entries(expansion)) {
+                    ex.push(...e);
                 }
-                let id = 'chip_' + chip;
-                let select = 'select_chip_' + chip;
-                let display_name = format_chip_name(chip);
-                // const input = `<button class='menu-entry'>${display_name}</button>`;
-                const input = `<input type='radio' id='${select}' name='chip'/><label for='${select}' class='menu_entry'>${display_name}</label>`;
-                const menu_entry = `<li id=${id} onclick="set_chip_filter('${chip}')">${input}</li>`;
-                chips_menu.insertAdjacentHTML("afterbegin", menu_entry);
+                cpuid_expansions[cpuid] = ex;
             }
-            current_isa_sets = isa_sets;
-            if (! isEmptyObject(chips)) {
-                // Iterate up stack marking all parents as visible
-                for (let node = chips_menu; node; node = node.parentNode) {
-                    if (node.style && node.style.display == 'none') {
-                        node.style.display = 'block';
-                    }
+            let id = 'chip_' + chip;
+            let select = 'select_chip_' + chip;
+            let display_name = format_chip_name(chip);
+            // const input = `<button class='menu-entry'>${display_name}</button>`;
+            const input = `<input type='radio' id='${select}' name='chip'/><label for='${select}' class='menu_entry'>${display_name}</label>`;
+            const menu_entry = `<li id=${id} onclick="set_chip_filter('${chip}')">${input}</li>`;
+            chips_menu.insertAdjacentHTML("afterbegin", menu_entry);
+        }
+        current_isa_sets = isa_sets;
+        if (! isEmptyObject(chips)) {
+            // Iterate up stack marking all parents as visible
+            for (let node = chips_menu; node; node = node.parentNode) {
+                if (node.style && node.style.display == 'none') {
+                    node.style.display = 'block';
                 }
             }
         }
@@ -1529,11 +1546,7 @@ let msrs = [];
 
 // Load File of registers (if not already loaded)
 async function load_register_file(filename, kind, menu_by_name, menu_by_number) {
-    const response = await fetch(filename);
-    if (!response.ok) {
-        return [];
-    }
-    const regs = await response.json();
+    const regs = await read_json_file(filename) || [];
 
     let name_entries = [];
     let number_entries = [];
