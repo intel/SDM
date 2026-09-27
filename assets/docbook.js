@@ -71,7 +71,6 @@ function patch_figures(xml) {
     // Some SVG generation tools insert <title> elements and displaying
     // them is really, really ugly.
     for (const x of Array.from(xml.getElementsByTagName('svg'))) {
-        console.log("found svg", x);
         for (const y of Array.from(x.getElementsByTagName('title'))) {
             y.remove()
         }

@@ -1,15 +1,12 @@
 "use strict";
 
-////////////////////////////////////////////////////////////////
-//
-////////////////////////////////////////////////////////////////
+// Copyright (C) 2025-2026 Intel Corporation
 
 function mk_other_links(code, extra_links) {
     let links = [];
     for (const ref of code.getElementsByTagName('other-copy')) {
         const f = ref.textContent;
         const link = extra_links[f];
-        // console.log(f, link);
         if (link) {
             links.push(link);
         } else {
@@ -328,7 +325,6 @@ function render_iform_groups(sizes, inputs, outputs, footnotes, iformss) {
     // filter out empty CPUID/size columns
     if (all_rows.every(row => row['CPUID'] == '')) {
         grouped_headings.map(gh => gh[2] = gh[2].filter(h => h != "CPUID"));
-        // console.log(grouped_headings);
     }
 
     // return mk_flat_table(headings, all_rows, footnotes);
@@ -670,7 +666,7 @@ function render_related(name, data_xml) {
     }
 }
 
-function render_instruction(text_xml, data_xml) {
+function render_instruction(intrinsics_idx, performance_idx, text_xml, data_xml) {
     text_xml = patch_docbook(text_xml, false);
     data_xml = patch_docbook(data_xml, false);
     const extra_links = make_instruction_highlighting_table(data_xml)
@@ -683,7 +679,7 @@ function render_instruction(text_xml, data_xml) {
     const operations = data_xml.getElementsByTagName('operation');
     const xrefs      = data_xml.getElementsByTagName('xref');
     const xed_names = Array.from(data_xml.getElementsByTagName('iform')).map((i) => i.getAttribute('xed_iform'));
-    const intrinsics = find_intrinsics(xed_names);
+    const intrinsics = find_intrinsics(intrinsics_idx, xed_names);
 
     let section = `<h1>${name}—${shortdesc.innerHTML}</h1>`;
     section += render_categories("Instruction categories: ", data_xml);
@@ -718,7 +714,7 @@ function render_instruction(text_xml, data_xml) {
     const footnotes = data_xml.querySelectorAll(':scope > footnote'); // direct children are footnotes for the encoding table
     const iform_groups = filter_iforms(data_xml.getElementsByTagName('iform-group'));
     section += render_iform_groups(sizes, inputs, outputs, footnotes, iform_groups);
-    section += render_iforms_solo(iform_groups, intrinsics, performance, extra_links);
+    section += render_iforms_solo(iform_groups, intrinsics, performance_idx, extra_links);
     section += `<h2>Description</h2>${longdesc.innerHTML}`;
 
     // On pages that have specs for multiple instructions such as ROR/RCL/..., we need
@@ -812,7 +808,7 @@ function render_definition(definition) {
 }
 
 
-function render_category(text_xml) {
+function render_category(index1, text_xml) {
     const name = text_xml.getElementsByTagName('name')[0].innerHTML;
     const short = patch_docbook(text_xml.getElementsByTagName('shortdesc')[0], false);
     const long = patch_docbook(text_xml.getElementsByTagName('longdesc')[0], false);
@@ -841,7 +837,6 @@ function render_category(text_xml) {
     // Find ancestor and descendent categories
     let above = [];
     let below = [];
-    console.log(name);
     for (const [c_name, c_shortdesc, f] of index1['categories']) {
         if (c_name && name != c_name) {
             if (name.startsWith(c_name)) {
@@ -1355,13 +1350,13 @@ async function read_index(directory) {
 
 let spec_directory = "/data";
 
-let index1 = [];
+let main_index = [];
 (async () => {
-    index1 = await read_index(spec_directory);
-    make_instruction_highlighting_table2(index1['instructions']);
-    set_instruction_menu(document.getElementById("instruction_menu"), index1['instructions']);
-    set_docbook_menu(document.getElementById("docs_list"), index1['chapters']);
-    set_category_menu(document.getElementById("category_list"), index1['categories']);
+    main_index = await read_index(spec_directory);
+    make_instruction_highlighting_table2(main_index['instructions']);
+    set_instruction_menu(document.getElementById("instruction_menu"), main_index['instructions']);
+    set_docbook_menu(document.getElementById("docs_list"), main_index['chapters']);
+    set_category_menu(document.getElementById("category_list"), main_index['categories']);
 })();
 
 async function load_definitions() {
@@ -1373,21 +1368,21 @@ async function load_definitions() {
 }
 
 // Read instrinsics database
-var intrinsics = [];
+var intrinsics_index = [];
 async function load_intrinsics() {
-    if (intrinsics.length == 0) {
+    if (intrinsics_index.length == 0) {
         const response = await fetch(`${spec_directory}/intrinsics.xml`);
         const data = await response.text();
         const parser = new DOMParser();
-        intrinsics = parser.parseFromString(data, "text/xml");
+        intrinsics_index = parser.parseFromString(data, "text/xml");
     }
 }
 
-let performance = {};
+let performance_index = {};
 async function load_performance() {
-    if (performance.length == 0) {
+    if (performance_index.length == 0) {
         const response = await fetch(`${spec_directory}/perf2.json`);
-        performance = await response.json();
+        performance_index = await response.json();
     }
 }
 
@@ -1472,8 +1467,6 @@ async function load_chips() {
 async function load_all_data() {
     await Promise.all([
         load_definitions(),
-        load_intrinsics(),
-        load_performance(),
         load_chips(),
     ]);
 }
@@ -1482,7 +1475,7 @@ function set_chip_filter(chip) {
     const cpuid_groups = chips[chip];
     console.log(`Selecting chip ${chip} with cpuid groups ${cpuid_groups}`);
     current_isa_sets = new Set(Object.getOwnPropertyNames(cpuid_groups));
-    update_filter();
+    update_filter(main_index);
 }
 
 function toggle_cpuid_view(event) {
@@ -1495,11 +1488,11 @@ function toggle_cpuid_view(event) {
             current_isa_sets.delete(group);
         }
     }
-    update_filter();
+    update_filter(main_index);
 }
 
 
-function update_filter() {
+function update_filter(index1) {
     const index = index1['instructions'];
     for (const entry of index) {
         const isa_set = entry[4];
@@ -1647,9 +1640,9 @@ async function load_registers() {
 
 (load_registers)();
 
-function find_intrinsics(xed_names) {
+function find_intrinsics(intrinsics_idx, xed_names) {
     let rs = [];
-    for (const intrinsic of intrinsics.getElementsByTagName('intrinsic')) {
+    for (const intrinsic of intrinsics_idx.getElementsByTagName('intrinsic')) {
         for (const instruction of intrinsic.getElementsByTagName('instruction')) {
             if (xed_names.includes(instruction.getAttribute('xed'))) {
                 rs.push(intrinsic);
@@ -1768,9 +1761,8 @@ async function patch_page() {
         let kind = x.getAttribute('kind');
         if (kind == "category") {
             let textfile = x.getAttribute('file');
-            console.log("Replacing with", textfile);
             const text = await read_xml_file(textfile);
-            x.innerHTML = render_category(text);
+            x.innerHTML = render_category(main_index, text);
 
         } else if (kind == "chapter") {
             let textfile = x.getAttribute('file');
@@ -1781,17 +1773,18 @@ async function patch_page() {
         } else if (kind == "definition") {
             let name = x.getAttribute('name');
             const definition = definition_index.get(name);
-            console.log(name, definition, definition_index)
             x.innerHTML = render_definition(definition);
 
         } else if (kind == "instruction") {
             let textfile = x.getAttribute('sdm_file');
             let datafile = x.getAttribute('data_file');
-            const [text, data] = await Promise.all([
+            const [text, data, _i, _p] = await Promise.all([
                 read_xml_file(textfile),
                 read_xml_file(datafile),
+                load_intrinsics(),
+                load_performance(),
             ]);
-            x.innerHTML = render_instruction(text, data);
+            x.innerHTML = render_instruction(intrinsics_index, performance_index, text, data);
 
         } else if (kind == "msr") {
             let name = x.getAttribute('name');
@@ -1833,9 +1826,11 @@ function adapt_width(narrow) {
     }
 }
 
-var narrow_screen = window.matchMedia("(max-width: 70rem)");
-adapt_width(narrow_screen);
-narrow_screen.addEventListener("change", function() { adapt_width(narrow_screen); });
+{
+    var narrow_screen = window.matchMedia("(max-width: 70rem)");
+    adapt_width(narrow_screen);
+    narrow_screen.addEventListener("change", function() { adapt_width(narrow_screen); });
+}
 
 
 ////////////////////////////////////////////////////////////////
