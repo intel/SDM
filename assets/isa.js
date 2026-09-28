@@ -90,30 +90,35 @@ ISA_keywords.forEach(t => {
     keyword_text[t] = "<span class='isa_keyword'>" + t + "</span>"
 })
 
-function make_instruction_highlighting_table(f)
-{
+function make_instruction_highlighting_table(f) {
     let table = {};
     return table; // TODO
-    f.inputs.forEach(input => {
-        const tip = `Input ${input.name} : ${input.type}`;
-        table[input.name] = add_tooltip(input.name, tip, null);
-    });
-    f.outputs.forEach(output => {
-        const tip = `Output ${output.name} : ${output.type}`;
-        table[output.name] = add_tooltip(output.name, tip, null);
-    });
-    return table;
 }
 
-function make_code_link(filename, display_name, kind) {
-    filename = filename.replaceAll("/", "-");
-    const link = `<a href="${subdomain}/${kind}/${filename}.html">${display_name}</a>`;
+function extend_instruction_highlighting_table_for_instruction(table, f) {
+    for (const x of f.getElementsByTagName('input')) {
+        const name = x.getAttribute('name');
+        const type = x.getAttribute('type');
+        const tip = `Input ${name} : ${type}`;
+        table[name] = add_tooltip(name, tip, null);
+    };
+    for (const x of f.getElementsByTagName('output')) {
+        const name = x.getAttribute('name');
+        const type = x.getAttribute('type');
+        const tip = `Output ${name} : ${type}`;
+        table[name] = add_tooltip(name, tip, null);
+    };
+}
+
+function make_code_link(basename, display_name, kind) {
+    basename = basename.replaceAll("/", "-");
+    const link = `<a href="${subdomain}/${kind}/${basename}.html">${display_name}</a>`;
     return link;
 }
 
-function make_code_ref(name, shown_name, kind, kind2, shortdesc, longdesc) {
+function make_code_ref(shown_name, kind, kind2, shortdesc, longdesc, basename) {
     const screen = 0;
-    let link = make_code_link(name, shown_name, kind2);
+    let link = make_code_link(basename, shown_name, kind2);
     let tip = "";
     if (shortdesc && shortdesc != "<shortdesc><phrase/></shortdesc>") {
         tip = `${tip}${shortdesc}`;
@@ -133,14 +138,14 @@ function make_code_ref(name, shown_name, kind, kind2, shortdesc, longdesc) {
 let definition_links = {};
 
 function make_instruction_highlighting_table2(instructions) {
-    for (const [label, instr_funcs, shortdesc, filename] of instructions) {
+    for (const [label, instr_funcs, shortdesc, categories, isa_sets, sdm_filename, xml_filename, basename] of instructions) {
         for (const func of instr_funcs) {
-            definition_links[func] = make_code_ref(label, label, 'Instruction', 'instruction', shortdesc, '');
+            definition_links[func] = make_code_ref(label, 'Instruction', 'instruction', shortdesc, '', basename);
         }
     }
 }
 
-function make_code_highlighting_table(definitions)
+function make_code_highlighting_table(definitions, index)
 {
     for (const definition of definitions.getElementsByTagName('definition')) {
         const name = definition.getAttribute('name');
@@ -150,9 +155,10 @@ function make_code_highlighting_table(definitions)
         const shortdesc = definition.getElementsByTagName('shortdesc')[0].outerHTML;
         const longdesc = definition.getElementsByTagName('longdesc');
         const fields = definition.getElementsByTagName('fields');
+        const basename = index[name][2];
 
         const shown_name = use_as ? use_as : name;
-        const link = make_code_ref(name, shown_name, kind, 'definition', shortdesc, longdesc);
+        const link = make_code_ref(shown_name, kind, 'definition', shortdesc, longdesc, basename);
         if (func) {
             definition_links[func] = link;
         } else {
@@ -167,7 +173,7 @@ function make_code_highlighting_table(definitions)
         for (const def of definition.getElementsByTagName('defines')) {
             const dname = def.innerHTML;
             if (dname != def) {
-                definition_links[dname] = make_code_ref(dname, dname, kind, 'definition', shortdesc, longdesc);
+                definition_links[dname] = make_code_ref(dname, kind, 'definition', shortdesc, longdesc, basename);
             }
         }
 
@@ -179,7 +185,7 @@ function make_code_highlighting_table(definitions)
                 const flong  = field.getAttribute('longdesc');
                 const fshown = `${name}.${field.name}`;
                 const flabel = `Register_field_${fshown}`;
-                const flink = make_code_ref(fname, fshown, 'Register_field', 'instr', fshort, flong);
+                const flink = make_code_ref(fshown, 'Register_field', 'instr', fshort, flong, basename);
                 definition_links[flabel] = flink;
             }
         }

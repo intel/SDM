@@ -34,8 +34,10 @@ function mk_callgraph(operation, extra_links) {
 
 function render_operation(operation, extra_links) {
     let section = "";
-    section += render_ISA(operation.getElementsByTagName('code'), extra_links);
-    section += mk_callgraph(operation, extra_links);
+    let io_links = {};
+    extend_instruction_highlighting_table_for_instruction(io_links, operation);
+    section += render_ISA(operation.getElementsByTagName('code'), io_links);
+    section += mk_callgraph(operation, io_links);
     return section;
 }
 
@@ -817,19 +819,21 @@ function render_category(index1, text_xml) {
 
     const index = index1['instructions'];
     let instrs = [];
-    for (const [label, instr_name, shortdesc, categories, isa_sets, textfile, datafile] of index) {
+    for (const [label, instr_name, shortdesc, categories, isa_sets, textfile, datafile, basename] of index) {
         if (categories.includes(name)) {
-            instrs.push([make_code_link(label, label, 'instruction'), shortdesc]);
+            instrs.push([make_code_link(basename, label, 'instruction'), shortdesc]);
         }
     }
     s += render_definition_table('<h2>Instructions</h2>', instrs);
 
+    const def_index = index1['definitions'];
     let definitions = [];
-    for (const [definition_name, definition] of definition_index.entries()) {
-        const categories = Array.from(definition.getElementsByTagName('category')).map((x) => x.textContent);
-        if (categories.includes(name)) {
+    for (const [definition_name, data] of Object.entries(def_index)) {
+        const [kind, category, basename, defines] = data;
+        if (category == name) {
+            const definition = definition_index.get(definition_name);
             const shortdesc = definition.getElementsByTagName('shortdesc')[0].innerHTML;
-            definitions.push([make_code_link(definition_name, definition_name, 'definition'), shortdesc]);
+            definitions.push([make_code_link(basename, definition_name, 'definition'), shortdesc]);
         }
     }
     s += render_definition_table('<h2>Definitions</h2>', definitions);
@@ -1287,8 +1291,9 @@ function make_menu_entry(kind, filename, display_name) {
 function set_instruction_menu(menu, index) {
     for (const entry of index) {
         const name = entry[0];
+        const basename = entry[7]
         const display_name = name.replaceAll("/", "/<wbr>");
-        const menu_entry = make_menu_entry('instruction', name, display_name);
+        const menu_entry = make_menu_entry('instruction', basename, display_name);
         menu.insertAdjacentHTML("beforeend", menu_entry);
     };
 }
@@ -1304,15 +1309,24 @@ function set_docbook_menu(menu, index) {
 
 let definition_index = new Map();
 
-function set_definition_menu(menu, definitions) {
+function set_definition_menu(menu, definitions, index) {
     for (const definition of definitions.getElementsByTagName('definition')) {
         const name = definition.getAttribute('name');
-        for (const dnm of definition.getElementsByTagName('defines')) {
-            const nm = dnm.innerHTML
-            const display_name = nm.replaceAll("_", "&shy;_");
-            const menu_entry = make_menu_entry('definition', nm, display_name);
-            menu.insertAdjacentHTML("beforeend", menu_entry);
-            definition_index.set(nm, definition);
+        const entry = index[name];
+        const display_name = name;
+        const basename = entry[2];
+        const menu_entry = make_menu_entry('definition', basename, display_name);
+        menu.insertAdjacentHTML("beforeend", menu_entry);
+        definition_index.set(display_name, definition);
+
+        const defines = entry[3];
+        for (const dnm of defines) {
+            if (dnm != display_name) {
+                const display_name = dnm.replaceAll("_", "&shy;_");
+                const menu_entry = make_menu_entry('definition', basename, display_name);
+                menu.insertAdjacentHTML("beforeend", menu_entry);
+                definition_index.set(dnm, definition);
+            }
         }
     };
 }
@@ -1375,19 +1389,22 @@ async function read_index(directory) {
 let spec_directory = `${subdomain}/data`;
 
 let main_index = [];
-(async () => {
-    main_index = await read_index(spec_directory);
-    make_instruction_highlighting_table2(main_index['instructions']);
-    set_instruction_menu(document.getElementById("instruction_menu"), main_index['instructions']);
-    set_docbook_menu(document.getElementById("docs_list"), main_index['chapters']);
-    set_category_menu(document.getElementById("category_list"), main_index['categories']);
-})();
+async function load_main_index() {
+    if (Object.keys(main_index).length == 0) {
+        main_index = await read_index(spec_directory);
+        make_instruction_highlighting_table2(main_index['instructions']);
+        set_instruction_menu(document.getElementById("instruction_menu"), main_index['instructions']);
+        set_docbook_menu(document.getElementById("docs_list"), main_index['chapters']);
+        set_category_menu(document.getElementById("category_list"), main_index['categories']);
+    }
+}
 
 async function load_definitions() {
     if (definition_index.size == 0) {
+        // await load_main_index();
         const definitions = await read_compressed_xml_file(`${spec_directory}/definitions.xml.gz`);
-        make_code_highlighting_table(definitions);
-        set_definition_menu(document.getElementById("definition_list"), definitions);
+        set_definition_menu(document.getElementById("definition_list"), definitions, main_index['definitions']);
+        make_code_highlighting_table(definitions, main_index['definitions']);
     }
 }
 
@@ -1401,7 +1418,7 @@ async function load_intrinsics() {
 
 let performance_index = {};
 async function load_performance() {
-    if (performance_index.length == 0) {
+    if (isEmptyObject(performance_index)) {
         performance_index = await read_compressed_json_file(`${spec_directory}/perf2.json.gz`) || {};
     }
 }
@@ -1483,6 +1500,7 @@ async function load_chips() {
 
 async function load_all_data() {
     await Promise.all([
+        load_main_index(),
         load_definitions(),
         load_chips(),
     ]);
@@ -1552,18 +1570,18 @@ async function load_register_file(filename, kind, menu_by_name, menu_by_number) 
     let number_entries = [];
     for (const reg of regs) {
         const name = reg.name;
-        const filename = kind == "cpuid" ? reg.EAX : name;
+        const basename = kind == "cpuid" ? reg.EAX : name;
         const display_name = name.replaceAll("_", "&shy;_"); // enable line breaks in long names
         const number = render_register_number(reg);
         const display_number = `${number} &mdash; ${name}`;
 
-        name_entries.push([name, make_menu_entry(kind, filename, display_name)]);
-        number_entries.push([number, make_menu_entry(kind, filename, display_number)]);
+        name_entries.push([name, make_menu_entry(kind, basename, display_name)]);
+        number_entries.push([number, make_menu_entry(kind, basename, display_number)]);
 
         // on hover, display the register longdesc
         const longdesc = document.createElement('para');
         longdesc.textContent = reg.longdesc;
-        definition_links[name] = make_code_ref(name, name, 'Register', kind, null, [longdesc]);
+        definition_links[name] = make_code_ref(name, 'Register', kind, null, [longdesc], basename);
     }
 
     add_menu_entries(menu_by_name, name_entries);
@@ -1615,15 +1633,15 @@ function add_cpuid_fields(menu, regs) {
         for (const field of fields) {
             if (field.name && field.name != "Reserved") {
                 const reg_name = reg.name;
-                const filename = reg.EAX;
+                const basename = reg.EAX;
                 const field_name = `CPUID_${field.name}`;
                 const display_name = field_name.replaceAll("_", "&shy;_"); // enable line breaks in long names
                 const longdesc = document.createElement('longdesc');
                 longdesc.innerHTML = `${render_cpuid_label(eax, ecx, key+"."+field.name)} &mdash; ${field.longdesc}`;
-                definition_links[field_name] = make_code_ref(reg_name, field_name, 'Register', 'reg', null, [longdesc]);
+                definition_links[field_name] = make_code_ref(field_name, 'Register', 'reg', null, [longdesc], basename);
 
                 const screen = 0;
-                entries.push([field_name, make_menu_entry('cpuid', filename, display_name)]);
+                entries.push([field_name, make_menu_entry('cpuid', basename, display_name)]);
             }
         }
     }

@@ -190,6 +190,10 @@ If you give Intel any comments or suggestions related to this document or the in
   <callee>Std::Integer::Positive_Divide</callee>
   <callee>Std::Integer::Subtract</callee>
   <callee>Std::Bits::Zero</callee>
+  <input name="element_size" type="Integer"/>
+  <input name="register_size" type="Integer"/>
+  <input name="src" type="Bits(register_size)"/>
+  <output name="result" type="Bits(register_size)"/>
   </operation>
  <iform-group>
   <iform name="MOVDDUP_XMMdq_XMMq" xed_iform="MOVDDUP_XMMdq_XMMq" encoding="F2 0F 12 /r" opcode="12" valid32="V" valid64="V">
@@ -320,6 +324,8 @@ If you give Intel any comments or suggestions related to this document or the in
   <code>let result := src ++ src;</code>
   <callee>Std::Integer::Add</callee>
   <callee>Std::Bits::Append</callee>
+  <input name="src" type="Bits(64)"/>
+  <output name="result" type="Bits(128)"/>
   </operation>
  <iform-group>
   <iform name="VMOVDDUP_XMMdq_XMMq" xed_iform="VMOVDDUP_XMMdq_XMMq" encoding="VEX.L0.F2.0F.WIG 12 /r" opcode="12" valid32="V" valid64="V">
@@ -786,6 +792,10 @@ If you give Intel any comments or suggestions related to this document or the in
   <code>result[0 *: 64] := if k[0] == 0b1 then src else old[0 *: 64];</code>
   <code>result[1 *: 64] := if k[0] == 0b1 then src else old[1 *: 64];</code>
   <callee>Std::Bits::Eq</callee>
+  <input name="old" type="Bits(128)"/>
+  <input name="k" type="Bits(64)"/>
+  <input name="src" type="Bits(64)"/>
+  <output name="result" type="Bits(128)"/>
   </operation>
  <operation name="VMOVDDUP_64_z" variant_kind="Zeroing variant" mnemonic="VMOVDDUP">
   <code>var result : Bits(128);</code>
@@ -793,6 +803,9 @@ If you give Intel any comments or suggestions related to this document or the in
   <code>result[1 *: 64] := if k[1] == 0b1 then src else Zero(64);</code>
   <callee>Std::Bits::Eq</callee>
   <callee>Std::Bits::Zero</callee>
+  <input name="k" type="Bits(64)"/>
+  <input name="src" type="Bits(64)"/>
+  <output name="result" type="Bits(128)"/>
   </operation>
  <operation name="VMOVDDUP_m" variant_kind="Masking variant" mnemonic="VMOVDDUP">
   <code>let elements := register_size / element_size;</code>
@@ -814,6 +827,12 @@ If you give Intel any comments or suggestions related to this document or the in
   <callee>Std::Integer::Subtract</callee>
   <callee>Std::Bits::Eq</callee>
   <callee>Std::Bits::Zero</callee>
+  <input name="element_size" type="Integer"/>
+  <input name="register_size" type="Integer"/>
+  <input name="old" type="Bits(register_size)"/>
+  <input name="k" type="Bits(64)"/>
+  <input name="src" type="Bits(register_size)"/>
+  <output name="result" type="Bits(register_size)"/>
   </operation>
  <operation name="VMOVDDUP_z" variant_kind="Zeroing variant" mnemonic="VMOVDDUP">
   <code>let elements := register_size / element_size;</code>
@@ -835,6 +854,11 @@ If you give Intel any comments or suggestions related to this document or the in
   <callee>Std::Integer::Subtract</callee>
   <callee>Std::Bits::Eq</callee>
   <callee>Std::Bits::Zero</callee>
+  <input name="element_size" type="Integer"/>
+  <input name="register_size" type="Integer"/>
+  <input name="k" type="Bits(64)"/>
+  <input name="src" type="Bits(register_size)"/>
+  <output name="result" type="Bits(register_size)"/>
   </operation>
  <iform-group>
   <iform name="VMOVDDUP_YMMf64_MASKmskw_MEMf64_AVX512_MASK" xed_iform="VMOVDDUP_YMMf64_MASKmskw_MEMf64_AVX512" encoding="EVEX.L1.F2.0F.W1 12 /r" opcode="12" valid32="V" valid64="V">

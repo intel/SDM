@@ -84,7 +84,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTSg2Sf?(element_size, register_size, src_size, result_element_size, src1, src2, context, mod);</code>
+     <code>let result := Instr_CVTSg2Sf?(element_size, register_size, result_element_size, src_size, src1, src2, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -98,8 +98,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX_FP16"><cpuid-flag>AVX_FP16</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="src_size" size="32"/>
    <encoding-size name="result_element_size" size="16"/>
+   <encoding-size name="src_size" size="32"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -165,7 +165,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTSg2Sf?(element_size, register_size, src_size, result_element_size, src1, src2, context, mod);</code>
+     <code>let result := Instr_CVTSg2Sf?(element_size, register_size, result_element_size, src_size, src1, src2, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -179,8 +179,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX_FP16"><cpuid-flag>AVX_FP16</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="src_size" size="128"/>
    <encoding-size name="result_element_size" size="16"/>
+   <encoding-size name="src_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -227,6 +227,15 @@ If you give Intel any comments or suggestions related to this document or the in
   <var-used>MXCSR</var-used>
   <other-copy>CVTSD2SS</other-copy>
   <other-copy>VCVTSD2SH</other-copy>
+  <input name="element_size" type="Integer"/>
+  <input name="register_size" type="Integer"/>
+  <input name="result_element_size" type="Integer"/>
+  <input name="src_size" type="Integer"/>
+  <input name="src1" type="Bits(register_size)"/>
+  <input name="src2" type="Bits(src_size)"/>
+  <input name="context" type="Instruction_Context"/>
+  <input name="mod" type="Bits(2)"/>
+  <output name="result" type="Bits(register_size)"/>
   </operation>
  <iform-group>
   <iform name="VCVTSS2SH_XMMf16_MASKmskw_XMMf16_MEMf32_AVX512_MASK" xed_iform="VCVTSS2SH_XMMf16_MASKmskw_XMMf16_MEMf32_AVX512" encoding="EVEX.128.NP.MAP5.W0 1D /r" opcode="1d" valid32="V" valid64="V">
@@ -296,7 +305,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTSg2Sf_m?(element_size, register_size, src_size, result_element_size, old, k, src1, src2, context, mod);</code>
+     <code>let result := Instr_CVTSg2Sf_m?(element_size, register_size, result_element_size, src_size, old, k, src1, src2, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -312,8 +321,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="src_size" size="32"/>
    <encoding-size name="result_element_size" size="16"/>
+   <encoding-size name="src_size" size="32"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -382,7 +391,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTSg2Sf_m?(element_size, register_size, src_size, result_element_size, old, k, src1, src2, context, mod);</code>
+     <code>let result := Instr_CVTSg2Sf_m?(element_size, register_size, result_element_size, src_size, old, k, src1, src2, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -398,8 +407,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="src_size" size="128"/>
    <encoding-size name="result_element_size" size="16"/>
+   <encoding-size name="src_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -482,7 +491,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTSg2Sf_z?(element_size, register_size, src_size, result_element_size, k, src1, src2, context, mod);</code>
+     <code>let result := Instr_CVTSg2Sf_z?(element_size, register_size, result_element_size, src_size, k, src1, src2, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -498,8 +507,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="src_size" size="32"/>
    <encoding-size name="result_element_size" size="16"/>
+   <encoding-size name="src_size" size="32"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -567,7 +576,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTSg2Sf_z?(element_size, register_size, src_size, result_element_size, k, src1, src2, context, mod);</code>
+     <code>let result := Instr_CVTSg2Sf_z?(element_size, register_size, result_element_size, src_size, k, src1, src2, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -583,8 +592,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="src_size" size="128"/>
    <encoding-size name="result_element_size" size="16"/>
+   <encoding-size name="src_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -635,6 +644,17 @@ If you give Intel any comments or suggestions related to this document or the in
   <var-used>MXCSR</var-used>
   <other-copy>CVTSD2SS</other-copy>
   <other-copy>VCVTSD2SH</other-copy>
+  <input name="element_size" type="Integer"/>
+  <input name="register_size" type="Integer"/>
+  <input name="result_element_size" type="Integer"/>
+  <input name="src_size" type="Integer"/>
+  <input name="old" type="Bits(register_size)"/>
+  <input name="k" type="Bits(64)"/>
+  <input name="src1" type="Bits(register_size)"/>
+  <input name="src2" type="Bits(src_size)"/>
+  <input name="context" type="Instruction_Context"/>
+  <input name="mod" type="Bits(2)"/>
+  <output name="result" type="Bits(register_size)"/>
   </operation>
  <operation name="CVTSg2Sf_z" variant_kind="Zeroing variant" mnemonic="VCVTSS2SH">
   <code>let denormals_are_zeros := FP::Get_DAZ(element_size);</code>
@@ -669,6 +689,16 @@ If you give Intel any comments or suggestions related to this document or the in
   <var-used>MXCSR</var-used>
   <other-copy>CVTSD2SS</other-copy>
   <other-copy>VCVTSD2SH</other-copy>
+  <input name="element_size" type="Integer"/>
+  <input name="register_size" type="Integer"/>
+  <input name="result_element_size" type="Integer"/>
+  <input name="src_size" type="Integer"/>
+  <input name="k" type="Bits(64)"/>
+  <input name="src1" type="Bits(register_size)"/>
+  <input name="src2" type="Bits(src_size)"/>
+  <input name="context" type="Instruction_Context"/>
+  <input name="mod" type="Bits(2)"/>
+  <output name="result" type="Bits(register_size)"/>
   </operation>
  <iform-group>
   <iform name="VCVTSS2SH_XMMf16_MASKmskw_XMMf16_XMMf32_AVX512_MASK_1" xed_iform="VCVTSS2SH_XMMf16_MASKmskw_XMMf16_XMMf32_AVX512" encoding="EVEX.128.NP.MAP5.W0 1D /r" opcode="1d" valid32="V" valid64="V">
@@ -723,7 +753,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTSg2Sf_m?(element_size, register_size, src_size, result_element_size, old, k, src1, src2, context, mod);</code>
+     <code>let result := Instr_CVTSg2Sf_m?(element_size, register_size, result_element_size, src_size, old, k, src1, src2, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -740,8 +770,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="src_size" size="128"/>
    <encoding-size name="result_element_size" size="16"/>
+   <encoding-size name="src_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -809,7 +839,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTSg2Sf_z?(element_size, register_size, src_size, result_element_size, k, src1, src2, context, mod);</code>
+     <code>let result := Instr_CVTSg2Sf_z?(element_size, register_size, result_element_size, src_size, k, src1, src2, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -826,8 +856,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512_FP16_SCALAR_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="src_size" size="128"/>
    <encoding-size name="result_element_size" size="16"/>
+   <encoding-size name="src_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -849,8 +879,8 @@ If you give Intel any comments or suggestions related to this document or the in
  <category>fp/conversion</category>
  <size name="element_size"/>
  <size name="register_size"/>
- <size name="src_size"/>
  <size name="result_element_size"/>
+ <size name="src_size"/>
  <input name="src1"/>
  <input name="src2"/>
  <output name="result"/>

@@ -92,70 +92,21 @@ If you give Intel any comments or suggestions related to this document or the in
   </iform-group>
  <operation name="LSS" variant_kind="Standard variant" mnemonic="LSS">
   <code>let ss_selector : Segment_Selector := segment_selector;</code>
-  <code>let mode := Current_Mode();</code>
   <code></code>
-  <code>if mode in { Real_Address_Mode, Virtual_8086_Mode } then</code>
-  <code>    SS := Load_Real_Or_VM86_Segment(mode, ss_selector, SS);</code>
-  <code>else</code>
-  <code>    if In_64Bit_Mode() then</code>
-  <code>        if Is_Null_Segment_Selector(ss_selector) then</code>
-  <code>            if Unsigned(ss_selector.RPL) == 3 or Unsigned(ss_selector.RPL) != CPL then</code>
-  <code>                Report_General_Protection_Exception!(Zero(32));</code>
-  <code>            endif;</code>
-  <code>        endif;</code>
-  <code>    else // protected mode</code>
-  <code>        if Is_Null_Segment_Selector(ss_selector) then</code>
-  <code>            Report_General_Protection_Exception!(Zero(32));</code>
-  <code>        endif;</code>
-  <code>    endif;</code>
-  <code></code>
-  <code>    if Unsigned(ss_selector.RPL) != CPL then</code>
-  <code>        Report_General_Protection_Exception!(Get_Error_Code_From_Selector(ss_selector));</code>
-  <code>    endif;</code>
-  <code></code>
-  <code>    var new_ss  := Load_Segment_Descriptor?(ss_selector, SS);</code>
-  <code></code>
-  <code>    if Unsigned(new_ss.descriptor.DPL) != CPL</code>
-  <code>        or not Is_Data_Segment(new_ss)</code>
-  <code>        or new_ss.descriptor.W == 0b0</code>
-  <code>    then</code>
-  <code>        Report_General_Protection_Exception!(Get_Error_Code_From_Selector(ss_selector));</code>
-  <code>    endif;</code>
-  <code></code>
-  <code>    if new_ss.descriptor.P == 0b0 then</code>
-  <code>        Report_Stack_Fault!(Get_Error_Code_From_Selector(ss_selector));</code>
-  <code>    endif;</code>
-  <code></code>
-  <code>    if new_ss.descriptor.A == 0b0 then</code>
-  <code>        new_ss := Set_Segment_Access_Bit?(new_ss);</code>
-  <code>    endif;</code>
-  <code></code>
-  <code>    SS := new_ss;</code>
-  <code>endif;</code>
+  <code>// the shared helper handles real/virtual-8086 mode, the 64-bit null-selector</code>
+  <code>// case (permitted when CPL != 3 and RPL == CPL) and the stack-segment type checks</code>
+  <code>SS := Load_Stack_Segment?(ss_selector, SS, CPL, RFLAGS, True);</code>
   <code></code>
   <code>let result := offset;</code>
-  <callee>Std::Boolean::Not</callee>
-  <callee>Std::Boolean::Strict_Or</callee>
-  <callee>Std::Integer::Eq</callee>
-  <callee>Std::Integer::Ne</callee>
-  <callee>Std::Bits::Unsigned</callee>
-  <callee>Std::Bits::Eq</callee>
-  <callee>Std::Bits::Zero</callee>
-  <callee>Current_Mode</callee>
-  <callee>Get_Error_Code_From_Selector</callee>
-  <callee>In_64Bit_Mode</callee>
-  <callee>Is_Data_Segment</callee>
-  <callee>Is_Null_Segment_Selector</callee>
-  <callee>Load_Real_Or_VM86_Segment</callee>
-  <callee>Load_Segment_Descriptor</callee>
-  <callee>Report_General_Protection_Exception</callee>
-  <callee>Report_Stack_Fault</callee>
-  <callee>Set_Segment_Access_Bit</callee>
-  <var-used>False</var-used>
-  <var-used>Real_Address_Mode</var-used>
+  <callee>Load_Stack_Segment</callee>
+  <var-used>True</var-used>
   <var-used>CPL</var-used>
-  <var-used>Virtual_8086_Mode</var-used>
+  <var-used>RFLAGS</var-used>
   <var-used>SS</var-used>
+  <input name="operand_size" type="Integer"/>
+  <input name="offset" type="Bits(operand_size)"/>
+  <input name="segment_selector" type="Bits(16)"/>
+  <output name="result" type="Bits(operand_size)"/>
   </operation>
  <iform-group>
   <iform name="LFS_GPRv_MEMp2" xed_iform="LFS_GPRv_MEMp2" encoding="0F B4 /r" opcode="b4" valid32="V" valid64="V">
@@ -269,6 +220,11 @@ If you give Intel any comments or suggestions related to this document or the in
   <var-used>Seg_Reg_ES</var-used>
   <var-used>Seg_Reg_FS</var-used>
   <var-used>Seg_Reg_GS</var-used>
+  <input name="operand_size" type="Integer"/>
+  <input name="seg_reg" type="Seg_Reg"/>
+  <input name="offset" type="Bits(operand_size)"/>
+  <input name="segment_selector" type="Bits(16)"/>
+  <output name="result" type="Bits(operand_size)"/>
   </operation>
  <iform-group>
   <iform name="LGS_GPRv_MEMp2" xed_iform="LGS_GPRv_MEMp2" encoding="0F B5 /r" opcode="b5" valid32="V" valid64="V">

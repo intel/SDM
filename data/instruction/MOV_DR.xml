@@ -1,0 +1,434 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="MOV_DR_GPR32_DR" xed_iform="MOV_DR_GPR32_DR" encoding="0F 21 /r" opcode="21" valid32="V" valid64="N.E.">
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Gt</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Current_Mode</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Read_DR</callee>
+   <callee>Report_General_Protection_Exception</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>VM_Exec_Controls1</callee>
+   <callee>VM_Exit</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_MOV_from_DR</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>CPL</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>VMX_Operation_Mode</var-used>
+   <var-used>VMX_Non_Root</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>VMX_EXIT_DR_ACCESS</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let result_size := 32;</code>
+     <code>let dr_index := Unsigned(context.rex_r3 ++ reg[2:0]);</code>
+     </decode_args>
+    <read_instr><code>let src := Read_DR?(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Mode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeV86</exception_condition>
+     <exception_fault>#GP</exception_fault>
+     </exception_check><exception_check><exception_condition>EVAL(dr_index &gt; 7)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>EVAL(CR4.DE == 0b1 and dr_index in {4, 5})</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VMX_EXEC_1(MOV_DR_Exiting == 0b1)</exception_condition>
+     <exception_fault>VMEXIT(VMX_EXIT_DR_ACCESS)</exception_fault>
+     </exception_check><exception_check><exception_condition>EVAL(CPL != 0 and Current_Mode() != Real_Address_Mode)</exception_condition>
+     <exception_fault>#GP</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_MOV_from_DR?(result_size, src, dr_index);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOV_DR">
+    <asm-operand><varname>r32</varname></asm-operand>
+    <asm-operand><varname>DR0-7</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="result_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>DR0-7</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>dr_index</name>
+    <label><literal>Unsigned(context.rex_r3 ++ reg[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="MOV_DR_GPR64_DR" xed_iform="MOV_DR_GPR64_DR" encoding="0F 21 /r" opcode="21" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Gt</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_DR</callee>
+   <callee>Report_General_Protection_Exception</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>VM_Exec_Controls1</callee>
+   <callee>VM_Exit</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_MOV_from_DR</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>CPL</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>VMX_Operation_Mode</var-used>
+   <var-used>VMX_Non_Root</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>VMX_EXIT_DR_ACCESS</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let result_size := 64;</code>
+     <code>let dr_index := Unsigned(context.rex_r3 ++ reg[2:0]);</code>
+     </decode_args>
+    <read_instr><code>let src := Read_DR?(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeV86</exception_condition>
+     <exception_fault>#GP</exception_fault>
+     </exception_check><exception_check><exception_condition>EVAL(dr_index &gt; 7)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>EVAL(CR4.DE == 0b1 and dr_index in {4, 5})</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VMX_EXEC_1(MOV_DR_Exiting == 0b1)</exception_condition>
+     <exception_fault>VMEXIT(VMX_EXIT_DR_ACCESS)</exception_fault>
+     </exception_check><exception_check><exception_condition>EVAL(CPL != 0 and Current_Mode() != Real_Address_Mode)</exception_condition>
+     <exception_fault>#GP</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_MOV_from_DR?(result_size, src, dr_index);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOV_DR">
+    <asm-operand><varname>r64</varname></asm-operand>
+    <asm-operand><varname>DR0-7</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="result_size" size="64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r64</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>DR0-7</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>dr_index</name>
+    <label><literal>Unsigned(context.rex_r3 ++ reg[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="MOV_from_DR" variant_kind="From register" mnemonic="MOV_DR">
+  <code>if DR7.GD == 0b1 then</code>
+  <code>    DR6.BD := 0b1;</code>
+  <code>    (_, DR6.B) := Get_Instruction_Breakpoint_Match();</code>
+  <code>    DR6.B := DR6.B or Debug_Breakpoints_Matched;</code>
+  <code>    Clear_Debug_Traps();</code>
+  <code>    DR7.GD := 0b0;</code>
+  <code>    Report_Debug_Exception!();</code>
+  <code>endif;</code>
+  <code></code>
+  <code>let result := src[0 +: result_size];</code>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Or</callee>
+  <callee>Clear_Debug_Traps</callee>
+  <callee>Get_Instruction_Breakpoint_Match</callee>
+  <callee>Report_Debug_Exception</callee>
+  <var-used>Debug_Breakpoints_Matched</var-used>
+  <var-used>DR6</var-used>
+  <var-used>DR7</var-used>
+  <other-copy>MOV (DR)</other-copy>
+  <input name="result_size" type="Integer"/>
+  <input name="src" type="Bits(64)"/>
+  <input name="dr_index" type="{0..15}"/>
+  <output name="result" type="Bits(result_size)"/>
+  </operation>
+ <iform-group>
+  <iform name="MOV_DR_DR_GPR32" xed_iform="MOV_DR_DR_GPR32" encoding="0F 23 /r" opcode="23" valid32="V" valid64="N.E.">
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Gt</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Current_Mode</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_General_Protection_Exception</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>VM_Exec_Controls1</callee>
+   <callee>VM_Exit</callee>
+   <callee>Write_DR</callee>
+   <callee>Instr_MOV_to_DR</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>CPL</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>VMX_Operation_Mode</var-used>
+   <var-used>VMX_Non_Root</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>VMX_EXIT_DR_ACCESS</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let src_size := 32;</code>
+     <code>let dr_index := Unsigned(context.rex_r3 ++ reg[2:0]);</code>
+     </decode_args>
+    <read_instr><code>let src := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, 32);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Mode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeV86</exception_condition>
+     <exception_fault>#GP</exception_fault>
+     </exception_check><exception_check><exception_condition>EVAL(dr_index &gt; 7)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>EVAL(CR4.DE == 0b1 and dr_index in {4, 5})</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VMX_EXEC_1(MOV_DR_Exiting == 0b1)</exception_condition>
+     <exception_fault>VMEXIT(VMX_EXIT_DR_ACCESS)</exception_fault>
+     </exception_check><exception_check><exception_condition>EVAL(CPL != 0 and Current_Mode() != Real_Address_Mode)</exception_condition>
+     <exception_fault>#GP</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_MOV_to_DR?(src_size, src, dr_index);</code>
+     </execute>
+    <post_execute>
+     <code>Write_DR?(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOV_DR">
+    <asm-operand><varname>DR0-7</varname></asm-operand>
+    <asm-operand><varname>r32</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="src_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>DR0-7</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>dr_index</name>
+    <label><literal>Unsigned(context.rex_r3 ++ reg[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="MOV_DR_DR_GPR64" xed_iform="MOV_DR_DR_GPR64" encoding="0F 23 /r" opcode="23" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Gt</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Current_Mode</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_General_Protection_Exception</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>VM_Exec_Controls1</callee>
+   <callee>VM_Exit</callee>
+   <callee>Write_DR</callee>
+   <callee>Instr_MOV_to_DR</callee>
+   <var-used>Real_Address_Mode</var-used>
+   <var-used>CPL</var-used>
+   <var-used>Virtual_8086_Mode</var-used>
+   <var-used>CR4</var-used>
+   <var-used>VMX_Operation_Mode</var-used>
+   <var-used>VMX_Non_Root</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>VMX_EXIT_DR_ACCESS</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let src_size := 64;</code>
+     <code>let dr_index := Unsigned(context.rex_r3 ++ reg[2:0]);</code>
+     </decode_args>
+    <read_instr><code>let src := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, 64);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>ModeV86</exception_condition>
+     <exception_fault>#GP</exception_fault>
+     </exception_check><exception_check><exception_condition>EVAL(dr_index &gt; 7)</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>EVAL(CR4.DE == 0b1 and dr_index in {4, 5})</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>VMX_EXEC_1(MOV_DR_Exiting == 0b1)</exception_condition>
+     <exception_fault>VMEXIT(VMX_EXIT_DR_ACCESS)</exception_fault>
+     </exception_check><exception_check><exception_condition>EVAL(CPL != 0 and Current_Mode() != Real_Address_Mode)</exception_condition>
+     <exception_fault>#GP</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_MOV_to_DR?(src_size, src, dr_index);</code>
+     </execute>
+    <post_execute>
+     <code>Write_DR?(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOV_DR">
+    <asm-operand><varname>DR0-7</varname></asm-operand>
+    <asm-operand><varname>r64</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="src_size" size="64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>DR0-7</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r64</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>dr_index</name>
+    <label><literal>Unsigned(context.rex_r3 ++ reg[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="MOV_to_DR" variant_kind="To Register" mnemonic="MOV_DR">
+  <code>if DR7.GD == 0b1 then</code>
+  <code>    DR6.BD := 0b1;</code>
+  <code>    (_, DR6.B) := Get_Instruction_Breakpoint_Match();</code>
+  <code>    DR6.B := DR6.B or Debug_Breakpoints_Matched;</code>
+  <code>    Clear_Debug_Traps();</code>
+  <code>    DR7.GD := 0b0;</code>
+  <code>    Report_Debug_Exception!();</code>
+  <code>endif;</code>
+  <code></code>
+  <code>// upper 32 bits of DR4-7 are reserved</code>
+  <code>if src_size == 64 and dr_index in {4..7} then</code>
+  <code>    if dr_index == 7 and CPUID_TRIGGER_DR_MATCH then</code>
+  <code>        if not Is_Zero(src[63:36]) then Report_General_Protection_Exception!(Zero(32)); endif;</code>
+  <code>    else</code>
+  <code>        if not Is_Zero(src[63:32]) then Report_General_Protection_Exception!(Zero(32)); endif;</code>
+  <code>    endif;</code>
+  <code>endif;</code>
+  <code></code>
+  <code>var result := Zero_Extend(src, 64);</code>
+  <callee>Std::Boolean::Not</callee>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Integer::Eq</callee>
+  <callee>Std::Integer::Lt</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Is_Zero</callee>
+  <callee>Std::Bits::Or</callee>
+  <callee>Std::Bits::Zero_Extend</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>Clear_Debug_Traps</callee>
+  <callee>Get_Instruction_Breakpoint_Match</callee>
+  <callee>Report_Debug_Exception</callee>
+  <callee>Report_General_Protection_Exception</callee>
+  <var-used>Debug_Breakpoints_Matched</var-used>
+  <var-used>DR6</var-used>
+  <var-used>DR7</var-used>
+  <var-used>CPUID_TRIGGER_DR_MATCH</var-used>
+  <other-copy>MOV (DR)</other-copy>
+  <input name="src_size" type="Integer"/>
+  <input name="src" type="Bits(src_size)"/>
+  <input name="dr_index" type="{0..15}"/>
+  <output name="result" type="Bits(64)"/>
+  </operation>
+ <category>registers/debug</category>
+ <size name="result_size"/>
+ <size name="src_size"/>
+ <input name="src"/>
+ <input name="dr_index"/>
+ <output name="result"/>
+ </instruction>

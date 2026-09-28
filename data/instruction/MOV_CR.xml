@@ -1,0 +1,601 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="MOV_CR_GPR32_CR" xed_iform="MOV_CR_GPR32_CR" encoding="0F 20 /r" opcode="20" valid32="V" valid64="N.E.">
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Read_CR</callee>
+   <callee>Report_General_Protection_Exception</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>VM_Exec_Controls1</callee>
+   <callee>VM_Exit</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_MOV_from_CR</callee>
+   <var-used>CPL</var-used>
+   <var-used>VMX_Operation_Mode</var-used>
+   <var-used>VMX_Non_Root</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>VMX_EXIT_CR_ACCESS</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let result_size := 32;</code>
+     <code>let cr_index := Unsigned(context.rex_r3 ++ reg[2:0]);</code>
+     </decode_args>
+    <read_instr><code>let src := Read_CR?(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Mode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPL_Not0</exception_condition>
+     <exception_fault>#GP</exception_fault>
+     </exception_check><exception_check><exception_condition>VMX_EVAL(cr_index == 3 and VM_Exec_Controls1().CR3_Store_Exiting == 0b1)</exception_condition>
+     <exception_fault>VMEXIT(VMX_EXIT_CR_ACCESS)</exception_fault>
+     </exception_check><exception_check><exception_condition>VMX_EVAL(cr_index == 8 and VM_Exec_Controls1().CR8_Store_Exiting == 0b1)</exception_condition>
+     <exception_fault>VMEXIT(VMX_EXIT_CR_ACCESS)</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_MOV_from_CR(result_size, src, cr_index);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOV_CR">
+    <asm-operand><varname>r32</varname></asm-operand>
+    <asm-operand><varname>CR0-8</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="result_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>CR0-8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cr_index</name>
+    <label><literal>Unsigned(context.rex_r3 ++ reg[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="MOV_CR_GPR64_CR" xed_iform="MOV_CR_GPR64_CR" encoding="0F 20 /r" opcode="20" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Strict_And</callee>
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Read_CR</callee>
+   <callee>Report_General_Protection_Exception</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>VM_Exec_Controls1</callee>
+   <callee>VM_Exit</callee>
+   <callee>Write_GPR</callee>
+   <callee>Instr_MOV_from_CR</callee>
+   <var-used>CPL</var-used>
+   <var-used>VMX_Operation_Mode</var-used>
+   <var-used>VMX_Non_Root</var-used>
+   <var-used>Next_IP</var-used>
+   <var-used>VMX_EXIT_CR_ACCESS</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let result_size := 64;</code>
+     <code>let cr_index := Unsigned(context.rex_r3 ++ reg[2:0]);</code>
+     </decode_args>
+    <read_instr><code>let src := Read_CR?(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPL_Not0</exception_condition>
+     <exception_fault>#GP</exception_fault>
+     </exception_check><exception_check><exception_condition>VMX_EVAL(cr_index == 3 and VM_Exec_Controls1().CR3_Store_Exiting == 0b1)</exception_condition>
+     <exception_fault>VMEXIT(VMX_EXIT_CR_ACCESS)</exception_fault>
+     </exception_check><exception_check><exception_condition>VMX_EVAL(cr_index == 8 and VM_Exec_Controls1().CR8_Store_Exiting == 0b1)</exception_condition>
+     <exception_fault>VMEXIT(VMX_EXIT_CR_ACCESS)</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_MOV_from_CR(result_size, src, cr_index);</code>
+     </execute>
+    <post_execute>
+     <code>Write_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOV_CR">
+    <asm-operand><varname>r64</varname></asm-operand>
+    <asm-operand><varname>CR0-8</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="result_size" size="64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r64</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>CR0-8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cr_index</name>
+    <label><literal>Unsigned(context.rex_r3 ++ reg[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="MOV_from_CR" variant_kind="From register" mnemonic="MOV_CR">
+  <code>Serialize_Instructions();</code>
+  <code>var result := src[0 +: result_size];</code>
+  <code>if VMX_Operation_Mode == VMX_Non_Root then</code>
+  <code>    if cr_index == 0 then</code>
+  <code>        let cr0_guest_host_mask := CR0_Guest_Host_Mask[Current_VMCS_Pointer];</code>
+  <code>        let cr0_read_shadow := CR0_Read_Shadow[Current_VMCS_Pointer];</code>
+  <code>        result := (cr0_read_shadow[0 +: result_size] and cr0_guest_host_mask[0 +: result_size])</code>
+  <code>            or (result[0 +: result_size] and not cr0_guest_host_mask[0 +: result_size]);</code>
+  <code>    elsif cr_index == 4 then</code>
+  <code>        let cr4_guest_host_mask := CR4_Guest_Host_Mask[Current_VMCS_Pointer];</code>
+  <code>        let cr4_read_shadow := CR4_Read_Shadow[Current_VMCS_Pointer];</code>
+  <code>        result := (cr4_read_shadow[0 +: result_size] and cr4_guest_host_mask[0 +: result_size])</code>
+  <code>            or (result[0 +: result_size] and not cr4_guest_host_mask[0 +: result_size]);</code>
+  <code>    elsif cr_index == 8 then</code>
+  <code>        if VMX_Operation_Mode == VMX_Non_Root then</code>
+  <code>            if VM_Exec_Controls1().Use_TPR_Shadow == 0b1 then</code>
+  <code>                Unimplemented_Feature("APIC VTPR");</code>
+  <code>                // MOV from CR8. The instruction loads bits 3:0 of its destination operand</code>
+  <code>                // with bits 7:4 of VTPR (see Section 32.1.1).</code>
+  <code>                // Bits 63:4 of the destination operand are cleared.</code>
+  <code>                // result := Zero(60) ++ VTPR[7:4];</code>
+  <code>            endif;</code>
+  <code>        endif;</code>
+  <code>    endif;</code>
+  <code>endif;</code>
+  <callee>Std::Integer::Eq</callee>
+  <callee>Std::Integer::Le</callee>
+  <callee>Std::Bits::And</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Not</callee>
+  <callee>Std::Bits::Or</callee>
+  <callee>Serialize_Instructions</callee>
+  <callee>Unimplemented_Feature</callee>
+  <callee>VM_Exec_Controls1</callee>
+  <callee>CR0_Guest_Host_Mask</callee>
+  <callee>CR0_Read_Shadow</callee>
+  <callee>CR4_Guest_Host_Mask</callee>
+  <callee>CR4_Read_Shadow</callee>
+  <var-used>True</var-used>
+  <var-used>False</var-used>
+  <var-used>Current_VMCS_Pointer</var-used>
+  <var-used>VMX_Operation_Mode</var-used>
+  <var-used>VMX_Non_Root</var-used>
+  <other-copy>MOV (CR)</other-copy>
+  <input name="result_size" type="Integer"/>
+  <input name="src" type="Bits(64)"/>
+  <input name="cr_index" type="{0..15}"/>
+  <output name="result" type="Bits(result_size)"/>
+  </operation>
+ <iform-group>
+  <iform name="MOV_CR_CR_GPR32" xed_iform="MOV_CR_CR_GPR32" encoding="0F 22 /r" opcode="22" valid32="V" valid64="N.E.">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_General_Protection_Exception</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_CR</callee>
+   <callee>Instr_MOV_to_CR</callee>
+   <var-used>CPL</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let src_size := 32;</code>
+     <code>let cr_index := Unsigned(context.rex_r3 ++ reg[2:0]);</code>
+     </decode_args>
+    <read_instr><code>let src := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, 32);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>Mode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPL_Not0</exception_condition>
+     <exception_fault>#GP</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_MOV_to_CR?(src_size, src, cr_index);</code>
+     </execute>
+    <post_execute>
+     <code>Write_CR?(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOV_CR">
+    <asm-operand><varname>CR0-8</varname></asm-operand>
+    <asm-operand><varname>r32</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="src_size" size="32"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>CR0-8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r32</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cr_index</name>
+    <label><literal>Unsigned(context.rex_r3 ++ reg[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  <iform name="MOV_CR_CR_GPR64" xed_iform="MOV_CR_CR_GPR64" encoding="0F 22 /r" opcode="22" valid32="N.E." valid64="V">
+   <callee>Std::Integer::Add</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Integer::Power2</callee>
+   <callee>Std::Integer::Subtract</callee>
+   <callee>Std::Bits::Append</callee>
+   <callee>Std::Bits::Unsigned</callee>
+   <callee>Std::Bits::Zero</callee>
+   <callee>Read_GPR</callee>
+   <callee>Report_General_Protection_Exception</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Write_CR</callee>
+   <callee>Instr_MOV_to_CR</callee>
+   <var-used>CPL</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     <code>let src_size := 64;</code>
+     <code>let cr_index := Unsigned(context.rex_r3 ++ reg[2:0]);</code>
+     </decode_args>
+    <read_instr><code>let src := Read_GPR(context.rex_b4 ++ context.rex_b3 ++ rm, 64);</code>
+     </read_instr><decode_checks>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPL_Not0</exception_condition>
+     <exception_fault>#GP</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>let result := Instr_MOV_to_CR?(src_size, src, cr_index);</code>
+     </execute>
+    <post_execute>
+     <code>Write_CR?(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="MOV_CR">
+    <asm-operand><varname>CR0-8</varname></asm-operand>
+    <asm-operand><varname>r64</varname></asm-operand>
+    </assembly-syntax>
+   <encoding-size name="src_size" size="64"/>
+   <operand is_read="False">
+    <name>result</name>
+    <encoding>ModRM:reg</encoding>
+    <label><varname>CR0-8</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>src</name>
+    <encoding>ModRM:r/m</encoding>
+    <label><varname>r64</varname></label>
+    </operand>
+   <operand is_read="True">
+    <name>cr_index</name>
+    <label><literal>Unsigned(context.rex_r3 ++ reg[2:0])</literal></label>
+    <encoding></encoding>
+    </operand>
+   </iform>
+  </iform-group>
+ <operation name="MOV_to_CR" variant_kind="To Register" mnemonic="MOV_CR">
+  <code>var result := Zero_Extend(src, 64);</code>
+  <code></code>
+  <code>case cr_index of</code>
+  <code>    when 0 =&gt;</code>
+  <code>        Serialize_Instructions();</code>
+  <code>        var new_cr0 : CR0_Type := result;</code>
+  <code></code>
+  <code>        if VMX_Operation_Mode != Outside_VMX_Operation then</code>
+  <code>            if VMX_Operation_Mode == VMX_Non_Root then</code>
+  <code>                let cr0_guest_host_mask := CR0_Guest_Host_Mask[Current_VMCS_Pointer];</code>
+  <code>                let cr0_read_shadow := CR0_Read_Shadow[Current_VMCS_Pointer];</code>
+  <code></code>
+  <code>                if not Is_Zero(cr0_guest_host_mask and (new_cr0 xor cr0_read_shadow)) then</code>
+  <code>                    VM_Exit!(VMX_EXIT_CR_ACCESS);</code>
+  <code>                endif;</code>
+  <code></code>
+  <code>                new_cr0 := (CR0 and cr0_guest_host_mask) or (new_cr0 and not cr0_guest_host_mask);</code>
+  <code>            endif;</code>
+  <code></code>
+  <code>            VMX::Check_CR0_Fixed_Bits?(new_cr0);</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        if not Is_Zero(new_cr0[63:32]) then</code>
+  <code>            Report_General_Protection_Exception!(Zero(32));</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        // General Protection fault is reported if an attempt is made to</code>
+  <code>        // write invalid bit combinations in CR0</code>
+  <code>        if new_cr0.PG == 0b1 and new_cr0.PE == 0b0 then</code>
+  <code>            Report_General_Protection_Exception!(Zero(32));</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        if new_cr0.CD == 0b0 and new_cr0.NW == 0b1 then</code>
+  <code>            Report_General_Protection_Exception!(Zero(32));</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        if CR4.CET == 0b1 and CR0.WP == 0b1 and new_cr0.WP == 0b0 then</code>
+  <code>            Report_General_Protection_Exception!(Zero(32));</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        if In_64Bit_Mode() and new_cr0.PG == 0b0 then</code>
+  <code>            Report_General_Protection_Exception!(Zero(32));</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        if Current_Mode() == IA32e_Mode and not In_64Bit_Mode() and CR4.PCIDE == 0b1 and new_cr0.PG == 0b0 then</code>
+  <code>            Report_General_Protection_Exception!(Zero(32));</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        // IA-32e mode is enabled and an attempt is made to enable paging prior to enabling</code>
+  <code>        // physical-address extensions (PAE)</code>
+  <code>        if IA32_EFER.LME == 0b1 and CR4.PAE == 0b0 and CR0.PG == 0b0 and new_cr0.PG == 0b1 then</code>
+  <code>            Report_General_Protection_Exception!(Zero(32));</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        // If the current CS has the L-bit set on an attempt to activate IA-32e mode</code>
+  <code>        if CS.descriptor.L == 0b1 and IA32_EFER.LME == 0b1 and CR0.PG == 0b0 and new_cr0.PG == 0b1 then</code>
+  <code>            Report_General_Protection_Exception!(Zero(32));</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        // The TR contains a 16-bit TSS on an attempt to activate IA-32e mode</code>
+  <code>        if IA32_EFER.LME == 0b1 and CR0.PG == 0b0 and new_cr0.PG == 0b1 and Is_16Bit_Task(TR) then</code>
+  <code>            Report_General_Protection_Exception!(Zero(32));</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        if CR4.CET == 0b1 and CR0.WP == 0b1 and new_cr0.WP == 0b0 then</code>
+  <code>            Report_General_Protection_Exception!(Zero(32));</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        // todo: reset monitor if paging mode changes</code>
+  <code>        // todo: reload PDPTR cache under certain conditions</code>
+  <code></code>
+  <code>        // CR0.ET remains set after any load of CR0</code>
+  <code>        // attempts to clear this bit have no impact</code>
+  <code>        new_cr0.ET := 0b1;</code>
+  <code></code>
+  <code>        IA32_EFER.LMA := Bit(new_cr0.PG == 0b1 and IA32_EFER.LME == 0b1 and CR4.PAE == 0b1);</code>
+  <code></code>
+  <code>        // attempts to set reserved bits in CR0 are ignored</code>
+  <code>        new_cr0.RESERVED := Zero(53);</code>
+  <code>        result := new_cr0;</code>
+  <code></code>
+  <code>    when 1 =&gt;</code>
+  <code>        Serialize_Instructions();</code>
+  <code></code>
+  <code>    when 2 =&gt;</code>
+  <code>        Serialize_Instructions();</code>
+  <code></code>
+  <code>    when 3 =&gt;</code>
+  <code>        Serialize_Instructions();</code>
+  <code></code>
+  <code>        if VMX_Operation_Mode == VMX_Non_Root then</code>
+  <code>            VMX::Check_CR3_Target?(result);</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        // todo: load of CR3 affect PDPTR cache</code>
+  <code></code>
+  <code>        if CR4.PCIDE == 0b1 then</code>
+  <code>            // If CR4.PCIDE := 1, Bit 63 of the source operand to MOV to CR3</code>
+  <code>            // determines whether the instruction invalidates entries in the TLBs</code>
+  <code>            // and the paging-structure caches. The instruction does not modify</code>
+  <code>            // bit 63 of CR3, which is reserved and always 0</code>
+  <code>            result[63] := 0b0;</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        if not Is_CR3_Value_Valid(result) then</code>
+  <code>            Report_General_Protection_Exception!(Zero(32));</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>    when 4 =&gt;</code>
+  <code>        Serialize_Instructions();</code>
+  <code></code>
+  <code>        var new_cr4 : CR4_Type := result;</code>
+  <code></code>
+  <code>        if VMX_Operation_Mode != Outside_VMX_Operation then</code>
+  <code>            if VMX_Operation_Mode == VMX_Non_Root then</code>
+  <code>                let cr4_guest_host_mask := CR4_Guest_Host_Mask[Current_VMCS_Pointer];</code>
+  <code>                let cr4_read_shadow := CR4_Read_Shadow[Current_VMCS_Pointer];</code>
+  <code></code>
+  <code>                if not Is_Zero(cr4_guest_host_mask and (new_cr4 xor cr4_read_shadow)) then</code>
+  <code>                    VM_Exit!(VMX_EXIT_CR_ACCESS);</code>
+  <code>                endif;</code>
+  <code></code>
+  <code>                new_cr4 := (CR4 and cr4_guest_host_mask) or (new_cr4 and not cr4_guest_host_mask);</code>
+  <code>            endif;</code>
+  <code></code>
+  <code>            VMX::Check_CR4_Fixed_Bits?(new_cr4);</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        if not Is_Zero(new_cr4.RESERVED) then</code>
+  <code>            Report_General_Protection_Exception!(Zero(32));</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        if not CPUID_PAE and new_cr4.PAE == 0b1 then</code>
+  <code>            Report_General_Protection_Exception!(Zero(32));</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        if IA32_EFER.LMA == 0b1 then</code>
+  <code>            if CR4.PAE == 0b1 and new_cr4.PAE == 0b0 then</code>
+  <code>                Report_General_Protection_Exception!(Zero(32));</code>
+  <code>            endif;</code>
+  <code></code>
+  <code>            if CR4.LA57 != new_cr4.LA57 then</code>
+  <code>                Report_General_Protection_Exception!(Zero(32));</code>
+  <code>            endif;</code>
+  <code></code>
+  <code>            if CR4.PCIDE == 0b0 and new_cr4.PCIDE == 0b1 and not Is_Zero(CR3[11:0]) then</code>
+  <code>                Report_General_Protection_Exception!(Zero(32));</code>
+  <code>            endif;</code>
+  <code>        else</code>
+  <code>            if new_cr4.PCIDE == 0b1 then</code>
+  <code>                Report_General_Protection_Exception!(Zero(32));</code>
+  <code>            endif;</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        if not Is_CR4_Value_Valid(new_cr4) then</code>
+  <code>            Report_General_Protection_Exception!(Zero(32));</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        IA32_EFER.LMA := Bit(CR0.PG == 0b1 and IA32_EFER.LME == 0b1 and new_cr4.PAE == 0b1);</code>
+  <code></code>
+  <code>        // Attempts to enable FRED when LMA=0 are ignored</code>
+  <code>        if IA32_EFER.LMA == 0b0 and new_cr4.FRED == 0b1 then</code>
+  <code>            new_cr4.FRED := 0b0;</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        result := new_cr4;</code>
+  <code></code>
+  <code>    when 8 =&gt;</code>
+  <code>        if VMX_Operation_Mode == VMX_Non_Root then</code>
+  <code>            if VM_Exec_Controls1().CR8_Load_Exiting == 0b1 then</code>
+  <code>                VM_Exit!(VMX_EXIT_CR_ACCESS);</code>
+  <code>            endif;</code>
+  <code></code>
+  <code>            if VM_Exec_Controls1().Use_TPR_Shadow == 0b1 then</code>
+  <code>                Unimplemented_Feature("APIC TPR virtualization");</code>
+  <code>                // VTPR[7:4] := result[3:0];</code>
+  <code>                // perform TPR virtualization</code>
+  <code>            endif;</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>        // MOV CR* instructions, except for MOV CR8, are serializing instructions.</code>
+  <code>        // MOV CR8 is not architecturally defined as a serializing instruction.</code>
+  <code>        if not Is_Zero(result[63:4]) then</code>
+  <code>            Report_General_Protection_Exception!(Zero(32));</code>
+  <code>        endif;</code>
+  <code></code>
+  <code>    otherwise =&gt;</code>
+  <code>        Report_Invalid_Opcode!();</code>
+  <code>endcase;</code>
+  <callee>Std::Boolean::Not</callee>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Integer::Add</callee>
+  <callee>Std::Bits::And</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Is_Zero</callee>
+  <callee>Std::Bits::Ne</callee>
+  <callee>Std::Bits::Not</callee>
+  <callee>Std::Bits::Or</callee>
+  <callee>Std::Bits::Xor</callee>
+  <callee>Std::Bits::Zero_Extend</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>Bit</callee>
+  <callee>Current_Mode</callee>
+  <callee>In_64Bit_Mode</callee>
+  <callee>Is_16Bit_Task</callee>
+  <callee>Is_CR3_Value_Valid</callee>
+  <callee>Is_CR4_Value_Valid</callee>
+  <callee>Report_General_Protection_Exception</callee>
+  <callee>Report_Invalid_Opcode</callee>
+  <callee>Serialize_Instructions</callee>
+  <callee>Unimplemented_Feature</callee>
+  <callee>VM_Exec_Controls1</callee>
+  <callee>VMX::Check_CR0_Fixed_Bits</callee>
+  <callee>VMX::Check_CR3_Target</callee>
+  <callee>VMX::Check_CR4_Fixed_Bits</callee>
+  <callee>VM_Exit</callee>
+  <callee>CR0_Guest_Host_Mask</callee>
+  <callee>CR0_Read_Shadow</callee>
+  <callee>CR4_Guest_Host_Mask</callee>
+  <callee>CR4_Read_Shadow</callee>
+  <var-used>True</var-used>
+  <var-used>False</var-used>
+  <var-used>CS</var-used>
+  <var-used>CR4</var-used>
+  <var-used>CR0</var-used>
+  <var-used>IA32_EFER</var-used>
+  <var-used>TR</var-used>
+  <var-used>IA32e_Mode</var-used>
+  <var-used>Current_VMCS_Pointer</var-used>
+  <var-used>VMX_Operation_Mode</var-used>
+  <var-used>VMX_Non_Root</var-used>
+  <var-used>CPUID_PAE</var-used>
+  <var-used>CR3</var-used>
+  <var-used>Outside_VMX_Operation</var-used>
+  <var-used>VMX_EXIT_CR_ACCESS</var-used>
+  <other-copy>MOV (CR)</other-copy>
+  <input name="src_size" type="Integer"/>
+  <input name="src" type="Bits(src_size)"/>
+  <input name="cr_index" type="{0..15}"/>
+  <output name="result" type="Bits(64)"/>
+  </operation>
+ <category>registers/control</category>
+ <size name="result_size"/>
+ <size name="src_size"/>
+ <input name="src"/>
+ <input name="cr_index"/>
+ <output name="result"/>
+ </instruction>

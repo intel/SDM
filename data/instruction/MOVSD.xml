@@ -436,12 +436,21 @@ If you give Intel any comments or suggestions related to this document or the in
   <code>let result := Zero_Extend(src, register_size);</code>
   <callee>Std::Bits::Zero_Extend</callee>
   <other-copy>MOVSS</other-copy>
+  <input name="element_size" type="{32, 64}"/>
+  <input name="register_size" type="Integer"/>
+  <input name="src" type="Bits(element_size)"/>
+  <output name="result" type="Bits(register_size)"/>
   </operation>
  <operation name="MOVS_reg" variant_kind="Standard variant" mnemonic="MOVSD_XMM">
   <code>var result := src1;</code>
   <code>result[0 +: element_size] := src2[0 +: element_size];</code>
   <callee>Std::Integer::Le</callee>
   <other-copy>MOVSS</other-copy>
+  <input name="element_size" type="{32, 64}"/>
+  <input name="register_size" type="Integer"/>
+  <input name="src1" type="Bits(register_size)"/>
+  <input name="src2" type="Bits(register_size)"/>
+  <output name="result" type="Bits(register_size)"/>
   </operation>
  <iform-group>
   <iform name="VMOVSD_XMMdq_MEMq_0" xed_iform="VMOVSD_XMMdq_MEMq" encoding="VEX.LIG.F2.0F.WIG 10 /r" opcode="10" valid32="V" valid64="N.E.">
@@ -1227,6 +1236,10 @@ If you give Intel any comments or suggestions related to this document or the in
   <code>var result := src[0 +: element_size];</code>
   <callee>Std::Integer::Le</callee>
   <other-copy>MOVSS</other-copy>
+  <input name="element_size" type="{32, 64}"/>
+  <input name="register_size" type="Integer"/>
+  <input name="src" type="Bits(register_size)"/>
+  <output name="result" type="Bits(element_size)"/>
   </operation>
  <iform-group>
   <iform name="MOVSD_XMM_XMMsd_XMMsd_0F11" xed_iform="MOVSD_XMM_XMMsd_XMMsd_0F11" encoding="F2 0F 11 /r" opcode="11" valid32="V" valid64="V">
@@ -1848,6 +1861,9 @@ If you give Intel any comments or suggestions related to this document or the in
   <var-used>Memory_Type_Unknown</var-used>
   <var-used>DS</var-used>
   <var-used>ES</var-used>
+  <input name="address_size" type="Integer"/>
+  <input name="operand_size" type="Integer"/>
+  <input name="context" type="Instruction_Context"/>
   </operation>
  <iform-group>
   <iform name="MOVSD_1" xed_iform="MOVSD" encoding="NP A5" opcode="a5" valid32="V" valid64="V">
@@ -2029,6 +2045,13 @@ If you give Intel any comments or suggestions related to this document or the in
   <callee>Std::Bits::Zero_Extend</callee>
   <callee>Std::Bits::Zero</callee>
   <other-copy>MOVSS</other-copy>
+  <input name="element_size" type="{32, 64}"/>
+  <input name="register_size" type="Integer"/>
+  <input name="old" type="Bits(register_size)"/>
+  <input name="k" type="Bits(64)"/>
+  <input name="src" type="Bits(element_size)"/>
+  <input name="context" type="Instruction_Context"/>
+  <output name="result" type="Bits(register_size)"/>
   </operation>
  <iform-group>
   <iform name="VMOVSD_XMMf64_MASKmskw_XMMf64_XMMf64_AVX512_0" xed_iform="VMOVSD_XMMf64_MASKmskw_XMMf64_XMMf64_AVX512" encoding="EVEX.128.F2.0F.W1 10 /r" opcode="10" valid32="V" valid64="V">
@@ -2127,6 +2150,14 @@ If you give Intel any comments or suggestions related to this document or the in
   <callee>Std::Bits::Eq</callee>
   <callee>Std::Bits::Zero</callee>
   <other-copy>MOVSS</other-copy>
+  <input name="element_size" type="{32, 64}"/>
+  <input name="register_size" type="Integer"/>
+  <input name="old" type="Bits(register_size)"/>
+  <input name="k" type="Bits(64)"/>
+  <input name="src1" type="Bits(register_size)"/>
+  <input name="src2" type="Bits(register_size)"/>
+  <input name="context" type="Instruction_Context"/>
+  <output name="result" type="Bits(register_size)"/>
   </operation>
  <iform-group>
   <iform name="VMOVSD_MEMf64_MASKmskw_XMMf64_AVX512" xed_iform="VMOVSD_MEMf64_MASKmskw_XMMf64_AVX512" encoding="EVEX.128.F2.0F.W1 11 /r" opcode="11" valid32="V" valid64="V">
@@ -2219,6 +2250,11 @@ If you give Intel any comments or suggestions related to this document or the in
   <callee>Std::Bits::Eq</callee>
   <callee>Std::Bits::Zero</callee>
   <other-copy>MOVSS</other-copy>
+  <input name="element_size" type="{32, 64}"/>
+  <input name="register_size" type="Integer"/>
+  <input name="k" type="Bits(64)"/>
+  <input name="src" type="Bits(register_size)"/>
+  <output name="result" type="Bits(element_size)"/>
   </operation>
  <iform-group>
   <iform name="VMOVSD_XMMf64_MASKmskw_XMMf64_XMMf64_AVX512_1" xed_iform="VMOVSD_XMMf64_MASKmskw_XMMf64_XMMf64_AVX512" encoding="EVEX.128.F2.0F.W1 11 /r" opcode="11" valid32="V" valid64="V">
