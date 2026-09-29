@@ -1401,7 +1401,6 @@ async function load_main_index() {
 
 async function load_definitions() {
     if (definition_index.size == 0) {
-        // await load_main_index();
         const definitions = await read_compressed_xml_file(`${spec_directory}/definitions.xml.gz`);
         set_definition_menu(document.getElementById("definition_list"), definitions, main_index['definitions']);
         make_code_highlighting_table(definitions, main_index['definitions']);
@@ -1499,8 +1498,8 @@ async function load_chips() {
 }
 
 async function load_all_data() {
+    await load_main_index();
     await Promise.all([
-        load_main_index(),
         load_definitions(),
         load_chips(),
     ]);
@@ -1792,13 +1791,13 @@ async function patch_page() {
         let kind = x.getAttribute('kind');
         if (kind == "category") {
             let textfile = x.getAttribute('file');
-            const text = await read_xml_file(`${subdomain}/${textfile}`);
+            const text = await read_xml_file(`${subdomain}${textfile}`);
             x.innerHTML = render_category(main_index, text);
 
         } else if (kind == "chapter") {
             let textfile = x.getAttribute('file');
             let what = 'docbook';
-            const text = await read_xml_file(`${subdomain}/${textfile}`);
+            const text = await read_xml_file(`${subdomain}${textfile}`);
             x.replaceWith(patch_docbook(text, what == 'docbook'));
 
         } else if (kind == "definition") {
@@ -1810,8 +1809,8 @@ async function patch_page() {
             let textfile = x.getAttribute('sdm_file');
             let datafile = x.getAttribute('data_file');
             const [text, data, _i, _p] = await Promise.all([
-                read_xml_file(`${subdomain}/${textfile}`),
-                read_xml_file(`${subdomain}/${datafile}`),
+                read_xml_file(`${subdomain}${textfile}`),
+                read_xml_file(`${subdomain}${datafile}`),
                 load_intrinsics(),
                 load_performance(),
             ]);
