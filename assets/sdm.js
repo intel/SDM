@@ -711,8 +711,8 @@ function render_instruction(intrinsics_idx, performance_idx, text_xml, data_xml)
     // section += render_cpuids(name, data_xml);
 
     const sizes = data_xml.getElementsByTagName('size');
-    const inputs = Array.from(data_xml.getElementsByTagName('input')).map(x => x.getAttribute('name')).filter(x => !boring_inputs.includes(x));
-    const outputs = Array.from(data_xml.getElementsByTagName('output')).map(x => x.getAttribute('name'));
+    const inputs = Array.from(data_xml.querySelectorAll(':scope > input')).map(x => x.getAttribute('name')).filter(x => !boring_inputs.includes(x));
+    const outputs = Array.from(data_xml.querySelectorAll(':scope > output')).map(x => x.getAttribute('name'));
     const footnotes = data_xml.querySelectorAll(':scope > footnote'); // direct children are footnotes for the encoding table
     const iform_groups = filter_iforms(data_xml.getElementsByTagName('iform-group'));
     section += render_iform_groups(sizes, inputs, outputs, footnotes, iform_groups);
