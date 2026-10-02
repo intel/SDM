@@ -1,108 +1,489 @@
 <instruction name="OR">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Logical Inclusive OR</shortdesc>
- <longdesc><para unique="1091725">
-   <string>Performs a bitwise inclusive OR operation between the destination (first) and source (second) operands and stores the result in the destination operand location. The source operand can be an immediate, a register, or a memory location; the destination operand can be a register or a memory location. (However, two memory operands cannot be used in one instruction.) Each bit of the result of the OR instruction is set to 0 if both corresponding bits of the first and second operands are 0; otherwise, each bit is set to 1.</string></para>
-  <para unique="1091727">
-   <string>This instruction can be used with a </string><indexterm><primary>LOCK prefix</primary></indexterm><string>LOCK prefix to allow the instruction to be executed atomically.</string></para>
-  <para unique="1091728">
-   <string>In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Using a REX prefix in the form of REX.R permits access to additional registers (R8-R15). Using a REX prefix in the form of REX.W promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</string></para>
+ <encoding_table><table unique="1091391">
+   <thead><tr>
+     <th><para unique="1091393">Opcode</para>
+      </th>
+     <th><para unique="1091395">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op/ En</para>
+      </th>
+     <th><para unique="1091399">64-Bit Mode</para>
+      </th>
+     <th><para unique="1091401">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.6112pt"/>
+   <col width="111.86352000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="180.65448pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1091405">0C ib</para>
+      </td>
+     <td><para unique="1091407">OR AL, imm8</para>
+      </td>
+     <td><para unique="1091409">I</para>
+      </td>
+     <td><para unique="1091411">Valid</para>
+      </td>
+     <td><para unique="1091413">Valid</para>
+      </td>
+     <td><para unique="1091415">AL OR imm8.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091417">0D iw</para>
+      </td>
+     <td><para unique="1091419">OR AX, imm16</para>
+      </td>
+     <td><para unique="1091421">I</para>
+      </td>
+     <td><para unique="1091423">Valid</para>
+      </td>
+     <td><para unique="1091425">Valid</para>
+      </td>
+     <td><para unique="1091427">AX OR imm16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091429">0D id</para>
+      </td>
+     <td><para unique="1091431">OR EAX, imm32</para>
+      </td>
+     <td><para unique="1091433">I</para>
+      </td>
+     <td><para unique="1091435">Valid</para>
+      </td>
+     <td><para unique="1091437">Valid</para>
+      </td>
+     <td><para unique="1091439">EAX OR imm32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091441">REX.W + 0D id</para>
+      </td>
+     <td><para unique="1091443">OR RAX, imm32</para>
+      </td>
+     <td><para unique="1091445">I</para>
+      </td>
+     <td><para unique="1091447">Valid</para>
+      </td>
+     <td><para unique="1091449">N.E.</para>
+      </td>
+     <td><para unique="1091451">RAX OR imm32 (sign-extended).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091453">80 /1 ib</para>
+      </td>
+     <td><para unique="1091455">OR r/m8<footnote><para unique="1092272" format="TableFootnote"><anchor id="70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce"/>With a REX prefix in 64-bit mode, attempts to access AH, BH, CH, or DH will instead access SPL, DIL, BPL, or SIL, respectively.</para>
+        </footnote>, imm8</para>
+      </td>
+     <td><para unique="1091457">MI</para>
+      </td>
+     <td><para unique="1091459">Valid</para>
+      </td>
+     <td><para unique="1091461">Valid</para>
+      </td>
+     <td><para unique="1091463">r/m8 OR imm8.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091477">81 /1 iw</para>
+      </td>
+     <td><para unique="1091479">OR r/m16, imm16</para>
+      </td>
+     <td><para unique="1091481">MI</para>
+      </td>
+     <td><para unique="1091483">Valid</para>
+      </td>
+     <td><para unique="1091485">Valid</para>
+      </td>
+     <td><para unique="1091487"> r/m16 OR imm16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091489">81 /1 id</para>
+      </td>
+     <td><para unique="1091491">OR r/m32, imm32</para>
+      </td>
+     <td><para unique="1091493">MI</para>
+      </td>
+     <td><para unique="1091495">Valid</para>
+      </td>
+     <td><para unique="1091497">Valid</para>
+      </td>
+     <td><para unique="1091499"> r/m32 OR imm32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091501">REX.W + 81 /1 id</para>
+      </td>
+     <td><para unique="1091503">OR r/m64, imm32</para>
+      </td>
+     <td><para unique="1091505">MI</para>
+      </td>
+     <td><para unique="1091507">Valid</para>
+      </td>
+     <td><para unique="1091509">N.E.</para>
+      </td>
+     <td><para unique="1091511"> r/m64 OR imm32 (sign-extended).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091513">83 /1 ib</para>
+      </td>
+     <td><para unique="1091515">OR r/m16, imm8</para>
+      </td>
+     <td><para unique="1091517">MI</para>
+      </td>
+     <td><para unique="1091519">Valid</para>
+      </td>
+     <td><para unique="1091521">Valid</para>
+      </td>
+     <td><para unique="1091523">r/m16 OR imm8 (sign-extended).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091525">83 /1 ib</para>
+      </td>
+     <td><para unique="1091527">OR r/m32, imm8</para>
+      </td>
+     <td><para unique="1091529">MI</para>
+      </td>
+     <td><para unique="1091531">Valid</para>
+      </td>
+     <td><para unique="1091533">Valid</para>
+      </td>
+     <td><para unique="1091535">r/m32 OR imm8 (sign-extended).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091537">REX.W + 83 /1 ib</para>
+      </td>
+     <td><para unique="1091539">OR r/m64, imm8</para>
+      </td>
+     <td><para unique="1091541">MI</para>
+      </td>
+     <td><para unique="1091543">Valid</para>
+      </td>
+     <td><para unique="1091545">N.E.</para>
+      </td>
+     <td><para unique="1091547">r/m64 OR imm8 (sign-extended).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091549">08 /r</para>
+      </td>
+     <td><para unique="1091551">OR r/m8<link unique="1092279" linkend="#70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link>, r8<link unique="1092287" linkend="#70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link></para>
+      </td>
+     <td><para unique="1091553">MR</para>
+      </td>
+     <td><para unique="1091555">Valid</para>
+      </td>
+     <td><para unique="1091557">Valid</para>
+      </td>
+     <td><para unique="1091559">r/m8 OR r8.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091576">09 /r</para>
+      </td>
+     <td><para unique="1091578">OR r/m16, r16</para>
+      </td>
+     <td><para unique="1091580">MR</para>
+      </td>
+     <td><para unique="1091582">Valid</para>
+      </td>
+     <td><para unique="1091584">Valid</para>
+      </td>
+     <td><para unique="1091586">r/m16 OR r16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091588">09 /r</para>
+      </td>
+     <td><para unique="1091590">OR r/m32, r32</para>
+      </td>
+     <td><para unique="1091592">MR</para>
+      </td>
+     <td><para unique="1091594">Valid</para>
+      </td>
+     <td><para unique="1091596">Valid</para>
+      </td>
+     <td><para unique="1091598">r/m32 OR r32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091600">REX.W + 09 /r</para>
+      </td>
+     <td><para unique="1091602">OR r/m64, r64</para>
+      </td>
+     <td><para unique="1091604">MR</para>
+      </td>
+     <td><para unique="1091606">Valid</para>
+      </td>
+     <td><para unique="1091608">N.E.</para>
+      </td>
+     <td><para unique="1091610">r/m64 OR r64.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091612">0A /r</para>
+      </td>
+     <td><para unique="1091614">OR r8<link unique="1092295" linkend="#70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link>, r/m8<link unique="1092303" linkend="#70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link></para>
+      </td>
+     <td><para unique="1091616">RM</para>
+      </td>
+     <td><para unique="1091618">Valid</para>
+      </td>
+     <td><para unique="1091620">Valid</para>
+      </td>
+     <td><para unique="1091622">r8 OR r/m8.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091636">0B /r</para>
+      </td>
+     <td><para unique="1091638">OR r16, r/m16</para>
+      </td>
+     <td><para unique="1091640">RM</para>
+      </td>
+     <td><para unique="1091642">Valid</para>
+      </td>
+     <td><para unique="1091644">Valid</para>
+      </td>
+     <td><para unique="1091646">r16 OR r/m16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091648">0B /r</para>
+      </td>
+     <td><para unique="1091650">OR r32, r/m32</para>
+      </td>
+     <td><para unique="1091652">RM</para>
+      </td>
+     <td><para unique="1091654">Valid</para>
+      </td>
+     <td><para unique="1091656">Valid</para>
+      </td>
+     <td><para unique="1091658">r32 OR r/m32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091660">REX.W + 0B /r</para>
+      </td>
+     <td><para unique="1091662">OR r64, r/m64</para>
+      </td>
+     <td><para unique="1091664">RM</para>
+      </td>
+     <td><para unique="1091666">Valid </para>
+      </td>
+     <td><para unique="1091668">N.E.</para>
+      </td>
+     <td><para unique="1091670">r64 OR r/m64.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091672">
+   <col width="45.24192pt"/>
+   <col width="114.42816pt"/>
+   <col width="118.14335999999999pt"/>
+   <col width="116.14608pt"/>
+   <col width="117.26064pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091674">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091676">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091678">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091680">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091682">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091684">I</para>
+      </td>
+     <td valign="middle"><para unique="1091686">AL/AX/EAX/RAX</para>
+      </td>
+     <td valign="middle"><para unique="1091688">imm8/16/32</para>
+      </td>
+     <td valign="middle"><para unique="1091690">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091692">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091694">MI</para>
+      </td>
+     <td valign="middle"><para unique="1091696">ModRM:r/m (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091698">imm8/16/32</para>
+      </td>
+     <td valign="middle"><para unique="1091700">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091702">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091704">MR</para>
+      </td>
+     <td valign="middle"><para unique="1091706">ModRM:r/m (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091708">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091710">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091712">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091714">RM</para>
+      </td>
+     <td valign="middle"><para unique="1091716">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091718">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091720">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091722">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091723">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091725">Performs a bitwise inclusive OR operation between the destination (first) and source (second) operands and stores the result in the destination operand location. The source operand can be an immediate, a register, or a memory location; the destination operand can be a register or a memory location. (However, two memory operands cannot be used in one instruction.) Each bit of the result of the OR instruction is set to 0 if both corresponding bits of the first and second operands are 0; otherwise, each bit is set to 1.</para>
+  <para unique="1091727">This instruction can be used with a <indexterm><primary>LOCK prefix</primary></indexterm>LOCK prefix to allow the instruction to be executed atomically.</para>
+  <para unique="1091728">In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Using a REX prefix in the form of REX.R permits access to additional registers (R8-R15). Using a REX prefix in the form of REX.W promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</para>
   </longdesc>
+ <operation>
+  <programlisting>DEST := DEST OR SRC;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1091732">
-   <string>The OF and CF flags are cleared; the SF, ZF, and PF flags are set according to the result. The state of the AF flag is undefined.</string></para>
+  <para unique="1091732">The OF and CF flags are cleared; the SF, ZF, and PF flags are set according to the result. The state of the AF flag is undefined.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the destination operand points to a non-writable segment.</string></listitem>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091734">If the destination operand points to a non-writable segment.</para>
+     </listitem>
+    <listitem><para unique="1091735">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1091736">If the DS, ES, FS, or GS register contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091737">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091738">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091739">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used but the destination is not a memory operand.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091740">If the LOCK prefix is used but the destination is not a memory operand.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1091742">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS</term>
+    <listitem><para unique="1091743">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used but the destination is not a memory operand.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091744">If the LOCK prefix is used but the destination is not a memory operand.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091746">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091747">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091748">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091749">If alignment checking is enabled and an unaligned memory reference is made.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used but the destination is not a memory operand.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091750">If the LOCK prefix is used but the destination is not a memory operand.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091752" format="xIndent1">
-   <string>Same as for protected mode exceptions.</string></para>
+  <para unique="1091752" format="xIndent1">Same as for protected mode exceptions.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091754">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091755">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091756">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091757">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used but the destination is not a memory operand.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091758">If the LOCK prefix is used but the destination is not a memory operand.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

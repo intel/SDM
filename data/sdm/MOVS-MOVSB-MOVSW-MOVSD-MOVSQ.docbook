@@ -1,114 +1,368 @@
 <instruction name="MOVS/MOVSB/MOVSW/MOVSD/MOVSQ">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Move Data From String&#160;to&#160;String</shortdesc>
- <longdesc><para unique="1091527">
-   <string>Moves the byte, word, or doubleword specified with the second operand (source operand) to the location specified with the first operand (destination operand). Both the source and destination operands are located in memory. The address of the source operand is read from the </string><indexterm><primary>ESI register;DS register</primary></indexterm><string>DS:ESI or the DS:SI registers (depending on the address-size attri&#173;bute of the instruction, 32 or 16, respectively). The address of the destination operand is read from the </string><indexterm><primary>ESI register;DS register</primary></indexterm><string>ES:EDI or the ES:DI registers (again depending on the address-size attribute of the instruction). The DS segment may be overridden with a segment override prefix, but the ES segment cannot be overridden.</string></para>
-  <para unique="1091530">
-   <string>At the assembly-code level, two forms of this instruction are allowed: the &#8220;explicit-operands&#8221; form and the &#8220;no-operands&#8221; form. The explicit-operands form (specified with the MOVS mnemonic) allows the source and destination operands to be specified explicitly. Here, the source and destination operands should be symbols that indicate the size and location of the source value and the destination, respectively. This explicit-operands form is provided to allow documentation; however, note that the documentation provided by this form can be misleading. That is, the source and destination operand symbols must specify the correct </string><bold><string>type</string></bold><string> (size) of the operands (bytes, words, or doublewords), but they do not have to specify the correct </string><bold><string>location</string></bold><string>. The locations of the source and destination operands are always specified by the DS:(E)SI and ES:(E)DI registers, which must be loaded correctly before the move string instruction is executed. </string></para>
-  <para unique="1091531">
-   <string>The no-operands form provides &#8220;short forms&#8221; of the byte, word, and doubleword versions of the MOVS instruc&#173;tions. Here also DS:(E)SI and ES:(E)DI are assumed to be the source and destination operands, respectively. The size of the source and destination operands is selected with the mnemonic: MOVSB (byte move), MOVSW (word move), or MOVSD (doubleword move).</string></para>
-  <para unique="1091532">
-   <string>After the move operation, the (E)SI and (E)DI registers are incremented or decremented automatically according to the setting of the </string><indexterm><primary>DF (direction) flag, EFLAGS register</primary></indexterm><string>DF flag in the EFLAGS register. (If the DF flag is 0, the (E)SI and (E)DI register are incre&#173;mented; if the DF flag is 1, the (E)SI and (E)DI registers are decremented.) The registers are incremented or decremented by 1 for byte operations, by 2 for word operations, or by 4 for doubleword operations.</string></para>
-  <note unique="1091535"><string>To improve performance, more recent processors support modifications to the processor&#8217;s operation during the string store operations initiated with MOVS and MOVSB. See </string><link linkend="37420: 04_Level: 7.3.9.3 Fast-String Operation"><string>Section 7.3.9.3</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for additional information on fast-string operation.</string></note><para unique="1091539">
-   <string>The MOVS, MOVSB, MOVSW, and MOVSD instructions can be preceded by the REP prefix (see </string><link linkend="String instructions"><string>&#8220;REP&#8212;Repeat String Operation (Prefix)&#8221;</string></link><string> for a description of the REP prefix) for block moves of ECX bytes, words, or doublewords.</string></para>
-  <para unique="1091540">
-   <string>In 64-bit mode, the instruction&#8217;s default address size is 64 bits, 32-bit address size is supported using the prefix 67H. The 64-bit addresses are specified by RSI and RDI; 32-bit address are specified by ESI and EDI. Use of the REX.W prefix promotes doubleword operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</string></para>
+ <encoding_table><table unique="1091394">
+   <thead><tr>
+     <th><para unique="1091396">Opcode</para>
+      </th>
+     <th><para unique="1091398">Instruction</para>
+      </th>
+     <th><para unique="1091400">Op/ En</para>
+      </th>
+     <th><para unique="1091402">64-Bit Mode</para>
+      </th>
+     <th><para unique="1091404">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1091406">Description</para>
+      </th>
+     </tr>
+    </thead><col width="97.55712pt"/>
+   <col width="110.66760000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="182.15424000000002pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1091408">A4</para>
+      </td>
+     <td><para unique="1091410">MOVS <italic>m8</italic>, <italic>m8</italic></para>
+      </td>
+     <td><para unique="1091412">ZO</para>
+      </td>
+     <td><para unique="1091414">Valid</para>
+      </td>
+     <td><para unique="1091416">Valid</para>
+      </td>
+     <td><para unique="1091418">For legacy mode, Move byte from address DS:(E)SI to ES:(E)DI. For 64-bit mode move byte from address (R|E)SI to (R|E)DI.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091420">A5</para>
+      </td>
+     <td><para unique="1091422">MOVS <italic>m16</italic>, <italic>m16</italic></para>
+      </td>
+     <td><para unique="1091424">ZO</para>
+      </td>
+     <td><para unique="1091426">Valid</para>
+      </td>
+     <td><para unique="1091428">Valid</para>
+      </td>
+     <td><para unique="1091430">For legacy mode, move word from address DS:(E)SI to ES:(E)DI. For 64-bit mode move word at address (R|E)SI to (R|E)DI.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091432">A5</para>
+      </td>
+     <td><para unique="1091434">MOVS <italic>m32</italic>, <italic>m32</italic></para>
+      </td>
+     <td><para unique="1091436">ZO</para>
+      </td>
+     <td><para unique="1091438">Valid</para>
+      </td>
+     <td><para unique="1091440">Valid</para>
+      </td>
+     <td><para unique="1091442">For legacy mode, move dword from address DS:(E)SI to ES:(E)DI. For 64-bit mode move dword from address (R|E)SI to (R|E)DI.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091444">REX.W + A5</para>
+      </td>
+     <td><para unique="1091446">MOVS <italic>m64</italic>, <italic>m64</italic></para>
+      </td>
+     <td><para unique="1091448">ZO</para>
+      </td>
+     <td><para unique="1091450">Valid</para>
+      </td>
+     <td><para unique="1091452">N.E.</para>
+      </td>
+     <td><para unique="1091454">Move qword from address (R|E)SI to (R|E)DI.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091456">A4</para>
+      </td>
+     <td><para unique="1091458">MOVSB</para>
+      </td>
+     <td><para unique="1091460">ZO</para>
+      </td>
+     <td><para unique="1091462">Valid</para>
+      </td>
+     <td><para unique="1091464">Valid</para>
+      </td>
+     <td><para unique="1091466">For legacy mode, Move byte from address DS:(E)SI to ES:(E)DI. For 64-bit mode move byte from address (R|E)SI to (R|E)DI.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091468">A5</para>
+      </td>
+     <td><para unique="1091470">MOVSW</para>
+      </td>
+     <td><para unique="1091472">ZO</para>
+      </td>
+     <td><para unique="1091474">Valid</para>
+      </td>
+     <td><para unique="1091476">Valid</para>
+      </td>
+     <td><para unique="1091478">For legacy mode, move word from address DS:(E)SI to ES:(E)DI. For 64-bit mode move word at address (R|E)SI to (R|E)DI.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091480">A5</para>
+      </td>
+     <td><para unique="1091482">MOVSD</para>
+      </td>
+     <td><para unique="1091484">ZO</para>
+      </td>
+     <td><para unique="1091486">Valid</para>
+      </td>
+     <td><para unique="1091488">Valid</para>
+      </td>
+     <td><para unique="1091490">For legacy mode, move dword from address DS:(E)SI to ES:(E)DI. For 64-bit mode move dword from address (R|E)SI to (R|E)DI.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091492">REX.W + A5</para>
+      </td>
+     <td><para unique="1091494">MOVSQ</para>
+      </td>
+     <td><para unique="1091496">ZO</para>
+      </td>
+     <td><para unique="1091498">Valid </para>
+      </td>
+     <td><para unique="1091500">N.E.</para>
+      </td>
+     <td><para unique="1091502">Move qword from address (R|E)SI to (R|E)DI.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091504">
+   <col width="44.69472pt"/>
+   <col width="111.48552000000001pt"/>
+   <col width="116.71560000000001pt"/>
+   <col width="118.6416pt"/>
+   <col width="118.18296pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091506">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091508">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091510">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091512">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091514">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091516">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1091518">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091520">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091522">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091524">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091525">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091527">Moves the byte, word, or doubleword specified with the second operand (source operand) to the location specified with the first operand (destination operand). Both the source and destination operands are located in memory. The address of the source operand is read from the <indexterm><primary>ESI register;DS register</primary></indexterm>DS:ESI or the DS:SI registers (depending on the address-size attri&#173;bute of the instruction, 32 or 16, respectively). The address of the destination operand is read from the <indexterm><primary>ESI register;DS register</primary></indexterm>ES:EDI or the ES:DI registers (again depending on the address-size attribute of the instruction). The DS segment may be overridden with a segment override prefix, but the ES segment cannot be overridden.</para>
+  <para unique="1091530">At the assembly-code level, two forms of this instruction are allowed: the &#8220;explicit-operands&#8221; form and the &#8220;no-operands&#8221; form. The explicit-operands form (specified with the MOVS mnemonic) allows the source and destination operands to be specified explicitly. Here, the source and destination operands should be symbols that indicate the size and location of the source value and the destination, respectively. This explicit-operands form is provided to allow documentation; however, note that the documentation provided by this form can be misleading. That is, the source and destination operand symbols must specify the correct <bold>type</bold> (size) of the operands (bytes, words, or doublewords), but they do not have to specify the correct <bold>location</bold>. The locations of the source and destination operands are always specified by the DS:(E)SI and ES:(E)DI registers, which must be loaded correctly before the move string instruction is executed. </para>
+  <para unique="1091531">The no-operands form provides &#8220;short forms&#8221; of the byte, word, and doubleword versions of the MOVS instruc&#173;tions. Here also DS:(E)SI and ES:(E)DI are assumed to be the source and destination operands, respectively. The size of the source and destination operands is selected with the mnemonic: MOVSB (byte move), MOVSW (word move), or MOVSD (doubleword move).</para>
+  <para unique="1091532">After the move operation, the (E)SI and (E)DI registers are incremented or decremented automatically according to the setting of the <indexterm><primary>DF (direction) flag, EFLAGS register</primary></indexterm>DF flag in the EFLAGS register. (If the DF flag is 0, the (E)SI and (E)DI register are incre&#173;mented; if the DF flag is 1, the (E)SI and (E)DI registers are decremented.) The registers are incremented or decremented by 1 for byte operations, by 2 for word operations, or by 4 for doubleword operations.</para>
+  <note unique="1091535">To improve performance, more recent processors support modifications to the processor&#8217;s operation during the string store operations initiated with MOVS and MOVSB. See <link unique="1091537" linkend="&lt;c&gt;__sdm_vol1_ch07.fm#37420: 04_Level: 7.3.9.3 Fast-String Operation" xrefstyle="SectionNum">Section 7.3.9.3</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for additional information on fast-string operation.</note><para unique="1091539">The MOVS, MOVSB, MOVSW, and MOVSD instructions can be preceded by the REP prefix (see <link unique="1092593" linkend="&lt;c&gt;REP-Repeat-String-Operation-Prefix.fm#String instructions" xrefstyle="Paratext">&#8220;REP&#8212;Repeat String Operation (Prefix)&#8221;</link> for a description of the REP prefix) for block moves of ECX bytes, words, or doublewords.</para>
+  <para unique="1091540">In 64-bit mode, the instruction&#8217;s default address size is 64 bits, 32-bit address size is supported using the prefix 67H. The 64-bit addresses are specified by RSI and RDI; 32-bit address are specified by ESI and EDI. Use of the REX.W prefix promotes doubleword operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</para>
   </longdesc>
+ <operation>
+  <programlisting>DEST := SRC;
+Non-64-bit Mode:
+IF (Byte move)
+	THEN IF DF = 0
+		THEN
+			(E)SI := (E)SI + 1;
+			(E)DI := (E)DI + 1;
+		ELSE
+			(E)SI := (E)SI &#8211; 1;
+			(E)DI := (E)DI &#8211; 1;
+		FI;
+	ELSE IF (Word move)
+		THEN IF DF = 0
+			(E)SI := (E)SI + 2;
+			(E)DI := (E)DI + 2;
+			FI;
+		ELSE
+			(E)SI := (E)SI &#8211; 2;
+			(E)DI := (E)DI &#8211; 2;
+		FI;
+	ELSE IF (Doubleword move)
+		THEN IF DF = 0
+			(E)SI := (E)SI + 4;
+			(E)DI := (E)DI + 4;
+			FI;
+		ELSE
+			(E)SI := (E)SI &#8211; 4;
+			(E)DI := (E)DI &#8211; 4;
+		FI;
+FI;
+64-bit Mode:
+IF (Byte move)
+	THEN IF DF = 0
+		THEN
+			(R|E)SI := (R|E)SI + 1;
+			(R|E)DI := (R|E)DI + 1;
+		ELSE
+			(R|E)SI := (R|E)SI &#8211; 1;
+			(R|E)DI := (R|E)DI &#8211; 1;
+		FI;
+	ELSE IF (Word move)
+		THEN IF DF = 0
+			(R|E)SI := (R|E)SI + 2;
+			(R|E)DI := (R|E)DI + 2;
+			FI;
+		ELSE
+			(R|E)SI := (R|E)SI &#8211; 2;
+			(R|E)DI := (R|E)DI &#8211; 2;
+		FI;
+	ELSE IF (Doubleword move)
+		THEN IF DF = 0
+			(R|E)SI := (R|E)SI + 4;
+			(R|E)DI := (R|E)DI + 4;
+			FI;
+		ELSE
+			(R|E)SI := (R|E)SI &#8211; 4;
+			(R|E)DI := (R|E)DI &#8211; 4;
+		FI;
+	ELSE IF (Quadword move)
+		THEN IF DF = 0
+			(R|E)SI := (R|E)SI + 8;
+			(R|E)DI := (R|E)DI + 8;
+			FI;
+		ELSE
+			(R|E)SI := (R|E)SI &#8211; 8;
+			(R|E)DI := (R|E)DI &#8211; 8;
+		FI;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1091611">
-   <string>None.</string></para>
+  <para unique="1091611">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the destination is located in a non-writable segment.</string></listitem>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091613">If the destination is located in a non-writable segment.</para>
+     </listitem>
+    <listitem><para unique="1091614">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1091615">If the DS, ES, FS, or GS register contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091616">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091617">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091618">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091619">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1091621">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS</term>
+    <listitem><para unique="1091622">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091623">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091625">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091626">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091627">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091628">If alignment checking is enabled and an unaligned memory reference is made.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091629">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091631" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1091631" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091633">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091634">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091635">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091636">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091637">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

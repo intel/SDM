@@ -1,169 +1,307 @@
 <instruction name="FST/FSTP">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Store Floating-Point Value</shortdesc>
- <longdesc><para unique="1261275">
-   <string>The FST instruction copies the value in the ST(0) register to the destination operand, which can be a memory loca&#173;tion or another register in the FPU register stack. When storing the value in memory, the value is converted to single precision or double precision floating-point format. </string></para>
-  <para unique="1261276">
-   <string>The FSTP instruction performs the same operation as the FST instruction and then pops the register stack. To pop the register stack, the processor marks the ST(0) register as empty and increments the stack pointer (TOP) by 1. The FSTP instruction can also store values in memory in double extended-precision floating-point format.</string></para>
-  <para unique="1261277">
-   <string>If the destination operand is a memory location, the operand specifies the address where the first byte of the desti&#173;nation value is to be stored. If the destination operand is a register, the operand specifies a register in the register stack relative to the top of the stack.</string></para>
-  <para unique="1261278">
-   <string>If the destination size is single precision or double precision, the significand of the value being stored is rounded to the width of the destination (according to the rounding mode specified by the </string><indexterm><primary>RC (rounding control) field, x87 FPU control word;x87 FPU control word:RC field</primary></indexterm><string>RC field of the FPU control word), and the exponent is converted to the width and bias of the destination format. If the value being stored is too large for the destination format, a numeric overflow exception (#O) is generated and, if the exception is unmasked, no value is stored in the destination operand. If the value being stored is a denormal value, the denormal exception (#D) is not generated. This condition is simply signaled as a numeric underflow exception (#U) condition.</string></para>
-  <para unique="1261280">
-   <string>If the value being stored is &#177;0, &#177;</string><string>&#8734;, or a NaN, the least-significant bits of the significand and the exponent are trun&#173;cated to fit the destination format. This operation preserves the value&#8217;s identity as a 0, </string><string>&#8734;, or NaN.</string></para>
-  <para unique="1261281">
-   <string>If the destination operand is a non-empty register, the invalid-operation exception is not generated.</string></para>
-  <para unique="1261282">
-   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+ <encoding_table><table unique="1261192">
+   <thead><tr>
+     <th><para unique="1261194">Opcode</para>
+      </th>
+     <th><para unique="1261196">Instruction</para>
+      </th>
+     <th><para unique="1261198">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261200">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261202">Description</para>
+      </th>
+     </tr>
+    </thead><col width="92.58192pt"/>
+   <col width="90.14472pt"/>
+   <col width="39.20472pt"/>
+   <col width="61.70544pt"/>
+   <col width="228.23784pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261204">D9 /2</para>
+      </td>
+     <td><para unique="1261206">FST m32fp</para>
+      </td>
+     <td><para unique="1261208">Valid</para>
+      </td>
+     <td><para unique="1261210">Valid</para>
+      </td>
+     <td><para unique="1261212">Copy ST(0) to m32fp.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261214">DD /2</para>
+      </td>
+     <td><para unique="1261216">FST m64fp</para>
+      </td>
+     <td><para unique="1261218">Valid</para>
+      </td>
+     <td><para unique="1261220">Valid</para>
+      </td>
+     <td><para unique="1261222">Copy ST(0) to m64fp.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261224">DD D0+i</para>
+      </td>
+     <td><para unique="1261226">FST ST(i)</para>
+      </td>
+     <td><para unique="1261228">Valid</para>
+      </td>
+     <td><para unique="1261230">Valid</para>
+      </td>
+     <td><para unique="1261232">Copy ST(0) to ST(i).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261234">D9 /3</para>
+      </td>
+     <td><para unique="1261236">FSTP m32fp</para>
+      </td>
+     <td><para unique="1261238">Valid</para>
+      </td>
+     <td><para unique="1261240">Valid</para>
+      </td>
+     <td><para unique="1261242">Copy ST(0) to m32fp and pop register stack.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261244">DD /3</para>
+      </td>
+     <td><para unique="1261246">FSTP m64fp</para>
+      </td>
+     <td><para unique="1261248">Valid</para>
+      </td>
+     <td><para unique="1261250">Valid</para>
+      </td>
+     <td><para unique="1261252">Copy ST(0) to m64fp and pop register stack.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261254">DB /7</para>
+      </td>
+     <td><para unique="1261256">FSTP m80fp</para>
+      </td>
+     <td><para unique="1261258">Valid</para>
+      </td>
+     <td><para unique="1261260">Valid</para>
+      </td>
+     <td><para unique="1261262">Copy ST(0) to m80fp and pop register stack.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261264">DD D8+i</para>
+      </td>
+     <td><para unique="1261266">FSTP ST(i)</para>
+      </td>
+     <td><para unique="1261268">Valid</para>
+      </td>
+     <td><para unique="1261270">Valid</para>
+      </td>
+     <td><para unique="1261272">Copy ST(0) to ST(i) and pop register stack.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <longdesc><para unique="1261275">The FST instruction copies the value in the ST(0) register to the destination operand, which can be a memory loca&#173;tion or another register in the FPU register stack. When storing the value in memory, the value is converted to single precision or double precision floating-point format. </para>
+  <para unique="1261276">The FSTP instruction performs the same operation as the FST instruction and then pops the register stack. To pop the register stack, the processor marks the ST(0) register as empty and increments the stack pointer (TOP) by 1. The FSTP instruction can also store values in memory in double extended-precision floating-point format.</para>
+  <para unique="1261277">If the destination operand is a memory location, the operand specifies the address where the first byte of the desti&#173;nation value is to be stored. If the destination operand is a register, the operand specifies a register in the register stack relative to the top of the stack.</para>
+  <para unique="1261278">If the destination size is single precision or double precision, the significand of the value being stored is rounded to the width of the destination (according to the rounding mode specified by the <indexterm><primary>RC (rounding control) field, x87 FPU control word;x87 FPU control word:RC field</primary></indexterm>RC field of the FPU control word), and the exponent is converted to the width and bias of the destination format. If the value being stored is too large for the destination format, a numeric overflow exception (#O) is generated and, if the exception is unmasked, no value is stored in the destination operand. If the value being stored is a denormal value, the denormal exception (#D) is not generated. This condition is simply signaled as a numeric underflow exception (#U) condition.</para>
+  <para unique="1261280">If the value being stored is &#177;0, &#177;&#8734;, or a NaN, the least-significant bits of the significand and the exponent are trun&#173;cated to fit the destination format. This operation preserves the value&#8217;s identity as a 0, &#8734;, or NaN.</para>
+  <para unique="1261281">If the destination operand is a non-empty register, the invalid-operation exception is not generated.</para>
+  <para unique="1261282">This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</para>
   </longdesc>
+ <operation>
+  <programlisting>DEST := ST(0);
+IF Instruction = FSTP
+	THEN
+		PopRegisterStack;
+FI;</programlisting>
+  </operation>
  <subsection title="FPU Flags Affected">
   <variablelist>
    <variablelistentry>
-    <term><string>C1</string></term>
-    <listitem><string>Set to 0 if stack underflow occurred.</string></listitem>
-    <listitem><string>Indicates rounding direction of if the floating-point inexact exception (#P) is generated: 0</string><string> </string><sans><string>:= </string></sans><string>not roundup; 1</string><string> </string><sans><string>:= </string></sans><string>roundup.</string></listitem>
+    <term>C1</term>
+    <listitem><para unique="1261290">Set to 0 if stack underflow occurred.</para>
+     </listitem>
+    <listitem><para unique="1261291">Indicates rounding direction of if the floating-point inexact exception (#P) is generated: 0 <sans>:= </sans>not roundup; 1 <sans>:= </sans>roundup.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>C0, C2, C3 </string></term>
-    <listitem><string>Undefined.</string></listitem>
+    <term>C0, C2, C3 </term>
+    <listitem><para unique="1261292">Undefined.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Floating-Point Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#IS</string></term>
-    <listitem><string>Stack underflow occurred.</string></listitem>
+    <term>#IS</term>
+    <listitem><para unique="1261294">Stack underflow occurred.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#IA</string></term>
-    <listitem><string>If destination result is an SNaN value or unsupported format, except when the destination format is in double extended-precision floating-point format.</string></listitem>
+    <term>#IA</term>
+    <listitem><para unique="1261295">If destination result is an SNaN value or unsupported format, except when the destination format is in double extended-precision floating-point format.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#U</string></term>
-    <listitem><string>Result is too small for the destination format.</string></listitem>
+    <term>#U</term>
+    <listitem><para unique="1261296">Result is too small for the destination format.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#O</string></term>
-    <listitem><string>Result is too large for the destination format.</string></listitem>
+    <term>#O</term>
+    <listitem><para unique="1261297">Result is too large for the destination format.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#P</string></term>
-    <listitem><string>Value cannot be represented exactly in destination format.</string></listitem>
+    <term>#P</term>
+    <listitem><para unique="1261298">Value cannot be represented exactly in destination format.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the destination is located in a non-writable segment.</string></listitem>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261300">If the destination is located in a non-writable segment.</para>
+     </listitem>
+    <listitem><para unique="1261301">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1261302">If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261303">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#NM</string></term>
-    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    <term>#NM</term>
+    <listitem><para unique="1261304">CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261305">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261306">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261307">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1261309">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS</term>
+    <listitem><para unique="1261310">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#NM</string></term>
-    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    <term>#NM</term>
+    <listitem><para unique="1261311">CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261312">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261314">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261315">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#NM</string></term>
-    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    <term>#NM</term>
+    <listitem><para unique="1261316">CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261317">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261318">If alignment checking is enabled and an unaligned memory reference is made.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261319">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261321" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261321" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261323">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261324">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#NM</string></term>
-    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    <term>#NM</term>
+    <listitem><para unique="1261325">CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#MF </string></term>
-    <listitem><string>If there is a pending x87 FPU exception.</string></listitem>
+    <term>#MF </term>
+    <listitem><para unique="1261326">If there is a pending x87 FPU exception.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261327">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261328">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261329">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

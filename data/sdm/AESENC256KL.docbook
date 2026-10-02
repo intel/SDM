@@ -1,50 +1,159 @@
 <instruction name="AESENC256KL">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Perform 14 Rounds of AES Encryption Flow With Key Locker Using 256-Bit Key</shortdesc>
- <longdesc><para unique="1261251">
-   <string>The AESENC256KL</string><footnote><para unique="1261248">
-     <string>Further details on Key Locker and usage of this instruction can be found here:</string></para>
-    <para unique="1261250">
-     <string>	</string><anchor id="message URL https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html"/><underline><string>https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html.</string></underline></para>
-    </footnote><string> instruction performs 14 rounds of AES to encrypt the first operand using the 256-bit key indi&#173;cated by the handle from the second operand. It stores the result in the first operand if the operation succeeds (e.g., does not run into a handle violation failure).</string></para>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th colspan="2"><para unique="1261193">Opcode/</para>
+      <para unique="1261194">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64/32-bit Mode</para>
+      </th>
+     <th><para unique="1261202">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><col width="84.96864000000001pt"/>
+   <col width="96.38712000000001pt"/>
+   <col width="24.69672pt"/>
+   <col width="47.85984pt"/>
+   <col width="48.39192pt"/>
+   <col width="208.76904000000002pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1261206">F3 0F 38 DE !(11):rrr:bbb </para>
+      <para unique="1261207">AESENC256KL xmm, m512</para>
+      </td>
+     <td><para unique="1261211">A</para>
+      </td>
+     <td><para unique="1261213">V/V</para>
+      </td>
+     <td><para unique="1261215">AESKLE</para>
+      </td>
+     <td><para unique="1261217">Encrypt xmm using 256-bit AES key indicated by han&#173;dle at m512 and store result in xmm.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261219">
+   <col width="37.956959999999995pt"/>
+   <col width="48.33936pt"/>
+   <col width="101.20176000000001pt"/>
+   <col width="108.99792pt"/>
+   <col width="107.88408000000001pt"/>
+   <col width="106.59528pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261221">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261223">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1261225">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261227">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261229">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261231">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261233">A</para>
+      </td>
+     <td valign="middle"><para unique="1261235">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261237">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1261239">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261241">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261243">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261244">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261251">The AESENC256KL<footnote><para unique="1261248">Further details on Key Locker and usage of this instruction can be found here:</para>
+    <para unique="1261250">	<anchor id="message URL https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html"/><underline>https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html.</underline></para>
+    </footnote> instruction performs 14 rounds of AES to encrypt the first operand using the 256-bit key indi&#173;cated by the handle from the second operand. It stores the result in the first operand if the operation succeeds (e.g., does not run into a handle violation failure).</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1261253">AESENC256KL </title>
+   <programlisting>Handle := UnalignedLoad of 512 bit (SRC); 										// Load is not guaranteed to be atomic.
+Illegal Handle = (
+				HandleReservedBitSet (Handle) ||
+				(Handle[0] AND (CPL &gt; 0)) ||
+				Handle [1] ||
+				HandleKeyType (Handle) != HANDLE_KEY_TYPE_AES256
+				);
+IF (Illegal Handle)
+	THEN RFLAGS.ZF := 1;
+	ELSE
+		(UnwrappedKey, Authentic) := UnwrapKeyAndAuthenticate512 (Handle[511:0], IWKey);
+		IF (Authentic == 0)
+			THEN RFLAGS.ZF := 1;
+			ELSE
+				DEST := AES256Encrypt (DEST, UnwrappedKey) ;
+				RFLAGS.ZF := 0;
+		FI;
+FI;
+RFLAGS.OF, SF, AF, PF, CF := 0;</programlisting>
+   </section>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261274">
-   <string>ZF is set to 0 if the operation succeeded and set to 1 if the operation failed due to a handle violation. The other arithmetic flags (OF, SF, AF, PF, CF) are cleared to 0.</string></para>
+  <para unique="1261274">ZF is set to 0 if the operation succeeded and set to 1 if the operation failed due to a handle violation. The other arithmetic flags (OF, SF, AF, PF, CF) are cleared to 0.</para>
   </subsection>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>AESENC256KL 			unsigned char _mm_aesenc256kl_u8(__m128i* odata, __m128i idata, const void* h);</string><string>
-</string></programlisting>
+  <programlisting>AESENC256KL 			unsigned char _mm_aesenc256kl_u8(__m128i* odata, __m128i idata, const void* h);</programlisting>
   </subsection>
  <subsection title="Exceptions (All Operating Modes)">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If CPUID.07H.00H:ECX.KEY_LOCKER[23] = 0.</string></listitem>
-    <listitem><string>If CR4.KL = 0.</string></listitem>
-    <listitem><string>If CPUID.19H:EBX.AESKLE[0] = 0.</string></listitem>
-    <listitem><string>If CR0.EM = 1.</string></listitem>
-    <listitem><string>If CR4.OSFXSR = 0.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261278">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1261279">If CPUID.07H.00H:ECX.KEY_LOCKER[23] = 0.</para>
+     </listitem>
+    <listitem><para unique="1261280">If CR4.KL = 0.</para>
+     </listitem>
+    <listitem><para unique="1261281">If CPUID.19H:EBX.AESKLE[0] = 0.</para>
+     </listitem>
+    <listitem><para unique="1261282">If CR0.EM = 1.</para>
+     </listitem>
+    <listitem><para unique="1261283">If CR4.OSFXSR = 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#NM </string></term>
-    <listitem><string>If CR0.TS = 1.</string></listitem>
+    <term>#NM </term>
+    <listitem><para unique="1261284">If CR0.TS = 1.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF </string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF </term>
+    <listitem><para unique="1261285">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0) </string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</string></listitem>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0) </term>
+    <listitem><para unique="1261286">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1261287">If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</para>
+     </listitem>
+    <listitem><para unique="1261288">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0) </string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0) </term>
+    <listitem><para unique="1261289">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1261290">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

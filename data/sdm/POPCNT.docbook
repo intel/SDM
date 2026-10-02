@@ -1,112 +1,241 @@
 <instruction name="POPCNT">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Return the Count of Number of Bits Set to 1</shortdesc>
- <longdesc><para unique="1091462">
-   <string>This instruction calculates the number of bits set to 1 in the second operand (source) and returns the count in the first operand (a destination register).</string></para>
+ <encoding_table><table unique="1091389">
+   <thead><tr>
+     <th><para unique="1091391">Opcode</para>
+      </th>
+     <th><para unique="1091393">Instruction</para>
+      </th>
+     <th><para unique="1091395">Op/ En</para>
+      </th>
+     <th><para unique="1091397">64-Bit Mode</para>
+      </th>
+     <th><para unique="1091399">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1091401">Description</para>
+      </th>
+     </tr>
+    </thead><col width="97.20576pt"/>
+   <col width="110.26872pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="183.654pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1091403">F3 0F B8 /r</para>
+      </td>
+     <td><para unique="1091405">POPCNT r16, r/m16</para>
+      </td>
+     <td><para unique="1091407">RM</para>
+      </td>
+     <td><para unique="1091409">Valid</para>
+      </td>
+     <td><para unique="1091411">Valid</para>
+      </td>
+     <td><para unique="1091413">POPCNT on r/m16</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091415">F3 0F B8 /r</para>
+      </td>
+     <td><para unique="1091417">POPCNT r32, r/m32</para>
+      </td>
+     <td><para unique="1091419">RM</para>
+      </td>
+     <td><para unique="1091421">Valid</para>
+      </td>
+     <td><para unique="1091423">Valid</para>
+      </td>
+     <td><para unique="1091425">POPCNT on r/m32</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091427">F3 REX.W 0F B8 /r</para>
+      </td>
+     <td><para unique="1091429">POPCNT r64, r/m64</para>
+      </td>
+     <td><para unique="1091431">RM</para>
+      </td>
+     <td><para unique="1091433">Valid</para>
+      </td>
+     <td><para unique="1091435">N.E.</para>
+      </td>
+     <td><para unique="1091437">POPCNT on r/m64</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091439">
+   <col width="43.598879999999994pt"/>
+   <col width="115.03944pt"/>
+   <col width="117.96047999999999pt"/>
+   <col width="115.96608pt"/>
+   <col width="118.65528pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091441">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091443">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091445">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091447">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091449">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091451">RM</para>
+      </td>
+     <td valign="middle"><para unique="1091453">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091455">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091457">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091459">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091460">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091462">This instruction calculates the number of bits set to 1 in the second operand (source) and returns the count in the first operand (a destination register).</para>
   </longdesc>
+ <operation>
+  <programlisting>Count = 0;
+For (i=0; i &lt; OperandSize; i++)
+{	 	IF (SRC[ i] = 1) // i&#8217;th bit
+		THEN Count++; 	FI;
+}
+DEST := Count;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1091471">
-   <string>OF, SF, ZF, AF, CF, PF are all cleared. ZF is set if SRC = 0, otherwise ZF is cleared.</string></para>
+  <para unique="1091471">OF, SF, ZF, AF, CF, PF are all cleared. ZF is set if SRC = 0, otherwise ZF is cleared.</para>
   </subsection>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>POPCNT int _mm_popcnt_u32(unsigned int a);</string><string>
-</string><string>POPCNT int64_t _mm_popcnt_u64(unsigned __int64 a);</string><string>
-</string></programlisting>
+  <programlisting>POPCNT int _mm_popcnt_u32(unsigned int a);
+POPCNT int64_t _mm_popcnt_u64(unsigned __int64 a);</programlisting>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS or GS segments.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091476">If a memory operand effective address is outside the CS, DS, ES, FS or GS segments.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091477">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF (fault-code)</string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF (fault-code)</term>
+    <listitem><para unique="1091478">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If an unaligned memory reference is made while the current privilege level is 3 and alignment checking is enabled.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091479">If an unaligned memory reference is made while the current privilege level is 3 and alignment checking is enabled.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CPUID.01H:ECX.POPCNT[23] = 0.</string></listitem>
-    <listitem><string>If LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091480">If CPUID.01H:ECX.POPCNT[23] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091481">If LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If any part of the operand lies outside of the effective address space from 0 to 0FFFFH.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091483">If any part of the operand lies outside of the effective address space from 0 to 0FFFFH.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091484">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CPUID.01H:ECX.POPCNT[23] = 0.</string></listitem>
-    <listitem><string>If LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091485">If CPUID.01H:ECX.POPCNT[23] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091486">If LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual 8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If any part of the operand lies outside of the effective address space from 0 to 0FFFFH.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091488">If any part of the operand lies outside of the effective address space from 0 to 0FFFFH.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091489">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF (fault-code)</string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF (fault-code)</term>
+    <listitem><para unique="1091490">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If an unaligned memory reference is made while alignment checking is enabled.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091491">If an unaligned memory reference is made while alignment checking is enabled.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CPUID.01H:ECX.POPCNT[23] = 0.</string></listitem>
-    <listitem><string>If LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091492">If CPUID.01H:ECX.POPCNT[23] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091493">If LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091495" format="xIndent1">
-   <string>Same exceptions as in Protected Mode.</string></para>
+  <para unique="1091495" format="xIndent1">Same exceptions as in Protected Mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091497">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091498">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF (fault-code)</string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF (fault-code)</term>
+    <listitem><para unique="1091499">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091500">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CPUID.01H:ECX.POPCNT[23] = 0.</string></listitem>
-    <listitem><string>If LOCK prefix is used.</string></listitem>
-    <listitem><string></string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091501">If CPUID.01H:ECX.POPCNT[23] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091502">If LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1091503"></para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

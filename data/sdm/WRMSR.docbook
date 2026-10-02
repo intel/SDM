@@ -1,71 +1,144 @@
 <instruction name="WRMSR">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Write to Model Specific Register</shortdesc>
- <longdesc><para unique="1012591">
-   <string>Writes the contents of registers EDX:EAX into the 64-bit model specific register (MSR) specified in the ECX register. (On processors that support the Intel&#160;64 architecture, the high-order 32 bits of RCX are ignored.) The contents of the EDX register are copied to high-order 32 bits of the selected MSR and the contents of the EAX register are copied to low-order 32 bits of the MSR. (On processors that support the Intel&#160;64 architecture, the high-order 32 bits of each of RAX and RDX are ignored.) Undefined or reserved bits in an MSR should be set to values previously read.</string></para>
-  <para unique="1012592">
-   <string>This instruction must be executed at privilege level 0 or in real-address mode; otherwise, a general protection exception #GP(0) is generated. Specifying a reserved or unimplemented MSR address in ECX will also cause a general protection exception. The processor will also generate a general protection exception if software attempts to write to bits in a reserved MSR.</string></para>
-  <para unique="1012593">
-   <string>When the WRMSR instruction is used to write to an MTRR, the TLBs are invalidated. This includes global entries (see </string><link linkend="75947: 03_Level: 1.9.1 Translation Lookaside Buffers (TLBs)"><string>Section 5.10.2, &#8220;Translation Lookaside Buffers (TLBs)&#8221;</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A).</string></para>
-  <para unique="1012594">
-   <string>MSRs control functions for testability, execution tracing, performance-monitoring and machine check errors. Chapter 2, &#8220;Model-Specific Registers (MSRs),&#8221; of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 4, lists all MSRs that can be written with this instruction and their addresses. Note that each processor family has its own set of MSRs.</string></para>
-  <para unique="1012595">
-   <string>The WRMSR instruction is a serializing instruction (see &#8220;Serializing Instructions&#8221; in Chapter 9 of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A). Note that WRMSR to the IA32_TSC_DEADLINE MSR (MSR index 6E0H) and the X2APIC MSRs (MSR indices 802H to 83FH) are not serializing.</string></para>
-  <para unique="1012596">
-   <string>The CPUID instruction should be used to determine whether MSRs are supported (CPUID.01H:EDX[5] </string><string>= 1) before using this instruction.</string></para>
-  <section level="7">
-   <title unique="1012597"><string>IA-32 Architecture Compatibility</string></title>
-   <para unique="1012598">
-    <string>The MSRs and the ability to read them with the WRMSR instruction were introduced into the IA-32 architecture with the Pentium processor. Execution of this instruction by an IA-32 processor earlier than the Pentium processor results in an invalid opcode exception #UD.</string></para>
-   </section>
+ <encoding_table><table unique="1012542">
+   <thead><tr>
+     <th><para unique="1012544">Opcode</para>
+      </th>
+     <th><para unique="1012546">Instruction</para>
+      </th>
+     <th><para unique="1012548">Op/ En</para>
+      </th>
+     <th><para unique="1012550">64-Bit Mode</para>
+      </th>
+     <th><para unique="1012552">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1012554">Description</para>
+      </th>
+     </tr>
+    </thead><col width="97.90848pt"/>
+   <col width="111.06576000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="180.65448pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1012556">0F 30</para>
+      </td>
+     <td><para unique="1012558">WRMSR</para>
+      </td>
+     <td><para unique="1012560">ZO</para>
+      </td>
+     <td><para unique="1012562">Valid </para>
+      </td>
+     <td><para unique="1012564">Valid</para>
+      </td>
+     <td><para unique="1012566">Write the value in EDX:EAX to MSR specified by ECX.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1012568">
+   <col width="46.32624pt"/>
+   <col width="112.54823999999999pt"/>
+   <col width="114.81263999999999pt"/>
+   <col width="114.40656pt"/>
+   <col width="121.62599999999999pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1012570">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1012572">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1012574">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1012576">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1012578">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1012580">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1012582">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012584">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012586">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012588">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1012589">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1012591">Writes the contents of registers EDX:EAX into the 64-bit model specific register (MSR) specified in the ECX register. (On processors that support the Intel&#160;64 architecture, the high-order 32 bits of RCX are ignored.) The contents of the EDX register are copied to high-order 32 bits of the selected MSR and the contents of the EAX register are copied to low-order 32 bits of the MSR. (On processors that support the Intel&#160;64 architecture, the high-order 32 bits of each of RAX and RDX are ignored.) Undefined or reserved bits in an MSR should be set to values previously read.</para>
+  <para unique="1012592">This instruction must be executed at privilege level 0 or in real-address mode; otherwise, a general protection exception #GP(0) is generated. Specifying a reserved or unimplemented MSR address in ECX will also cause a general protection exception. The processor will also generate a general protection exception if software attempts to write to bits in a reserved MSR.</para>
+  <para unique="1012593">When the WRMSR instruction is used to write to an MTRR, the TLBs are invalidated. This includes global entries (see <link unique="1012888" linkend="&lt;c&gt;__sdm_vol3A_ch05.fm#75947: 03_Level: 1.9.1 Translation Lookaside Buffers (TLBs)" xrefstyle="SectionNum&amp;Title">Section 5.10.2, &#8220;Translation Lookaside Buffers (TLBs)&#8221;</link> of the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A).</para>
+  <para unique="1012594">MSRs control functions for testability, execution tracing, performance-monitoring and machine check errors. Chapter 2, &#8220;Model-Specific Registers (MSRs),&#8221; of the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 4, lists all MSRs that can be written with this instruction and their addresses. Note that each processor family has its own set of MSRs.</para>
+  <para unique="1012595">The WRMSR instruction is a serializing instruction (see &#8220;Serializing Instructions&#8221; in Chapter 9 of the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A). Note that WRMSR to the IA32_TSC_DEADLINE MSR (MSR index 6E0H) and the X2APIC MSRs (MSR indices 802H to 83FH) are not serializing.</para>
+  <para unique="1012596">The CPUID instruction should be used to determine whether MSRs are supported (CPUID.01H:EDX[5] = 1) before using this instruction.</para>
   </longdesc>
+ <operation>
+  <programlisting>MSR[ECX] := EDX:EAX;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1012602">
-   <string>None.</string></para>
+  <para unique="1012602">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the current privilege level is not 0.</string></listitem>
-    <listitem><string>If the value in ECX specifies a reserved or unimplemented MSR address.</string></listitem>
-    <listitem><string>If the value in EDX:EAX sets bits that are reserved in the MSR specified by ECX.</string></listitem>
-    <listitem><string>If the source register contains a non-canonical address and ECX specifies one of the following MSRs: IA32_DS_AREA, IA32_FS_BASE, IA32_GS_BASE, IA32_KERNEL_GS_BASE, IA32_L&#173;STAR, IA32_SYSENTER_EIP, IA32_SYSENTER_ESP.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1012604">If the current privilege level is not 0.</para>
+     </listitem>
+    <listitem><para unique="1012605">If the value in ECX specifies a reserved or unimplemented MSR address.</para>
+     </listitem>
+    <listitem><para unique="1012606">If the value in EDX:EAX sets bits that are reserved in the MSR specified by ECX.</para>
+     </listitem>
+    <listitem><para unique="1012607">If the source register contains a non-canonical address and ECX specifies one of the following MSRs: IA32_DS_AREA, IA32_FS_BASE, IA32_GS_BASE, IA32_KERNEL_GS_BASE, IA32_L&#173;STAR, IA32_SYSENTER_EIP, IA32_SYSENTER_ESP.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1012608">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If the value in ECX specifies a reserved or unimplemented MSR address.</string></listitem>
-    <listitem><string>If the value in EDX:EAX sets bits that are reserved in the MSR specified by ECX.</string></listitem>
-    <listitem><string>If the source register contains a non-canonical address and ECX specifies one of the following MSRs: IA32_DS_AREA, IA32_FS_BASE, IA32_GS_BASE, IA32_KERNEL_GS_BASE, IA32_L&#173;STAR, IA32_SYSENTER_EIP, IA32_SYSENTER_ESP.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1012610">If the value in ECX specifies a reserved or unimplemented MSR address.</para>
+     </listitem>
+    <listitem><para unique="1012611">If the value in EDX:EAX sets bits that are reserved in the MSR specified by ECX.</para>
+     </listitem>
+    <listitem><para unique="1012612">If the source register contains a non-canonical address and ECX specifies one of the following MSRs: IA32_DS_AREA, IA32_FS_BASE, IA32_GS_BASE, IA32_KERNEL_GS_BASE, IA32_L&#173;STAR, IA32_SYSENTER_EIP, IA32_SYSENTER_ESP.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1012613">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string> The WRMSR instruction is not recognized in virtual-8086 mode.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1012615"> The WRMSR instruction is not recognized in virtual-8086 mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1012617" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1012617" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
-  <para unique="1012619" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1012619" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  </instruction>

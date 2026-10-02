@@ -1,106 +1,354 @@
 <instruction name="SCAS/SCASB/SCASW/SCASD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Scan String</shortdesc>
- <longdesc><para unique="1091532">
-   <string>In non-64-bit modes and in default 64-bit mode: this instruction compares a byte, word, doubleword or quadword specified using a memory operand with the value in AL, AX, or EAX. It then sets status flags in EFLAGS recording the results. The memory operand address is read from </string><indexterm><primary>EDI register;ES register</primary></indexterm><string>ES:(E)DI register (depending on the address-size attribute of the instruction and the current operational mode). Note that </string><indexterm><primary>ES register</primary></indexterm><string>ES cannot be overridden with a segment override prefix.</string></para>
-  <para unique="1091535">
-   <string>At the assembly-code level, two forms of this instruction are allowed. The explicit-operand form and the no-oper&#173;ands form. The explicit-operand form (specified using the SCAS mnemonic) allows a memory operand to be spec&#173;ified explicitly. The memory operand must be a symbol that indicates the size and location of the operand value. The register operand is then automatically selected to match the size of the memory operand (AL register for byte comparisons, AX for word comparisons, EAX for doubleword comparisons). The explicit-operand form is provided to allow documentation. Note that the documentation provided by this form can be misleading. That is, the memory operand symbol must specify the correct type (size) of the operand (byte, word, or doubleword) but it does not have to specify the correct location. The location is always specified by ES:(E)DI.</string></para>
-  <para unique="1091536">
-   <string>The no-operands form of the instruction uses a short form of SCAS. Again, ES:(E)DI is assumed to be the memory operand and AL, AX, or EAX is assumed to be the register operand. The size of operands is selected by the mnemonic: SCASB (byte comparison), SCASW (word comparison), or SCASD (doubleword comparison).</string></para>
-  <para unique="1091537">
-   <string>After the comparison, the (E)DI register is incremented or decremented automatically according to the setting of the </string><indexterm><primary>DF (direction) flag, EFLAGS register</primary></indexterm><string>DF flag in the EFLAGS register. If the DF flag is 0, the (E)DI register is incremented; if the DF flag is 1, the (E)DI register is decremented. The register is incremented or decremented by 1 for byte operations, by 2 for word oper&#173;ations, and by 4 for doubleword operations.</string></para>
-  <para unique="1091539">
-   <string>SCAS, SCASB, SCASW, SCASD, and SCASQ can be preceded by the REPE prefix or the REPNE prefix for block comparisons of ECX bytes, words, doublewords, or quadwords. Often, however, these instructions will be used in a LOOP construct that takes some action based on the setting of status flags. See </string><link linkend="String instructions"><string>&#8220;REPE/REPZ&#8212;Repeat String Oper&#173;ation While Zero (Prefix)&#8221;</string></link><string> and </string><link linkend="String instructions"><string>&#8220;REPNE/REPNZ&#8212;Repeat String Operation While Not Zero (Prefix)&#8221;</string></link><string> in this chapter for a description of the REPE and REPNE prefixes.</string></para>
-  <para unique="1091540">
-   <string>In 64-bit mode, the instruction&#8217;s default address size is 64-bits, 32-bit address size is supported using the prefix 67H. Using a REX prefix in the form of REX.W promotes operation on doubleword operand to 64 bits. The 64-bit no-operand mnemonic is SCASQ. Address of the memory operand is specified in either RDI or EDI, and AL/AX/EAX/RAX may be used as the register operand. After a comparison, the destination register is incremented or decremented by the current operand size (depending on the value of the DF flag). See the summary chart at the beginning of this section for encoding data and limits.</string></para>
+ <encoding_table><table unique="1091396">
+   <thead><tr>
+     <th><para unique="1091398">Opcode</para>
+      </th>
+     <th><para unique="1091400">Instruction</para>
+      </th>
+     <th><para unique="1091402">Op/ En</para>
+      </th>
+     <th><para unique="1091404">64-Bit Mode</para>
+      </th>
+     <th><para unique="1091406">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1091408">Description</para>
+      </th>
+     </tr>
+    </thead><col width="86.66424pt"/>
+   <col width="98.31024000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="206.40384pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1091410">AE</para>
+      </td>
+     <td><para unique="1091412">SCAS m8</para>
+      </td>
+     <td><para unique="1091414">ZO</para>
+      </td>
+     <td><para unique="1091416">Valid </para>
+      </td>
+     <td><para unique="1091418">Valid</para>
+      </td>
+     <td><para unique="1091420">Compare AL with byte at ES:(E)DI or RDI, then set status flags.<footnote><para unique="1091423" format="TableFootnote">In 64-bit mode, only 64-bit (RDI) and 32-bit (EDI) address sizes are supported. In non-64-bit mode, only 32-bit (EDI) and 16-bit (DI) address sizes are supported.</para>
+        </footnote></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091425">AF</para>
+      </td>
+     <td><para unique="1091427">SCAS m16</para>
+      </td>
+     <td><para unique="1091429">ZO</para>
+      </td>
+     <td><para unique="1091431">Valid </para>
+      </td>
+     <td><para unique="1091433">Valid</para>
+      </td>
+     <td><para unique="1091435">Compare AX with word at ES:(E)DI or RDI, then set status flags.<superscript>1</superscript></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091437">AF</para>
+      </td>
+     <td><para unique="1091439">SCAS m32</para>
+      </td>
+     <td><para unique="1091441">ZO</para>
+      </td>
+     <td><para unique="1091443">Valid </para>
+      </td>
+     <td><para unique="1091445">Valid</para>
+      </td>
+     <td><para unique="1091447">Compare EAX with doubleword at ES(E)DI or RDI then set status flags.<superscript>1</superscript></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091449">REX.W + AF</para>
+      </td>
+     <td><para unique="1091451">SCAS m64</para>
+      </td>
+     <td><para unique="1091453">ZO</para>
+      </td>
+     <td><para unique="1091455">Valid</para>
+      </td>
+     <td><para unique="1091457">N.E.</para>
+      </td>
+     <td><para unique="1091459">Compare RAX with quadword at RDI or EDI then set status flags.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091461">AE</para>
+      </td>
+     <td><para unique="1091463">SCASB</para>
+      </td>
+     <td><para unique="1091465">ZO</para>
+      </td>
+     <td><para unique="1091467">Valid </para>
+      </td>
+     <td><para unique="1091469">Valid</para>
+      </td>
+     <td><para unique="1091471">Compare AL with byte at ES:(E)DI or RDI then set status flags.<superscript>1</superscript></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091473">AF</para>
+      </td>
+     <td><para unique="1091475">SCASW</para>
+      </td>
+     <td><para unique="1091477">ZO</para>
+      </td>
+     <td><para unique="1091479">Valid </para>
+      </td>
+     <td><para unique="1091481">Valid</para>
+      </td>
+     <td><para unique="1091483">Compare AX with word at ES:(E)DI or RDI then set status flags.<superscript>1</superscript></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091485">AF</para>
+      </td>
+     <td><para unique="1091487">SCASD</para>
+      </td>
+     <td><para unique="1091489">ZO</para>
+      </td>
+     <td><para unique="1091491">Valid </para>
+      </td>
+     <td><para unique="1091493">Valid</para>
+      </td>
+     <td><para unique="1091495">Compare EAX with doubleword at ES:(E)DI or RDI then set status flags.<superscript>1</superscript></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091497">REX.W + AF</para>
+      </td>
+     <td><para unique="1091499">SCASQ</para>
+      </td>
+     <td><para unique="1091501">ZO</para>
+      </td>
+     <td><para unique="1091503">Valid </para>
+      </td>
+     <td><para unique="1091505">N.E.</para>
+      </td>
+     <td><para unique="1091507">Compare RAX with quadword at RDI or EDI then set status flags.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091509">
+   <col width="43.33464pt"/>
+   <col width="116.69976pt"/>
+   <col width="117.25344pt"/>
+   <col width="116.05463999999999pt"/>
+   <col width="116.3772pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091511">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091513">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091515">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091517">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091519">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091521">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1091523">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091525">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091527">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091529">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091530">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091532">In non-64-bit modes and in default 64-bit mode: this instruction compares a byte, word, doubleword or quadword specified using a memory operand with the value in AL, AX, or EAX. It then sets status flags in EFLAGS recording the results. The memory operand address is read from <indexterm><primary>EDI register;ES register</primary></indexterm>ES:(E)DI register (depending on the address-size attribute of the instruction and the current operational mode). Note that <indexterm><primary>ES register</primary></indexterm>ES cannot be overridden with a segment override prefix.</para>
+  <para unique="1091535">At the assembly-code level, two forms of this instruction are allowed. The explicit-operand form and the no-oper&#173;ands form. The explicit-operand form (specified using the SCAS mnemonic) allows a memory operand to be spec&#173;ified explicitly. The memory operand must be a symbol that indicates the size and location of the operand value. The register operand is then automatically selected to match the size of the memory operand (AL register for byte comparisons, AX for word comparisons, EAX for doubleword comparisons). The explicit-operand form is provided to allow documentation. Note that the documentation provided by this form can be misleading. That is, the memory operand symbol must specify the correct type (size) of the operand (byte, word, or doubleword) but it does not have to specify the correct location. The location is always specified by ES:(E)DI.</para>
+  <para unique="1091536">The no-operands form of the instruction uses a short form of SCAS. Again, ES:(E)DI is assumed to be the memory operand and AL, AX, or EAX is assumed to be the register operand. The size of operands is selected by the mnemonic: SCASB (byte comparison), SCASW (word comparison), or SCASD (doubleword comparison).</para>
+  <para unique="1091537">After the comparison, the (E)DI register is incremented or decremented automatically according to the setting of the <indexterm><primary>DF (direction) flag, EFLAGS register</primary></indexterm>DF flag in the EFLAGS register. If the DF flag is 0, the (E)DI register is incremented; if the DF flag is 1, the (E)DI register is decremented. The register is incremented or decremented by 1 for byte operations, by 2 for word oper&#173;ations, and by 4 for doubleword operations.</para>
+  <para unique="1091539">SCAS, SCASB, SCASW, SCASD, and SCASQ can be preceded by the REPE prefix or the REPNE prefix for block comparisons of ECX bytes, words, doublewords, or quadwords. Often, however, these instructions will be used in a LOOP construct that takes some action based on the setting of status flags. See <link unique="1092342" linkend="&lt;c&gt;REPE-REPZ-Repeat-String-Operation-While-Zero.fm#String instructions" xrefstyle="Paratext_quoted">&#8220;REPE/REPZ&#8212;Repeat String Oper&#173;ation While Zero (Prefix)&#8221;</link> and <link unique="1092354" linkend="&lt;c&gt;REPNE-REPNZ-Repeat-String-Operation-While-Not-Zero.fm#String instructions" xrefstyle="Paratext_quoted">&#8220;REPNE/REPNZ&#8212;Repeat String Operation While Not Zero (Prefix)&#8221;</link> in this chapter for a description of the REPE and REPNE prefixes.</para>
+  <para unique="1091540">In 64-bit mode, the instruction&#8217;s default address size is 64-bits, 32-bit address size is supported using the prefix 67H. Using a REX prefix in the form of REX.W promotes operation on doubleword operand to 64 bits. The 64-bit no-operand mnemonic is SCASQ. Address of the memory operand is specified in either RDI or EDI, and AL/AX/EAX/RAX may be used as the register operand. After a comparison, the destination register is incremented or decremented by the current operand size (depending on the value of the DF flag). See the summary chart at the beginning of this section for encoding data and limits.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091542">Non-64-bit Mode:</title>
+   <programlisting>IF (Byte comparison)
+	THEN
+		temp := AL &#8722; SRC;
+		SetStatusFlags(temp);
+			THEN IF DF = 0
+				THEN (E)DI := (E)DI + 1;
+				ELSE (E)DI := (E)DI &#8211; 1; FI;
+	ELSE IF (Word comparison)
+		THEN
+			temp := AX &#8722; SRC;
+			SetStatusFlags(temp);
+			IF DF = 0
+				THEN (E)DI := (E)DI + 2;
+				ELSE (E)DI := (E)DI &#8211; 2; FI;
+		FI;
+	ELSE IF (Doubleword comparison)
+		THEN
+			temp := EAX &#8211; SRC;
+			SetStatusFlags(temp);
+			IF DF = 0
+				THEN (E)DI := (E)DI + 4;
+				ELSE (E)DI := (E)DI &#8211; 4; FI;
+		FI;
+FI;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091568">64-bit Mode:</title>
+   <programlisting>IF (Byte comparison)
+	THEN
+		temp := AL &#8722; SRC;
+		SetStatusFlags(temp);
+			THEN IF DF = 0
+				THEN (R|E)DI := (R|E)DI + 1;
+				ELSE (R|E)DI := (R|E)DI &#8211; 1; FI;
+	ELSE IF (Word comparison)
+		THEN
+			temp := AX &#8722; SRC;
+			SetStatusFlags(temp);
+			IF DF = 0
+				THEN (R|E)DI := (R|E)DI + 2;
+				ELSE (R|E)DI := (R|E)DI &#8211; 2; FI;
+		FI;
+	ELSE IF (Doubleword comparison)
+		THEN
+			temp := EAX &#8211; SRC;
+			SetStatusFlags(temp);
+			IF DF = 0
+				THEN (R|E)DI := (R|E)DI + 4;
+				ELSE (R|E)DI := (R|E)DI &#8211; 4; FI;
+		FI;
+	ELSE IF (Quadword comparison using REX.W )
+		THEN
+			temp := RAX &#8722; SRC;
+			SetStatusFlags(temp);
+			IF DF = 0
+				THEN (R|E)DI := (R|E)DI + 8;
+				ELSE (R|E)DI := (R|E)DI &#8211; 8;
+			FI;
+	FI;
+FI;</programlisting>
+   </section>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1091603">
-   <string>The OF, SF, ZF, AF, PF, and CF flags are set according to the temporary result of the comparison.</string></para>
+  <para unique="1091603">The OF, SF, ZF, AF, PF, and CF flags are set according to the temporary result of the comparison.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the limit of the ES segment.</string></listitem>
-    <listitem><string>If the ES register contains a NULL segment selector.</string></listitem>
-    <listitem><string>If an illegal memory operand effective address in the ES segment is given.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091605">If a memory operand effective address is outside the limit of the ES segment.</para>
+     </listitem>
+    <listitem><para unique="1091606">If the ES register contains a NULL segment selector.</para>
+     </listitem>
+    <listitem><para unique="1091607">If an illegal memory operand effective address in the ES segment is given.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091608">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091609">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091610">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1091612">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS</term>
+    <listitem><para unique="1091613">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091614">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091616">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091617">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091618">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091619">If alignment checking is enabled and an unaligned memory reference is made.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091620">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091622" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1091622" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091624">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091625">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091626">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091627">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

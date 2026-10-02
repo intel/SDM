@@ -1,0 +1,223 @@
+<instruction name="BNDSTX">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Store Extended Bounds Using Address Translation</shortdesc>
+ <encoding_table><table unique="1261191">
+   <col width="50.04648pt"/>
+   <col width="71.20296pt"/>
+   <col width="37.49976pt"/>
+   <col width="48.74976pt"/>
+   <col width="44.24976pt"/>
+   <col width="261.1008pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1261193">Opcode/&#8232;Instruction</para>
+      </th>
+     <th><para unique="1261197">Op/En</para>
+      </th>
+     <th><para unique="1261199">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1261201">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261203">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1261205">NP 0F 1B /r</para>
+      <para unique="1261206">BNDSTX mib, bnd</para>
+      </td>
+     <td><para unique="1261210">MR</para>
+      </td>
+     <td><para unique="1261212">V/V</para>
+      </td>
+     <td><para unique="1261214">MPX</para>
+      </td>
+     <td><para unique="1261216">Store the bounds in bnd and the pointer value in the index register of mib to a bound table entry (BTE) with address translation using the base of mib.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261218">
+   <col width="62.892pt"/>
+   <col width="148.22567999999998pt"/>
+   <col width="150.00408000000002pt"/>
+   <col width="150.99408pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261220">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261222">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261224">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261226">Operand 3</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261228">MR</para>
+      </td>
+     <td valign="middle"><para unique="1261230">SIB.base (r): Address of pointer</para>
+      <para unique="1261231">SIB.index(r)</para>
+      </td>
+     <td valign="middle"><para unique="1261233">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261235">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261236">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261238">BNDSTX uses the linear address constructed from the displacement and base register of the SIB-addressing form of the memory operand (mib) to perform address translation to store to a bound table entry. The bounds in the source operand bnd are written to the lower and upper bounds in the BTE. The content of the index register of mib is written to the pointer value field in the BTE. </para>
+  <para unique="1261239">This instruction does not cause memory access to the linear address of mib nor the effective address referenced by the base, and does not read or write any flags. </para>
+  <para unique="1261240">Segment overrides apply to the linear address computation with the base of mib, and are used during address translation to generate the address of the bound table entry. By default, the address of the BTE is assumed to be linear address. There are no segmentation checks performed on the base of mib. </para>
+  <para unique="1261241">The base of mib will not be checked for canonical address violation as it does not access memory. </para>
+  <para unique="1261242">Any encoding of this instruction that does not specify base or index register will treat those registers as zero (constant). The reg-reg form of this instruction will remain a NOP.</para>
+  <para unique="1261243">The scale field of the SIB byte has no effect on these instructions and is ignored.</para>
+  <para unique="1261244">The bound register may be partially updated on memory faults. The order in which memory operands are loaded is implementation specific.</para>
+  </longdesc>
+ <operation>
+  <programlisting>base := mib.SIB.base ? mib.SIB.base + Disp: 0;
+ptr_value := mib.SIB.index ? mib.SIB.index : 0;</programlisting>
+  <section level="7">
+   <title unique="1261249">Outside 64-bit Mode</title>
+   <programlisting>A_BDE[31:0] := (Zero_extend32(base[31:12] &#171; 2) + (BNDCFG[31:12] &#171;12 );
+A_BT[31:0] := LoadFrom(A_BDE);
+IF A_BT[0] equal 0 Then
+	BNDSTATUS := A_BDE | 02H;
+	#BR;
+FI;
+A_DEST[31:0] := (Zero_extend32(base[11:2] &#171; 4) + (A_BT[31:2] &#171; 2 ); // address of Bound table entry
+A_DEST[8][31:0] := ptr_value;
+A_DEST[0][31:0] := BND.LB;
+A_DEST[4][31:0] := BND.UB;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261261">In 64-bit Mode</title>
+   <programlisting>A_BDE[63:0] := (Zero_extend64(base[47+MAWA:20] &#171; 3) + (BNDCFG[63:12] &#171;12 );If CPL &lt; 3, the supervisor MAWA (MAWAS) is used; this value is 0. If CPL = 3, the user MAWA (MAWAU) is used; this value is enumer&#173;ated in CPUID.07H.00H:ECX.MPX_MAWAU[21:17]. See Appendix E.3.1 of Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1.
+A_BT[63:0] := LoadFrom(A_BDE);
+IF A_BT[0] equal 0 Then
+	BNDSTATUS := A_BDE | 02H;
+	#BR;
+FI;
+A_DEST[63:0] := (Zero_extend64(base[19:3] &#171; 5) + (A_BT[63:3] &#171; 3 ); // address of Bound table entry
+A_DEST[16][63:0] := ptr_value;
+A_DEST[0][63:0] := BND.LB;
+A_DEST[8][63:0] := BND.UB;</programlisting>
+   </section>
+  </operation>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting>BNDSTX: _bnd_store_ptr_bounds(const void **ptr_addr, const void *ptr_val);</programlisting>
+  </subsection>
+ <subsection title="Flags Affected">
+  <para unique="1261281">None.</para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term>#BR</term>
+    <listitem><para unique="1261283">If the bound directory entry is invalid.</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#UD</term>
+    <listitem><para unique="1261284">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1261285">If ModRM.r/m encodes BND4-BND7 when Intel MPX is enabled.</para>
+     </listitem>
+    <listitem><para unique="1261286">If 67H prefix is not used and CS.D=0.</para>
+     </listitem>
+    <listitem><para unique="1261287">If 67H prefix is used and CS.D=1.</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261288">If a destination effective address of the Bound Table entry is outside the DS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1261289">If DS register contains a NULL segment selector.</para>
+     </listitem>
+    <listitem><para unique="1261290">If the destination operand points to a non-writable segment</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#PF(fault code)</term>
+    <listitem><para unique="1261291">If a page fault occurs.</para>
+     </listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term>#UD</term>
+    <listitem><para unique="1261293">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1261294">If ModRM.r/m encodes BND4-BND7 when Intel MPX is enabled.</para>
+     </listitem>
+    <listitem><para unique="1261295">If 16-bit addressing is used.</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261296">If a destination effective address of the Bound Table entry is outside the DS segment limit.</para>
+     </listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term>#UD</term>
+    <listitem><para unique="1261298">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1261299">If ModRM.r/m encodes BND4-BND7 when Intel MPX is enabled.</para>
+     </listitem>
+    <listitem><para unique="1261300">If 16-bit addressing is used.</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261301">If a destination effective address of the Bound Table entry is outside the DS segment limit.</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#PF(fault code)</term>
+    <listitem><para unique="1261302">If a page fault occurs.</para>
+     </listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261304" format="xIndent1">Same exceptions as in protected mode.</para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term>#BR</term>
+    <listitem><para unique="1261306">If the bound directory entry is invalid.</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#UD</term>
+    <listitem><para unique="1261307">If ModRM is RIP relative.</para>
+     </listitem>
+    <listitem><para unique="1261308">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1261309">If ModRM.r/m and REX encodes BND4-BND15 when Intel MPX is enabled.</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261310">If the memory address (A_BDE or A_BTE) is in a non-canonical form.</para>
+     </listitem>
+    <listitem><para unique="1261311">If the destination operand points to a non-writable segment</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#PF(fault code)</term>
+    <listitem><para unique="1261312">If a page fault occurs.</para>
+     </listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

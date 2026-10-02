@@ -1,35 +1,144 @@
 <instruction name="VPSHUFBITQMB">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Shuffle Bits From Quadword Elements Using Byte Indexes Into Mask</shortdesc>
- <longdesc><para unique="1046165">
-   <string>The VPSHUFBITQMB instruction performs a bit gather select using second source as control and first source as data. The value of each output bit is identified using 6 control bits from the second source operand to select a data bit to be gathered from one of 64 contiguous bits of data in the first source operand. </string><anchor id="+116100"/><string>Each byte of the second source operand provides a 6-bit index that gives access to 64 bits (2</string><superscript><string>6</string></superscript><string>=64) within each respective quadword 64-bit lane (i.e., index values in SRC2.qword[x] allow selecting bit values in SRC1.qword[x]).</string></para>
-  <para unique="1046166">
-   <string>Control data for each output bit is stored in 8 bit elements of SRC2, but only the 6 least significant bits of each element are used.</string></para>
-  <para unique="1046167">
-   <string>This instruction uses write masking according to the writemask k2 (zeroing only). This instruction supports memory fault suppression.</string></para>
-  <para unique="1046168">
-   <string>The first source operand is a ZMM/YMM/XMM register. The second source operand is a ZMM/YMM/XMM register or a memory location. The destination operand is mask register k1.</string></para>
+ <encoding_table><table unique="1046081">
+   <col width="62.346959999999996pt"/>
+   <col width="88.704pt"/>
+   <col width="39.900240000000004pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="190.64952pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1046083">Opcode/</para>
+      <para unique="1046084">Instruction</para>
+      </th>
+     <th><para unique="1046088">Op/</para>
+      <para unique="1046089">En</para>
+      </th>
+     <th><para unique="1046091">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1046093">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1046095">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1046426">EVEX.128.66.0F38.W0 8F /r</para>
+      <para unique="1046427">VPSHUFBITQMB k1{k2}, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1046431">A</para>
+      </td>
+     <td><para unique="1046433">V/V</para>
+      </td>
+     <td><para unique="1046435">(AVX512_BITALG</para>
+      <para unique="1046436">AND AVX512VL) OR AVX10.1 <anchor id="+697743"/></para>
+      </td>
+     <td><para unique="1046441">Extract values in xmm2 using control bits of xmm3/m128 with writemask k2 and load the result into mask register k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046412">EVEX.256.66.0F38.W0 8F /r</para>
+      <para unique="1046413">VPSHUFBITQMB k1{k2}, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1046417">A</para>
+      </td>
+     <td><para unique="1046419">V/V</para>
+      </td>
+     <td><para unique="1046421">(AVX512_BITALG</para>
+      <para unique="1046422">AND AVX512VL) OR AVX10.1<anchor id="+316403"/> </para>
+      </td>
+     <td><para unique="1046424">Extract values in ymm2 using control bits of ymm3/m256 with writemask k2 and load the result into mask register k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046398">EVEX.512.66.0F38.W0 8F /r</para>
+      <para unique="1046399">VPSHUFBITQMB k1{k2}, zmm2, zmm3/m512</para>
+      </td>
+     <td><para unique="1046403">A</para>
+      </td>
+     <td><para unique="1046405">V/V</para>
+      </td>
+     <td><para unique="1046407">AVX512_BITALG</para>
+      <para unique="1046408">OR AVX10.1 <anchor id="+960765"/></para>
+      </td>
+     <td><para unique="1046410">Extract values in zmm2 using control bits of zmm3/m512 with writemask k2 and load the result into mask register k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1046138">
+   <col width="40.61376pt"/>
+   <col width="50.814pt"/>
+   <col width="93.60792000000001pt"/>
+   <col width="108.54288000000001pt"/>
+   <col width="107.74584pt"/>
+   <col width="106.40736000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1046140">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1046142">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1046144">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1046146">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1046148">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1046150">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1046152">A</para>
+      </td>
+     <td valign="middle"><para unique="1046154">Full Mem</para>
+      </td>
+     <td valign="middle"><para unique="1046156">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046158">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046160">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046162">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046163">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046165">The VPSHUFBITQMB instruction performs a bit gather select using second source as control and first source as data. The value of each output bit is identified using 6 control bits from the second source operand to select a data bit to be gathered from one of 64 contiguous bits of data in the first source operand. <anchor id="+116100"/>Each byte of the second source operand provides a 6-bit index that gives access to 64 bits (2<superscript>6</superscript>=64) within each respective quadword 64-bit lane (i.e., index values in SRC2.qword[x] allow selecting bit values in SRC1.qword[x]).</para>
+  <para unique="1046166">Control data for each output bit is stored in 8 bit elements of SRC2, but only the 6 least significant bits of each element are used.</para>
+  <para unique="1046167">This instruction uses write masking according to the writemask k2 (zeroing only). This instruction supports memory fault suppression.</para>
+  <para unique="1046168">The first source operand is a ZMM/YMM/XMM register. The second source operand is a ZMM/YMM/XMM register or a memory location. The destination operand is mask register k1.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1046170">VPSHUFBITQMB DEST, SRC1, SRC2</title>
+   <programlisting>(KL, VL) = (16,128), (32,256), (64, 512)
+FOR i := 0 TO KL/8-1: 							//Qword
+	FOR j := 0 to 7: 						// Byte
+		IF k2[i*8+j] or *no writemask*:
+			m := SRC2.qword[i].byte[j] &amp; 0x3F
+			k1[i*8+j] := SRC1.qword[i].bit[m]
+		ELSE:
+			k1[i*8+j] := 0
+k1[MAX_KL-1:KL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <para unique="1046181">
-   <string>VPSHUFBITQMB __mmask16 _mm_bitshuffle_epi64_mask(__m128i, __m128i);</string></para>
-  <para unique="1046182">
-   <string>VPSHUFBITQMB __mmask16 _mm_mask_bitshuffle_epi64_mask(__mmask16, __m128i, __m128i);</string></para>
-  <para unique="1046183">
-   <string>VPSHUFBITQMB __mmask32 _mm256_bitshuffle_epi64_mask(__m256i, __m256i);</string></para>
-  <para unique="1046184">
-   <string>VPSHUFBITQMB __mmask32 _mm256_mask_bitshuffle_epi64_mask(__mmask32, __m256i, __m256i);</string></para>
-  <para unique="1046185">
-   <string>VPSHUFBITQMB __mmask64 _mm512_bitshuffle_epi64_mask(__m512i, __m512i);</string></para>
-  <para unique="1046186" format="xIndent1">
-   <string>VPSHUFBITQMB __mmask64 _mm512_mask_bitshuffle_epi64_mask(__mmask64, __m512i, __m512i);</string></para>
+  <para unique="1046181">VPSHUFBITQMB __mmask16 _mm_bitshuffle_epi64_mask(__m128i, __m128i);</para>
+  <para unique="1046182">VPSHUFBITQMB __mmask16 _mm_mask_bitshuffle_epi64_mask(__mmask16, __m128i, __m128i);</para>
+  <para unique="1046183">VPSHUFBITQMB __mmask32 _mm256_bitshuffle_epi64_mask(__m256i, __m256i);</para>
+  <para unique="1046184">VPSHUFBITQMB __mmask32 _mm256_mask_bitshuffle_epi64_mask(__mmask32, __m256i, __m256i);</para>
+  <para unique="1046185">VPSHUFBITQMB __mmask64 _mm512_bitshuffle_epi64_mask(__m512i, __m512i);</para>
+  <para unique="1046186" format="xIndent1">VPSHUFBITQMB __mmask64 _mm512_mask_bitshuffle_epi64_mask(__mmask64, __m512i, __m512i);</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1047512">
-   <string>None.</string></para>
+  <para unique="1047512">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1047517" format="xIndent1">
-   <string>See </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, "Type E4 Class Exception Conditions."</string></link></para>
+  <para unique="1047517" format="xIndent1">See <link unique="1047515" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions" xrefstyle="Table Number &amp; Title (.)">Table&#160;2&#8209;51, "Type E4 Class Exception Conditions."</link></para>
   </subsection>
  </instruction>

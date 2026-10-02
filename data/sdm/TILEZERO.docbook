@@ -1,21 +1,102 @@
 <instruction name="TILEZERO">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Zero Tile</shortdesc>
- <longdesc><para unique="1091445">
-   <string>This instruction zeroes the destination tile.</string></para>
-  <para unique="1091446">
-   <string>Any attempt to execute the TILEZERO instruction inside an Intel TSX transaction will result in a transaction abort.</string></para>
+ <encoding_table><table unique="1091389">
+   <col width="67.7952pt"/>
+   <col width="96.45552pt"/>
+   <col width="27.90072pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="190.64952pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091391">Opcode/</para>
+      <para unique="1091392">Instruction</para>
+      </th>
+     <th><para unique="1091396">Op/</para>
+      <para unique="1091397">En</para>
+      </th>
+     <th><para unique="1091399">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091401">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1091405">VEX.128.F2.0F38.W0 49 11:rrr:000</para>
+      <para unique="1091406">TILEZERO tmm1</para>
+      </td>
+     <td><para unique="1091410">A</para>
+      </td>
+     <td><para unique="1091412">V/N.E.</para>
+      </td>
+     <td><para unique="1091414">AMX_TILE</para>
+      </td>
+     <td><para unique="1091416">Zero the destination tile.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091418">
+   <col width="43.01352pt"/>
+   <col width="61.01352pt"/>
+   <col width="95.65272pt"/>
+   <col width="104.62608pt"/>
+   <col width="103.85784pt"/>
+   <col width="102.5676pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091420">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091422">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1091424">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091426">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091428">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091430">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091432">A</para>
+      </td>
+     <td valign="middle"><para unique="1091434">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091436">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091438">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091440">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091442">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091443">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091445">This instruction zeroes the destination tile.</para>
+  <para unique="1091446">Any attempt to execute the TILEZERO instruction inside an Intel TSX transaction will result in a transaction abort.</para>
   </longdesc>
+ <operation>
+  <programlisting>TILEZERO tdest
+nbytes := palette_table[palette_id].bytes_per_row
+for i in 0 ... palette_table[palette_id].max_rows-1:
+	for j in 0 ... nbytes-1:
+		tdest.row[i].byte[j] := 0
+zero_tilecfg_start()</programlisting>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>TILEZERO	 void _tile_zero(__tile dst);</string><string>
-</string></programlisting>
+  <programlisting>TILEZERO	 void _tile_zero(__tile dst);</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1091459">
-   <string>None.</string></para>
+  <para unique="1091459">None.</para>
   </subsection>
  <subsection title="Exceptions">
-  <para unique="1091464" format="xIndent1">
-   <string>AMX-E5; see </string><link linkend="77014: 02_Level: 2.10 Intel&#174; AMX Instruction Exception Classes"><string>Section 2.10, &#8220;Intel&#174; AMX Instruction Exception Classes,&#8221;</string></link><string> for details.</string></para>
+  <para unique="1091464" format="xIndent1">AMX-E5; see <link unique="1091462" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#77014: 02_Level: 2.10 Intel&#174; AMX Instruction Exception Classes" xrefstyle="SectionNum&amp;Title(,)">Section 2.10, &#8220;Intel&#174; AMX Instruction Exception Classes,&#8221;</link> for details.</para>
   </subsection>
  </instruction>

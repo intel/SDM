@@ -1,25 +1,95 @@
 <instruction name="MOVNTQ">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Store of Quadword Using Non-Temporal Hint</shortdesc>
- <longdesc><para unique="1091439">
-   <string>Moves the quadword in the source operand (second operand) to the destination operand (first operand) using a non-temporal hint to minimize cache pollution during the write to memory. The source operand is an MMX tech&#173;nology register, which is assumed to contain packed integer data (packed bytes, words, or doublewords). The destination operand is a 64-bit memory location.</string></para>
-  <para unique="1091440">
-   <string>The non-temporal hint is implemented by using a write combining (WC) memory type protocol when writing the data to memory. Using this protocol, the processor does not write the data into the cache hierarchy, nor does it fetch the corresponding cache line from memory into the cache hierarchy. The memory type of the region being written to can override the non-temporal hint, if the memory address specified for the non-temporal store is in an uncacheable (UC) or write protected (WP) memory region. For more information on non-temporal stores, see </string><string>&#8220;Caching of Temporal vs. Non-Temporal Data&#8221;</string><string> in </string><link linkend="40469: H1Heading: Chapter 8 Input/Output"><string>Chapter 10</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1.</string></para>
-  <para unique="1091447">
-   <string>Because the WC protocol uses a weakly-ordered memory consistency model, a fencing operation implemented with the SFENCE or MFENCE instruction should be used in conjunction with MOVNTQ instructions if multiple processors might use different memory types to read/write the destination memory locations.</string></para>
-  <para unique="1091448">
-   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+ <encoding_table><table unique="1091390">
+   <thead><tr>
+     <th><para unique="1091392">Opcode</para>
+      </th>
+     <th><para unique="1091394">Instruction</para>
+      </th>
+     <th><para unique="1091396">Op/ En</para>
+      </th>
+     <th><para unique="1091398">64-Bit Mode</para>
+      </th>
+     <th><para unique="1091400">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1091402">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.25984pt"/>
+   <col width="111.46464pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="182.15424000000002pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1091404">NP 0F E7 /r</para>
+      </td>
+     <td><para unique="1091406">MOVNTQ m64, mm</para>
+      </td>
+     <td><para unique="1091408">MR</para>
+      </td>
+     <td><para unique="1091410">Valid</para>
+      </td>
+     <td><para unique="1091412">Valid</para>
+      </td>
+     <td><para unique="1091414">Move quadword from mm to m64 using non-temporal hint.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091416">
+   <col width="45.827999999999996pt"/>
+   <col width="118.95552pt"/>
+   <col width="115.63776pt"/>
+   <col width="116.77392pt"/>
+   <col width="114.77448pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091418">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091420">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091422">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091424">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091426">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091428">MR</para>
+      </td>
+     <td valign="middle"><para unique="1091430">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091432">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091434">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091436">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091437">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091439">Moves the quadword in the source operand (second operand) to the destination operand (first operand) using a non-temporal hint to minimize cache pollution during the write to memory. The source operand is an MMX tech&#173;nology register, which is assumed to contain packed integer data (packed bytes, words, or doublewords). The destination operand is a 64-bit memory location.</para>
+  <para unique="1091440">The non-temporal hint is implemented by using a write combining (WC) memory type protocol when writing the data to memory. Using this protocol, the processor does not write the data into the cache hierarchy, nor does it fetch the corresponding cache line from memory into the cache hierarchy. The memory type of the region being written to can override the non-temporal hint, if the memory address specified for the non-temporal store is in an uncacheable (UC) or write protected (WP) memory region. For more information on non-temporal stores, see &#8220;Caching of Temporal vs. Non-Temporal Data&#8221; in <link unique="1091445" linkend="&lt;c&gt;__sdm_vol1_ch10.fm#40469: H1Heading: Chapter 8 Input/Output" xrefstyle="ChapterNum_CR">Chapter 10</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1.</para>
+  <para unique="1091447">Because the WC protocol uses a weakly-ordered memory consistency model, a fencing operation implemented with the SFENCE or MFENCE instruction should be used in conjunction with MOVNTQ instructions if multiple processors might use different memory types to read/write the destination memory locations.</para>
+  <para unique="1091448">This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</para>
   </longdesc>
+ <operation>
+  <programlisting>DEST := SRC;</programlisting>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>MOVNTQ void _mm_stream_pi(__m64 * p, __m64 a)</string><string>
-</string></programlisting>
+  <programlisting>MOVNTQ void _mm_stream_pi(__m64 * p, __m64 a)</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091454">
-   <string>None.</string></para>
+  <para unique="1091454">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091459" format="xIndent1">
-   <string>See </string><link linkend="65163: 03_Level: 19.25.3 Exception Conditions of Legacy SIMD Instruction Operating"><string>Section 25.25.3, &#8220;Exception Conditions of Legacy SIMD Instructions Operating on MMX Registers&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B.</string></para>
+  <para unique="1091459" format="xIndent1">See <link unique="1091457" linkend="&lt;c&gt;__sdm_vol3B_ch25.fm#65163: 03_Level: 19.25.3 Exception Conditions of Legacy SIMD Instruction Operating" xrefstyle="SectionNum&amp;Title">Section 25.25.3, &#8220;Exception Conditions of Legacy SIMD Instructions Operating on MMX Registers&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B.</para>
   </subsection>
  </instruction>

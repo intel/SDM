@@ -1,42 +1,164 @@
 <instruction name="COMISD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Compare Scalar Ordered Double Precision Floating-Point Values and Set EFLAGS</shortdesc>
- <longdesc><para unique="1261290">
-   <string>Compares the double precision floating-point values in the low quadwords of operand 1 (first operand) and operand 2 (second operand), and sets the ZF, PF, and CF flags in the EFLAGS register according to the result (unordered, greater than, less than, or equal). The OF, SF, and AF flags in the EFLAGS register are set to 0. The unordered result is returned if either source operand is a NaN (QNaN or SNaN).</string></para>
-  <para unique="1261291">
-   <string>Operand 1 is an XMM register; operand 2 can be an XMM register or a 64 bit memory location. The COMISD instruc&#173;tion differs from the UCOMISD instruction in that it signals a SIMD floating-point invalid operation exception (#I) when a source operand is either a QNaN or SNaN. The UCOMISD instruction signals an invalid operation exception only if a source operand is an SNaN.</string></para>
-  <para unique="1261292">
-   <string>The EFLAGS register is not updated if an unmasked SIMD floating-point exception is generated.</string></para>
-  <para unique="1261293">
-   <string>VEX.vvvv and EVEX.vvvv are reserved and must be 1111b, otherwise instructions will #UD.</string></para>
-  <para unique="1261294">
-   <string>Software should ensure VCOMISD is encoded with VEX.L=0. Encoding VCOMISD with VEX.L=1 may encounter unpredictable behavior across different processor generations.</string></para>
+ <encoding_table><table unique="1261191">
+   <col width="81.33192pt"/>
+   <col width="81.33192pt"/>
+   <col width="28.494pt"/>
+   <col width="48.74976pt"/>
+   <col width="57.416399999999996pt"/>
+   <col width="214.41744pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1261193">Opcode/</para>
+      <para unique="1261194">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op / En</para>
+      </th>
+     <th><para unique="1261200">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1261202">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1261206">66 0F 2F /r</para>
+      <para unique="1261207">COMISD xmm1, xmm2/m64</para>
+      </td>
+     <td><para unique="1261211">A</para>
+      </td>
+     <td><para unique="1261213">V/V</para>
+      </td>
+     <td><para unique="1261215">SSE2</para>
+      </td>
+     <td><para unique="1261217">Compare low double precision floating-point values in xmm1 and xmm2/mem64 and set the EFLAGS flags accordingly.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261219">VEX.LIG.66.0F.WIG 2F /r</para>
+      <para unique="1261220">VCOMISD xmm1, xmm2/m64</para>
+      </td>
+     <td><para unique="1261224">A</para>
+      </td>
+     <td><para unique="1261226">V/V</para>
+      </td>
+     <td><para unique="1261231">AVX</para>
+      </td>
+     <td><para unique="1261233">Compare low double precision floating-point values in xmm1 and xmm2/mem64 and set the EFLAGS flags accordingly.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261660">EVEX.LLIG.66.0F.W1 2F /r</para>
+      <para unique="1261661">VCOMISD xmm1, xmm2/m64{sae}</para>
+      </td>
+     <td><para unique="1261665">B</para>
+      </td>
+     <td><para unique="1261667">V/V</para>
+      </td>
+     <td><para unique="1261672">AVX512F</para>
+      <para unique="1261676">OR AVX10.1<anchor id="+826558"/></para>
+      </td>
+     <td><para unique="1261678">Compare low double precision floating-point values in xmm1 and xmm2/mem64 and set the EFLAGS flags accordingly.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261251">
+   <col width="54.33192pt"/>
+   <col width="61.53192pt"/>
+   <col width="97.0488pt"/>
+   <col width="99.25056pt"/>
+   <col width="102.98376pt"/>
+   <col width="101.15064000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261253">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261255">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1261257">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261259">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261261">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261263">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261265">A</para>
+      </td>
+     <td valign="middle"><para unique="1261267">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261269">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261271">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261273">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261275">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1261277">B</para>
+      </td>
+     <td valign="middle"><para unique="1261279">Tuple1 Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1261281">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261283">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261285">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261287">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261288">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261290">Compares the double precision floating-point values in the low quadwords of operand 1 (first operand) and operand 2 (second operand), and sets the ZF, PF, and CF flags in the EFLAGS register according to the result (unordered, greater than, less than, or equal). The OF, SF, and AF flags in the EFLAGS register are set to 0. The unordered result is returned if either source operand is a NaN (QNaN or SNaN).</para>
+  <para unique="1261291">Operand 1 is an XMM register; operand 2 can be an XMM register or a 64 bit memory location. The COMISD instruc&#173;tion differs from the UCOMISD instruction in that it signals a SIMD floating-point invalid operation exception (#I) when a source operand is either a QNaN or SNaN. The UCOMISD instruction signals an invalid operation exception only if a source operand is an SNaN.</para>
+  <para unique="1261292">The EFLAGS register is not updated if an unmasked SIMD floating-point exception is generated.</para>
+  <para unique="1261293">VEX.vvvv and EVEX.vvvv are reserved and must be 1111b, otherwise instructions will #UD.</para>
+  <para unique="1261294">Software should ensure VCOMISD is encoded with VEX.L=0. Encoding VCOMISD with VEX.L=1 may encounter unpredictable behavior across different processor generations.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1261296">COMISD (All Versions)</title>
+   <programlisting>RESULT := OrderedCompare(DEST[63:0] &lt;&gt; SRC[63:0]) {
+(* Set EFLAGS *) CASE (RESULT) OF
+	UNORDERED: ZF,PF,CF := 111;
+	GREATER_THAN: ZF,PF,CF := 000;
+	LESS_THAN: ZF,PF,CF := 001;
+	EQUAL: ZF,PF,CF := 100;
+ESAC;
+OF, AF, SF := 0; }</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VCOMISD int _mm_comi_round_sd(__m128d a, __m128d b, int imm, int sae); </string><string>
-</string><string>VCOMISD int _mm_comieq_sd (__m128d a, __m128d b)</string><string>
-</string><string>VCOMISD int _mm_comilt_sd (__m128d a, __m128d b)</string><string>
-</string><string>VCOMISD int _mm_comile_sd (__m128d a, __m128d b)</string><string>
-</string><string>VCOMISD int _mm_comigt_sd (__m128d a, __m128d b)</string><string>
-</string><string>VCOMISD int _mm_comige_sd (__m128d a, __m128d b)</string><string>
-</string><string>VCOMISD int _mm_comineq_sd (__m128d a, __m128d b)</string><string>
-</string></programlisting>
+  <programlisting>VCOMISD int _mm_comi_round_sd(__m128d a, __m128d b, int imm, int sae);
+VCOMISD int _mm_comieq_sd (__m128d a, __m128d b)
+VCOMISD int _mm_comilt_sd (__m128d a, __m128d b)
+VCOMISD int _mm_comile_sd (__m128d a, __m128d b)
+VCOMISD int _mm_comigt_sd (__m128d a, __m128d b)
+VCOMISD int _mm_comige_sd (__m128d a, __m128d b)
+VCOMISD int _mm_comineq_sd (__m128d a, __m128d b)</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1261314">
-   <string>Invalid (if SNaN or QNaN operands), Denormal.</string></para>
+  <para unique="1261314">Invalid (if SNaN or QNaN operands), Denormal.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1261319" format="xIndent1">
-   <string>VEX-encoded instructions, see </string><link linkend="35386: 06_Table: Table 2-20. Type 3 Class Exception Conditions"><string>Table&#160;2&#8209;20, &#8220;Type 3 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1261323" format="xIndent1">
-   <string>EVEX-encoded instructions, see </string><link linkend="71006: 06_Table: Table 2-48. Type E3NF Class Exception Conditions"><string>Table&#160;2&#8209;50, &#8220;Type E3NF Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1261324" format="xIndent1">
-   <string>Additionally:</string></para>
+  <para unique="1261319" format="xIndent1">VEX-encoded instructions, see <link unique="1261317" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#35386: 06_Table: Table 2-20. Type 3 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;20, &#8220;Type 3 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1261323" format="xIndent1">EVEX-encoded instructions, see <link unique="1261321" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#71006: 06_Table: Table 2-48. Type E3NF Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;50, &#8220;Type E3NF Class Exception Conditions.&#8221;</link></para>
+  <para unique="1261324" format="xIndent1">Additionally:</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If VEX.vvvv != 1111B or EVEX.vvvv != 1111B.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1261325">If VEX.vvvv != 1111B or EVEX.vvvv != 1111B.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

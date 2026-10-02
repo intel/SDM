@@ -505,6 +505,12 @@ If you give Intel any comments or suggestions related to this document or the in
   <code>            Report_General_Protection_Exception!(Zero(32));</code>
   <code>        endif;</code>
   <code></code>
+  <code>        // CR4.CET can be set only while CR0.WP is set (SDM Vol. 3, 2.5);</code>
+  <code>        // the CR0 arm above enforces the converse (WP cannot be cleared while CET is set)</code>
+  <code>        if new_cr4.CET == 0b1 and CR0.WP == 0b0 then</code>
+  <code>            Report_General_Protection_Exception!(Zero(32));</code>
+  <code>        endif;</code>
+  <code></code>
   <code>        IA32_EFER.LMA := Bit(CR0.PG == 0b1 and IA32_EFER.LME == 0b1 and new_cr4.PAE == 0b1);</code>
   <code></code>
   <code>        // Attempts to enable FRED when LMA=0 are ignored</code>

@@ -1,31 +1,143 @@
 <instruction name="VPBLENDD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Blend Packed Dwords</shortdesc>
- <longdesc><para unique="1046151">
-   <string>Dword elements from the source operand (second operand) are conditionally written to the destination operand (first operand) depending on bits in the immediate operand (third operand). The immediate bits (bits 7:0) form a mask that determines whether the corresponding dword in the destination is copied from the source. If a bit in the mask, corresponding to a dword, is &#8220;1&#8221;, then the dword is copied, else the dword is unchanged.</string></para>
-  <para unique="1046152">
-   <string>VEX.128 encoded version: The second source operand can be an XMM register or a 128-bit memory location. The first source and destination operands are XMM registers. Bits (MAXVL-1:128) of the corresponding YMM register are zeroed.</string></para>
-  <para unique="1046153">
-   <string>VEX.256 encoded version: The first source operand is a YMM register. The second source operand is a YMM register or a 256-bit memory location. The destination operand is a YMM register. </string></para>
+ <encoding_table><table unique="1046081">
+   <col width="81.00288pt"/>
+   <col width="115.24608pt"/>
+   <col width="31.94928pt"/>
+   <col width="38.25pt"/>
+   <col width="44.24976pt"/>
+   <col width="200.70072000000002pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1046083">Opcode/</para>
+      <para unique="1046084">Instruction</para>
+      </th>
+     <th><para unique="1046088">Op/ En</para>
+      </th>
+     <th><para unique="1046090">64/32-bit Mode</para>
+      </th>
+     <th><para unique="1046092">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1046094">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1046096">VEX.128.66.0F3A.W0 02 /r ib</para>
+      <para unique="1046097">VPBLENDD xmm1, xmm2, xmm3/m128, imm8</para>
+      </td>
+     <td><para unique="1046101">RVMI</para>
+      </td>
+     <td><para unique="1046103">V/V</para>
+      </td>
+     <td><para unique="1046108">AVX2</para>
+      </td>
+     <td><para unique="1046110">Select dwords from xmm2 and xmm3/m128 from mask specified in imm8 and store the values into xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046112">VEX.256.66.0F3A.W0 02 /r ib</para>
+      <para unique="1046113">VPBLENDD ymm1, ymm2, ymm3/m256, imm8</para>
+      </td>
+     <td><para unique="1046117">RVMI</para>
+      </td>
+     <td><para unique="1046119">V/V</para>
+      </td>
+     <td><para unique="1046124">AVX2</para>
+      </td>
+     <td><para unique="1046126">Select dwords from ymm2 and ymm3/m256 from mask specified in imm8 and store the values into ymm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1046128">
+   <col width="46.872pt"/>
+   <col width="112.04856pt"/>
+   <col width="112.57992pt"/>
+   <col width="118.1988pt"/>
+   <col width="122.26968000000001pt"/>
+   <thead><tr>
+     <th><para unique="1046130">Op/En</para>
+      </th>
+     <th><para unique="1046132">Operand 1</para>
+      </th>
+     <th><para unique="1046134">Operand 2</para>
+      </th>
+     <th><para unique="1046136">Operand 3</para>
+      </th>
+     <th><para unique="1046138">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1046140">RVMI</para>
+      </td>
+     <td><para unique="1046142">ModRM:reg (w)</para>
+      </td>
+     <td><para unique="1046144">VEX.vvvv (r)</para>
+      </td>
+     <td><para unique="1046146">ModRM:r/m (r)</para>
+      </td>
+     <td><para unique="1046148">imm8</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046149">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046151">Dword elements from the source operand (second operand) are conditionally written to the destination operand (first operand) depending on bits in the immediate operand (third operand). The immediate bits (bits 7:0) form a mask that determines whether the corresponding dword in the destination is copied from the source. If a bit in the mask, corresponding to a dword, is &#8220;1&#8221;, then the dword is copied, else the dword is unchanged.</para>
+  <para unique="1046152">VEX.128 encoded version: The second source operand can be an XMM register or a 128-bit memory location. The first source and destination operands are XMM registers. Bits (MAXVL-1:128) of the corresponding YMM register are zeroed.</para>
+  <para unique="1046153">VEX.256 encoded version: The first source operand is a YMM register. The second source operand is a YMM register or a 256-bit memory location. The destination operand is a YMM register. </para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1046155">VPBLENDD (VEX.256 encoded version)</title>
+   <programlisting>IF (imm8[0] == 1) THEN DEST[31:0] := SRC2[31:0]
+ELSE DEST[31:0] := SRC1[31:0]
+IF (imm8[1] == 1) THEN DEST[63:32] := SRC2[63:32]
+ELSE DEST[63:32] := SRC1[63:32]
+IF (imm8[2] == 1) THEN DEST[95:64] := SRC2[95:64]
+ELSE DEST[95:64] := SRC1[95:64]
+IF (imm8[3] == 1) THEN DEST[127:96] := SRC2[127:96]
+ELSE DEST[127:96] := SRC1[127:96]
+IF (imm8[4] == 1) THEN DEST[159:128] := SRC2[159:128]
+ELSE DEST[159:128] := SRC1[159:128]
+IF (imm8[5] == 1) THEN DEST[191:160] := SRC2[191:160]
+ELSE DEST[191:160] := SRC1[191:160]
+IF (imm8[6] == 1) THEN DEST[223:192] := SRC2[223:192]
+ELSE DEST[223:192] := SRC1[223:192]
+IF (imm8[7] == 1) THEN DEST[255:224] := SRC2[255:224]
+ELSE DEST[255:224] := SRC1[255:224]</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046173">VPBLENDD (VEX.128 encoded version)</title>
+   <programlisting>IF (imm8[0] == 1) THEN DEST[31:0] := SRC2[31:0]
+ELSE DEST[31:0] := SRC1[31:0]
+IF (imm8[1] == 1) THEN DEST[63:32] := SRC2[63:32]
+ELSE DEST[63:32] := SRC1[63:32]
+IF (imm8[2] == 1) THEN DEST[95:64] := SRC2[95:64]
+ELSE DEST[95:64] := SRC1[95:64]
+IF (imm8[3] == 1) THEN DEST[127:96] := SRC2[127:96]
+ELSE DEST[127:96] := SRC1[127:96]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VPBLENDD:				__m128i _mm_blend_epi32 (__m128i v1, __m128i v2, const int mask)</string><string>
-</string><string>VPBLENDD:				__m256i _mm256_blend_epi32 (__m256i v1, __m256i v2, const int mask)</string><string>
-</string></programlisting>
+  <programlisting>VPBLENDD:				__m128i _mm_blend_epi32 (__m128i v1, __m128i v2, const int mask)
+VPBLENDD:				__m256i _mm256_blend_epi32 (__m256i v1, __m256i v2, const int mask)</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046187">
-   <string>None.</string></para>
+  <para unique="1046187">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046192" format="xIndent1">
-   <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1046193" format="xIndent1">
-   <string>Additionally:</string></para>
+  <para unique="1046192" format="xIndent1">See <link unique="1046190" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1046193" format="xIndent1">Additionally:</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If VEX.W = 1.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1046194">If VEX.W = 1.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

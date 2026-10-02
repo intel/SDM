@@ -1,90 +1,180 @@
 <instruction name="MOVDIR64B">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Move 64 Bytes as Direct Store</shortdesc>
- <longdesc><para unique="1091450">
-   <string>Moves 64-bytes as direct-store with 64-byte write atomicity from source memory address to destination memory address. The source operand is a normal memory operand. The destination operand is a memory location specified in a general-purpose register. The register content is interpreted as an offset into ES segment without any segment override. In 64-bit mode, the register operand width is 64-bits (32-bits with 67H prefix). Outside of 64-bit mode, the register width is 32-bits when CS.D=1 (16-bits with 67H prefix), and 16-bits when CS.D=0 (32-bits with 67H prefix). MOVDIR64B requires the destination address to be 64-byte aligned. No alignment restriction is enforced for source operand.</string></para>
-  <para unique="1091451">
-   <string>MOVDIR64B first reads 64-bytes from the source memory address. It then performs a 64-byte direct-store opera&#173;tion to the destination address. The load operation follows normal read ordering based on source address memory-type. The direct-store is implemented by using the write combining (WC) memory type protocol for writing data. Using this protocol, the processor does not write the data into the cache hierarchy, nor does it fetch the corre&#173;sponding cache line from memory into the cache hierarchy. If the destination address is cached, the line is written-back (if modified) and invalidated from the cache, before the direct-store.</string></para>
-  <para unique="1091452">
-   <string>Unlike stores with non-temporal hint which allow UC/WP memory-type for destination to override the non-temporal hint, direct-stores always follow WC memory type protocol irrespective of destination address memory type (including UC/WP types). Unlike WC stores and stores with non-temporal hint, direct-stores are eligible for imme&#173;diate eviction from the write-combining buffer, and thus not combined with younger stores (including direct-stores) to the same address. Older WC and non-temporal stores held in the write-combing buffer may be combined with younger direct stores to the same address. Direct stores are weakly ordered relative to other stores. Software that desires stronger ordering should use a fencing instruction (MFENCE or SFENCE) before or after a direct store to enforce the ordering desired.</string></para>
-  <para unique="1091453">
-   <string>There is no atomicity guarantee provided for the 64-byte load operation from source address, and processor imple&#173;mentations may use multiple load operations to read the 64-bytes. The 64-byte direct-store issued by MOVDIR64B guarantees 64-byte write-completion atomicity. This means that the data arrives at the destination in a single undivided 64-byte write transaction. </string></para>
-  <para unique="1091454">
-   <string>Availability of the MOVDIR64B instruction is indicated by the presence of the CPUID feature flag MOVDIR64B (bit 28 of the ECX register in leaf 07H, see </string><link linkend="42531: 05_Level: CPUID&#8212;CPU Identification"><string>&#8220;CPUID&#8212;CPU Identification&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Soft&#173;ware Developer&#8217;s Manual, Volume 2A).</string></para>
+ <encoding_table><table unique="1091392">
+   <thead><tr>
+     <th colspan="2"><para unique="1091394">Opcode/</para>
+      <para unique="1091395">Instruction</para>
+      </th>
+     <th><para unique="1091399">Op/ En</para>
+      </th>
+     <th><para unique="1091401">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091403">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091405">Description</para>
+      </th>
+     </tr>
+    </thead><col width="76.40352000000001pt"/>
+   <col width="86.67144pt"/>
+   <col width="31.968pt"/>
+   <col width="48.024pt"/>
+   <col width="54.527759999999994pt"/>
+   <col width="215.154pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1091407">66 0F 38 F8 /r</para>
+      <para unique="1091408">MOVDIR64B r16/r32/r64, m512</para>
+      </td>
+     <td><para unique="1091412">A</para>
+      </td>
+     <td><para unique="1091414">V/V</para>
+      </td>
+     <td><para unique="1091416">MOVDIR64B</para>
+      </td>
+     <td><para unique="1091418">Move 64-bytes as direct-store with guaranteed 64-byte write atomicity from the source memory operand address to destination memory address specified as offset to ES segment in the register operand.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091420">
+   <col width="47.103840000000005pt"/>
+   <col width="47.103840000000005pt"/>
+   <col width="101.80296pt"/>
+   <col width="105.83856pt"/>
+   <col width="101.92824pt"/>
+   <col width="109.99728pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091422">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091424">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1091426">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091428">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091430">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091432">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091434">A</para>
+      </td>
+     <td valign="middle"><para unique="1091436">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091438">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091440">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091442">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091444">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091448">Instruction Operand Encoding<footnote><para unique="1091447">The Mod field of the ModR/M byte cannot have value 11B.</para>
+     </footnote></caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091450">Moves 64-bytes as direct-store with 64-byte write atomicity from source memory address to destination memory address. The source operand is a normal memory operand. The destination operand is a memory location specified in a general-purpose register. The register content is interpreted as an offset into ES segment without any segment override. In 64-bit mode, the register operand width is 64-bits (32-bits with 67H prefix). Outside of 64-bit mode, the register width is 32-bits when CS.D=1 (16-bits with 67H prefix), and 16-bits when CS.D=0 (32-bits with 67H prefix). MOVDIR64B requires the destination address to be 64-byte aligned. No alignment restriction is enforced for source operand.</para>
+  <para unique="1091451">MOVDIR64B first reads 64-bytes from the source memory address. It then performs a 64-byte direct-store opera&#173;tion to the destination address. The load operation follows normal read ordering based on source address memory-type. The direct-store is implemented by using the write combining (WC) memory type protocol for writing data. Using this protocol, the processor does not write the data into the cache hierarchy, nor does it fetch the corre&#173;sponding cache line from memory into the cache hierarchy. If the destination address is cached, the line is written-back (if modified) and invalidated from the cache, before the direct-store.</para>
+  <para unique="1091452">Unlike stores with non-temporal hint which allow UC/WP memory-type for destination to override the non-temporal hint, direct-stores always follow WC memory type protocol irrespective of destination address memory type (including UC/WP types). Unlike WC stores and stores with non-temporal hint, direct-stores are eligible for imme&#173;diate eviction from the write-combining buffer, and thus not combined with younger stores (including direct-stores) to the same address. Older WC and non-temporal stores held in the write-combing buffer may be combined with younger direct stores to the same address. Direct stores are weakly ordered relative to other stores. Software that desires stronger ordering should use a fencing instruction (MFENCE or SFENCE) before or after a direct store to enforce the ordering desired.</para>
+  <para unique="1091453">There is no atomicity guarantee provided for the 64-byte load operation from source address, and processor imple&#173;mentations may use multiple load operations to read the 64-bytes. The 64-byte direct-store issued by MOVDIR64B guarantees 64-byte write-completion atomicity. This means that the data arrives at the destination in a single undivided 64-byte write transaction. </para>
+  <para unique="1091454">Availability of the MOVDIR64B instruction is indicated by the presence of the CPUID feature flag MOVDIR64B (bit 28 of the ECX register in leaf 07H, see <link unique="1091456" linkend="&lt;c&gt;CPUID-CPU-Identification.fm#42531: 05_Level: CPUID&#8212;CPU Identification" xrefstyle="SectionTitle">&#8220;CPUID&#8212;CPU Identification&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Soft&#173;ware Developer&#8217;s Manual, Volume 2A).</para>
   </longdesc>
+ <operation>
+  <programlisting>DEST := SRC;</programlisting>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>MOVDIR64B void _movdir64b(void *dst, const void* src)</string><string>
-</string></programlisting>
+  <programlisting>MOVDIR64B void _movdir64b(void *dst, const void* src)</programlisting>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>For an illegal memory operand effective address in the CS, DS, ES, FS or GS segments.</string></listitem>
-    <listitem><string>If address in destination (register) operand is not aligned to a 64-byte boundary.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091463">For an illegal memory operand effective address in the CS, DS, ES, FS or GS segments.</para>
+     </listitem>
+    <listitem><para unique="1091464">If address in destination (register) operand is not aligned to a 64-byte boundary.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>For an illegal address in the SS segment.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091465">For an illegal address in the SS segment.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF (fault-code)</string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF (fault-code)</term>
+    <listitem><para unique="1091466">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.07H.00H:ECX.MOVDIR64B[28] = 0.</string></listitem>
-    <listitem><string>If LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091467">If CPUID.07H.00H:ECX.MOVDIR64B[28] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091468">If LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If any part of the operand lies outside the effective address space from 0 to FFFFH.</string></listitem>
-    <listitem><string>If address in destination (register) operand is not aligned to a 64-byte boundary.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1091470">If any part of the operand lies outside the effective address space from 0 to FFFFH.</para>
+     </listitem>
+    <listitem><para unique="1091471">If address in destination (register) operand is not aligned to a 64-byte boundary.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.07H.00H:ECX.MOVDIR64B[28] = 0.</string></listitem>
-    <listitem><string>If LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091472">If CPUID.07H.00H:ECX.MOVDIR64B[28] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091473">If LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1091475" format="xIndent1">
-   <string>Same exceptions as in real address mode.</string></para>
+  <para unique="1091475" format="xIndent1">Same exceptions as in real address mode.</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#PF (fault-code)</string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF (fault-code)</term>
+    <listitem><para unique="1091476">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091478" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1091478" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If memory address referencing the SS segment is in non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091480">If memory address referencing the SS segment is in non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in non-canonical form.</string></listitem>
-    <listitem><string>If address in destination (register) operand is not aligned to a 64-byte boundary.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091481">If the memory address is in non-canonical form.</para>
+     </listitem>
+    <listitem><para unique="1091482">If address in destination (register) operand is not aligned to a 64-byte boundary.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF (fault-code)</string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF (fault-code)</term>
+    <listitem><para unique="1091483">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.07H.00H:ECX.MOVDIR64B[28] = 0.</string></listitem>
-    <listitem><string>If LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091484">If CPUID.07H.00H:ECX.MOVDIR64B[28] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091485">If LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

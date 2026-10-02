@@ -1,49 +1,84 @@
 <instruction name="FINCSTP">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Increment Stack-Top Pointer</shortdesc>
- <longdesc><para unique="1261216">
-   <string>Adds one to the TOP field of the </string><indexterm><primary>x87 FPU status word:TOP field</primary></indexterm><string>FPU status word (increments the top-of-stack pointer). If the TOP field contains a 7, it is set to 0. The effect of this instruction is to rotate the stack by one position. The contents of the FPU data registers and tag register are not affected. This operation is not equivalent to popping the stack, because the tag for the previous top-of-stack register is not marked empty.</string></para>
-  <para unique="1261217">
-   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+ <encoding_table><table unique="1261192">
+   <thead><tr>
+     <th><para unique="1261194">Opcode</para>
+      </th>
+     <th><para unique="1261196">Instruction</para>
+      </th>
+     <th><para unique="1261198">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261200">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261202">Description</para>
+      </th>
+     </tr>
+    </thead><col width="88.86096pt"/>
+   <col width="86.52312pt"/>
+   <col width="48.66983999999999pt"/>
+   <col width="62.4456pt"/>
+   <col width="224.81423999999998pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261204">D9 F7</para>
+      </td>
+     <td><para unique="1261206">FINCSTP</para>
+      </td>
+     <td><para unique="1261208">Valid</para>
+      </td>
+     <td><para unique="1261210">Valid</para>
+      </td>
+     <td><para unique="1261212">Increment the TOP field in the FPU status register.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <longdesc><para unique="1261216">Adds one to the TOP field of the <indexterm><primary>x87 FPU status word:TOP field</primary></indexterm>FPU status word (increments the top-of-stack pointer). If the TOP field contains a 7, it is set to 0. The effect of this instruction is to rotate the stack by one position. The contents of the FPU data registers and tag register are not affected. This operation is not equivalent to popping the stack, because the tag for the previous top-of-stack register is not marked empty.</para>
+  <para unique="1261217">This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF TOP = 7
+	THEN TOP := 0;
+	ELSE TOP := TOP + 1;
+FI;</programlisting>
+  </operation>
  <subsection title="FPU Flags Affected">
-  <para unique="1261224">
-   <string>The C1 flag is set to 0. The C0, C2, and C3 flags are undefined.</string></para>
+  <para unique="1261224">The C1 flag is set to 0. The C0, C2, and C3 flags are undefined.</para>
   </subsection>
  <subsection title="Floating-Point Exceptions">
-  <para unique="1261226">
-   <string>None.</string></para>
+  <para unique="1261226">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#NM</string></term>
-    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    <term>#NM</term>
+    <listitem><para unique="1261228">CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#MF </string></term>
-    <listitem><string>If there is a pending x87 FPU exception.</string></listitem>
+    <term>#MF </term>
+    <listitem><para unique="1261229">If there is a pending x87 FPU exception.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261230">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
-  <para unique="1261232" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261232" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1261234" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261234" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261236" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261236" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
-  <para unique="1261238" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261238" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  </instruction>

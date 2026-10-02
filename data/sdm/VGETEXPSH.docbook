@@ -1,41 +1,116 @@
 <instruction name="VGETEXPSH">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Convert Exponents of Scalar FP16 Values to FP16 Values</shortdesc>
- <longdesc><para unique="1045937">
-   <string>This instruction extracts the biased exponents from the normalized FP16 representation of the low word element of the source operand (the second operand) as unbiased signed integer value, or convert the denormal representa&#173;tion of input data to an unbiased negative integer value. The integer value of the unbiased exponent is converted to an FP16 value and written to the low word element of the destination operand (the first operand) as an FP16 number.</string></para>
-  <para unique="1045938">
-   <string>Bits 127:16 of the destination operand are copied from the corresponding bits of the first source operand. Bits MAXVL-1:128 of the destination operand are zeroed. The low FP16 element of the destination is updated according to the writemask.</string></para>
-  <para unique="1045939">
-   <string>Each GETEXP operation converts the exponent value into a floating-point number (permitting input value in denormal representation). Special cases of input values are listed in </string><link linkend="59286: 06_Table: Table 5-6. VGETEXPPH/VGETEXPSH Special Cases"><string>Table 5&#8209;14</string></link><string>.</string></para>
-  <para unique="1045943">
-   <string>The formula is:</string></para>
-  <para unique="1045944">
-   <string>GETEXP(x) = floor(log</string><subscript><string>2</string></subscript><string>(|x|))</string></para>
-  <para unique="1045945">
-   <string>Notation </string><bold><string>floor(x)</string></bold><string> stands for maximal integer not exceeding real number x.</string></para>
-  <para unique="1045946">
-   <string>Software usage of VGETEXPxx and VGETMANTxx instructions generally involve a combination of GETEXP operation and GETMANT operation (see VGETMANTSH). Thus, the VGETEXPSH instruction does not require software to handle SIMD floating-point exceptions.</string></para>
+ <encoding_table><table unique="1045885">
+   <col width="142.97256pt"/>
+   <col width="28.02528pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="211.27464pt"/>
+   <thead><tr>
+     <th><para unique="1045887">Opcode/</para>
+      <para unique="1045888">Instruction</para>
+      </th>
+     <th><para unique="1045890">Op/</para>
+      <para unique="1045891">En</para>
+      </th>
+     <th><para unique="1045893">64/32 Bit Mode Support</para>
+      </th>
+     <th><para unique="1045895">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1045897">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1046293">EVEX.LLIG.66.MAP6.W0 43 /r</para>
+      <para unique="1046294">VGETEXPSH xmm1{k1}{z}, xmm2, xmm3/m16 {sae}</para>
+      </td>
+     <td><para unique="1046296">A</para>
+      </td>
+     <td><para unique="1046298">V/V</para>
+      </td>
+     <td><para unique="1046300">AVX512_FP16 </para>
+      <para unique="1046304">OR AVX10.1<anchor id="+995838"/></para>
+      </td>
+     <td><para unique="1046306">Convert the exponent of FP16 values in the low word of the source operand to FP16 results representing unbiased integer exponents, and stores the results in the low word of the destination register subject to writemask k1. Bits 127:16 of xmm2 are copied to xmm1[127:16].</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1045910">
+   <col width="43.01352pt"/>
+   <col width="61.01352pt"/>
+   <col width="95.65272pt"/>
+   <col width="104.62608pt"/>
+   <col width="103.85784pt"/>
+   <col width="102.5676pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1045912">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1045914">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1045916">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1045918">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1045920">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1045922">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1045924">A</para>
+      </td>
+     <td valign="middle"><para unique="1045926">Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1045928">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1045930">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045932">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045934">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1045935">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1045937">This instruction extracts the biased exponents from the normalized FP16 representation of the low word element of the source operand (the second operand) as unbiased signed integer value, or convert the denormal representa&#173;tion of input data to an unbiased negative integer value. The integer value of the unbiased exponent is converted to an FP16 value and written to the low word element of the destination operand (the first operand) as an FP16 number.</para>
+  <para unique="1045938">Bits 127:16 of the destination operand are copied from the corresponding bits of the first source operand. Bits MAXVL-1:128 of the destination operand are zeroed. The low FP16 element of the destination is updated according to the writemask.</para>
+  <para unique="1045939">Each GETEXP operation converts the exponent value into a floating-point number (permitting input value in denormal representation). Special cases of input values are listed in <link unique="1045941" linkend="&lt;c&gt;VGETEXPPH-Convert-Exponents-of-Packed-FP16-Values-to-FP16-Values.fm#59286: 06_Table: Table 5-6. VGETEXPPH/VGETEXPSH Special Cases" xrefstyle="TableNum">Table 5&#8209;14</link>.</para>
+  <para unique="1045943">The formula is:</para>
+  <para unique="1045944">GETEXP(x) = floor(log<subscript>2</subscript>(|x|))</para>
+  <para unique="1045945">Notation <bold>floor(x)</bold> stands for maximal integer not exceeding real number x.</para>
+  <para unique="1045946">Software usage of VGETEXPxx and VGETMANTxx instructions generally involve a combination of GETEXP operation and GETMANT operation (see VGETMANTSH). Thus, the VGETEXPSH instruction does not require software to handle SIMD floating-point exceptions.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1045948">VGETEXPSH dest{k1}, src1, src2 </title>
+   <programlisting>IF k1[0] or *no writemask*:
+	DEST.fp16[0] := getexp_fp16(src2.fp16[0]) // see VGETEXPPH
+ELSE IF *zeroing*:
+	DEST.fp16[0] := 0
+//else DEST.fp16[0] remains unchanged
+DEST[127:16] := src1[127:16]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <para unique="1045958">
-   <string>VGETEXPSH __m128h _mm_getexp_round_sh (__m128h a, __m128h b, const int sae);</string></para>
-  <para unique="1045959">
-   <string>VGETEXPSH __m128h _mm_mask_getexp_round_sh (__m128h src, __mmask8 k, __m128h a, __m128h b, const int sae);</string></para>
-  <para unique="1045960">
-   <string>VGETEXPSH __m128h _mm_maskz_getexp_round_sh (__mmask8 k, __m128h a, __m128h b, const int sae);</string></para>
-  <para unique="1045961">
-   <string>VGETEXPSH __m128h _mm_getexp_sh (__m128h a, __m128h b);</string></para>
-  <para unique="1045962">
-   <string>VGETEXPSH __m128h _mm_mask_getexp_sh (__m128h src, __mmask8 k, __m128h a, __m128h b);</string></para>
-  <para unique="1045963">
-   <string>VGETEXPSH __m128h _mm_maskz_getexp_sh (__mmask8 k, __m128h a, __m128h b);</string></para>
+  <para unique="1045958">VGETEXPSH __m128h _mm_getexp_round_sh (__m128h a, __m128h b, const int sae);</para>
+  <para unique="1045959">VGETEXPSH __m128h _mm_mask_getexp_round_sh (__m128h src, __mmask8 k, __m128h a, __m128h b, const int sae);</para>
+  <para unique="1045960">VGETEXPSH __m128h _mm_maskz_getexp_round_sh (__mmask8 k, __m128h a, __m128h b, const int sae);</para>
+  <para unique="1045961">VGETEXPSH __m128h _mm_getexp_sh (__m128h a, __m128h b);</para>
+  <para unique="1045962">VGETEXPSH __m128h _mm_mask_getexp_sh (__m128h src, __mmask8 k, __m128h a, __m128h b);</para>
+  <para unique="1045963">VGETEXPSH __m128h _mm_maskz_getexp_sh (__mmask8 k, __m128h a, __m128h b);</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1045965">
-   <string>Invalid, Denormal</string></para>
+  <para unique="1045965">Invalid, Denormal</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1045970" format="xIndent1">
-   <string>EVEX-encoded instructions, see </string><link linkend="63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions"><string>Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1045970" format="xIndent1">EVEX-encoded instructions, see <link unique="1045968" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

@@ -1,78 +1,216 @@
 <instruction name="XBEGIN">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Transactional Begin</shortdesc>
- <longdesc><para unique="1012604">
-   <string>The XBEGIN instruction specifies the start of an RTM code region. If the logical processor was not already in trans&#173;actional execution, then the XBEGIN instruction causes the logical processor to transition into transactional execu&#173;tion. The XBEGIN instruction that transitions the logical processor into transactional execution is referred to as the outermost XBEGIN instruction. The instruction also specifies a relative offset to compute the address of the fallback code path following a transactional abort. (Use of the 16-bit operand size does not cause this address to be trun&#173;cated to 16 bits, unlike a near jump to a relative offset.)</string></para>
-  <para unique="1012605">
-   <string>On an RTM abort, the logical processor discards all architectural register and memory updates performed during the RTM execution and restores architectural state to that corresponding to the outermost XBEGIN instruction. The fallback address following an abort is computed from the outermost XBEGIN instruction.</string></para>
-  <para unique="1012606">
-   <string>Execution of XBEGIN while in a suspend read address tracking region causes a transactional abort.</string></para>
+ <encoding_table><table unique="1012541">
+   <col width="51.1812pt"/>
+   <col width="72.81864pt"/>
+   <col width="26.87472pt"/>
+   <col width="48.74976pt"/>
+   <col width="44.24976pt"/>
+   <col width="269.25048000000004pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1012543">Opcode/Instruction</para>
+      </th>
+     <th><para unique="1012547">Op/ En</para>
+      </th>
+     <th><para unique="1012549">64/32bit Mode Support</para>
+      </th>
+     <th><para unique="1012551">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1012553">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1012555">C7 F8</para>
+      <para unique="1012556">XBEGIN rel16</para>
+      </td>
+     <td><para unique="1012560">A</para>
+      </td>
+     <td><para unique="1012562">V/V</para>
+      </td>
+     <td><para unique="1012564">RTM</para>
+      </td>
+     <td><para unique="1012566">Specifies the start of an RTM region. Provides a 16-bit relative offset to compute the address of the fallback instruction address at which execution resumes following an RTM abort.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1012568">C7 F8</para>
+      <para unique="1012569">XBEGIN rel32</para>
+      </td>
+     <td><para unique="1012573">A</para>
+      </td>
+     <td><para unique="1012575">V/V</para>
+      </td>
+     <td><para unique="1012577">RTM</para>
+      </td>
+     <td><para unique="1012579">Specifies the start of an RTM region. Provides a 32-bit relative offset to compute the address of the fallback instruction address at which execution resumes following an RTM abort.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1012581">
+   <col width="42.940079999999995pt"/>
+   <col width="108.28008pt"/>
+   <col width="118.32624000000001pt"/>
+   <col width="114.74495999999999pt"/>
+   <col width="126.9288pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1012583">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1012585">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1012587">Operand2</para>
+      </th>
+     <th valign="middle"><para unique="1012589">Operand3</para>
+      </th>
+     <th valign="middle"><para unique="1012591">Operand4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1012593">A</para>
+      </td>
+     <td valign="middle"><para unique="1012595">Offset</para>
+      </td>
+     <td valign="middle"><para unique="1012597">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012599">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012601">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1012602">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1012604">The XBEGIN instruction specifies the start of an RTM code region. If the logical processor was not already in trans&#173;actional execution, then the XBEGIN instruction causes the logical processor to transition into transactional execu&#173;tion. The XBEGIN instruction that transitions the logical processor into transactional execution is referred to as the outermost XBEGIN instruction. The instruction also specifies a relative offset to compute the address of the fallback code path following a transactional abort. (Use of the 16-bit operand size does not cause this address to be trun&#173;cated to 16 bits, unlike a near jump to a relative offset.)</para>
+  <para unique="1012605">On an RTM abort, the logical processor discards all architectural register and memory updates performed during the RTM execution and restores architectural state to that corresponding to the outermost XBEGIN instruction. The fallback address following an abort is computed from the outermost XBEGIN instruction.</para>
+  <para unique="1012606">Execution of XBEGIN while in a suspend read address tracking region causes a transactional abort.</para>
   </longdesc>
- <subsection title="Flags Affected">
-  <programlisting><string>None.</string><string>
-</string></programlisting>
-  </subsection>
+ <operation>
+  <section level="7">
+   <title unique="1012608">XBEGIN</title>
+   <programlisting>IF RTM_NEST_COUNT &lt; MAX_RTM_NEST_COUNT AND SUSLDTRK_ACTIVE = 0
+	THEN
+		RTM_NEST_COUNT++
+		IF RTM_NEST_COUNT = 1 THEN
+			IF 64-bit Mode
+				THEN
+					IF OperandSize = 16
+						THEN fallbackRIP := RIP + SignExtend64(rel16);
+						ELSE fallbackRIP := RIP + SignExtend64(rel32);
+					FI;
+					IF fallbackRIP is not canonical
+						THEN #GP(0);
+					FI;
+				ELSE
+					IF OperandSize = 16
+						THEN 	fallbackEIP := EIP + SignExtend32(rel16);
+						ELSE fallbackEIP := EIP + rel32;
+					FI;
+					IF fallbackEIP outside code segment limit
+						THEN #GP(0);
+					FI;
+			FI;
+			RTM_ACTIVE := 1
+			Enter RTM Execution (* record register state, start tracking memory state*)
+		FI; (* RTM_NEST_COUNT = 1 *)
+	ELSE (* RTM_NEST_COUNT = MAX_RTM_NEST_COUNT OR SUSLDTRK_ACTIVE = 1 *)
+		GOTO RTM_ABORT_PROCESSING
+FI;
+(* For any RTM abort condition encountered during RTM execution *)
+RTM_ABORT_PROCESSING:
+	Restore architectural register state
+	Discard memory updates performed in transaction
+	Update EAX with status
+	RTM_NEST_COUNT := 0
+	RTM_ACTIVE := 0
+	SUSLDTRK_ACTIVE := 0
+	IF 64-bit mode
+		THEN
+			RIP := fallbackRIP
+		ELSE
+			EIP := fallbackEIP
+	FI;
+END</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1012654">Flags Affected</title>
+   <programlisting>None.</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>XBEGIN unsigned int _xbegin( void );</string><string>
-</string></programlisting>
+  <programlisting>XBEGIN unsigned int _xbegin( void );</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1012659">
-   <string>None.</string></para>
+  <para unique="1012659">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CPUID.07H.00H:EBX.RTM[11] = 0.</string></listitem>
-    <listitem><string>If LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1012661">If CPUID.07H.00H:EBX.RTM[11] = 0.</para>
+     </listitem>
+    <listitem><para unique="1012662">If LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the fallback address is outside the CS segment.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1012663">If the fallback address is outside the CS segment.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the fallback address is outside the address space 0000H and FFFFH.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1012665">If the fallback address is outside the address space 0000H and FFFFH.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CPUID.07H.00H:EBX.RTM[11] = 0.</string></listitem>
-    <listitem><string>If LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1012666">If CPUID.07H.00H:EBX.RTM[11] = 0.</para>
+     </listitem>
+    <listitem><para unique="1012667">If LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the fallback address is outside the address space 0000H and FFFFH.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1012669">If the fallback address is outside the address space 0000H and FFFFH.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CPUID.07H.00H:EBX.RTM[11] = 0.</string></listitem>
-    <listitem><string>If LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1012670">If CPUID.07H.00H:EBX.RTM[11] = 0.</para>
+     </listitem>
+    <listitem><para unique="1012671">If LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1012673" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1012673" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CPUID.07H.00H:EBX.RTM[11] = 0.</string></listitem>
-    <listitem><string>If LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1012675">If CPUID.07H.00H:EBX.RTM[11] = 0.</para>
+     </listitem>
+    <listitem><para unique="1012676">If LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the fallback address is non-canonical.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1012677">If the fallback address is non-canonical.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

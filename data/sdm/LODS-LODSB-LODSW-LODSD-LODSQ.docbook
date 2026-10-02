@@ -1,113 +1,323 @@
 <instruction name="LODS/LODSB/LODSW/LODSD/LODSQ">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Load String</shortdesc>
- <longdesc><para unique="1261327">
-   <string>Loads a byte, word, or doubleword from the source operand into the AL, AX, or EAX register, respectively. The source operand is a memory location, the address of which is read from the </string><indexterm><primary>ESI register;DS register</primary></indexterm><string>DS:ESI or the DS:SI registers (depending on the address-size attribute of the instruction, 32 or 16, respectively). The </string><indexterm><primary>DS register</primary></indexterm><string>DS segment may be over&#173;ridden with a segment override prefix.</string></para>
-  <para unique="1261330">
-   <string>At the assembly-code level, two forms of this instruction are allowed: the &#8220;explicit-operands&#8221; form and the &#8220;no-operands&#8221; form. The explicit-operands form (specified with the LODS mnemonic) allows the source operand to be specified explicitly. Here, the source operand should be a symbol that indicates the size and location of the source value. The destination operand is then automatically selected to match the size of the source operand (the AL register for byte operands, AX for word operands, and EAX for doubleword operands). This explicit-operands form is provided to allow documentation; however, note that the documentation provided by this form can be misleading. That is, the source operand symbol must specify the correct </string><bold><string>type</string></bold><string> (size) of the operand (byte, word, or doubleword), but it does not have to specify the correct </string><bold><string>location</string></bold><string>. The location is always specified by the DS:(E)SI registers, which must be loaded correctly before the load string instruction is executed.</string></para>
-  <para unique="1261331">
-   <string>The no-operands form provides &#8220;short forms&#8221; of the byte, word, and doubleword versions of the LODS instructions. Here also DS:(E)SI is assumed to be the source operand and the AL, AX, or EAX register is assumed to be the desti&#173;nation operand. The size of the source and destination operands is selected with the mnemonic: LODSB (byte loaded into register AL), LODSW (word loaded into AX), or LODSD (doubleword loaded into EAX).</string></para>
-  <para unique="1261332">
-   <string>After the byte, word, or doubleword is transferred from the memory location into the AL, AX, or EAX register, the </string><indexterm><primary>ESI register</primary></indexterm><string>(E)SI register is incremented or decremented automatically according to the setting of the DF flag in the EFLAGS register. (If the </string><indexterm><primary>DF (direction) flag, EFLAGS register</primary></indexterm><string>DF flag is 0, the (E)SI register is incremented; if the DF flag is 1, the ESI register is decremented.) The (E)SI register is incremented or decremented by 1 for byte operations, by 2 for word operations, or by 4 for doubleword operations.</string></para>
-  <para unique="1261335">
-   <string>In 64-bit mode, use of the REX.W prefix promotes operation to 64 bits. LODS/LODSQ load the quadword at address (R)SI into RAX. The (R)SI register is then incremented or decremented automatically according to the setting of the DF flag in the EFLAGS register. </string></para>
-  <para unique="1261336">
-   <string>The LODS, LODSB, LODSW, and LODSD instructions can be preceded by the REP prefix for block loads of ECX bytes, words, or doublewords. More often, however, these instructions are&#160;used within a LOOP construct because further processing of the data moved into the register is&#160;usually necessary before the next transfer can be made. See </string><link linkend="String instructions"><string>&#8220;REP&#8212;Repeat String Operation (Prefix)&#8221;</string></link><string> in </string><link linkend="63695: 01_Level: Chapter 4 Instruction Set Reference, M-Z"><string>Chapter 4</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Devel&#173;oper&#8217;s Manual, Volume 2B, for a description of the REP prefix.</string></para>
+ <encoding_table><table unique="1261194">
+   <thead><tr>
+     <th><para unique="1261196">Opcode</para>
+      </th>
+     <th><para unique="1261198">Instruction</para>
+      </th>
+     <th><para unique="1261200">Op/ En</para>
+      </th>
+     <th><para unique="1261202">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261204">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261206">Description</para>
+      </th>
+     </tr>
+    </thead><col width="97.20504000000001pt"/>
+   <col width="110.26872pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="182.90448pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261208">AC</para>
+      </td>
+     <td><para unique="1261210">LODS m8</para>
+      </td>
+     <td><para unique="1261212">ZO</para>
+      </td>
+     <td><para unique="1261214">Valid</para>
+      </td>
+     <td><para unique="1261216">Valid</para>
+      </td>
+     <td><para unique="1261218">For legacy mode, Load byte at address DS:(E)SI into AL. For 64-bit mode load byte at address (R)SI into AL.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261220">AD</para>
+      </td>
+     <td><para unique="1261222">LODS m16</para>
+      </td>
+     <td><para unique="1261224">ZO</para>
+      </td>
+     <td><para unique="1261226">Valid</para>
+      </td>
+     <td><para unique="1261228">Valid</para>
+      </td>
+     <td><para unique="1261230">For legacy mode, Load word at address DS:(E)SI into AX. For 64-bit mode load word at address (R)SI into AX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261232">AD</para>
+      </td>
+     <td><para unique="1261234">LODS m32</para>
+      </td>
+     <td><para unique="1261236">ZO</para>
+      </td>
+     <td><para unique="1261238">Valid</para>
+      </td>
+     <td><para unique="1261240">Valid</para>
+      </td>
+     <td><para unique="1261242">For legacy mode, Load dword at address DS:(E)SI into EAX. For 64-bit mode load dword at address (R)SI into EAX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261244">REX.W + AD</para>
+      </td>
+     <td><para unique="1261246">LODS m64</para>
+      </td>
+     <td><para unique="1261248">ZO</para>
+      </td>
+     <td><para unique="1261250">Valid</para>
+      </td>
+     <td><para unique="1261252">N.E.</para>
+      </td>
+     <td><para unique="1261254">Load qword at address (R)SI into RAX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261256">AC</para>
+      </td>
+     <td><para unique="1261258">LODSB</para>
+      </td>
+     <td><para unique="1261260">ZO</para>
+      </td>
+     <td><para unique="1261262">Valid</para>
+      </td>
+     <td><para unique="1261264">Valid</para>
+      </td>
+     <td><para unique="1261266">For legacy mode, Load byte at address DS:(E)SI into AL. For 64-bit mode load byte at address (R)SI into AL.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261268">AD</para>
+      </td>
+     <td><para unique="1261270">LODSW</para>
+      </td>
+     <td><para unique="1261272">ZO</para>
+      </td>
+     <td><para unique="1261274">Valid</para>
+      </td>
+     <td><para unique="1261276">Valid</para>
+      </td>
+     <td><para unique="1261278">For legacy mode, Load word at address DS:(E)SI into AX. For 64-bit mode load word at address (R)SI into AX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261280">AD</para>
+      </td>
+     <td><para unique="1261282">LODSD</para>
+      </td>
+     <td><para unique="1261284">ZO</para>
+      </td>
+     <td><para unique="1261286">Valid</para>
+      </td>
+     <td><para unique="1261288">Valid</para>
+      </td>
+     <td><para unique="1261290">For legacy mode, Load dword at address DS:(E)SI into EAX. For 64-bit mode load dword at address (R)SI into EAX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261292">REX.W + AD</para>
+      </td>
+     <td><para unique="1261294">LODSQ</para>
+      </td>
+     <td><para unique="1261296">ZO</para>
+      </td>
+     <td><para unique="1261298">Valid</para>
+      </td>
+     <td><para unique="1261300">N.E.</para>
+      </td>
+     <td><para unique="1261302">Load qword at address (R)SI into RAX.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261304">
+   <col width="47.11968pt"/>
+   <col width="108.00936pt"/>
+   <col width="118.89792pt"/>
+   <col width="115.29936000000001pt"/>
+   <col width="120.39335999999999pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261306">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261308">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261310">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261312">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261314">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261316">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1261318">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261320">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261322">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261324">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261325">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261327">Loads a byte, word, or doubleword from the source operand into the AL, AX, or EAX register, respectively. The source operand is a memory location, the address of which is read from the <indexterm><primary>ESI register;DS register</primary></indexterm>DS:ESI or the DS:SI registers (depending on the address-size attribute of the instruction, 32 or 16, respectively). The <indexterm><primary>DS register</primary></indexterm>DS segment may be over&#173;ridden with a segment override prefix.</para>
+  <para unique="1261330">At the assembly-code level, two forms of this instruction are allowed: the &#8220;explicit-operands&#8221; form and the &#8220;no-operands&#8221; form. The explicit-operands form (specified with the LODS mnemonic) allows the source operand to be specified explicitly. Here, the source operand should be a symbol that indicates the size and location of the source value. The destination operand is then automatically selected to match the size of the source operand (the AL register for byte operands, AX for word operands, and EAX for doubleword operands). This explicit-operands form is provided to allow documentation; however, note that the documentation provided by this form can be misleading. That is, the source operand symbol must specify the correct <bold>type</bold> (size) of the operand (byte, word, or doubleword), but it does not have to specify the correct <bold>location</bold>. The location is always specified by the DS:(E)SI registers, which must be loaded correctly before the load string instruction is executed.</para>
+  <para unique="1261331">The no-operands form provides &#8220;short forms&#8221; of the byte, word, and doubleword versions of the LODS instructions. Here also DS:(E)SI is assumed to be the source operand and the AL, AX, or EAX register is assumed to be the desti&#173;nation operand. The size of the source and destination operands is selected with the mnemonic: LODSB (byte loaded into register AL), LODSW (word loaded into AX), or LODSD (doubleword loaded into EAX).</para>
+  <para unique="1261332">After the byte, word, or doubleword is transferred from the memory location into the AL, AX, or EAX register, the <indexterm><primary>ESI register</primary></indexterm>(E)SI register is incremented or decremented automatically according to the setting of the DF flag in the EFLAGS register. (If the <indexterm><primary>DF (direction) flag, EFLAGS register</primary></indexterm>DF flag is 0, the (E)SI register is incremented; if the DF flag is 1, the ESI register is decremented.) The (E)SI register is incremented or decremented by 1 for byte operations, by 2 for word operations, or by 4 for doubleword operations.</para>
+  <para unique="1261335">In 64-bit mode, use of the REX.W prefix promotes operation to 64 bits. LODS/LODSQ load the quadword at address (R)SI into RAX. The (R)SI register is then incremented or decremented automatically according to the setting of the DF flag in the EFLAGS register. </para>
+  <para unique="1261336">The LODS, LODSB, LODSW, and LODSD instructions can be preceded by the REP prefix for block loads of ECX bytes, words, or doublewords. More often, however, these instructions are&#160;used within a LOOP construct because further processing of the data moved into the register is&#160;usually necessary before the next transfer can be made. See <link unique="1262379" linkend="&lt;c&gt;REP-Repeat-String-Operation-Prefix.fm#String instructions" xrefstyle="Paratext">&#8220;REP&#8212;Repeat String Operation (Prefix)&#8221;</link> in <link unique="1261338" linkend="&lt;c&gt;__sdm_vol2B_ch04_instr-set-ref_M-U.fm#63695: 01_Level: Chapter 4 Instruction Set Reference, M-Z" xrefstyle="ChapterNum_CR">Chapter 4</link> of the Intel&#174; 64 and IA&#8209;32 Architectures Software Devel&#173;oper&#8217;s Manual, Volume 2B, for a description of the REP prefix.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF AL := SRC; (* Byte load *)
+	THEN AL := SRC; (* Byte load *)
+		IF DF = 0
+			THEN (E)SI := (E)SI + 1;
+			ELSE (E)SI := (E)SI &#8211; 1;
+		FI;
+ELSE IF AX := SRC; (* Word load *)
+	THEN IF DF = 0
+			THEN (E)SI := (E)SI + 2;
+			ELSE (E)SI := (E)SI &#8211; 2;
+		IF;
+	FI;
+ELSE IF EAX := SRC; (* Doubleword load *)
+	THEN IF DF = 0
+			THEN (E)SI := (E)SI + 4;
+			ELSE (E)SI := (E)SI &#8211; 4;
+		FI;
+	FI;
+ELSE IF RAX := SRC; (* Quadword load *)
+	THEN IF DF = 0
+			THEN (R)SI := (R)SI + 8;
+			ELSE (R)SI := (R)SI &#8211; 8;
+		FI;
+	FI;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261367">
-   <string>None.</string></para>
+  <para unique="1261367">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261369">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1261370">If the DS, ES, FS, or GS register contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261371">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261372">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261373">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261374">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1261376">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS</term>
+    <listitem><para unique="1261377">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261378">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261380">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261381">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261382">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261383">If alignment checking is enabled and an unaligned memory reference is made.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261384">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261386" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261386" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261388">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261389">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261390">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261391">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261392">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

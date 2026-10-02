@@ -1,25 +1,144 @@
 <instruction name="VSHA512RNDS2">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Perform Two Rounds of SHA512 Operation</shortdesc>
- <longdesc><para unique="1047479">
-   <string>The VSHA512RNDS2 instruction performs two rounds of SHA512 operation using initial SHA512 state (C,D,G,H) from the first operand, an initial SHA512 state (A,B,E,F) from the second operand, and a pre-computed sum of the next two round message qwords and the corresponding round constants from the third operand (only the two lower qwords of the third operand). The updated SHA512 state (A,B,E,F) is written to the first operand, and the second operand can be used as the updated state (C,D,G,H) in later rounds.</string></para>
-  <para unique="1047481">
-   <string>See </string><anchor id="message URL https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf"/><underline><string>https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf</string></underline><string> for more information on the SHA512 standard.</string></para>
+ <encoding_table><table unique="1047410">
+   <col width="62.346959999999996pt"/>
+   <col width="88.704pt"/>
+   <col width="39.900240000000004pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="190.64952pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1047052">Opcode/</para>
+      <para unique="1047053">Instruction</para>
+      </th>
+     <th><para unique="1047057">Op/</para>
+      <para unique="1047058">En</para>
+      </th>
+     <th><para unique="1047060">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1047062">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1047064">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1047547">VEX.256.F2.0F38.W0 CB 11:rrr:bbb</para>
+      <para unique="1047548">VSHA512RNDS2 ymm1, ymm2, xmm3</para>
+      </td>
+     <td><para unique="1047552">A</para>
+      </td>
+     <td><para unique="1047554">V/V</para>
+      </td>
+     <td><para unique="1047556">AVX</para>
+      <para unique="1047557">SHA512</para>
+      </td>
+     <td><para unique="1047559">Perform 2 rounds of SHA512 operation using an initial SHA512 state (C,D,G,H) from ymm1, an initial SHA512 state (A,B,E,F) from ymm2, and a pre-computed sum of the next 2 round message qwords and the corresponding round constants from xmm3, storing the updated SHA512 state (A,B,E,F) result in ymm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1047440">
+   <col width="39.114000000000004pt"/>
+   <col width="52.614000000000004pt"/>
+   <col width="99.25704pt"/>
+   <col width="111.48624pt"/>
+   <col width="105.63624pt"/>
+   <col width="104.32368pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1047081">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1047083">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1047085">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1047087">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1047089">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1047091">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1047093">A</para>
+      </td>
+     <td valign="middle"><para unique="1047095">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1047097">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1047099">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1047101">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1047103">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1047104">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1047479">The VSHA512RNDS2 instruction performs two rounds of SHA512 operation using initial SHA512 state (C,D,G,H) from the first operand, an initial SHA512 state (A,B,E,F) from the second operand, and a pre-computed sum of the next two round message qwords and the corresponding round constants from the third operand (only the two lower qwords of the third operand). The updated SHA512 state (A,B,E,F) is written to the first operand, and the second operand can be used as the updated state (C,D,G,H) in later rounds.</para>
+  <para unique="1047481">See <anchor id="message URL https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf"/><underline>https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf</underline> for more information on the SHA512 standard.</para>
   </longdesc>
+ <operation>
+  <programlisting>define ROR64(qword, n):
+	count := n % 64
+	dest := (qword &gt;&gt; count) | (qword &lt;&lt; (64-count))
+	return dest
+define SHR64(qword, n):
+	return qword &gt;&gt; n
+define cap_sigma0(qword):
+	return ROR64(qword,28) ^ ROR64(qword, 34) ^ ROR64(qword, 39)
+define cap_sigma1(qword):
+	return ROR64(qword,14) ^ ROR64(qword, 18) ^ ROR64(qword, 41)
+define MAJ(a,b,c):
+	return (a &amp; b) ^ (a &amp; c) ^ (b &amp; c)
+define CH(e,f,g):
+	return (e &amp; f) ^ (g &amp; ~e)</programlisting>
+  <section level="7">
+   <title unique="1047502">VSHA512RNDS2 SRCDEST, SRC1, SRC2</title>
+   <programlisting>A[0] := SRC1.qword[3]
+B[0] := SRC1.qword[2]
+C[0] := SRCDEST.qword[3]
+D[0] := SRCDEST.qword[2]
+E[0] := SRC1.qword[1]
+F[0] := SRC1.qword[0]
+G[0] := SRCDEST.qword[1]
+H[0] := SRCDEST.qword[0]
+WK[0]:= SRC2.qword[0]
+WK[1]:= SRC2.qword[1]
+FOR i in 0..1:
+	A[i+1] := CH(E[i], F[i], G[i]) +
+		cap_sigma1(E[i]) + WK[i] + H[i] +
+		MAJ(A[i], B[i], C[i]) +
+		cap_sigma0(A[i])
+	B[i+1] := A[i]
+	C[i+1] := B[i]
+	D[i+1] := C[i]
+	E[i+1] := CH(E[i], F[i], G[i]) +
+		cap_sigma1(E[i]) + WK[i] + H[i] + D[i]
+	F[i+1] := E[i]
+	G[i+1] := F[i]
+	H[i+1] := G[i]
+SRCDEST.qword[3] = A[2]
+SRCDEST.qword[2] = B[2]
+SRCDEST.qword[1] = E[2]
+SRCDEST.qword[0] = F[2]</programlisting>
+   </section>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1047533">
-   <string>None.</string></para>
+  <para unique="1047533">None.</para>
   </subsection>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VSHA512RNDS2 __m256i _mm256_sha512rnds2_epi64 (__m256i __A, __m256i __B, __m128i __C);</string><string>
-</string></programlisting>
+  <programlisting>VSHA512RNDS2 __m256i _mm256_sha512rnds2_epi64 (__m256i __A, __m256i __B, __m128i __C);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1047135">
-   <string>None.</string></para>
+  <para unique="1047135">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046793">
-   <string>See </string><link linkend="57777: 06_Table: Table 2-23. Type 6 Class Exception Conditions"><string>Table&#160;2&#8209;23, &#8220;Type 6 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046793">See <link unique="1047157" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#57777: 06_Table: Table 2-23. Type 6 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;23, &#8220;Type 6 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

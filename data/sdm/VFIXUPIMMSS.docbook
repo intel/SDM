@@ -1,36 +1,182 @@
 <instruction name="VFIXUPIMMSS">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Fix Up Special Scalar Float32 Value</shortdesc>
- <longdesc><para unique="1045943">
-   <string>Perform a fix-up of the low doubleword element encoded in single precision floating-point format in the first source operand (the second operand) using a 32-bit, two-level look-up table specified in the low doubleword element of the second source operand (the third operand) with exception reporting specifier imm8. The element that is fixed-up is selected by mask bit of 1 specified in the opmask k1. Mask bit of 0 in the opmask k1 or table response action of 0000b preserves the corresponding element of the first operand. The fixed-up element from the first source operand or the preserved element in the first operand becomes the low doubleword element of the destination operand (the first operand) Bits 127:32 of the destination operand is copied from the corresponding bits of the first source operand. The destination and first source operands are XMM registers. The second source operand can be a XMM register or a 32-bit memory location.</string></para>
-  <para unique="1045944">
-   <string>The two-level look-up table perform a fix-up of each single precision floating-point input data in the first source operand by decoding the input data encoding into 8 token types. A response table is defined for each token type that converts the input encoding in the first source operand with one of 16 response actions. </string></para>
-  <para unique="1045945">
-   <string>This instruction is specifically intended for use in fixing up the results of arithmetic calculations involving one source so that they match the spec, although it is generally useful for fixing up the results of multiple-instruction sequences to reflect special-number inputs. For example, consider rcp(0). Input 0 to rcp, and you should get INF according to the DX10 spec. However, evaluating rcp via Newton-Raphson, where x=approx(1/0), yields an incor&#173;rect result. To deal with this, VFIXUPIMMPD can be used after the N-R reciprocal sequence to set the result to the correct value (i.e., INF when the input is 0).</string></para>
-  <para unique="1045946">
-   <string>If MXCSR.DAZ is not set, denormal input elements in the first source operand are considered as normal inputs and do not trigger any fixup nor fault reporting.</string></para>
-  <para unique="1045947">
-   <string>Imm8 is used to set the required flags reporting. It supports #ZE and #IE fault reporting (see details below).</string></para>
-  <para unique="1045948">
-   <string>MXCSR.DAZ is used and refer to zmm2 only (i.e., zmm1 is not considered as zero in case MXCSR.DAZ is set).</string></para>
-  <para unique="1045949">
-   <string>MXCSR mask bits are ignored and are treated as if all mask bits are set to masked response). If any of the imm8 bits is set and the condition met for fault reporting, MXCSR.IE or MXCSR.ZE might be updated.</string></para>
+ <encoding_table><table unique="1045885">
+   <col width="75.33216pt"/>
+   <col width="75.33216pt"/>
+   <col width="29.244239999999998pt"/>
+   <col width="48.74976pt"/>
+   <col width="66.91608000000001pt"/>
+   <col width="217.16712pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1045887">Opcode/</para>
+      <para unique="1045888">Instruction</para>
+      </th>
+     <th><para unique="1045892">Op / En</para>
+      </th>
+     <th><para unique="1045894">64/32 Bit Mode Support</para>
+      </th>
+     <th><para unique="1045896">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1045898">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1046708">EVEX.LLIG.66.0F3A.W0 55 /r ib</para>
+      <para unique="1046709">VFIXUPIMMSS xmm1 {k1}{z}, xmm2, xmm3/m32{sae}, imm8</para>
+      </td>
+     <td><para unique="1046713">A</para>
+      </td>
+     <td><para unique="1046715">V/V</para>
+      </td>
+     <td><para unique="1046720">AVX512F</para>
+      <para unique="1046724">OR AVX10.1<anchor id="+243230"/></para>
+      </td>
+     <td><para unique="1046726">Fix up a float32 number in the low doubleword element in xmm2 using scalar int32 table in xmm3/m32 and store the result in xmm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1045916">
+   <col width="45.80928pt"/>
+   <col width="71.00856pt"/>
+   <col width="97.73568pt"/>
+   <col width="96.37631999999999pt"/>
+   <col width="100.70784pt"/>
+   <col width="97.68168pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1045918">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1045920">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1045922">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1045924">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1045926">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1045928">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1045930">A</para>
+      </td>
+     <td valign="middle"><para unique="1045932">Tuple1 Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1045934">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1045936">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045938">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045940">imm8</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1045941">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1045943">Perform a fix-up of the low doubleword element encoded in single precision floating-point format in the first source operand (the second operand) using a 32-bit, two-level look-up table specified in the low doubleword element of the second source operand (the third operand) with exception reporting specifier imm8. The element that is fixed-up is selected by mask bit of 1 specified in the opmask k1. Mask bit of 0 in the opmask k1 or table response action of 0000b preserves the corresponding element of the first operand. The fixed-up element from the first source operand or the preserved element in the first operand becomes the low doubleword element of the destination operand (the first operand) Bits 127:32 of the destination operand is copied from the corresponding bits of the first source operand. The destination and first source operands are XMM registers. The second source operand can be a XMM register or a 32-bit memory location.</para>
+  <para unique="1045944">The two-level look-up table perform a fix-up of each single precision floating-point input data in the first source operand by decoding the input data encoding into 8 token types. A response table is defined for each token type that converts the input encoding in the first source operand with one of 16 response actions. </para>
+  <para unique="1045945">This instruction is specifically intended for use in fixing up the results of arithmetic calculations involving one source so that they match the spec, although it is generally useful for fixing up the results of multiple-instruction sequences to reflect special-number inputs. For example, consider rcp(0). Input 0 to rcp, and you should get INF according to the DX10 spec. However, evaluating rcp via Newton-Raphson, where x=approx(1/0), yields an incor&#173;rect result. To deal with this, VFIXUPIMMPD can be used after the N-R reciprocal sequence to set the result to the correct value (i.e., INF when the input is 0).</para>
+  <para unique="1045946">If MXCSR.DAZ is not set, denormal input elements in the first source operand are considered as normal inputs and do not trigger any fixup nor fault reporting.</para>
+  <para unique="1045947">Imm8 is used to set the required flags reporting. It supports #ZE and #IE fault reporting (see details below).</para>
+  <para unique="1045948">MXCSR.DAZ is used and refer to zmm2 only (i.e., zmm1 is not considered as zero in case MXCSR.DAZ is set).</para>
+  <para unique="1045949">MXCSR mask bits are ignored and are treated as if all mask bits are set to masked response). If any of the imm8 bits is set and the condition met for fault reporting, MXCSR.IE or MXCSR.ZE might be updated.</para>
   </longdesc>
+ <operation>
+  <programlisting>enum TOKEN_TYPE
+{
+	QNAN_TOKEN		 := 0,
+	SNAN_TOKEN		 := 1,
+	ZERO_VALUE_TOKEN	 := 2,
+	POS_ONE_VALUE_TOKEN	 := 3,
+	NEG_INF_TOKEN	 := 4,
+	POS_INF_TOKEN	 := 5,
+	NEG_VALUE_TOKEN	 := 6,
+	POS_VALUE_TOKEN	 := 7
+}
+FIXUPIMM_SP (dest[31:0], src1[31:0],tbl3[31:0], imm8 [7:0]){
+	tsrc[31:0] := ((src1[30:23] = 0) AND (MXCSR.DAZ =1)) ? 0.0 : src1[31:0]
+	CASE(tsrc[63:0] of TOKEN_TYPE) {
+		QNAN_TOKEN: 			j := 0;
+		SNAN_TOKEN: 			j := 1;
+		ZERO_VALUE_TOKEN: 	j := 2;
+		POS_ONE_VALUE_TOKEN: 		j := 3;
+		NEG_INF_TOKEN: 		j := 4;
+		POS_INF_TOKEN: 		j := 5;
+		NEG_VALUE_TOKEN: 		j := 6;
+		POS_VALUE_TOKEN: 		j := 7;
+	}		; end source special CASE(tsrc&#8230;)
+	; The required response from src3 table is extracted
+	token_response[3:0] = tbl3[3+4*j:4*j];
+	CASE(token_response[3:0]) {
+		0000: 	dest[31:0] := dest[31:0]; 		 					; preserve content of DEST
+		0001: 	dest[31:0] := tsrc[31:0];	 	 	 				; pass through src1 normal input value, denormal as zero
+		0010: 	dest[31:0] := QNaN(tsrc[31:0]);
+		0011: 	dest[31:0] := QNAN_Indefinite;
+		0100: 	dest[31:0] := -INF;
+		0101: 	dest[31:0] := +INF;
+		0110: 	dest[31:0] := tsrc.sign? &#8211;INF : +INF;
+		0111: 	dest[31:0] := -0;
+		1000: 	dest[31:0] := +0;
+		1001: 	dest[31:0] := -1;
+		1010: 	dest[31:0] := +1;
+		1011: 	dest[31:0] := &#189;;
+		1100: 	dest[31:0] := 90.0;
+		1101: 	dest[31:0] := PI/2;
+		1110: 	dest[31:0] := MAX_FLOAT;
+		1111: 	dest[31:0] := -MAX_FLOAT;
+	} 		; end of token_response CASE
+	; The required fault reporting from imm8 is extracted
+	; TOKENs are mutually exclusive and TOKENs priority defines the order.
+	; Multiple faults related to a single token can occur simultaneously.
+	IF (tsrc[31:0] of TOKEN_TYPE: ZERO_VALUE_TOKEN) AND imm8[0] then set #ZE;
+	IF (tsrc[31:0] of TOKEN_TYPE: ZERO_VALUE_TOKEN) AND imm8[1] then set #IE;
+	IF (tsrc[31:0] of TOKEN_TYPE: ONE_VALUE_TOKEN) AND imm8[2] then set #ZE;
+	IF (tsrc[31:0] of TOKEN_TYPE: ONE_VALUE_TOKEN) AND imm8[3] then set #IE;
+	IF (tsrc[31:0] of TOKEN_TYPE: SNAN_TOKEN) AND imm8[4] then set #IE;
+	IF (tsrc[31:0] of TOKEN_TYPE: NEG_INF_TOKEN) AND imm8[5] then set #IE;
+	IF (tsrc[31:0] of TOKEN_TYPE: NEG_VALUE_TOKEN) AND imm8[6] then set #IE;
+	IF (tsrc[31:0] of TOKEN_TYPE: POS_INF_TOKEN) AND imm8[7] then set #IE;
+		; end fault reporting
+	return dest[31:0];
+} 		; end of FIXUPIMM_SP()</programlisting>
+  <section level="7">
+   <title unique="1046013">VFIXUPIMMSS (EVEX encoded version)</title>
+   <programlisting>IF k1[0] OR *no writemask*
+	THEN 	DEST[31:0] := FIXUPIMM_SP(DEST[31:0], SRC1[31:0], SRC2[31:0], imm8 [7:0])
+	ELSE
+		IF *merging-masking*								; merging-masking
+			THEN *DEST[31:0] remains unchanged*
+			ELSE 	 DEST[31:0] := 0						; zeroing-masking
+		FI
+FI;
+DEST[127:32] := SRC1[127:32]
+DEST[MAXVL-1:128] := 0
+Immediate Control Description:
+VFIXUPIMMSS Immediate Control Description
+        
+          
+        
+      Error: unsupported graphic element 'ImportObject'</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VFIXUPIMMSS __m128 _mm_fixupimm_ss( __m128 a, __m128 b, __m128i c, int imm8);</string><string>
-</string><string>VFIXUPIMMSS __m128 _mm_mask_fixupimm_ss(__m128 a, __mmask8 k, __m128 b, __m128i c, int imm8);</string><string>
-</string><string>VFIXUPIMMSS __m128 _mm_maskz_fixupimm_ss( __mmask8 k, __m128 a, __m128 b, __m128i c, int imm8);</string><string>
-</string><string>VFIXUPIMMSS __m128 _mm_fixupimm_round_ss( __m128 a, __m128 b, __m128i c, int imm8, int sae);</string><string>
-</string><string>VFIXUPIMMSS __m128 _mm_mask_fixupimm_round_ss(__m128 a, __mmask8 k, __m128 b, __m128i c, int imm8, int sae);</string><string>
-</string><string>VFIXUPIMMSS __m128 _mm_maskz_fixupimm_round_ss( __mmask8 k, __m128 a, __m128 b, __m128i c, int imm8, int sae);</string><string>
-</string></programlisting>
+  <programlisting>VFIXUPIMMSS __m128 _mm_fixupimm_ss( __m128 a, __m128 b, __m128i c, int imm8);
+VFIXUPIMMSS __m128 _mm_mask_fixupimm_ss(__m128 a, __mmask8 k, __m128 b, __m128i c, int imm8);
+VFIXUPIMMSS __m128 _mm_maskz_fixupimm_ss( __mmask8 k, __m128 a, __m128 b, __m128i c, int imm8);
+VFIXUPIMMSS __m128 _mm_fixupimm_round_ss( __m128 a, __m128 b, __m128i c, int imm8, int sae);
+VFIXUPIMMSS __m128 _mm_mask_fixupimm_round_ss(__m128 a, __mmask8 k, __m128 b, __m128i c, int imm8, int sae);
+VFIXUPIMMSS __m128 _mm_maskz_fixupimm_round_ss( __mmask8 k, __m128 a, __m128 b, __m128i c, int imm8, int sae);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046044">
-   <string>Zero, Invalid</string></para>
+  <para unique="1046044">Zero, Invalid</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046049">
-   <string>See </string><link linkend="63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions"><string>Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046049">See <link unique="1046047" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

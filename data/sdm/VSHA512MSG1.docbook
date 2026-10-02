@@ -1,25 +1,120 @@
 <instruction name="VSHA512MSG1">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Perform an Intermediate Calculation for the Next Four SHA512 Message Qwords</shortdesc>
- <longdesc><para unique="1047106">
-   <string>The VSHA512MSG1 instruction is one of the two SHA512 message scheduling instructions. The instruction performs an intermediate calculation for the next four SHA512 message qwords.</string></para>
-  <para unique="1047108">
-   <string>See </string><anchor id="message URL https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf"/><underline><string>https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf</string></underline><string> for more information on the SHA512 standard.</string></para>
+ <encoding_table><table unique="1047050">
+   <col width="62.346959999999996pt"/>
+   <col width="88.704pt"/>
+   <col width="39.900240000000004pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="190.64952pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1047052">Opcode/</para>
+      <para unique="1047053">Instruction</para>
+      </th>
+     <th><para unique="1047057">Op/</para>
+      <para unique="1047058">En</para>
+      </th>
+     <th><para unique="1047060">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1047062">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1047064">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1047066">VEX.256.F2.0F38.W0 CC 11:rrr:bbb</para>
+      <para unique="1047067">VSHA512MSG1 ymm1, xmm2</para>
+      </td>
+     <td><para unique="1047071">A</para>
+      </td>
+     <td><para unique="1047073">V/V</para>
+      </td>
+     <td><para unique="1047075">AVX</para>
+      <para unique="1047076">SHA512</para>
+      </td>
+     <td><para unique="1047078">Performs an intermediate calculation for the next four SHA512 message qwords using previous message qwords from ymm1 and xmm2, storing the result in ymm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1047079">
+   <col width="39.114000000000004pt"/>
+   <col width="52.614000000000004pt"/>
+   <col width="99.25704pt"/>
+   <col width="111.48624pt"/>
+   <col width="105.63624pt"/>
+   <col width="104.32368pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1047081">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1047083">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1047085">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1047087">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1047089">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1047091">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1047093">A</para>
+      </td>
+     <td valign="middle"><para unique="1047095">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1047097">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1047099">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1047101">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1047103">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1047104">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1047106">The VSHA512MSG1 instruction is one of the two SHA512 message scheduling instructions. The instruction performs an intermediate calculation for the next four SHA512 message qwords.</para>
+  <para unique="1047108">See <anchor id="message URL https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf"/><underline>https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf</underline> for more information on the SHA512 standard.</para>
   </longdesc>
+ <operation>
+  <programlisting>define ROR64(qword, n):
+	count := n % 64
+	dest := (qword &gt;&gt; count) | (qword &lt;&lt; (64-count))
+	return dest
+define SHR64(qword, n):
+	return qword &gt;&gt; n
+define s0(qword):
+	return ROR64(qword,1) ^ ROR64(qword, 8) ^ SHR64(qword, 7)</programlisting>
+  <section level="7">
+   <title unique="1047121">VSHA512MSG1 SRCDEST, SRC1</title>
+   <programlisting>W[4] := SRC1.qword[0]
+W[3] := SRCDEST.qword[3]
+W[2] := SRCDEST.qword[2]
+W[1] := SRCDEST.qword[1]
+W[0] := SRCDEST.qword[0]
+SRCDEST.qword[3] := W[3] + s0(W[4])
+SRCDEST.qword[2] := W[2] + s0(W[3])
+SRCDEST.qword[1] := W[1] + s0(W[2])
+SRCDEST.qword[0] := W[0] + s0(W[1])</programlisting>
+   </section>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1047133">
-   <string>None.</string></para>
+  <para unique="1047133">None.</para>
   </subsection>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VSHA512MSG1 __m256i _mm256_sha512msg1_epi64 (__m256i __A, __m128i __B);</string><string>
-</string></programlisting>
+  <programlisting>VSHA512MSG1 __m256i _mm256_sha512msg1_epi64 (__m256i __A, __m128i __B);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1047135">
-   <string>None.</string></para>
+  <para unique="1047135">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046793">
-   <string>See </string><link linkend="57777: 06_Table: Table 2-23. Type 6 Class Exception Conditions"><string>Table&#160;2&#8209;23, &#8220;Type 6 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046793">See <link unique="1047157" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#57777: 06_Table: Table 2-23. Type 6 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;23, &#8220;Type 6 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

@@ -1,27 +1,108 @@
 <instruction name="XTEST">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Test if in Transactional Execution</shortdesc>
- <longdesc><para unique="1012592">
-   <string>The XTEST instruction queries the transactional execution status. If the instruction executes inside a transaction&#173;ally executing RTM region or a transactionally executing HLE region, then the ZF flag is cleared, else it is set.</string></para>
+ <encoding_table><table unique="1012542">
+   <col width="51.955200000000005pt"/>
+   <col width="73.91951999999999pt"/>
+   <col width="27.49968pt"/>
+   <col width="48.74976pt"/>
+   <col width="44.24976pt"/>
+   <col width="266.25023999999996pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1012544">Opcode/Instruction</para>
+      </th>
+     <th><para unique="1012548">Op/ En</para>
+      </th>
+     <th><para unique="1012550">64/32bit Mode Support</para>
+      </th>
+     <th><para unique="1012552">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1012554">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1012556">NP 0F 01 D6</para>
+      <para unique="1012557">XTEST</para>
+      </td>
+     <td><para unique="1012561">ZO</para>
+      </td>
+     <td><para unique="1012563">V/V</para>
+      </td>
+     <td><para unique="1012565">HLE or RTM</para>
+      </td>
+     <td><para unique="1012567">Test if executing in a transactional region.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1012569">
+   <col width="44.52119999999999pt"/>
+   <col width="110.65248pt"/>
+   <col width="118.32624000000001pt"/>
+   <col width="115.53551999999999pt"/>
+   <col width="122.18544pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1012571">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1012573">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1012575">Operand2</para>
+      </th>
+     <th valign="middle"><para unique="1012577">Operand3</para>
+      </th>
+     <th valign="middle"><para unique="1012579">Operand4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1012581">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1012583">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012585">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012587">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012589">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1012590">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1012592">The XTEST instruction queries the transactional execution status. If the instruction executes inside a transaction&#173;ally executing RTM region or a transactionally executing HLE region, then the ZF flag is cleared, else it is set.</para>
   </longdesc>
- <subsection title="Flags Affected">
-  <para unique="1012603">
-   <string>The ZF flag is cleared if the instruction is executed transactionally; otherwise it is set to 1. The CF, OF, SF, PF, and AF, flags are cleared.</string></para>
-  </subsection>
+ <operation>
+  <section level="7">
+   <title unique="1012594">XTEST</title>
+   <programlisting>IF (RTM_ACTIVE = 1 OR HLE_ACTIVE = 1)
+	THEN
+		ZF := 0
+	ELSE
+		ZF := 1
+FI;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1012602">Flags Affected</title>
+   <programlisting>The ZF flag is cleared if the instruction is executed transactionally; otherwise it is set to 1. The CF, OF, SF, PF, and AF, flags are cleared.</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>XTEST int _xtest( void );</string><string>
-</string></programlisting>
+  <programlisting>XTEST int _xtest( void );</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1012607">
-   <string>None.</string></para>
+  <para unique="1012607">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CPUID.07H.00H:EBX.HLE[4] = 0 and CPUID.07H.00H:EBX.RTM[11] = 0.</string></listitem>
-    <listitem><string>If LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1012609">If CPUID.07H.00H:EBX.HLE[4] = 0 and CPUID.07H.00H:EBX.RTM[11] = 0.</para>
+     </listitem>
+    <listitem><para unique="1012610">If LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

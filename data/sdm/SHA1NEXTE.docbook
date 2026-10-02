@@ -1,23 +1,94 @@
 <instruction name="SHA1NEXTE">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Calculate SHA1 State Variable E After Four Rounds</shortdesc>
- <longdesc><para unique="1091435">
-   <string>The SHA1NEXTE calculates the SHA1 state variable E after four rounds of operation from the current SHA1 state variable A in the destination operand. The calculated value of the SHA1 state variable E is added to the source operand, which contains the scheduled dwords.</string></para>
+ <encoding_table><table unique="1091389">
+   <col width="51.40872pt"/>
+   <col width="73.1412pt"/>
+   <col width="37.49976pt"/>
+   <col width="48.74976pt"/>
+   <col width="44.24976pt"/>
+   <col width="258.10056pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091391">Opcode/&#8232;Instruction</para>
+      </th>
+     <th><para unique="1091395">Op/En</para>
+      </th>
+     <th><para unique="1091397">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091399">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091401">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1091403">NP 0F 38 C8 /r </para>
+      <para unique="1091404">SHA1NEXTE xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091408">RM</para>
+      </td>
+     <td><para unique="1091410">V/V</para>
+      </td>
+     <td><para unique="1091412">SHA</para>
+      </td>
+     <td><para unique="1091414">Calculates SHA1 state variable E after four rounds of operation from the current SHA1 state variable A in xmm1. The calculated value of the SHA1 state variable E is added to the scheduled dwords in xmm2/m128, and stored with some of the scheduled dwords in xmm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091416">
+   <col width="62.29224pt"/>
+   <col width="148.20696pt"/>
+   <col width="152.06256pt"/>
+   <col width="148.35384pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091418">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091420">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091422">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091424">Operand 3</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091426">RM</para>
+      </td>
+     <td valign="middle"><para unique="1091428">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091430">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091432">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091433">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091435">The SHA1NEXTE calculates the SHA1 state variable E after four rounds of operation from the current SHA1 state variable A in the destination operand. The calculated value of the SHA1 state variable E is added to the source operand, which contains the scheduled dwords.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091437">SHA1NEXTE </title>
+   <programlisting>TMP := (SRC1[127:96] ROL 30);
+DEST[127:96] := SRC2[127:96] + TMP;
+DEST[95:64] := SRC2[95:64];
+DEST[63:32] := SRC2[63:32];
+DEST[31:0] := SRC2[31:0];</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>SHA1NEXTE __m128i _mm_sha1nexte_epu32(__m128i, __m128i);</string><string>
-</string></programlisting>
+  <programlisting>SHA1NEXTE __m128i _mm_sha1nexte_epu32(__m128i, __m128i);</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1091447">
-   <string>None.</string></para>
+  <para unique="1091447">None.</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091449">
-   <string>None.</string></para>
+  <para unique="1091449">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091454">
-   <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091454">See <link unique="1091452" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

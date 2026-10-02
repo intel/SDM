@@ -1,25 +1,130 @@
 <instruction name="BSWAP">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Byte Swap</shortdesc>
- <longdesc><para unique="1261266">
-   <string>Reverses the byte order of a 32-bit or 64-bit (destination) register. This instruction is provided for converting little-endian values to big-endian format and vice versa. To swap bytes in a word value (16-bit register), use the XCHG instruction. When the BSWAP instruction references a 16&#8209;bit register, the result is undefined.</string></para>
-  <para unique="1261267">
-   <string>In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Using a REX prefix in the form of REX.B permits access to additional registers (R8-R15). Using a REX prefix in the form of REX.W promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</string></para>
-  <section level="7">
-   <title unique="1261268"><string>IA-32 Architecture Legacy Compatibility</string></title>
-   <para unique="1261269">
-    <string>The BSWAP instruction is not supported on IA-32 processors earlier than the Intel486&#8482; processor family. For compatibility with this instruction, software should include functionally equivalent code for execution on Intel processors earlier than the Intel486 processor family.</string></para>
-   </section>
+ <encoding_table><table unique="1261192">
+   <thead><tr>
+     <th><para unique="1261194">Opcode</para>
+      </th>
+     <th><para unique="1261196">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64-bit Mode</para>
+      </th>
+     <th><para unique="1261202">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.57592pt"/>
+   <col width="111.8232pt"/>
+   <col width="24.67368pt"/>
+   <col width="47.81376pt"/>
+   <col width="46.54728pt"/>
+   <col width="181.44072pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261206">0F C8+<italic>rd</italic></para>
+      </td>
+     <td><para unique="1261208">BSWAP <italic>r32</italic></para>
+      </td>
+     <td><para unique="1261210">O</para>
+      </td>
+     <td><para unique="1261212">Valid*</para>
+      </td>
+     <td><para unique="1261214">Valid</para>
+      </td>
+     <td><para unique="1261216">Reverses the byte order of a 32-bit register.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261218">REX.W + 0F C8+<italic>rd</italic></para>
+      </td>
+     <td><para unique="1261220">BSWAP <italic>r64</italic></para>
+      </td>
+     <td><para unique="1261222">O</para>
+      </td>
+     <td><para unique="1261224">Valid</para>
+      </td>
+     <td><para unique="1261226">N.E.</para>
+      </td>
+     <td><para unique="1261228">Reverses the byte order of a 64-bit register.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="6"><para unique="1261230">NOTES:</para>
+      <para unique="1261231">*	See IA-32 Architecture Compatibility section below.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261243">
+   <col width="42.60888pt"/>
+   <col width="115.51608pt"/>
+   <col width="115.29pt"/>
+   <col width="115.65216pt"/>
+   <col width="122.90256pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261245">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261247">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261249">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261251">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261253">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261255">O</para>
+      </td>
+     <td valign="middle"><para unique="1261257">opcode + rd (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1261259">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261261">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261263">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261264">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261266">Reverses the byte order of a 32-bit or 64-bit (destination) register. This instruction is provided for converting little-endian values to big-endian format and vice versa. To swap bytes in a word value (16-bit register), use the XCHG instruction. When the BSWAP instruction references a 16&#8209;bit register, the result is undefined.</para>
+  <para unique="1261267">In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Using a REX prefix in the form of REX.B permits access to additional registers (R8-R15). Using a REX prefix in the form of REX.W promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</para>
   </longdesc>
+ <operation>
+  <programlisting>TEMP := DEST
+IF 64-bit mode AND OperandSize = 64
+	THEN
+		DEST[7:0] := TEMP[63:56];
+		DEST[15:8] := TEMP[55:48];
+		DEST[23:16] := TEMP[47:40];
+		DEST[31:24] := TEMP[39:32];
+		DEST[39:32] := TEMP[31:24];
+		DEST[47:40] := TEMP[23:16];
+		DEST[55:48] := TEMP[15:8];
+		DEST[63:56] := TEMP[7:0];
+	ELSE
+		DEST[7:0] := TEMP[31:24];
+		DEST[15:8] := TEMP[23:16];
+		DEST[23:16] := TEMP[15:8];
+		DEST[31:24] := TEMP[7:0];
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261287">
-   <string>None.</string></para>
+  <para unique="1261287">None.</para>
   </subsection>
  <subsection title="Exceptions (All Operating Modes)">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261289">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

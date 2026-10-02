@@ -1,153 +1,474 @@
 <instruction name="VPERMI2W/D/Q/PS/PD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Full Permute From Two Tables Overwriting the Index</shortdesc>
- <longdesc><para unique="1046376">
-   <string>Permutes 16-bit/32-bit/64-bit values in the second operand (the first source operand) and the third operand (the second source operand) using indices in the first operand to select elements from the second and third operands. The selected elements are written to the destination operand (the first operand) according to the writemask k1. </string></para>
-  <para unique="1046377">
-   <string>The first and second operands are ZMM/YMM/XMM registers. The first operand contains input indices to select elements from the two input tables in the 2nd and 3rd operands. The first operand is also the destination of the result. </string></para>
-  <para unique="1046378">
-   <string>D/Q/PS/PD element versions: The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 32/64-bit memory location. Broadcast from the low 32/64-bit memory location is performed if EVEX.b and the id bit for table selection are set (selecting table_2).</string></para>
-  <para unique="1046379">
-   <string>Dword/PS versions: The id bit for table selection is bit 4/3/2, depending on VL=512, 256, 128. Bits [3:0]/[2:0]/[1:0] of each element in the input index vector select an element within the two source operands, If the id bit is 0, table_1 (the first source) is selected; otherwise the second source operand is selected.</string></para>
-  <para unique="1046380">
-   <string>Qword/PD versions: The id bit for table selection is bit 3/2/1, and bits [2:0]/[1:0] /bit 0 selects element within each input table.</string></para>
-  <para unique="1046381">
-   <string>Word element versions: The second source operand can be a ZMM/YMM/XMM register, or a 512/256/128-bit memory location. The id bit for table selection is bit 5/4/3, and bits [4:0]/[3:0]/[2:0] selects element within each input table. </string></para>
-  <para unique="1046382">
-   <string>Note that these instructions permit a 16-bit/32-bit/64-bit value in the source operands to be copied to more than one location in the destination operand. Note also that in this case, the same table can be reused for example for a second iteration, while the index elements are overwritten.</string></para>
-  <para unique="1046383">
-   <string>Bits (MAXVL-1:256/128) of the destination are zeroed for VL=256,128. </string></para>
+ <encoding_table><table unique="1046081">
+   <col width="61.5636pt"/>
+   <col width="87.58656pt"/>
+   <col width="29.550240000000002pt"/>
+   <col width="48.00024pt"/>
+   <col width="82.33272pt"/>
+   <col width="202.36679999999998pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1046083">Opcode/</para>
+      <para unique="1046084">Instruction</para>
+      </th>
+     <th><para unique="1046088">Op / En</para>
+      </th>
+     <th><para unique="1046090">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1046092">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1046094">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1047139">EVEX.128.66.0F38.W1 75 /r</para>
+      <para unique="1047140">VPERMI2W xmm1 {k1}{z}, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1047144">A</para>
+      </td>
+     <td><para unique="1047146">V/V</para>
+      </td>
+     <td><para unique="1047148">(AVX512VL AND</para>
+      <para unique="1047149">AVX512BW) OR AVX10.1<anchor id="+267840"/></para>
+      </td>
+     <td><para unique="1047154">Permute word integers from two tables in xmm3/m128 and xmm2 using indexes in xmm1 and store the result in xmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047125">EVEX.256.66.0F38.W1 75 /r</para>
+      <para unique="1047126">VPERMI2W ymm1 {k1}{z}, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1047130">A</para>
+      </td>
+     <td><para unique="1047132">V/V</para>
+      </td>
+     <td><para unique="1047134">(AVX512VL AND</para>
+      <para unique="1047135">AVX512BW) OR AVX10.1<anchor id="+708111"/></para>
+      </td>
+     <td><para unique="1047137">Permute word integers from two tables in ymm3/m256 and ymm2 using indexes in ymm1 and store the result in ymm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047111">EVEX.512.66.0F38.W1 75 /r</para>
+      <para unique="1047112">VPERMI2W zmm1 {k1}{z}, zmm2, zmm3/m512</para>
+      </td>
+     <td><para unique="1047116">A</para>
+      </td>
+     <td><para unique="1047118">V/V</para>
+      </td>
+     <td><para unique="1047120">AVX512BW </para>
+      <para unique="1047121">OR AVX10.1<anchor id="+421056"/></para>
+      </td>
+     <td><para unique="1047123">Permute word integers from two tables in zmm3/m512 and zmm2 using indexes in zmm1 and store the result in zmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047094">EVEX.128.66.0F38.W0 76 /r</para>
+      <para unique="1047095">VPERMI2D xmm1 {k1}{z}, xmm2, xmm3/m128/m32bcst</para>
+      </td>
+     <td><para unique="1047099">B</para>
+      </td>
+     <td><para unique="1047101">V/V</para>
+      </td>
+     <td><para unique="1047103">(AVX512VL AND</para>
+      <para unique="1047107">AVX512F) OR AVX10.1<anchor id="+646222"/></para>
+      </td>
+     <td><para unique="1047109">Permute double-words from two tables in xmm3/m128/m32bcst and xmm2 using indexes in xmm1 and store the result in xmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047077">EVEX.256.66.0F38.W0 76 /r</para>
+      <para unique="1047078">VPERMI2D ymm1 {k1}{z}, ymm2, ymm3/m256/m32bcst</para>
+      </td>
+     <td><para unique="1047082">B</para>
+      </td>
+     <td><para unique="1047084">V/V</para>
+      </td>
+     <td><para unique="1047086">(AVX512VL AND</para>
+      <para unique="1047090">AVX512F) OR AVX10.1<anchor id="+796561"/></para>
+      </td>
+     <td><para unique="1047092">Permute double-words from two tables in ymm3/m256/m32bcst and ymm2 using indexes in ymm1 and store the result in ymm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047060">EVEX.512.66.0F38.W0 76 /r</para>
+      <para unique="1047061">VPERMI2D zmm1 {k1}{z}, zmm2, zmm3/m512/m32bcst</para>
+      </td>
+     <td><para unique="1047065">B</para>
+      </td>
+     <td><para unique="1047067">V/V</para>
+      </td>
+     <td><para unique="1047072">AVX512F </para>
+      <para unique="1047073">OR AVX10.1<anchor id="+507955"/></para>
+      </td>
+     <td><para unique="1047075">Permute double-words from two tables in zmm3/m512/m32bcst and zmm2 using indices in zmm1 and store the result in zmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047043">EVEX.128.66.0F38.W1 76 /r</para>
+      <para unique="1047044">VPERMI2Q xmm1 {k1}{z}, xmm2, xmm3/m128/m64bcst</para>
+      </td>
+     <td><para unique="1047048">B</para>
+      </td>
+     <td><para unique="1047050">V/V</para>
+      </td>
+     <td><para unique="1047052">(AVX512VL AND</para>
+      <para unique="1047056">AVX512F) OR AVX10.1<anchor id="+623324"/></para>
+      </td>
+     <td><para unique="1047058">Permute quad-words from two tables in xmm3/m128/m64bcst and xmm2 using indexes in xmm1 and store the result in xmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047026">EVEX.256.66.0F38.W1 76 /r</para>
+      <para unique="1047027">VPERMI2Q ymm1 {k1}{z}, ymm2, ymm3/m256/m64bcst</para>
+      </td>
+     <td><para unique="1047031">B</para>
+      </td>
+     <td><para unique="1047033">V/V</para>
+      </td>
+     <td><para unique="1047035">(AVX512VL AND</para>
+      <para unique="1047039">AVX512F) OR AVX10.1<anchor id="+225812"/></para>
+      </td>
+     <td><para unique="1047041">Permute quad-words from two tables in ymm3/m256/m64bcst and ymm2 using indexes in ymm1 and store the result in ymm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047009">EVEX.512.66.0F38.W1 76 /r</para>
+      <para unique="1047010">VPERMI2Q zmm1 {k1}{z}, zmm2, zmm3/m512/m64bcst</para>
+      </td>
+     <td><para unique="1047014">B</para>
+      </td>
+     <td><para unique="1047016">V/V</para>
+      </td>
+     <td><para unique="1047021">AVX512F </para>
+      <para unique="1047022">OR AVX10.1<anchor id="+605591"/></para>
+      </td>
+     <td><para unique="1047024">Permute quad-words from two tables in zmm3/m512/m64bcst and zmm2 using indices in zmm1 and store the result in zmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046992">EVEX.128.66.0F38.W0 77 /r</para>
+      <para unique="1046993">VPERMI2PS xmm1 {k1}{z}, xmm2, xmm3/m128/m32bcst</para>
+      </td>
+     <td><para unique="1046997">B</para>
+      </td>
+     <td><para unique="1046999">V/V</para>
+      </td>
+     <td><para unique="1047001">(AVX512VL AND</para>
+      <para unique="1047005">AVX512F) OR AVX10.1<anchor id="+855027"/></para>
+      </td>
+     <td><para unique="1047007">Permute single-precision floating-point values from two tables in xmm3/m128/m32bcst and xmm2 using indexes in xmm1 and store the result in xmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046975">EVEX.256.66.0F38.W0 77 /r</para>
+      <para unique="1046976">VPERMI2PS ymm1 {k1}{z}, ymm2, ymm3/m256/m32bcst</para>
+      </td>
+     <td><para unique="1046980">B</para>
+      </td>
+     <td><para unique="1046982">V/V</para>
+      </td>
+     <td><para unique="1046984">(AVX512VL AND</para>
+      <para unique="1046988">AVX512F) OR AVX10.1<anchor id="+984872"/></para>
+      </td>
+     <td><para unique="1046990">Permute single-precision floating-point values from two tables in ymm3/m256/m32bcst and ymm2 using indexes in ymm1 and store the result in ymm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046958">EVEX.512.66.0F38.W0 77 /r</para>
+      <para unique="1046959">VPERMI2PS zmm1 {k1}{z}, zmm2, zmm3/m512/m32bcst</para>
+      </td>
+     <td><para unique="1046963">B</para>
+      </td>
+     <td><para unique="1046965">V/V</para>
+      </td>
+     <td><para unique="1046970">AVX512F </para>
+      <para unique="1046971">OR AVX10.1<anchor id="+510850"/></para>
+      </td>
+     <td><para unique="1046973">Permute single-precision floating-point values from two tables in zmm3/m512/m32bcst and zmm2 using indices in zmm1 and store the result in zmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046941">EVEX.128.66.0F38.W1 77 /r</para>
+      <para unique="1046942">VPERMI2PD xmm1 {k1}{z}, xmm2, xmm3/m128/m64bcst</para>
+      </td>
+     <td><para unique="1046946">B</para>
+      </td>
+     <td><para unique="1046948">V/V</para>
+      </td>
+     <td><para unique="1046950">(AVX512VL AND</para>
+      <para unique="1046954">AVX512F) OR AVX10.1<anchor id="+319233"/></para>
+      </td>
+     <td><para unique="1046956">Permute double precision floating-point values from two tables in xmm3/m128/m64bcst and xmm2 using indexes in xmm1 and store the result in xmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046924">EVEX.256.66.0F38.W1 77 /r</para>
+      <para unique="1046925">VPERMI2PD ymm1 {k1}{z}, ymm2, ymm3/m256/m64bcst</para>
+      </td>
+     <td><para unique="1046929">B</para>
+      </td>
+     <td><para unique="1046931">V/V</para>
+      </td>
+     <td><para unique="1046933">(AVX512VL AND</para>
+      <para unique="1046937">AVX512F) OR AVX10.1<anchor id="+441128"/></para>
+      </td>
+     <td><para unique="1046939">Permute double precision floating-point values from two tables in ymm3/m256/m64bcst and ymm2 using indexes in ymm1 and store the result in ymm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046907">EVEX.512.66.0F38.W1 77 /r</para>
+      <para unique="1046908">VPERMI2PD zmm1 {k1}{z}, zmm2, zmm3/m512/m64bcst</para>
+      </td>
+     <td><para unique="1046912">B</para>
+      </td>
+     <td><para unique="1046914">V/V</para>
+      </td>
+     <td><para unique="1046919">AVX512F </para>
+      <para unique="1046920">OR AVX10.1<anchor id="+406288"/></para>
+      </td>
+     <td><para unique="1046922">Permute double precision floating-point values from two tables in zmm3/m512/m64bcst and zmm2 using indices in zmm1 and store the result in zmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1046337">
+   <col width="41.15448000000001pt"/>
+   <col width="71.154pt"/>
+   <col width="95.58144pt"/>
+   <col width="101.29032pt"/>
+   <col width="101.30976000000001pt"/>
+   <col width="101.37024000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1046339">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1046341">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1046343">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1046345">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1046347">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1046349">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1046351">A</para>
+      </td>
+     <td valign="middle"><para unique="1046353">Full Mem</para>
+      </td>
+     <td valign="middle"><para unique="1046355">ModRM:reg (r,w)</para>
+      </td>
+     <td valign="middle"><para unique="1046357">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046359">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046361">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1046363">B</para>
+      </td>
+     <td valign="middle"><para unique="1046365">Full</para>
+      </td>
+     <td valign="middle"><para unique="1046367">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1046369">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046371">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046373">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046374">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046376">Permutes 16-bit/32-bit/64-bit values in the second operand (the first source operand) and the third operand (the second source operand) using indices in the first operand to select elements from the second and third operands. The selected elements are written to the destination operand (the first operand) according to the writemask k1. </para>
+  <para unique="1046377">The first and second operands are ZMM/YMM/XMM registers. The first operand contains input indices to select elements from the two input tables in the 2nd and 3rd operands. The first operand is also the destination of the result. </para>
+  <para unique="1046378">D/Q/PS/PD element versions: The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 32/64-bit memory location. Broadcast from the low 32/64-bit memory location is performed if EVEX.b and the id bit for table selection are set (selecting table_2).</para>
+  <para unique="1046379">Dword/PS versions: The id bit for table selection is bit 4/3/2, depending on VL=512, 256, 128. Bits [3:0]/[2:0]/[1:0] of each element in the input index vector select an element within the two source operands, If the id bit is 0, table_1 (the first source) is selected; otherwise the second source operand is selected.</para>
+  <para unique="1046380">Qword/PD versions: The id bit for table selection is bit 3/2/1, and bits [2:0]/[1:0] /bit 0 selects element within each input table.</para>
+  <para unique="1046381">Word element versions: The second source operand can be a ZMM/YMM/XMM register, or a 512/256/128-bit memory location. The id bit for table selection is bit 5/4/3, and bits [4:0]/[3:0]/[2:0] selects element within each input table. </para>
+  <para unique="1046382">Note that these instructions permit a 16-bit/32-bit/64-bit value in the source operands to be copied to more than one location in the destination operand. Note also that in this case, the same table can be reused for example for a second iteration, while the index elements are overwritten.</para>
+  <para unique="1046383">Bits (MAXVL-1:256/128) of the destination are zeroed for VL=256,128. </para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1046385">VPERMI2W (EVEX encoded versions)</title>
+   <programlisting>(KL, VL) = (8, 128), (16, 256), (32, 512)
+IF VL = 128
+	id := 2
+FI;
+IF VL = 256
+	id := 3
+FI;
+IF VL = 512
+	id := 4
+FI;
+TMP_DEST := DEST
+FOR j := 0 TO KL-1
+	i := j * 16
+	off := 16*TMP_DEST[i+id:i]
+	IF k1[j] OR *no writemask*
+		THEN
+			DEST[i+15:i]	=TMP_	DEST[i+id+1] ? SRC2[off+15:off]
+				       : SRC1[off+15:off]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+15:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+15:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046414">VPERMI2D/VPERMI2PS (EVEX encoded versions)</title>
+   <programlisting>(KL, VL) = (4, 128), (8, 256), (16, 512)
+IF VL = 128
+	id := 1
+FI;
+IF VL = 256
+	id := 2
+FI;
+IF VL = 512
+	id := 3
+FI;
+TMP_DEST := DEST
+FOR j := 0 TO KL-1
+	i := j * 32
+	off := 32*TMP_DEST[i+id:i]
+	IF k1[j] OR *no writemask*
+		THEN
+			IF (EVEX.b = 1) AND (SRC2 *is memory*)
+				THEN
+					DEST[i+31:i] 	 := 	TMP_DEST[i+id+1] ? SRC2[31:0]
+				       : SRC1[off+31:off]
+			ELSE
+				DEST[i+31:i]	 := 	TMP_DEST[i+id+1] ? SRC2[off+31:off]
+				       : SRC1[off+31:off]
+			FI
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+31:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+31:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046449">VPERMI2Q/VPERMI2PD (EVEX encoded versions)</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8 512)
+IF VL = 128
+	id := 0
+FI;
+IF VL = 256
+	id := 1
+FI;
+IF VL = 512
+	id := 2
+FI;
+TMP_DEST:= DEST
+FOR j := 0 TO KL-1
+	i := j * 64
+	off := 64*TMP_DEST[i+id:i]
+	IF k1[j] OR *no writemask*
+		THEN
+			IF (EVEX.b = 1) AND (SRC2 *is memory*)
+				THEN
+					DEST[i+63:i]	 := 	TMP_DEST[i+id+1] ? SRC2[63:0]
+				       : SRC1[off+63:off]
+			ELSE
+				DEST[i+63:i]	 := 	TMP_DEST[i+id+1] ? SRC2[off+63:off]
+				       : SRC1[off+63:off]
+			FI
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+63:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <para unique="1046484">
-   <string>VPERMI2D __m512i _mm512_permutex2var_epi32(__m512i a, __m512i idx, __m512i b);</string></para>
-  <para unique="1046485">
-   <string>VPERMI2D __m512i _mm512_mask_permutex2var_epi32(__m512i a, __mmask16 k, __m512i idx, __m512i b);</string></para>
-  <para unique="1046486">
-   <string>VPERMI2D __m512i _mm512_mask2_permutex2var_epi32(__m512i a, __m512i idx, __mmask16 k, __m512i b);</string></para>
-  <para unique="1046487">
-   <string>VPERMI2D __m512i _mm512_maskz_permutex2var_epi32(__mmask16 k, __m512i a, __m512i idx, __m512i b);</string></para>
-  <para unique="1046488">
-   <string>VPERMI __m256i _mm256_permutex2var_epi32(__m256i a, __m256i idx, __m256i b);</string></para>
-  <para unique="1046489">
-   <string>VPERMI2D __m256i _mm256_mask_permutex2var_epi32(__m256i a, __mmask8 k, __m256i idx, __m256i b);</string></para>
-  <para unique="1046490">
-   <string>VPERMI2D __m256i _mm256_mask2_permutex2var_epi32(__m256i a, __m256i idx, __mmask8 k, __m256i b);</string></para>
-  <para unique="1046491">
-   <string>VPERMI2D __m256i _mm256_maskz_permutex2var_epi32(__mmask8 k, __m256i a, __m256i idx, __m256i b);</string></para>
-  <para unique="1046492">
-   <string>VPERMI2D __m128i _mm_permutex2var_epi32(__m128i a, __m128i idx, __m128i b);</string></para>
-  <para unique="1046493">
-   <string>VPERMI2D __m128i _mm_mask_permutex2var_epi32(__m128i a, __mmask8 k, __m128i idx, __m128i b);</string></para>
-  <para unique="1046494">
-   <string>VPERMI2D __m128i _mm_mask2_permutex2var_epi32(__m128i a, __m128i idx, __mmask8 k, __m128i b);</string></para>
-  <para unique="1046495">
-   <string>VPERMI2D __m128i _mm_maskz_permutex2var_epi32(__mmask8 k, __m128i a, __m128i idx, __m128i b);</string></para>
-  <para unique="1046496">
-   <string>VPERMI2PD __m512d _mm512_permutex2var_pd(__m512d a, __m512i idx, __m512d b);</string></para>
-  <para unique="1046497">
-   <string>VPERMI2PD __m512d _mm512_mask_permutex2var_pd(__m512d a, __mmask8 k, __m512i idx, __m512d b);</string></para>
-  <para unique="1046498">
-   <string>VPERMI2PD __m512d _mm512_mask2_permutex2var_pd(__m512d a, __m512i idx, __mmask8 k, __m512d b);</string></para>
-  <para unique="1046499">
-   <string>VPERMI2PD __m512d _mm512_maskz_permutex2var_pd(__mmask8 k, __m512d a, __m512i idx, __m512d b);</string></para>
-  <para unique="1046500">
-   <string>VPERMI2PD __m256d _mm256_permutex2var_pd(__m256d a, __m256i idx, __m256d b);</string></para>
-  <para unique="1046501">
-   <string>VPERMI2PD __m256d _mm256_mask_permutex2var_pd(__m256d a, __mmask8 k, __m256i idx, __m256d b);</string></para>
-  <para unique="1046502">
-   <string>VPERMI2PD __m256d _mm256_mask2_permutex2var_pd(__m256d a, __m256i idx, __mmask8 k, __m256d b);</string></para>
-  <para unique="1046503">
-   <string>VPERMI2PD __m256d _mm256_maskz_permutex2var_pd(__mmask8 k, __m256d a, __m256i idx, __m256d b);</string></para>
-  <para unique="1046504">
-   <string>VPERMI2PD __m128d _mm_permutex2var_pd(__m128d a, __m128i idx, __m128d b);</string></para>
-  <para unique="1046505">
-   <string>VPERMI2PD __m128d _mm_mask_permutex2var_pd(__m128d a, __mmask8 k, __m128i idx, __m128d b);</string></para>
-  <para unique="1046506">
-   <string>VPERMI2PD __m128d _mm_mask2_permutex2var_pd(__m128d a, __m128i idx, __mmask8 k, __m128d b);</string></para>
-  <para unique="1046507">
-   <string>VPERMI2PD __m128d _mm_maskz_permutex2var_pd(__mmask8 k, __m128d a, __m128i idx, __m128d b);</string></para>
-  <para unique="1046508">
-   <string>VPERMI2PS __m512 _mm512_permutex2var_ps(__m512 a, __m512i idx, __m512 b);</string></para>
-  <para unique="1046509">
-   <string>VPERMI2PS __m512 _mm512_mask_permutex2var_ps(__m512 a, __mmask16 k, __m512i idx, __m512 b);</string></para>
-  <para unique="1046510">
-   <string>VPERMI2PS __m512 _mm512_mask2_permutex2var_ps(__m512 a, __m512i idx, __mmask16 k, __m512 b);</string></para>
-  <para unique="1046511">
-   <string>VPERMI2PS __m512 _mm512_maskz_permutex2var_ps(__mmask16 k, __m512 a, __m512i idx, __m512 b);</string></para>
-  <para unique="1046512">
-   <string>VPERMI2PS __m256 _mm256_permutex2var_ps(__m256 a, __m256i idx, __m256 b);</string></para>
-  <para unique="1046513">
-   <string>VPERMI2PS __m256 _mm256_mask_permutex2var_ps(__m256 a, __mmask8 k, __m256i idx, __m256 b);</string></para>
-  <para unique="1046514">
-   <string>VPERMI2PS __m256 _mm256_mask2_permutex2var_ps(__m256 a, __m256i idx, __mmask8 k, __m256 b);</string></para>
-  <para unique="1046515">
-   <string>VPERMI2PS __m256 _mm256_maskz_permutex2var_ps(__mmask8 k, __m256 a, __m256i idx, __m256 b);</string></para>
-  <para unique="1046516">
-   <string>VPERMI2PS __m128 _mm_permutex2var_ps(__m128 a, __m128i idx, __m128 b);</string></para>
-  <para unique="1046517">
-   <string>VPERMI2PS __m128 _mm_mask_permutex2var_ps(__m128 a, __mmask8 k, __m128i idx, __m128 b);</string></para>
-  <para unique="1046518">
-   <string>VPERMI2PS __m128 _mm_mask2_permutex2var_ps(__m128 a, __m128i idx, __mmask8 k, __m128 b);</string></para>
-  <para unique="1046519">
-   <string>VPERMI2PS __m128 _mm_maskz_permutex2var_ps(__mmask8 k, __m128 a, __m128i idx, __m128 b);</string></para>
-  <para unique="1046520">
-   <string>VPERMI2Q __m512i _mm512_permutex2var_epi64(__m512i a, __m512i idx, __m512i b);</string></para>
-  <para unique="1046521">
-   <string>VPERMI2Q __m512i _mm512_mask_permutex2var_epi64(__m512i a, __mmask8 k, __m512i idx, __m512i b);</string></para>
-  <para unique="1046522">
-   <string>VPERMI2Q __m512i _mm512_mask2_permutex2var_epi64(__m512i a, __m512i idx, __mmask8 k, __m512i b);</string></para>
-  <para unique="1046523">
-   <string>VPERMI2Q __m512i _mm512_maskz_permutex2var_epi64(__mmask8 k, __m512i a, __m512i idx, __m512i b);</string></para>
-  <para unique="1046524">
-   <string>VPERMI2Q __m256i _mm256_permutex2var_epi64(__m256i a, __m256i idx, __m256i b);</string></para>
-  <para unique="1046525">
-   <string>VPERMI2Q __m256i _mm256_mask_permutex2var_epi64(__m256i a, __mmask8 k, __m256i idx, __m256i b);</string></para>
-  <para unique="1046526">
-   <string>VPERMI2Q __m256i _mm256_mask2_permutex2var_epi64(__m256i a, __m256i idx, __mmask8 k, __m256i b);</string></para>
-  <para unique="1046527">
-   <string>VPERMI2Q __m256i _mm256_maskz_permutex2var_epi64(__mmask8 k, __m256i a, __m256i idx, __m256i b);</string></para>
-  <para unique="1046528">
-   <string>VPERMI2Q __m128i _mm_permutex2var_epi64(__m128i a, __m128i idx, __m128i b);</string></para>
-  <para unique="1046529">
-   <string>VPERMI2Q __m128i _mm_mask_permutex2var_epi64(__m128i a, __mmask8 k, __m128i idx, __m128i b);</string></para>
-  <para unique="1046530">
-   <string>VPERMI2Q __m128i _mm_mask2_permutex2var_epi64(__m128i a, __m128i idx, __mmask8 k, __m128i b);</string></para>
-  <para unique="1046531">
-   <string>VPERMI2Q __m128i _mm_maskz_permutex2var_epi64(__mmask8 k, __m128i a, __m128i idx, __m128i b);</string></para>
-  <para unique="1046532">
-   <string>VPERMI2W __m512i _mm512_permutex2var_epi16(__m512i a, __m512i idx, __m512i b);</string></para>
-  <para unique="1046533">
-   <string>VPERMI2W __m512i _mm512_mask_permutex2var_epi16(__m512i a, __mmask32 k, __m512i idx, __m512i b);</string></para>
-  <para unique="1046534">
-   <string>VPERMI2W __m512i _mm512_mask2_permutex2var_epi16(__m512i a, __m512i idx, __mmask32 k, __m512i b);</string></para>
-  <para unique="1046535">
-   <string>VPERMI2W __m512i _mm512_maskz_permutex2var_epi16(__mmask32 k, __m512i a, __m512i idx, __m512i b);</string></para>
-  <para unique="1046536">
-   <string>VPERMI2W __m256i _mm256_permutex2var_epi16(__m256i a, __m256i idx, __m256i b);</string></para>
-  <para unique="1046537">
-   <string>VPERMI2W __m256i _mm256_mask_permutex2var_epi16(__m256i a, __mmask16 k, __m256i idx, __m256i b);</string></para>
-  <para unique="1046538">
-   <string>VPERMI2W __m256i _mm256_mask2_permutex2var_epi16(__m256i a, __m256i idx, __mmask16 k, __m256i b);</string></para>
-  <para unique="1046539">
-   <string>VPERMI2W __m256i _mm256_maskz_permutex2var_epi16(__mmask16 k, __m256i a, __m256i idx, __m256i b);</string></para>
-  <para unique="1046540">
-   <string>VPERMI2W __m128i _mm_permutex2var_epi16(__m128i a, __m128i idx, __m128i b);</string></para>
-  <para unique="1046541">
-   <string>VPERMI2W __m128i _mm_mask_permutex2var_epi16(__m128i a, __mmask8 k, __m128i idx, __m128i b);</string></para>
-  <para unique="1046542">
-   <string>VPERMI2W __m128i _mm_mask2_permutex2var_epi16(__m128i a, __m128i idx, __mmask8 k, __m128i b);</string></para>
-  <para unique="1046543">
-   <string>VPERMI2W __m128i _mm_maskz_permutex2var_epi16(__mmask8 k, __m128i a, __m128i idx, __m128i b);</string></para>
+  <para unique="1046484">VPERMI2D __m512i _mm512_permutex2var_epi32(__m512i a, __m512i idx, __m512i b);</para>
+  <para unique="1046485">VPERMI2D __m512i _mm512_mask_permutex2var_epi32(__m512i a, __mmask16 k, __m512i idx, __m512i b);</para>
+  <para unique="1046486">VPERMI2D __m512i _mm512_mask2_permutex2var_epi32(__m512i a, __m512i idx, __mmask16 k, __m512i b);</para>
+  <para unique="1046487">VPERMI2D __m512i _mm512_maskz_permutex2var_epi32(__mmask16 k, __m512i a, __m512i idx, __m512i b);</para>
+  <para unique="1046488">VPERMI __m256i _mm256_permutex2var_epi32(__m256i a, __m256i idx, __m256i b);</para>
+  <para unique="1046489">VPERMI2D __m256i _mm256_mask_permutex2var_epi32(__m256i a, __mmask8 k, __m256i idx, __m256i b);</para>
+  <para unique="1046490">VPERMI2D __m256i _mm256_mask2_permutex2var_epi32(__m256i a, __m256i idx, __mmask8 k, __m256i b);</para>
+  <para unique="1046491">VPERMI2D __m256i _mm256_maskz_permutex2var_epi32(__mmask8 k, __m256i a, __m256i idx, __m256i b);</para>
+  <para unique="1046492">VPERMI2D __m128i _mm_permutex2var_epi32(__m128i a, __m128i idx, __m128i b);</para>
+  <para unique="1046493">VPERMI2D __m128i _mm_mask_permutex2var_epi32(__m128i a, __mmask8 k, __m128i idx, __m128i b);</para>
+  <para unique="1046494">VPERMI2D __m128i _mm_mask2_permutex2var_epi32(__m128i a, __m128i idx, __mmask8 k, __m128i b);</para>
+  <para unique="1046495">VPERMI2D __m128i _mm_maskz_permutex2var_epi32(__mmask8 k, __m128i a, __m128i idx, __m128i b);</para>
+  <para unique="1046496">VPERMI2PD __m512d _mm512_permutex2var_pd(__m512d a, __m512i idx, __m512d b);</para>
+  <para unique="1046497">VPERMI2PD __m512d _mm512_mask_permutex2var_pd(__m512d a, __mmask8 k, __m512i idx, __m512d b);</para>
+  <para unique="1046498">VPERMI2PD __m512d _mm512_mask2_permutex2var_pd(__m512d a, __m512i idx, __mmask8 k, __m512d b);</para>
+  <para unique="1046499">VPERMI2PD __m512d _mm512_maskz_permutex2var_pd(__mmask8 k, __m512d a, __m512i idx, __m512d b);</para>
+  <para unique="1046500">VPERMI2PD __m256d _mm256_permutex2var_pd(__m256d a, __m256i idx, __m256d b);</para>
+  <para unique="1046501">VPERMI2PD __m256d _mm256_mask_permutex2var_pd(__m256d a, __mmask8 k, __m256i idx, __m256d b);</para>
+  <para unique="1046502">VPERMI2PD __m256d _mm256_mask2_permutex2var_pd(__m256d a, __m256i idx, __mmask8 k, __m256d b);</para>
+  <para unique="1046503">VPERMI2PD __m256d _mm256_maskz_permutex2var_pd(__mmask8 k, __m256d a, __m256i idx, __m256d b);</para>
+  <para unique="1046504">VPERMI2PD __m128d _mm_permutex2var_pd(__m128d a, __m128i idx, __m128d b);</para>
+  <para unique="1046505">VPERMI2PD __m128d _mm_mask_permutex2var_pd(__m128d a, __mmask8 k, __m128i idx, __m128d b);</para>
+  <para unique="1046506">VPERMI2PD __m128d _mm_mask2_permutex2var_pd(__m128d a, __m128i idx, __mmask8 k, __m128d b);</para>
+  <para unique="1046507">VPERMI2PD __m128d _mm_maskz_permutex2var_pd(__mmask8 k, __m128d a, __m128i idx, __m128d b);</para>
+  <para unique="1046508">VPERMI2PS __m512 _mm512_permutex2var_ps(__m512 a, __m512i idx, __m512 b);</para>
+  <para unique="1046509">VPERMI2PS __m512 _mm512_mask_permutex2var_ps(__m512 a, __mmask16 k, __m512i idx, __m512 b);</para>
+  <para unique="1046510">VPERMI2PS __m512 _mm512_mask2_permutex2var_ps(__m512 a, __m512i idx, __mmask16 k, __m512 b);</para>
+  <para unique="1046511">VPERMI2PS __m512 _mm512_maskz_permutex2var_ps(__mmask16 k, __m512 a, __m512i idx, __m512 b);</para>
+  <para unique="1046512">VPERMI2PS __m256 _mm256_permutex2var_ps(__m256 a, __m256i idx, __m256 b);</para>
+  <para unique="1046513">VPERMI2PS __m256 _mm256_mask_permutex2var_ps(__m256 a, __mmask8 k, __m256i idx, __m256 b);</para>
+  <para unique="1046514">VPERMI2PS __m256 _mm256_mask2_permutex2var_ps(__m256 a, __m256i idx, __mmask8 k, __m256 b);</para>
+  <para unique="1046515">VPERMI2PS __m256 _mm256_maskz_permutex2var_ps(__mmask8 k, __m256 a, __m256i idx, __m256 b);</para>
+  <para unique="1046516">VPERMI2PS __m128 _mm_permutex2var_ps(__m128 a, __m128i idx, __m128 b);</para>
+  <para unique="1046517">VPERMI2PS __m128 _mm_mask_permutex2var_ps(__m128 a, __mmask8 k, __m128i idx, __m128 b);</para>
+  <para unique="1046518">VPERMI2PS __m128 _mm_mask2_permutex2var_ps(__m128 a, __m128i idx, __mmask8 k, __m128 b);</para>
+  <para unique="1046519">VPERMI2PS __m128 _mm_maskz_permutex2var_ps(__mmask8 k, __m128 a, __m128i idx, __m128 b);</para>
+  <para unique="1046520">VPERMI2Q __m512i _mm512_permutex2var_epi64(__m512i a, __m512i idx, __m512i b);</para>
+  <para unique="1046521">VPERMI2Q __m512i _mm512_mask_permutex2var_epi64(__m512i a, __mmask8 k, __m512i idx, __m512i b);</para>
+  <para unique="1046522">VPERMI2Q __m512i _mm512_mask2_permutex2var_epi64(__m512i a, __m512i idx, __mmask8 k, __m512i b);</para>
+  <para unique="1046523">VPERMI2Q __m512i _mm512_maskz_permutex2var_epi64(__mmask8 k, __m512i a, __m512i idx, __m512i b);</para>
+  <para unique="1046524">VPERMI2Q __m256i _mm256_permutex2var_epi64(__m256i a, __m256i idx, __m256i b);</para>
+  <para unique="1046525">VPERMI2Q __m256i _mm256_mask_permutex2var_epi64(__m256i a, __mmask8 k, __m256i idx, __m256i b);</para>
+  <para unique="1046526">VPERMI2Q __m256i _mm256_mask2_permutex2var_epi64(__m256i a, __m256i idx, __mmask8 k, __m256i b);</para>
+  <para unique="1046527">VPERMI2Q __m256i _mm256_maskz_permutex2var_epi64(__mmask8 k, __m256i a, __m256i idx, __m256i b);</para>
+  <para unique="1046528">VPERMI2Q __m128i _mm_permutex2var_epi64(__m128i a, __m128i idx, __m128i b);</para>
+  <para unique="1046529">VPERMI2Q __m128i _mm_mask_permutex2var_epi64(__m128i a, __mmask8 k, __m128i idx, __m128i b);</para>
+  <para unique="1046530">VPERMI2Q __m128i _mm_mask2_permutex2var_epi64(__m128i a, __m128i idx, __mmask8 k, __m128i b);</para>
+  <para unique="1046531">VPERMI2Q __m128i _mm_maskz_permutex2var_epi64(__mmask8 k, __m128i a, __m128i idx, __m128i b);</para>
+  <para unique="1046532">VPERMI2W __m512i _mm512_permutex2var_epi16(__m512i a, __m512i idx, __m512i b);</para>
+  <para unique="1046533">VPERMI2W __m512i _mm512_mask_permutex2var_epi16(__m512i a, __mmask32 k, __m512i idx, __m512i b);</para>
+  <para unique="1046534">VPERMI2W __m512i _mm512_mask2_permutex2var_epi16(__m512i a, __m512i idx, __mmask32 k, __m512i b);</para>
+  <para unique="1046535">VPERMI2W __m512i _mm512_maskz_permutex2var_epi16(__mmask32 k, __m512i a, __m512i idx, __m512i b);</para>
+  <para unique="1046536">VPERMI2W __m256i _mm256_permutex2var_epi16(__m256i a, __m256i idx, __m256i b);</para>
+  <para unique="1046537">VPERMI2W __m256i _mm256_mask_permutex2var_epi16(__m256i a, __mmask16 k, __m256i idx, __m256i b);</para>
+  <para unique="1046538">VPERMI2W __m256i _mm256_mask2_permutex2var_epi16(__m256i a, __m256i idx, __mmask16 k, __m256i b);</para>
+  <para unique="1046539">VPERMI2W __m256i _mm256_maskz_permutex2var_epi16(__mmask16 k, __m256i a, __m256i idx, __m256i b);</para>
+  <para unique="1046540">VPERMI2W __m128i _mm_permutex2var_epi16(__m128i a, __m128i idx, __m128i b);</para>
+  <para unique="1046541">VPERMI2W __m128i _mm_mask_permutex2var_epi16(__m128i a, __mmask8 k, __m128i idx, __m128i b);</para>
+  <para unique="1046542">VPERMI2W __m128i _mm_mask2_permutex2var_epi16(__m128i a, __m128i idx, __mmask8 k, __m128i b);</para>
+  <para unique="1046543">VPERMI2W __m128i _mm_maskz_permutex2var_epi16(__mmask8 k, __m128i a, __m128i idx, __m128i b);</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046545">
-   <string>None.</string></para>
+  <para unique="1046545">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046550" format="xIndent1">
-   <sans><string>VPERMI2D/Q/PS/PD: </string></sans><string>See </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1046554" format="xIndent1">
-   <sans><string>VPERMI2W: </string></sans><string>See Exceptions Type E4NF.nb in </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046550" format="xIndent1">VPERMI2D/Q/PS/PD: See <link unique="1046548" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</link></para>
+  <para unique="1046554" format="xIndent1">VPERMI2W: See Exceptions Type E4NF.nb in <link unique="1046552" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

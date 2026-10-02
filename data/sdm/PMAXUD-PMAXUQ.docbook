@@ -1,44 +1,347 @@
 <instruction name="PMAXUD/PMAXUQ">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Maximum of Packed Unsigned Integers</shortdesc>
- <longdesc><para unique="1091594">
-   <string>Performs a SIMD compare of the packed unsigned dword or qword integers in the second source operand and the first source operand and returns the maximum value for each pair of integers to the destination operand. </string></para>
-  <para unique="1091595">
-   <string>128-bit Legacy SSE version: The first source and destination operands are XMM registers. The second source operand is an XMM register or a 128-bit memory location. Bits (MAXVL-1:128) of the corresponding destination register remain unchanged.</string></para>
-  <para unique="1091596">
-   <string>VEX.128 encoded version: The first source and destination operands are XMM registers. The second source operand is an XMM register or a 128-bit memory location. Bits (MAXVL-1:128) of the corresponding destination register are zeroed.</string></para>
-  <para unique="1091597">
-   <string>VEX.256 encoded version: The first source operand is a YMM register; The second source operand is a YMM register or 256-bit memory location. Bits (MAXVL-1:256) of the corresponding destination register are zeroed.</string></para>
-  <para unique="1091598">
-   <string>EVEX encoded versions: The first source operand is a ZMM/YMM/XMM register; The second source operand is a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 32/64-bit memory location. The destination operand is conditionally updated based on writemask k1.</string></para>
+ <encoding_table><table unique="1091389">
+   <col width="65.76984pt"/>
+   <col width="93.57336000000001pt"/>
+   <col width="31.35024pt"/>
+   <col width="46.94976pt"/>
+   <col width="72.71568pt"/>
+   <col width="201.82176pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091391">Opcode/</para>
+      <para unique="1091392">Instruction</para>
+      </th>
+     <th><para unique="1091396">Op/En</para>
+      </th>
+     <th><para unique="1091398">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091400">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091402">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1091404">66 0F 38 3F /r</para>
+      <para unique="1091405">PMAXUD xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091409">A</para>
+      </td>
+     <td><para unique="1091411">V/V</para>
+      </td>
+     <td><para unique="1091413">SSE4_1</para>
+      </td>
+     <td><para unique="1091415">Compare packed unsigned dword integers in xmm1 and xmm2/m128 and store packed maximum values in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091417">VEX.128.66.0F38.WIG 3F /r</para>
+      <para unique="1091418">VPMAXUD xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1091422">B</para>
+      </td>
+     <td><para unique="1091424">V/V</para>
+      </td>
+     <td><para unique="1091426">AVX</para>
+      </td>
+     <td><para unique="1091428">Compare packed unsigned dword integers in xmm2 and xmm3/m128 and store packed maximum values in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091430">VEX.256.66.0F38.WIG 3F /r</para>
+      <para unique="1091431">VPMAXUD ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1091435">B</para>
+      </td>
+     <td><para unique="1091437">V/V</para>
+      </td>
+     <td><para unique="1091439">AVX2</para>
+      </td>
+     <td><para unique="1091441">Compare packed unsigned dword integers in ymm2 and ymm3/m256 and store packed maximum values in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092130">EVEX.128.66.0F38.W0 3F /r</para>
+      <para unique="1092131">VPMAXUD xmm1 {k1}{z}, xmm2, xmm3/m128/m32bcst</para>
+      </td>
+     <td><para unique="1092135">C</para>
+      </td>
+     <td><para unique="1092137">V/V</para>
+      </td>
+     <td><para unique="1092139">(AVX512VL AND</para>
+      <para unique="1092143">AVX512F) OR AVX10.1<anchor id="+927459"/></para>
+      </td>
+     <td><para unique="1092148">Compare packed unsigned dword integers in xmm2 and xmm3/m128/m32bcst and store packed maximum values in xmm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092113">EVEX.256.66.0F38.W0 3F /r</para>
+      <para unique="1092114">VPMAXUD ymm1 {k1}{z}, ymm2, ymm3/m256/m32bcst</para>
+      </td>
+     <td><para unique="1092118">C</para>
+      </td>
+     <td><para unique="1092120">V/V</para>
+      </td>
+     <td><para unique="1092122">(AVX512VL AND</para>
+      <para unique="1092126">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092128">Compare packed unsigned dword integers in ymm2 and ymm3/m256/m32bcst and store packed maximum values in ymm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092096">EVEX.512.66.0F38.W0 3F /r</para>
+      <para unique="1092097">VPMAXUD zmm1 {k1}{z}, zmm2, zmm3/m512/m32bcst</para>
+      </td>
+     <td><para unique="1092101">C</para>
+      </td>
+     <td><para unique="1092103">V/V</para>
+      </td>
+     <td><para unique="1092108">AVX512F </para>
+      <para unique="1092109">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092111">Compare packed unsigned dword integers in zmm2 and zmm3/m512/m32bcst and store packed maximum values in zmm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092079">EVEX.128.66.0F38.W1 3F /r</para>
+      <para unique="1092080">VPMAXUQ xmm1 {k1}{z}, xmm2, xmm3/m128/m64bcst</para>
+      </td>
+     <td><para unique="1092084">C</para>
+      </td>
+     <td><para unique="1092086">V/V</para>
+      </td>
+     <td><para unique="1092088">(AVX512VL AND</para>
+      <para unique="1092092">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092094">Compare packed unsigned qword integers in xmm2 and xmm3/m128/m64bcst and store packed maximum values in xmm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092062">EVEX.256.66.0F38.W1 3F /r</para>
+      <para unique="1092063">VPMAXUQ ymm1 {k1}{z}, ymm2, ymm3/m256/m64bcst</para>
+      </td>
+     <td><para unique="1092067">C</para>
+      </td>
+     <td><para unique="1092069">V/V</para>
+      </td>
+     <td><para unique="1092071">(AVX512VL AND</para>
+      <para unique="1092075">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092077">Compare packed unsigned qword integers in ymm2 and ymm3/m256/m64bcst and store packed maximum values in ymm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092045">EVEX.512.66.0F38.W1 3F /r</para>
+      <para unique="1092046">VPMAXUQ zmm1 {k1}{z}, zmm2, zmm3/m512/m64bcst</para>
+      </td>
+     <td><para unique="1092050">C</para>
+      </td>
+     <td><para unique="1092052">V/V</para>
+      </td>
+     <td><para unique="1092057">AVX512F </para>
+      <para unique="1092058">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092060">Compare packed unsigned qword integers in zmm2 and zmm3/m512/m64bcst and store packed maximum values in zmm1 under writemask k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091543">
+   <col width="54.40032pt"/>
+   <col width="63.40032pt"/>
+   <col width="94.80096pt"/>
+   <col width="101.45088000000001pt"/>
+   <col width="100.08432pt"/>
+   <col width="97.16544pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091545">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091547">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091549">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091551">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091553">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091555">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091557">A</para>
+      </td>
+     <td valign="middle"><para unique="1091559">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091561">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091563">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091565">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091567">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091569">B</para>
+      </td>
+     <td valign="middle"><para unique="1091571">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091573">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091575">VEX.vvvv</para>
+      </td>
+     <td valign="middle"><para unique="1091577">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091579">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091581">C</para>
+      </td>
+     <td valign="middle"><para unique="1091583">Full</para>
+      </td>
+     <td valign="middle"><para unique="1091585">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091587">EVEX.vvvv</para>
+      </td>
+     <td valign="middle"><para unique="1091589">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091591">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091592">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091594">Performs a SIMD compare of the packed unsigned dword or qword integers in the second source operand and the first source operand and returns the maximum value for each pair of integers to the destination operand. </para>
+  <para unique="1091595">128-bit Legacy SSE version: The first source and destination operands are XMM registers. The second source operand is an XMM register or a 128-bit memory location. Bits (MAXVL-1:128) of the corresponding destination register remain unchanged.</para>
+  <para unique="1091596">VEX.128 encoded version: The first source and destination operands are XMM registers. The second source operand is an XMM register or a 128-bit memory location. Bits (MAXVL-1:128) of the corresponding destination register are zeroed.</para>
+  <para unique="1091597">VEX.256 encoded version: The first source operand is a YMM register; The second source operand is a YMM register or 256-bit memory location. Bits (MAXVL-1:256) of the corresponding destination register are zeroed.</para>
+  <para unique="1091598">EVEX encoded versions: The first source operand is a ZMM/YMM/XMM register; The second source operand is a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 32/64-bit memory location. The destination operand is conditionally updated based on writemask k1.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091600">PMAXUD (128-bit Legacy SSE Version)</title>
+   <programlisting>IF DEST[31:0] &gt;SRC[31:0] THEN
+		DEST[31:0] := DEST[31:0];
+	ELSE
+		DEST[31:0] := SRC[31:0]; FI;
+	(* Repeat operation for 2nd through 7th words in source and destination operands *)
+	IF DEST[127:96] &gt;SRC[127:96] THEN
+		DEST[127:96] := DEST[127:96];
+	ELSE
+		DEST[127:96] := SRC[127:96]; FI;
+DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091612">VPMAXUD (VEX.128 Encoded Version)</title>
+   <programlisting>IF SRC1[31:0] &gt; SRC2[31:0] THEN
+		DEST[31:0] := SRC1[31:0];
+	ELSE
+		DEST[31:0] := SRC2[31:0]; FI;
+	(* Repeat operation for 2nd through 3rd dwords in source and destination operands *)
+	IF SRC1[127:96] &gt; SRC2[127:96] THEN
+		DEST[127:96] := SRC1[127:96];
+	ELSE
+		DEST[127:96] := SRC2[127:96]; FI;
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091624">VPMAXUD (VEX.256 Encoded Version)</title>
+   <programlisting>IF SRC1[31:0] &gt; SRC2[31:0] THEN
+		DEST[31:0] := SRC1[31:0];
+	ELSE
+		DEST[31:0] := SRC2[31:0]; FI;
+	(* Repeat operation for 2nd through 7th dwords in source and destination operands *)
+	IF SRC1[255:224] &gt; SRC2[255:224] THEN
+		DEST[255:224] := SRC1[255:224];
+	ELSE
+		DEST[255:224] := SRC2[255:224]; FI;
+DEST[MAXVL-1:256] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091636">VPMAXUD (EVEX Encoded Versions)</title>
+   <programlisting>(KL, VL) = (4, 128), (8, 256), (16, 512)
+FOR j := 0 TO KL-1
+	i := j * 32
+	IF k1[j] OR *no writemask* THEN
+		IF (EVEX.b = 1) AND (SRC2 *is memory*)
+			THEN
+				IF SRC1[i+31:i] &gt; SRC2[31:0]
+					THEN DEST[i+31:i] := SRC1[i+31:i];
+					ELSE DEST[i+31:i] := SRC2[31:0];
+				FI;
+			ELSE
+				IF SRC1[i+31:i] &gt; SRC2[i+31:i]
+					THEN DEST[i+31:i] := SRC1[i+31:i];
+					ELSE DEST[i+31:i] := SRC2[i+31:i];
+			FI;
+		FI;
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+31:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					THEN DEST[i+31:i] := 0
+			FI
+	FI;
+ENDFOR;
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091663">VPMAXUQ (EVEX Encoded Versions)</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask* THEN
+		IF (EVEX.b = 1) AND (SRC2 *is memory*)
+			THEN
+				IF SRC1[i+63:i] &gt; SRC2[63:0]
+					THEN DEST[i+63:i] := SRC1[i+63:i];
+					ELSE DEST[i+63:i] := SRC2[63:0];
+				FI;
+			ELSE
+				IF SRC1[i+31:i] &gt; SRC2[i+31:i]
+					THEN DEST[i+63:i] := SRC1[i+63:i];
+					ELSE DEST[i+63:i] := SRC2[i+63:i];
+			FI;
+		FI;
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					THEN DEST[i+63:i] := 0
+			FI
+	FI;
+ENDFOR;
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VPMAXUD __m512i _mm512_max_epu32( __m512i a, __m512i b);</string><string>
-</string><string>VPMAXUD __m512i _mm512_mask_max_epu32(__m512i s, __mmask16 k, __m512i a, __m512i b);</string><string>
-</string><string>VPMAXUD __m512i _mm512_maskz_max_epu32( __mmask16 k, __m512i a, __m512i b);</string><string>
-</string><string>VPMAXUQ __m512i _mm512_max_epu64( __m512i a, __m512i b);</string><string>
-</string><string>VPMAXUQ __m512i _mm512_mask_max_epu64(__m512i s, __mmask8 k, __m512i a, __m512i b);</string><string>
-</string><string>VPMAXUQ __m512i _mm512_maskz_max_epu64( __mmask8 k, __m512i a, __m512i b);</string><string>
-</string><string>VPMAXUD __m256i _mm256_mask_max_epu32(__m256i s, __mmask16 k, __m256i a, __m256i b);</string><string>
-</string><string>VPMAXUD __m256i _mm256_maskz_max_epu32( __mmask16 k, __m256i a, __m256i b);</string><string>
-</string><string>VPMAXUQ __m256i _mm256_mask_max_epu64(__m256i s, __mmask8 k, __m256i a, __m256i b);</string><string>
-</string><string>VPMAXUQ __m256i _mm256_maskz_max_epu64( __mmask8 k, __m256i a, __m256i b);</string><string>
-</string><string>VPMAXUD __m128i _mm_mask_max_epu32(__m128i s, __mmask8 k, __m128i a, __m128i b);</string><string>
-</string><string>VPMAXUD __m128i _mm_maskz_max_epu32( __mmask8 k, __m128i a, __m128i b);</string><string>
-</string><string>VPMAXUQ __m128i _mm_mask_max_epu64(__m128i s, __mmask8 k, __m128i a, __m128i b);</string><string>
-</string><string>VPMAXUQ __m128i _mm_maskz_max_epu64( __mmask8 k, __m128i a, __m128i b);</string><string>
-</string><string>(V)PMAXUD __m128i _mm_max_epu32 ( __m128i a, __m128i b);</string><string>
-</string><string>VPMAXUD __m256i _mm256_max_epu32 ( __m256i a, __m256i b);</string><string>
-</string></programlisting>
+  <programlisting>VPMAXUD __m512i _mm512_max_epu32( __m512i a, __m512i b);
+VPMAXUD __m512i _mm512_mask_max_epu32(__m512i s, __mmask16 k, __m512i a, __m512i b);
+VPMAXUD __m512i _mm512_maskz_max_epu32( __mmask16 k, __m512i a, __m512i b);
+VPMAXUQ __m512i _mm512_max_epu64( __m512i a, __m512i b);
+VPMAXUQ __m512i _mm512_mask_max_epu64(__m512i s, __mmask8 k, __m512i a, __m512i b);
+VPMAXUQ __m512i _mm512_maskz_max_epu64( __mmask8 k, __m512i a, __m512i b);
+VPMAXUD __m256i _mm256_mask_max_epu32(__m256i s, __mmask16 k, __m256i a, __m256i b);
+VPMAXUD __m256i _mm256_maskz_max_epu32( __mmask16 k, __m256i a, __m256i b);
+VPMAXUQ __m256i _mm256_mask_max_epu64(__m256i s, __mmask8 k, __m256i a, __m256i b);
+VPMAXUQ __m256i _mm256_maskz_max_epu64( __mmask8 k, __m256i a, __m256i b);
+VPMAXUD __m128i _mm_mask_max_epu32(__m128i s, __mmask8 k, __m128i a, __m128i b);
+VPMAXUD __m128i _mm_maskz_max_epu32( __mmask8 k, __m128i a, __m128i b);
+VPMAXUQ __m128i _mm_mask_max_epu64(__m128i s, __mmask8 k, __m128i a, __m128i b);
+VPMAXUQ __m128i _mm_maskz_max_epu64( __mmask8 k, __m128i a, __m128i b);
+(V)PMAXUD __m128i _mm_max_epu32 ( __m128i a, __m128i b);
+VPMAXUD __m256i _mm256_max_epu32 ( __m256i a, __m256i b);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091707">
-   <string>None.</string></para>
+  <para unique="1091707">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091712" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091716" format="xIndent1">
-   <string>EVEX-encoded instruction, see </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091712" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1091710" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091716" format="xIndent1">EVEX-encoded instruction, see <link unique="1091714" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

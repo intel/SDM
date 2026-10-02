@@ -1,60 +1,211 @@
 <instruction name="LOOP/LOOPcc">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Loop According to ECX Counter</shortdesc>
- <longdesc><para unique="1261264">
-   <string>Performs a loop operation using the RCX, ECX or CX register as a counter (depending on whether address size is 64 bits, 32 bits, or 16 bits). Note that the LOOP instruction ignores REX.W; but 64-bit address size can be over-ridden using a 67H prefix.</string></para>
-  <para unique="1261265">
-   <string>Each time the LOOP instruction is executed, the count register is decremented, then checked for 0. If the count is 0, the loop is terminated and program execution continues with the instruction following the LOOP instruction. If the count is not zero, a near jump is performed to the destination (target) operand, which is presumably the instruction at the beginning of the loop.</string></para>
-  <para unique="1261266">
-   <string>The target instruction is specified with a relative offset (a signed offset relative to the current value of the instruc&#173;tion pointer in the IP/EIP/RIP register). This offset is generally specified as a label in assembly code, but at the machine code level, it is encoded as a signed, 8-bit immediate value, which is added to the instruction pointer. Offsets of &#8211;128 to </string><string>+127 are allowed with this instruction.</string></para>
-  <para unique="1261268">
-   <string>Some forms of the loop instruction (LOOP</string><italic><string>cc</string></italic><string>) also accept the </string><indexterm><primary>ZF (zero) flag, EFLAGS register</primary></indexterm><string>ZF flag as a condition for terminating the loop before the count reaches zero. With these forms of the instruction, a condition code (</string><italic><string>cc</string></italic><string>) is associated with each instruc&#173;tion to indicate the condition being tested for. Here, the LOOP</string><italic><string>cc</string></italic><string> instruction itself does not affect the state of the ZF flag; the ZF flag is changed by other instructions in the loop.</string></para>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th><para unique="1261193">Opcode</para>
+      </th>
+     <th><para unique="1261195">Instruction</para>
+      </th>
+     <th><para unique="1261197">Op/ En</para>
+      </th>
+     <th><para unique="1261199">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261201">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261203">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.6112pt"/>
+   <col width="111.86352000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="182.15424000000002pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261205">E2 cb</para>
+      </td>
+     <td><para unique="1261207">LOOP rel8</para>
+      </td>
+     <td><para unique="1261209">D</para>
+      </td>
+     <td><para unique="1261211">Valid</para>
+      </td>
+     <td><para unique="1261213">Valid</para>
+      </td>
+     <td><para unique="1261215">Decrement count; jump short if count &#8800; 0.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261217">E1 cb</para>
+      </td>
+     <td><para unique="1261219">LOOPE rel8</para>
+      </td>
+     <td><para unique="1261221">D</para>
+      </td>
+     <td><para unique="1261223">Valid</para>
+      </td>
+     <td><para unique="1261225">Valid</para>
+      </td>
+     <td><para unique="1261227">Decrement count; jump short if count &#8800; 0 and ZF = 1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261229">E0 cb</para>
+      </td>
+     <td><para unique="1261231">LOOPNE rel8</para>
+      </td>
+     <td><para unique="1261233">D</para>
+      </td>
+     <td><para unique="1261235">Valid</para>
+      </td>
+     <td><para unique="1261237">Valid</para>
+      </td>
+     <td><para unique="1261239">Decrement count; jump short if count &#8800; 0 and ZF = 0.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261241">
+   <col width="44.7048pt"/>
+   <col width="114.72984pt"/>
+   <col width="120.95784pt"/>
+   <col width="108.40679999999999pt"/>
+   <col width="121.67063999999999pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261243">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261245">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261247">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261249">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261251">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261253">D</para>
+      </td>
+     <td valign="middle"><para unique="1261255">Offset</para>
+      </td>
+     <td valign="middle"><para unique="1261257">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261259">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261261">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261262">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261264">Performs a loop operation using the RCX, ECX or CX register as a counter (depending on whether address size is 64 bits, 32 bits, or 16 bits). Note that the LOOP instruction ignores REX.W; but 64-bit address size can be over-ridden using a 67H prefix.</para>
+  <para unique="1261265">Each time the LOOP instruction is executed, the count register is decremented, then checked for 0. If the count is 0, the loop is terminated and program execution continues with the instruction following the LOOP instruction. If the count is not zero, a near jump is performed to the destination (target) operand, which is presumably the instruction at the beginning of the loop.</para>
+  <para unique="1261266">The target instruction is specified with a relative offset (a signed offset relative to the current value of the instruc&#173;tion pointer in the IP/EIP/RIP register). This offset is generally specified as a label in assembly code, but at the machine code level, it is encoded as a signed, 8-bit immediate value, which is added to the instruction pointer. Offsets of &#8211;128 to +127 are allowed with this instruction.</para>
+  <para unique="1261268">Some forms of the loop instruction (LOOP<italic>cc</italic>) also accept the <indexterm><primary>ZF (zero) flag, EFLAGS register</primary></indexterm>ZF flag as a condition for terminating the loop before the count reaches zero. With these forms of the instruction, a condition code (<italic>cc</italic>) is associated with each instruc&#173;tion to indicate the condition being tested for. Here, the LOOP<italic>cc</italic> instruction itself does not affect the state of the ZF flag; the ZF flag is changed by other instructions in the loop.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF (AddressSize = 32)
+	THEN Count is ECX;
+ELSE IF (AddressSize = 64	)
+	Count is RCX;
+ELSE Count is CX;
+FI;
+Count := Count &#8211; 1;
+IF Instruction is not LOOP
+	THEN
+		IF (Instruction := LOOPE) or (Instruction := LOOPZ)
+			THEN IF (ZF = 1) and (Count &#8800; 0)
+					THEN BranchCond := 1;
+					ELSE BranchCond := 0;
+				FI;
+			ELSE (Instruction = LOOPNE) or (Instruction = LOOPNZ)
+				IF (ZF = 0 ) and (Count &#8800; 0)
+					THEN BranchCond := 1;
+					ELSE BranchCond := 0;
+				FI;
+		FI;
+	ELSE (* Instruction = LOOP *)
+		IF (Count &#8800; 0)
+			THEN BranchCond := 1;
+			ELSE BranchCond := 0;
+		FI;
+FI;
+IF BranchCond = 1
+	THEN
+		IF in 64-bit mode (* OperandSize = 64 *)
+			THEN
+				tempRIP := RIP + SignExtend(DEST);
+				IF tempRIP is not canonical
+					THEN #GP(0);
+				ELSE RIP := tempRIP;
+				FI;
+			ELSE
+				tempEIP := EIP   SignExtend(DEST);
+				IF OperandSize   16
+					THEN tempEIP := tempEIP AND 0000FFFFH;
+				FI;
+				IF tempEIP is not within code segment limit
+					THEN #GP(0);
+					ELSE EIP := tempEIP;
+				FI;
+		FI;
+	ELSE
+		Terminate loop and continue program execution at (R/E)IP;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261317">
-   <string>None.</string></para>
+  <para unique="1261317">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the offset being jumped to is beyond the limits of the CS segment.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261319">If the offset being jumped to is beyond the limits of the CS segment.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261320">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If the offset being jumped to is beyond the limits of the CS segment or is outside of the effec&#173;tive address space from 0 to FFFFH. This condition can occur if a 32-bit address size override prefix is used.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1261322">If the offset being jumped to is beyond the limits of the CS segment or is outside of the effec&#173;tive address space from 0 to FFFFH. This condition can occur if a 32-bit address size override prefix is used.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261323">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1261325">
-   <string>Same exceptions as in real address mode.</string></para>
+  <para unique="1261325">Same exceptions as in real address mode.</para>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261327" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261327" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the offset being jumped to is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261329">If the offset being jumped to is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261330">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

@@ -1,188 +1,259 @@
 <instruction name="VREDUCEPH">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Perform Reduction Transformation on Packed FP16 Values</shortdesc>
- <longdesc><para unique="1046155">
-   <string>This instruction performs a reduction transformation of the packed binary encoded FP16 values in the source operand (the second operand) and store the reduced results in binary FP format to the destination operand (the first operand) under the writemask k1.</string></para>
-  <para unique="1046156">
-   <string>The reduction transformation subtracts the integer part and the leading M fractional bits from the binary FP source value, where M is a unsigned integer specified by imm8[7:4]. Specifically, the reduction transformation can be expressed as:</string></para>
-  <para unique="1046157">
-   <string>dest = src &#8722; (ROUND(2</string><superscript><string>M</string></superscript><string> * src)) * 2</string><superscript><string>&#8722;M</string></superscript></para>
-  <para unique="1046158">
-   <string>where ROUND() treats src, 2</string><superscript><string>M</string></superscript><string>, and their product as binary FP numbers with normalized significand and biased exponents.</string></para>
-  <para unique="1046159">
-   <string>The magnitude of the reduced result can be expressed by considering src = 2</string><superscript><string>p</string></superscript><string> * man2, where &#8216;man2&#8217; is the normal&#173;ized significand and &#8216;p&#8217; is the unbiased exponent.</string></para>
-  <para unique="1046160">
-   <string>Then if RC=RNE: 0 &#8804; |ReducedResult| &#8804; 2</string><superscript><string>&#8722;M&#8722;1</string></superscript><string>.</string></para>
-  <para unique="1046161">
-   <string>Then if RC </string><string>&#8800; RNE: 0 &#8804; |ReducedResult| &lt; 2</string><superscript><string>&#8722;M</string></superscript><string>.</string></para>
-  <para unique="1046162">
-   <string>This instruction might end up with a precision exception set. However, in case of SPE set (i.e., Suppress Precision Exception, which is imm8[3]=1), no precision exception is reported.</string></para>
-  <para unique="1046163">
-   <string>This instruction may generate tiny non-zero result. If it does so, it does not report underflow exception, even if underflow exceptions are unmasked (UM flag in MXCSR register is 0).</string></para>
-  <para unique="1046166">
-   <string>For special cases, see </string><link linkend="19996: 06_Table: Table 5-20. VREDUCEPH/VREDUCESH Special Cases"><string>Table 5&#8209;28</string></link><string>.</string></para>
-  <table>
-   <caption>Table 5-28.  VREDUCEPH/VREDUCESH Special Cases</caption>
-   <colgroup><col align="leftright"/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    </colgroup>
+ <encoding_table><table unique="1046081">
+   <col width="153.5976pt"/>
+   <col width="29.90016pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="198.77472pt"/>
+   <thead><tr>
+     <th><para unique="1046083">Opcode/</para>
+      <para unique="1046084">Instruction</para>
+      </th>
+     <th><para unique="1046086">Op/</para>
+      <para unique="1046087">En</para>
+      </th>
+     <th><para unique="1046089">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1046091">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1046093">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1046661">EVEX.128.NP.0F3A.W0 56 /r /ib</para>
+      <para unique="1046662">VREDUCEPH xmm1{k1}{z}, xmm2/m128/m16bcst, imm8</para>
+      </td>
+     <td><para unique="1046664">A</para>
+      </td>
+     <td><para unique="1046666">V/V</para>
+      </td>
+     <td><para unique="1046668">(AVX512_FP16 AND AVX512VL) OR AVX10.1<anchor id="+788627"/> </para>
+      </td>
+     <td><para unique="1046673">Perform reduction transformation on packed FP16 values in xmm2/m128/m16bcst by subtracting a number of fraction bits specified by the imm8 field. Store the result in xmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046650">EVEX.256.NP.0F3A.W0 56 /r /ib</para>
+      <para unique="1046651">VREDUCEPH ymm1{k1}{z}, ymm2/m256/m16bcst, imm8</para>
+      </td>
+     <td><para unique="1046653">A</para>
+      </td>
+     <td><para unique="1046655">V/V</para>
+      </td>
+     <td><para unique="1046657">(AVX512_FP16 AND AVX512VL) OR AVX10.1<anchor id="+767327"/></para>
+      </td>
+     <td><para unique="1046659">Perform reduction transformation on packed FP16 values in ymm2/m256/m16bcst by subtracting a number of fraction bits specified by the imm8 field. Store the result in ymm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046638">EVEX.512.NP.0F3A.W0 56 /r /ib</para>
+      <para unique="1046639">VREDUCEPH zmm1{k1}{z}, zmm2/m512/m16bcst {sae}, imm8</para>
+      </td>
+     <td><para unique="1046641">A</para>
+      </td>
+     <td><para unique="1046643">V/V</para>
+      </td>
+     <td><para unique="1046645">AVX512_FP16</para>
+      <para unique="1046646">OR AVX10.1<anchor id="+906179"/></para>
+      </td>
+     <td><para unique="1046648">Perform reduction transformation on packed FP16 values in zmm2/m512/m16bcst by subtracting a number of fraction bits specified by the imm8 field. Store the result in zmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1046128">
+   <col width="43.01352pt"/>
+   <col width="61.01352pt"/>
+   <col width="95.65272pt"/>
+   <col width="104.62608pt"/>
+   <col width="103.85784pt"/>
+   <col width="102.5676pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1046130">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1046132">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1046134">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1046136">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1046138">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1046140">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1046142">A</para>
+      </td>
+     <td valign="middle"><para unique="1046144">Full</para>
+      </td>
+     <td valign="middle"><para unique="1046146">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046148">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046150">imm8 (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046152">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046153">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046155">This instruction performs a reduction transformation of the packed binary encoded FP16 values in the source operand (the second operand) and store the reduced results in binary FP format to the destination operand (the first operand) under the writemask k1.</para>
+  <para unique="1046156">The reduction transformation subtracts the integer part and the leading M fractional bits from the binary FP source value, where M is a unsigned integer specified by imm8[7:4]. Specifically, the reduction transformation can be expressed as:</para>
+  <para unique="1046157">dest = src &#8722; (ROUND(2<superscript>M</superscript> * src)) * 2<superscript>&#8722;M</superscript></para>
+  <para unique="1046158">where ROUND() treats src, 2<superscript>M</superscript>, and their product as binary FP numbers with normalized significand and biased exponents.</para>
+  <para unique="1046159">The magnitude of the reduced result can be expressed by considering src = 2<superscript>p</superscript> * man2, where &#8216;man2&#8217; is the normal&#173;ized significand and &#8216;p&#8217; is the unbiased exponent.</para>
+  <para unique="1046160">Then if RC=RNE: 0 &#8804; |ReducedResult| &#8804; 2<superscript>&#8722;M&#8722;1</superscript>.</para>
+  <para unique="1046161">Then if RC &#8800; RNE: 0 &#8804; |ReducedResult| &lt; 2<superscript>&#8722;M</superscript>.</para>
+  <para unique="1046162">This instruction might end up with a precision exception set. However, in case of SPE set (i.e., Suppress Precision Exception, which is imm8[3]=1), no precision exception is reported.</para>
+  <para unique="1046163">This instruction may generate tiny non-zero result. If it does so, it does not report underflow exception, even if underflow exceptions are unmasked (UM flag in MXCSR register is 0).</para>
+  <para unique="1046166">For special cases, see <link unique="1046165" linkend="#19996: 06_Table: Table 5-20. VREDUCEPH/VREDUCESH Special Cases" xrefstyle="TableNum">Table 5&#8209;28</link>.</para>
+  <table id="19996: 06_Table: Table 5-20. VREDUCEPH/VREDUCESH Special Cases" unique="1046168">
+   <caption><anchor id="19996: 06_Table: Table 5-20. VREDUCEPH/VREDUCESH Special Cases"/>VREDUCEPH/VREDUCESH Special Cases</caption>
+   <col width="122.562pt"/>
+   <col width="98.35271999999999pt"/>
+   <col width="287.48519999999996pt"/>
    <tbody>
     <tr>
-     <th><para unique="1046177" format="CellRowHeadL">
-       <string>Input value</string></para>
+     <th><para unique="1046177">Input value</para>
       </th>
-     <th><para unique="1046179" format="CellRowHeadL">
-       <string>Round Mode</string></para>
+     <th><para unique="1046179">Round Mode</para>
       </th>
-     <th><para unique="1046181" format="CellRowHeadL">
-       <string>Returned Value</string></para>
+     <th><para unique="1046181">Returned Value</para>
       </th>
      </tr>
     <tr>
-     <td><para unique="1046183" format="CellBodyL">
-       <string>|Src1| &lt; 2</string><italic><string>&#8722;</string></italic><string>M</string><italic><string>&#8722;</string></italic><string>1</string></para>
+     <td><para unique="1046183">|Src1| &lt; 2<italic>&#8722;</italic>M<italic>&#8722;</italic>1</para>
       </td>
-     <td><para unique="1046185" format="CellBodyL">
-       <string>RNE</string></para>
+     <td><para unique="1046185">RNE</para>
       </td>
-     <td><para unique="1046187" format="CellBodyL">
-       <string>Src1</string></para>
+     <td><para unique="1046187">Src1</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046189" format="CellBodyL">
-       <string>|Src1|</string><string> </string><string>&lt; 2</string><string>&#8722;M</string></para>
+     <td valign="middle" rowspan="4"><para unique="1046189">|Src1| &lt; 2&#8722;M</para>
       </td>
-     <td><para unique="1046191" format="CellBodyL">
-       <string>RU, Src1 </string><string>&gt; 0</string></para>
+     <td><para unique="1046191">RU, Src1 &gt; 0</para>
       </td>
-     <td><para unique="1046196" format="CellBodyL">
-       <string>Round(Src1</string><string> </string><string>&#8722; 2</string><string>&#8722;</string><superscript><string>M</string></superscript><string>)</string><footnote><para unique="1046195" format="TableFootnote">
-         <string>The Round(.) function uses rounding controls specified by (imm8[2]? MXCSR.RC: imm8[1:0]).</string></para>
+     <td><para unique="1046196">Round(Src1 &#8722; 2&#8722;<superscript>M</superscript>)<footnote><para unique="1046195" format="TableFootnote">The Round(.) function uses rounding controls specified by (imm8[2]? MXCSR.RC: imm8[1:0]).</para>
         </footnote></para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046198" format="CellBodyL">
-       </para>
+     <td><para unique="1046198"/>
       </td>
-     <td><para unique="1046200" format="CellBodyL">
-       <string>RU, Src1</string><string> </string><string>&#8804; 0</string></para>
+     <td><para unique="1046200">RU, Src1 &#8804; 0</para>
       </td>
-     <td><para unique="1046202" format="CellBodyL">
-       <string>Src1</string></para>
+     <td><para unique="1046202">Src1</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046204" format="CellBodyL">
-       </para>
+     <td><para unique="1046204"/>
       </td>
-     <td><para unique="1046206" format="CellBodyL">
-       <string>RD, Src1 </string><string>&#8805; 0</string></para>
+     <td><para unique="1046206">RD, Src1 &#8805; 0</para>
       </td>
-     <td><para unique="1046208" format="CellBodyL">
-       <string>Src1</string></para>
+     <td><para unique="1046208">Src1</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046210" format="CellBodyL">
-       </para>
+     <td><para unique="1046210"/>
       </td>
-     <td><para unique="1046212" format="CellBodyL">
-       <string>RD, Src1</string><string> </string><string>&lt; 0</string></para>
+     <td><para unique="1046212">RD, Src1 &lt; 0</para>
       </td>
-     <td><para unique="1046214" format="CellBodyL">
-       <string>Round(Src1</string><string> + 2</string><string>&#8722;</string><superscript><string>M</string></superscript><string>)</string></para>
+     <td><para unique="1046214">Round(Src1 + 2&#8722;<superscript>M</superscript>)</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046216" format="CellBodyL">
-       <string>Src1 =</string><string> </string><string>&#177;0 or</string></para>
-      <para unique="1046217" format="CellBodyL">
-       <string>Dest =</string><string> </string><string>&#177;0 (Src1 </string><string>&#8800;</string><string> </string><string>&#8734;)</string></para>
+     <td valign="middle" rowspan="2"><para unique="1046216">Src1 = &#177;0 or</para>
+      <para unique="1046217">Dest = &#177;0 (Src1 &#8800; &#8734;)</para>
       </td>
-     <td><para unique="1046219" format="CellBodyL">
-       <string>NOT RD</string></para>
+     <td><para unique="1046219">NOT RD</para>
       </td>
-     <td><para unique="1046221" format="CellBodyL">
-       <string>+0.0</string></para>
+     <td><para unique="1046221">+0.0</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046223" format="CellBodyL">
-       </para>
+     <td><para unique="1046223"/>
       </td>
-     <td><para unique="1046225" format="CellBodyL">
-       <string>RD</string></para>
+     <td><para unique="1046225">RD</para>
       </td>
-     <td><para unique="1046227" format="CellBodyL">
-       <string>&#8722;0.0</string></para>
+     <td><para unique="1046227">&#8722;0.0</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046229" format="CellBodyL">
-       <string>Src1 =</string><string> </string><string>&#177;&#8734;</string></para>
+     <td><para unique="1046229">Src1 = &#177;&#8734;</para>
       </td>
-     <td><para unique="1046231" format="CellBodyL">
-       <string>Any</string></para>
+     <td><para unique="1046231">Any</para>
       </td>
-     <td><para unique="1046233" format="CellBodyL">
-       <string>+0.0</string></para>
+     <td><para unique="1046233">+0.0</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046235" format="CellBodyL">
-       <string>Src1 =</string><string> </string><string>&#177;NAN</string></para>
+     <td><para unique="1046235">Src1 = &#177;NAN</para>
       </td>
-     <td><para unique="1046237" format="CellBodyL">
-       <string>Any</string></para>
+     <td><para unique="1046237">Any</para>
       </td>
-     <td><para unique="1046239" format="CellBodyL">
-       <string>QNaN (Src1)</string></para>
+     <td><para unique="1046239">QNaN (Src1)</para>
       </td>
      </tr>
     </tbody>
    </table>
   </longdesc>
+ <operation>
+  <programlisting>def reduce_fp16(src, imm8):
+	nan := (src.exp = 0x1F) and (src.fraction != 0)
+	if nan:
+		return QNAN(src)
+	m := imm8[7:4]
+	rc := imm8[1:0]
+	rc_source := imm8[2]
+	spe := imm[3] // suppress precision exception
+	tmp := 2^(-m) * ROUND(2^m * src, spe, rc_source, rc)
+	tmp := src - tmp // using same RC, SPE controls
+	return tmp</programlisting>
+  <section level="7">
+   <title unique="1046254">VREDUCEPH dest{k1}, src, imm8 </title>
+   <programlisting>VL = 128, 256 or 512
+KL := VL/16
+FOR i := 0 to KL-1:
+	IF k1[i] or *no writemask*:
+		IF SRC is memory and (EVEX.b = 1):
+			tsrc := src.fp16[0]
+		ELSE:
+			tsrc := src.fp16[i]
+		DEST.fp16[i] := reduce_fp16(tsrc, imm8)
+	ELSE IF *zeroing*:
+		DEST.fp16[i] := 0
+	//else DEST.fp16[i] remains unchanged
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <para unique="1046271">
-   <string>VREDUCEPH __m128h _mm_mask_reduce_ph (__m128h src, __mmask8 k, __m128h a, int imm8);</string></para>
-  <para unique="1046272">
-   <string>VREDUCEPH __m128h _mm_maskz_reduce_ph (__mmask8 k, __m128h a, int imm8);</string></para>
-  <para unique="1046273">
-   <string>VREDUCEPH __m128h _mm_reduce_ph (__m128h a, int imm8);</string></para>
-  <para unique="1046274">
-   <string>VREDUCEPH __m256h _mm256_mask_reduce_ph (__m256h src, __mmask16 k, __m256h a, int imm8);</string></para>
-  <para unique="1046275">
-   <string>VREDUCEPH __m256h _mm256_maskz_reduce_ph (__mmask16 k, __m256h a, int imm8);</string></para>
-  <para unique="1046276">
-   <string>VREDUCEPH __m256h _mm256_reduce_ph (__m256h a, int imm8);</string></para>
-  <para unique="1046277">
-   <string>VREDUCEPH __m512h _mm512_mask_reduce_ph (__m512h src, __mmask32 k, __m512h a, int imm8);</string></para>
-  <para unique="1046278">
-   <string>VREDUCEPH __m512h _mm512_maskz_reduce_ph (__mmask32 k, __m512h a, int imm8);</string></para>
-  <para unique="1046279">
-   <string>VREDUCEPH __m512h _mm512_reduce_ph (__m512h a, int imm8);</string></para>
-  <para unique="1046280">
-   <string>VREDUCEPH __m512h _mm512_mask_reduce_round_ph (__m512h src, __mmask32 k, __m512h a, int imm8, const int sae);</string></para>
-  <para unique="1046281">
-   <string>VREDUCEPH __m512h _mm512_maskz_reduce_round_ph (__mmask32 k, __m512h a, int imm8, const int sae);</string></para>
-  <para unique="1046282">
-   <string>VREDUCEPH __m512h _mm512_reduce_round_ph (__m512h a, int imm8, const int sae);</string></para>
+  <para unique="1046271">VREDUCEPH __m128h _mm_mask_reduce_ph (__m128h src, __mmask8 k, __m128h a, int imm8);</para>
+  <para unique="1046272">VREDUCEPH __m128h _mm_maskz_reduce_ph (__mmask8 k, __m128h a, int imm8);</para>
+  <para unique="1046273">VREDUCEPH __m128h _mm_reduce_ph (__m128h a, int imm8);</para>
+  <para unique="1046274">VREDUCEPH __m256h _mm256_mask_reduce_ph (__m256h src, __mmask16 k, __m256h a, int imm8);</para>
+  <para unique="1046275">VREDUCEPH __m256h _mm256_maskz_reduce_ph (__mmask16 k, __m256h a, int imm8);</para>
+  <para unique="1046276">VREDUCEPH __m256h _mm256_reduce_ph (__m256h a, int imm8);</para>
+  <para unique="1046277">VREDUCEPH __m512h _mm512_mask_reduce_ph (__m512h src, __mmask32 k, __m512h a, int imm8);</para>
+  <para unique="1046278">VREDUCEPH __m512h _mm512_maskz_reduce_ph (__mmask32 k, __m512h a, int imm8);</para>
+  <para unique="1046279">VREDUCEPH __m512h _mm512_reduce_ph (__m512h a, int imm8);</para>
+  <para unique="1046280">VREDUCEPH __m512h _mm512_mask_reduce_round_ph (__m512h src, __mmask32 k, __m512h a, int imm8, const int sae);</para>
+  <para unique="1046281">VREDUCEPH __m512h _mm512_maskz_reduce_round_ph (__mmask32 k, __m512h a, int imm8, const int sae);</para>
+  <para unique="1046282">VREDUCEPH __m512h _mm512_reduce_round_ph (__m512h a, int imm8, const int sae);</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046284">
-   <string>Invalid, Precision.</string></para>
-  <para unique="1046795">
-   <string>If SPE is enabled, precision exception is not reported (regardless of MXCSR exception mask). </string></para>
+  <para unique="1046284">Invalid, Precision.</para>
+  <para unique="1046795">If SPE is enabled, precision exception is not reported (regardless of MXCSR exception mask). </para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046289" format="xIndent1">
-   <string>EVEX-encoded instruction, see </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046289" format="xIndent1">EVEX-encoded instruction, see <link unique="1046287" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

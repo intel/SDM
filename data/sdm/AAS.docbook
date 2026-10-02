@@ -1,42 +1,130 @@
 <instruction name="AAS">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>ASCII Adjust AL After Subtraction</shortdesc>
- <longdesc><para unique="1261240">
-   <string>Adjusts the result of the subtraction of two unpacked BCD values to create a unpacked BCD result. The AL register is the implied source and destination operand for this instruction. The AAS instruction is only useful when it follows a SUB instruction that subtracts (binary subtraction) one unpacked BCD value from another and stores a byte result in the AL register. The AAA instruction then adjusts the contents of the AL register to contain the correct 1-digit unpacked BCD result. </string></para>
-  <para unique="1261241">
-   <string>If the subtraction produced a decimal carry, the AH register decrements by 1, and the CF and AF flags are set. If no decimal carry occurred, the CF and AF flags are cleared, and the AH register is unchanged. In either case, the AL register is left with its top four bits set to 0.</string></para>
-  <para unique="1261242">
-   <string>This instruction executes as described in compatibility mode and legacy mode. It is not valid in 64-bit mode.</string></para>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th><para unique="1261193">Opcode</para>
+      </th>
+     <th><para unique="1261195">Instruction</para>
+      </th>
+     <th><para unique="1261197">Op/ En</para>
+      </th>
+     <th><para unique="1261199">64-bit Mode</para>
+      </th>
+     <th><para unique="1261201">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261203">Description</para>
+      </th>
+     </tr>
+    </thead><col width="99.31392pt"/>
+   <col width="112.66056pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="47.999520000000004pt"/>
+   <col width="46.728pt"/>
+   <col width="181.404pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261205">3F</para>
+      </td>
+     <td><para unique="1261207">AAS</para>
+      </td>
+     <td><para unique="1261209">ZO</para>
+      </td>
+     <td><para unique="1261211">Invalid</para>
+      </td>
+     <td><para unique="1261213">Valid</para>
+      </td>
+     <td><para unique="1261215">ASCII adjust AL after subtraction.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261217">
+   <col width="47.0268pt"/>
+   <col width="113.34599999999999pt"/>
+   <col width="118.66319999999999pt"/>
+   <col width="115.86456pt"/>
+   <col width="118.56960000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261219">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261221">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261223">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261225">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261227">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261229">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1261231">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261233">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261235">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261237">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261238">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261240">Adjusts the result of the subtraction of two unpacked BCD values to create a unpacked BCD result. The AL register is the implied source and destination operand for this instruction. The AAS instruction is only useful when it follows a SUB instruction that subtracts (binary subtraction) one unpacked BCD value from another and stores a byte result in the AL register. The AAA instruction then adjusts the contents of the AL register to contain the correct 1-digit unpacked BCD result. </para>
+  <para unique="1261241">If the subtraction produced a decimal carry, the AH register decrements by 1, and the CF and AF flags are set. If no decimal carry occurred, the CF and AF flags are cleared, and the AH register is unchanged. In either case, the AL register is left with its top four bits set to 0.</para>
+  <para unique="1261242">This instruction executes as described in compatibility mode and legacy mode. It is not valid in 64-bit mode.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF 64-bit mode
+	THEN
+		#UD;
+	ELSE
+		IF ((AL AND 0FH) &gt; 9) or (AF = 1)
+			THEN
+				AX := AX &#8211; 6;
+				AH := AH &#8211; 1;
+				AF := 1;
+				CF := 1;
+				AL := AL AND 0FH;
+			ELSE
+				CF := 0;
+				AF := 0;
+				AL := AL AND 0FH;
+		FI;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261258">
-   <string>The AF and CF flags are set to 1 if there is a decimal borrow; otherwise, they are cleared to 0. The OF, SF, ZF, and PF flags are undefined.</string></para>
+  <para unique="1261258">The AF and CF flags are set to 1 if there is a decimal borrow; otherwise, they are cleared to 0. The OF, SF, ZF, and PF flags are undefined.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261260">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
-  <para unique="1261262" format="xIndent1">
-   <string>Same exceptions as protected mode.</string></para>
+  <para unique="1261262" format="xIndent1">Same exceptions as protected mode.</para>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1261264" format="xIndent1">
-   <string>Same exceptions as protected mode.</string></para>
+  <para unique="1261264" format="xIndent1">Same exceptions as protected mode.</para>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261266" format="xIndent1">
-   <string>Same exceptions as protected mode.</string></para>
+  <para unique="1261266" format="xIndent1">Same exceptions as protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If in 64-bit mode.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1261268">If in 64-bit mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

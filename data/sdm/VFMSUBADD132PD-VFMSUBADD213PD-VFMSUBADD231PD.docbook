@@ -1,48 +1,553 @@
 <instruction name="VFMSUBADD132PD/VFMSUBADD213PD/VFMSUBADD231PD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Fused Multiply-Alternating Subtract/Add of Packed Double Precision Floating-Point Values</shortdesc>
- <longdesc><para unique="1046588">
-   <string>VFMSUBADD132PD: Multiplies the two, four, or eight packed double precision floating-point values from the first source operand to the two or four packed double precision floating-point values in the third source operand. From the infinite precision intermediate result, subtracts the odd double precision floating-point elements and adds the even double precision floating-point values in the second source operand, performs rounding and stores the resulting two or four packed double precision floating-point values to the destination operand (first source operand).</string></para>
-  <para unique="1046589">
-   <string>VFMSUBADD213PD: Multiplies the two, four, or eight packed double precision floating-point values from the second source operand to the two or four packed double precision floating-point values in the first source operand. From the infinite precision intermediate result, subtracts the odd double precision floating-point elements and adds the even double precision floating-point values in the third source operand, performs rounding and stores the resulting two or four packed double precision floating-point values to the destination operand (first source operand).</string></para>
-  <para unique="1046590">
-   <string>VFMSUBADD231PD: Multiplies the two, four, or eight packed double precision floating-point values from the second source operand to the two or four packed double precision floating-point values in the third source operand. From the infinite precision intermediate result, subtracts the odd double precision floating-point elements and adds the even double precision floating-point values in the first source operand, performs rounding and stores the resulting two or four packed double precision floating-point values to the destination operand (first source operand).</string></para>
-  <para unique="1046591">
-   <string>EVEX encoded versions: The destination operand (also first source operand) and the second source operand are ZMM/YMM/XMM register. The third source operand is a ZMM/YMM/XMM register, a 512/256/128-bit memory loca&#173;tion or a 512/256/128-bit vector broadcasted from a 64-bit memory location. The destination operand is condition&#173;ally updated with write mask k1.</string></para>
-  <para unique="1046592">
-   <string>VEX.256 encoded version: The destination operand (also first source operand) is a YMM register and encoded in reg_field. The second source operand is a YMM register and encoded in VEX.vvvv. The third source operand is a YMM register or a 256-bit memory location and encoded in rm_field. </string></para>
-  <para unique="1046593">
-   <string>VEX.128 encoded version: The destination operand (also first source operand) is a XMM register and encoded in reg_field. The second source operand is a XMM register and encoded in VEX.vvvv. The third source operand is a XMM register or a 128-bit memory location and encoded in rm_field. The upper 128 bits of the YMM destination register are zeroed.</string></para>
-  <para unique="1046594">
-   <string>Compiler tools may optionally support a complementary mnemonic for each instruction mnemonic listed in the opcode/instruction column of the summary table. The behavior of the complementary mnemonic in situations involving NANs are governed by the definition of the instruction mnemonic defined in the opcode/instruction column.</string></para>
+ <encoding_table><table unique="1046307">
+   <col width="64.73447999999999pt"/>
+   <col width="92.0988pt"/>
+   <col width="30.000239999999998pt"/>
+   <col width="47.999520000000004pt"/>
+   <col width="81.41615999999999pt"/>
+   <col width="194.83344pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1046309">Opcode/</para>
+      <para unique="1046310">Instruction</para>
+      </th>
+     <th><para unique="1046314">Op / En</para>
+      </th>
+     <th><para unique="1046316">64/32 Bit Mode Support</para>
+      </th>
+     <th><para unique="1046318">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1046320">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1046322">VEX.128.66.0F38.W1 97 /r </para>
+      <para unique="1046323">VFMSUBADD132PD xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1046327">A</para>
+      </td>
+     <td><para unique="1046329">V/V</para>
+      </td>
+     <td><para unique="1046331">FMA</para>
+      </td>
+     <td><para unique="1046333">Multiply packed double precision floating-point values from xmm1 and xmm3/mem, subtract/add elements in xmm2 and put result in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046335">VEX.128.66.0F38.W1 A7 /r </para>
+      <para unique="1046336">VFMSUBADD213PD xmm1, xmm2, xmm3/m128 </para>
+      </td>
+     <td><para unique="1046340">A</para>
+      </td>
+     <td><para unique="1046342">V/V</para>
+      </td>
+     <td><para unique="1046344">FMA</para>
+      </td>
+     <td><para unique="1046346">Multiply packed double precision floating-point values from xmm1 and xmm2, subtract/add elements in xmm3/mem and put result in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046348">VEX.128.66.0F38.W1 B7 /r </para>
+      <para unique="1046349">VFMSUBADD231PD xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1046353">A</para>
+      </td>
+     <td><para unique="1046355">V/V</para>
+      </td>
+     <td><para unique="1046357">FMA</para>
+      </td>
+     <td><para unique="1046359">Multiply packed double precision floating-point values from xmm2 and xmm3/mem, subtract/add elements in xmm1 and put result in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046361">VEX.256.66.0F38.W1 97 /r </para>
+      <para unique="1046362">VFMSUBADD132PD ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1046366">A</para>
+      </td>
+     <td><para unique="1046368">V/V</para>
+      </td>
+     <td><para unique="1046370">FMA</para>
+      </td>
+     <td><para unique="1046372">Multiply packed double precision floating-point values from ymm1 and ymm3/mem, subtract/add elements in ymm2 and put result in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046374">VEX.256.66.0F38.W1 A7 /r </para>
+      <para unique="1046375">VFMSUBADD213PD ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1046379">A</para>
+      </td>
+     <td><para unique="1046381">V/V</para>
+      </td>
+     <td><para unique="1046383">FMA</para>
+      </td>
+     <td><para unique="1046385">Multiply packed double precision floating-point values from ymm1 and ymm2, subtract/add elements in ymm3/mem and put result in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046387">VEX.256.66.0F38.W1 B7 /r </para>
+      <para unique="1046388">VFMSUBADD231PD ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1046392">A</para>
+      </td>
+     <td><para unique="1046394">V/V</para>
+      </td>
+     <td><para unique="1046396">FMA</para>
+      </td>
+     <td><para unique="1046398">Multiply packed double precision floating-point values from ymm2 and ymm3/mem, subtract/add elements in ymm1 and put result in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047316">EVEX.128.66.0F38.W1 97 /r </para>
+      <para unique="1047317">VFMSUBADD132PD xmm1 {k1}{z}, xmm2, xmm3/m128/m64bcst</para>
+      </td>
+     <td><para unique="1047321">B</para>
+      </td>
+     <td><para unique="1047323">V/V</para>
+      </td>
+     <td><para unique="1047325">(AVX512VL AND AVX512F) OR AVX10.1<anchor id="+663263"/></para>
+      </td>
+     <td><para unique="1047334">Multiply packed double precision floating-point values from xmm1 and xmm3/m128/m64bcst, subtract/add elements in xmm2 and put result in xmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047297">EVEX.128.66.0F38.W1 A7 /r </para>
+      <para unique="1047298">VFMSUBADD213PD xmm1 {k1}{z}, xmm2, xmm3/m128/m64bcst</para>
+      </td>
+     <td><para unique="1047302">B</para>
+      </td>
+     <td><para unique="1047304">V/V</para>
+      </td>
+     <td><para unique="1047306">(AVX512VL AND AVX512F) OR AVX10.1<anchor id="+716749"/></para>
+      </td>
+     <td><para unique="1047314">Multiply packed double precision floating-point values from xmm1 and xmm2, subtract/add elements in xmm3/m128/m64bcst and put result in xmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047278">EVEX.128.66.0F38.W1 B7 /r </para>
+      <para unique="1047279">VFMSUBADD231PD xmm1 {k1}{z}, xmm2, xmm3/m128/m64bcst</para>
+      </td>
+     <td><para unique="1047283">B</para>
+      </td>
+     <td><para unique="1047285">V/V</para>
+      </td>
+     <td><para unique="1047287">(AVX512VL AND AVX512F) OR AVX10.1<anchor id="+909682"/></para>
+      </td>
+     <td><para unique="1047295">Multiply packed double precision floating-point values from xmm2 and xmm3/m128/m64bcst, subtract/add elements in xmm1 and put result in xmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047259">EVEX.256.66.0F38.W1 97 /r </para>
+      <para unique="1047260">VFMSUBADD132PD ymm1 {k1}{z}, ymm2, ymm3/m256/m64bcst</para>
+      </td>
+     <td><para unique="1047264">B</para>
+      </td>
+     <td><para unique="1047266">V/V</para>
+      </td>
+     <td><para unique="1047268">(AVX512VL AND AVX512F) OR AVX10.1<anchor id="+635940"/></para>
+      </td>
+     <td><para unique="1047276">Multiply packed double precision floating-point values from ymm1 and ymm3/m256/m64bcst, subtract/add elements in ymm2 and put result in ymm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047240">EVEX.256.66.0F38.W1 A7 /r </para>
+      <para unique="1047241">VFMSUBADD213PD ymm1 {k1}{z}, ymm2, ymm3/m256/m64bcst</para>
+      </td>
+     <td><para unique="1047245">B</para>
+      </td>
+     <td><para unique="1047247">V/V</para>
+      </td>
+     <td><para unique="1047249">(AVX512VL AND AVX512F) OR AVX10.1<anchor id="+919649"/></para>
+      </td>
+     <td><para unique="1047257">Multiply packed double precision floating-point values from ymm1 and ymm2, subtract/add elements in ymm3/m256/m64bcst and put result in ymm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047221">EVEX.256.66.0F38.W1 B7 /r</para>
+      <para unique="1047222">VFMSUBADD231PD ymm1 {k1}{z}, ymm2, ymm3/m256/m64bcst</para>
+      </td>
+     <td><para unique="1047226">B</para>
+      </td>
+     <td><para unique="1047228">V/V</para>
+      </td>
+     <td><para unique="1047230">(AVX512VL AND AVX512F) OR AVX10.1<anchor id="+991865"/></para>
+      </td>
+     <td><para unique="1047238">Multiply packed double precision floating-point values from ymm2 and ymm3/m256/m64bcst, subtract/add elements in ymm1 and put result in ymm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047201">EVEX.512.66.0F38.W1 97 /r </para>
+      <para unique="1047202">VFMSUBADD132PD zmm1 {k1}{z}, zmm2, zmm3/m512/m64bcst{er}</para>
+      </td>
+     <td><para unique="1047206">B</para>
+      </td>
+     <td><para unique="1047208">V/V</para>
+      </td>
+     <td><para unique="1047213">AVX512F </para>
+      <para unique="1047217">OR AVX10.1<anchor id="+390078"/></para>
+      </td>
+     <td><para unique="1047219">Multiply packed double precision floating-point values from zmm1 and zmm3/m512/m64bcst, subtract/add elements in zmm2 and put result in zmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047181">EVEX.512.66.0F38.W1 A7 /r </para>
+      <para unique="1047182">VFMSUBADD213PD zmm1 {k1}{z}, zmm2, zmm3/m512/m64bcst{er}</para>
+      </td>
+     <td><para unique="1047186">B</para>
+      </td>
+     <td><para unique="1047188">V/V</para>
+      </td>
+     <td><para unique="1047193">AVX512F </para>
+      <para unique="1047197">OR AVX10.1<anchor id="+925453"/></para>
+      </td>
+     <td><para unique="1047199">Multiply packed double precision floating-point values from zmm1 and zmm2, subtract/add elements in zmm3/m512/m64bcst and put result in zmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047161">EVEX.512.66.0F38.W1 B7 /r</para>
+      <para unique="1047162">VFMSUBADD231PD zmm1 {k1}{z}, zmm2, zmm3/m512/m64bcst{er}</para>
+      </td>
+     <td><para unique="1047166">B</para>
+      </td>
+     <td><para unique="1047168">V/V</para>
+      </td>
+     <td><para unique="1047173">AVX512F </para>
+      <para unique="1047177">OR AVX10.1<anchor id="+797947"/></para>
+      </td>
+     <td><para unique="1047179">Multiply packed double precision floating-point values from zmm2 and zmm3/m512/m64bcst, subtract/add elements in zmm1 and put result in zmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1046549">
+   <col width="53.10072pt"/>
+   <col width="68.70024pt"/>
+   <col width="96.00336pt"/>
+   <col width="99.324pt"/>
+   <col width="95.07744pt"/>
+   <col width="96.76368pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1046551">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1046553">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1046555">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1046557">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1046559">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1046561">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1046563">A</para>
+      </td>
+     <td valign="middle"><para unique="1046565">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1046567">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1046569">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046571">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046573">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1046575">B</para>
+      </td>
+     <td valign="middle"><para unique="1046577">Full</para>
+      </td>
+     <td valign="middle"><para unique="1046579">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1046581">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046583">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046585">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046586">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046588">VFMSUBADD132PD: Multiplies the two, four, or eight packed double precision floating-point values from the first source operand to the two or four packed double precision floating-point values in the third source operand. From the infinite precision intermediate result, subtracts the odd double precision floating-point elements and adds the even double precision floating-point values in the second source operand, performs rounding and stores the resulting two or four packed double precision floating-point values to the destination operand (first source operand).</para>
+  <para unique="1046589">VFMSUBADD213PD: Multiplies the two, four, or eight packed double precision floating-point values from the second source operand to the two or four packed double precision floating-point values in the first source operand. From the infinite precision intermediate result, subtracts the odd double precision floating-point elements and adds the even double precision floating-point values in the third source operand, performs rounding and stores the resulting two or four packed double precision floating-point values to the destination operand (first source operand).</para>
+  <para unique="1046590">VFMSUBADD231PD: Multiplies the two, four, or eight packed double precision floating-point values from the second source operand to the two or four packed double precision floating-point values in the third source operand. From the infinite precision intermediate result, subtracts the odd double precision floating-point elements and adds the even double precision floating-point values in the first source operand, performs rounding and stores the resulting two or four packed double precision floating-point values to the destination operand (first source operand).</para>
+  <para unique="1046591">EVEX encoded versions: The destination operand (also first source operand) and the second source operand are ZMM/YMM/XMM register. The third source operand is a ZMM/YMM/XMM register, a 512/256/128-bit memory loca&#173;tion or a 512/256/128-bit vector broadcasted from a 64-bit memory location. The destination operand is condition&#173;ally updated with write mask k1.</para>
+  <para unique="1046592">VEX.256 encoded version: The destination operand (also first source operand) is a YMM register and encoded in reg_field. The second source operand is a YMM register and encoded in VEX.vvvv. The third source operand is a YMM register or a 256-bit memory location and encoded in rm_field. </para>
+  <para unique="1046593">VEX.128 encoded version: The destination operand (also first source operand) is a XMM register and encoded in reg_field. The second source operand is a XMM register and encoded in VEX.vvvv. The third source operand is a XMM register or a 128-bit memory location and encoded in rm_field. The upper 128 bits of the YMM destination register are zeroed.</para>
+  <para unique="1046594">Compiler tools may optionally support a complementary mnemonic for each instruction mnemonic listed in the opcode/instruction column of the summary table. The behavior of the complementary mnemonic in situations involving NANs are governed by the definition of the instruction mnemonic defined in the opcode/instruction column.</para>
   </longdesc>
+ <operation>
+  <programlisting>In the operations below, &#8220;*&#8221; and &#8220;+&#8221; symbols represent multiplication and addition with infinite precision inputs and outputs (no rounding).</programlisting>
+  <section level="7">
+   <title unique="1046598">VFMSUBADD132PD DEST, SRC2, SRC3 </title>
+   <programlisting>IF (VEX.128) THEN
+	DEST[63:0] := RoundFPControl_MXCSR(DEST[63:0]*SRC3[63:0] + SRC2[63:0])
+	DEST[127:64] := RoundFPControl_MXCSR(DEST[127:64]*SRC3[127:64] - SRC2[127:64])
+	DEST[MAXVL-1:128] := 0
+ELSEIF (VEX.256)
+	DEST[63:0] := RoundFPControl_MXCSR(DEST[63:0]*SRC3[63:0] + SRC2[63:0])
+	DEST[127:64] := RoundFPControl_MXCSR(DEST[127:64]*SRC3[127:64] - SRC2[127:64])
+	DEST[191:128] := RoundFPControl_MXCSR(DEST[191:128]*SRC3[191:128] + SRC2[191:128])
+	DEST[255:192] := RoundFPControl_MXCSR(DEST[255:192]*SRC3[255:192] - SRC2[255:192]
+FI</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046610">VFMSUBADD213PD DEST, SRC2, SRC3 </title>
+   <programlisting>IF (VEX.128) THEN
+	DEST[63:0] := RoundFPControl_MXCSR(SRC2[63:0]*DEST[63:0] + SRC3[63:0])
+	DEST[127:64] := RoundFPControl_MXCSR(SRC2[127:64]*DEST[127:64] - SRC3[127:64])
+	DEST[MAXVL-1:128] := 0
+ELSEIF (VEX.256)
+	DEST[63:0] := RoundFPControl_MXCSR(SRC2[63:0]*DEST[63:0] + SRC3[63:0])
+	DEST[127:64] := RoundFPControl_MXCSR(SRC2[127:64]*DEST[127:64] - SRC3[127:64])
+	DEST[191:128] := RoundFPControl_MXCSR(SRC2[191:128]*DEST[191:128] + SRC3[191:128])
+	DEST[255:192] := RoundFPControl_MXCSR(SRC2[255:192]*DEST[255:192] - SRC3[255:192]
+FI</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046622">VFMSUBADD231PD DEST, SRC2, SRC3 </title>
+   <programlisting>IF (VEX.128) THEN
+	DEST[63:0] := RoundFPControl_MXCSR(SRC2[63:0]*SRC3[63:0] + DEST[63:0])
+	DEST[127:64] := RoundFPControl_MXCSR(SRC2[127:64]*SRC3[127:64] - DEST[127:64])
+	DEST[MAXVL-1:128] := 0
+ELSEIF (VEX.256)
+	DEST[63:0] := RoundFPControl_MXCSR(SRC2[63:0]*SRC3[63:0] + DEST[63:0])
+	DEST[127:64] := RoundFPControl_MXCSR(SRC2[127:64]*SRC3[127:64] - DEST[127:64])
+	DEST[191:128] := RoundFPControl_MXCSR(SRC2[191:128]*SRC3[191:128] + DEST[191:128])
+	DEST[255:192] := RoundFPControl_MXCSR(SRC2[255:192]*SRC3[255:192] - DEST[255:192]
+FI</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046634">VFMSUBADD132PD DEST, SRC2, SRC3 (EVEX encoded version, when src3 operand is a register)</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+IF (VL = 512) AND (EVEX.b = 1)
+	THEN
+		SET_ROUNDING_MODE_FOR_THIS_INSTRUCTION(EVEX.RC);
+	ELSE
+		SET_ROUNDING_MODE_FOR_THIS_INSTRUCTION(MXCSR.RC);
+FI;
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask*
+		THEN
+			IF j *is even*
+				THEN DEST[i+63:i] :=
+					RoundFPControl(DEST[i+63:i]*SRC3[i+63:i] + SRC2[i+63:i])
+				ELSE DEST[i+63:i] :=
+					RoundFPControl(DEST[i+63:i]*SRC3[i+63:i] - SRC2[i+63:i])
+			FI
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+63:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046662">VFMSUBADD132PD DEST, SRC2, SRC3 (EVEX encoded version, when src3 operand is a memory source)</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask*
+		THEN
+			IF j *is even*
+				THEN
+					IF (EVEX.b = 1)
+						THEN
+							DEST[i+63:i] :=
+					RoundFPControl_MXCSR(DEST[i+63:i]*SRC3[63:0] + SRC2[i+63:i])
+						ELSE
+							DEST[i+63:i] :=
+					RoundFPControl_MXCSR(DEST[i+63:i]*SRC3[i+63:i] + SRC2[i+63:i])
+					FI;
+				ELSE
+					IF (EVEX.b = 1)
+						THEN
+							DEST[i+63:i] :=
+					RoundFPControl_MXCSR(DEST[i+63:i]*SRC3[63:0] - SRC2[i+63:i])
+						ELSE
+							DEST[i+63:i] :=
+					RoundFPControl_MXCSR(DEST[i+63:i]*SRC3[i+63:i] - SRC2[i+63:i])
+					FI;
+			FI
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+63:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046699">VFMSUBADD213PD DEST, SRC2, SRC3 (EVEX encoded version, when src3 operand is a register)</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+IF (VL = 512) AND (EVEX.b = 1)
+	THEN
+		SET_ROUNDING_MODE_FOR_THIS_INSTRUCTION(EVEX.RC);
+	ELSE
+		SET_ROUNDING_MODE_FOR_THIS_INSTRUCTION(MXCSR.RC);
+FI;
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask*
+		THEN
+			IF j *is even*
+				THEN DEST[i+63:i] :=
+					RoundFPControl(SRC2[i+63:i]*DEST[i+63:i] + SRC3[i+63:i])
+				ELSE DEST[i+63:i] :=
+					RoundFPControl(SRC2[i+63:i]*DEST[i+63:i] - SRC3[i+63:i])
+			FI
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+63:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046727">VFMSUBADD213PD DEST, SRC2, SRC3 (EVEX encoded version, when src3 operand is a memory source)</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask*
+		THEN
+			IF j *is even*
+				THEN
+					IF (EVEX.b = 1)
+						THEN
+							DEST[i+63:i] :=
+					RoundFPControl_MXCSR(SRC2[i+63:i]*DEST[i+63:i] + SRC3[63:0])
+						ELSE
+							DEST[i+63:i] :=
+					RoundFPControl_MXCSR(SRC2[i+63:i]*DEST[i+63:i] + SRC3[i+63:i])
+					FI;
+				ELSE
+					IF (EVEX.b = 1)
+						THEN
+							DEST[i+63:i] :=
+					RoundFPControl_MXCSR(SRC2[i+63:i]*DEST[i+63:i] - SRC3[63:0])
+						ELSE
+							DEST[i+63:i] :=
+					RoundFPControl_MXCSR(SRC2[i+63:i]*DEST[i+63:i] - SRC3[i+63:i])
+					FI;
+			FI
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+63:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046764">VFMSUBADD231PD DEST, SRC2, SRC3 (EVEX encoded version, when src3 operand is a register)</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+IF (VL = 512) AND (EVEX.b = 1)
+	THEN
+		SET_ROUNDING_MODE_FOR_THIS_INSTRUCTION(EVEX.RC);
+	ELSE
+		SET_ROUNDING_MODE_FOR_THIS_INSTRUCTION(MXCSR.RC);
+FI;
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask*
+		THEN
+			IF j *is even*
+				THEN DEST[i+63:i] :=
+					RoundFPControl(SRC2[i+63:i]*SRC3[i+63:i] + DEST[i+63:i])
+				ELSE DEST[i+63:i] :=
+					RoundFPControl(SRC2[i+63:i]*SRC3[i+63:i] - DEST[i+63:i])
+			FI
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+63:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046792">VFMSUBADD231PD DEST, SRC2, SRC3 (EVEX encoded version, when src3 operand is a memory source)</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask*
+		THEN
+			IF j *is even*
+				THEN
+					IF (EVEX.b = 1)
+						THEN
+							DEST[i+63:i] :=
+					RoundFPControl_MXCSR(SRC2[i+63:i]*SRC3[63:0] + DEST[i+63:i])
+						ELSE
+							DEST[i+63:i] :=
+					RoundFPControl_MXCSR(SRC2[i+63:i]*SRC3[i+63:i] + DEST[i+63:i])
+					FI;
+				ELSE
+					IF (EVEX.b = 1)
+						THEN
+							DEST[i+63:i] :=
+					RoundFPControl_MXCSR(SRC2[i+63:i]*SRC3[63:0] - DEST[i+63:i])
+						ELSE
+							DEST[i+63:i] :=
+					RoundFPControl_MXCSR(SRC2[i+63:i]*SRC3[i+63:i] - DEST[i+63:i])
+					FI;
+			FI
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+63:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VFMSUBADDxxxPD __m512d _mm512_fmsubadd_pd(__m512d a, __m512d b, __m512d c);</string><string>
-</string><string>VFMSUBADDxxxPD __m512d _mm512_fmsubadd_round_pd(__m512d a, __m512d b, __m512d c, int r);</string><string>
-</string><string>VFMSUBADDxxxPD __m512d _mm512_mask_fmsubadd_pd(__m512d a, __mmask8 k, __m512d b, __m512d c);</string><string>
-</string><string>VFMSUBADDxxxPD __m512d _mm512_maskz_fmsubadd_pd(__mmask8 k, __m512d a, __m512d b, __m512d c);</string><string>
-</string><string>VFMSUBADDxxxPD __m512d _mm512_mask3_fmsubadd_pd(__m512d a, __m512d b, __m512d c, __mmask8 k);</string><string>
-</string><string>VFMSUBADDxxxPD __m512d _mm512_mask_fmsubadd_round_pd(__m512d a, __mmask8 k, __m512d b, __m512d c, int r);</string><string>
-</string><string>VFMSUBADDxxxPD __m512d _mm512_maskz_fmsubadd_round_pd(__mmask8 k, __m512d a, __m512d b, __m512d c, int r);</string><string>
-</string><string>VFMSUBADDxxxPD __m512d _mm512_mask3_fmsubadd_round_pd(__m512d a, __m512d b, __m512d c, __mmask8 k, int r);</string><string>
-</string><string>VFMSUBADDxxxPD __m256d _mm256_mask_fmsubadd_pd(__m256d a, __mmask8 k, __m256d b, __m256d c);</string><string>
-</string><string>VFMSUBADDxxxPD __m256d _mm256_maskz_fmsubadd_pd(__mmask8 k, __m256d a, __m256d b, __m256d c);</string><string>
-</string><string>VFMSUBADDxxxPD __m256d _mm256_mask3_fmsubadd_pd(__m256d a, __m256d b, __m256d c, __mmask8 k);</string><string>
-</string><string>VFMSUBADDxxxPD __m128d _mm_mask_fmsubadd_pd(__m128d a, __mmask8 k, __m128d b, __m128d c);</string><string>
-</string><string>VFMSUBADDxxxPD __m128d _mm_maskz_fmsubadd_pd(__mmask8 k, __m128d a, __m128d b, __m128d c);</string><string>
-</string><string>VFMSUBADDxxxPD __m128d _mm_mask3_fmsubadd_pd(__m128d a, __m128d b, __m128d c, __mmask8 k);</string><string>
-</string><string>VFMSUBADDxxxPD __m128d _mm_fmsubadd_pd (__m128d a, __m128d b, __m128d c);</string><string>
-</string><string>VFMSUBADDxxxPD __m256d _mm256_fmsubadd_pd (__m256d a, __m256d b, __m256d c);</string><string>
-</string></programlisting>
+  <programlisting>VFMSUBADDxxxPD __m512d _mm512_fmsubadd_pd(__m512d a, __m512d b, __m512d c);
+VFMSUBADDxxxPD __m512d _mm512_fmsubadd_round_pd(__m512d a, __m512d b, __m512d c, int r);
+VFMSUBADDxxxPD __m512d _mm512_mask_fmsubadd_pd(__m512d a, __mmask8 k, __m512d b, __m512d c);
+VFMSUBADDxxxPD __m512d _mm512_maskz_fmsubadd_pd(__mmask8 k, __m512d a, __m512d b, __m512d c);
+VFMSUBADDxxxPD __m512d _mm512_mask3_fmsubadd_pd(__m512d a, __m512d b, __m512d c, __mmask8 k);
+VFMSUBADDxxxPD __m512d _mm512_mask_fmsubadd_round_pd(__m512d a, __mmask8 k, __m512d b, __m512d c, int r);
+VFMSUBADDxxxPD __m512d _mm512_maskz_fmsubadd_round_pd(__mmask8 k, __m512d a, __m512d b, __m512d c, int r);
+VFMSUBADDxxxPD __m512d _mm512_mask3_fmsubadd_round_pd(__m512d a, __m512d b, __m512d c, __mmask8 k, int r);
+VFMSUBADDxxxPD __m256d _mm256_mask_fmsubadd_pd(__m256d a, __mmask8 k, __m256d b, __m256d c);
+VFMSUBADDxxxPD __m256d _mm256_maskz_fmsubadd_pd(__mmask8 k, __m256d a, __m256d b, __m256d c);
+VFMSUBADDxxxPD __m256d _mm256_mask3_fmsubadd_pd(__m256d a, __m256d b, __m256d c, __mmask8 k);
+VFMSUBADDxxxPD __m128d _mm_mask_fmsubadd_pd(__m128d a, __mmask8 k, __m128d b, __m128d c);
+VFMSUBADDxxxPD __m128d _mm_maskz_fmsubadd_pd(__mmask8 k, __m128d a, __m128d b, __m128d c);
+VFMSUBADDxxxPD __m128d _mm_mask3_fmsubadd_pd(__m128d a, __m128d b, __m128d c, __mmask8 k);
+VFMSUBADDxxxPD __m128d _mm_fmsubadd_pd (__m128d a, __m128d b, __m128d c);
+VFMSUBADDxxxPD __m256d _mm256_fmsubadd_pd (__m256d a, __m256d b, __m256d c);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046847">
-   <string>Overflow, Underflow, Invalid, Precision, Denormal.</string></para>
+  <para unique="1046847">Overflow, Underflow, Invalid, Precision, Denormal.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046852" format="xIndent1">
-   <string>VEX-encoded instructions, see </string><link linkend="73761: 06_Table: Table 2-19. Type 2 Class Exception Conditions"><string>Table&#160;2&#8209;19, &#8220;Type 2 Class Exception Conditions.&#8221;</string></link></para>
-  <programlisting><string>EVEX-encoded instructions, see </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link><string>
-</string></programlisting>
+  <para unique="1046852" format="xIndent1">VEX-encoded instructions, see <link unique="1046850" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#73761: 06_Table: Table 2-19. Type 2 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;19, &#8220;Type 2 Class Exception Conditions.&#8221;</link></para>
+  <programlisting>EVEX-encoded instructions, see Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</programlisting>
   </subsection>
  </instruction>

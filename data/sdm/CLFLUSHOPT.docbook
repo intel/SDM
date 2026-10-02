@@ -1,94 +1,176 @@
 <instruction name="CLFLUSHOPT">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Flush Cache Line Optimized</shortdesc>
- <longdesc><para unique="1261242">
-   <string>Invalidates from every level of the cache hierarchy in the cache coherence domain the cache line that contains the linear address specified with the memory operand. If that cache line contains modified data at any level of the cache hierarchy, that data is written back to memory. The source operand is a byte memory location.</string></para>
-  <para unique="1261243">
-   <string>The availability of CLFLUSHOPT is indicated by the presence of the CPUID feature flag CLFLUSHOPT (CPUID.07H.00H:EBX[23]). The aligned cache line size affected is also indicated by the value in CPUID.01H:EBX[15:8].</string></para>
-  <para unique="1261244">
-   <string>The memory attribute of the page containing the affected line has no effect on the behavior of this instruction. It should be noted that processors are free to speculatively fetch and cache data from system memory regions assigned a memory-type allowing for speculative reads (such as, the WB, WC, and WT memory types). PREFETCH</string><italic><string>h</string></italic><string> instructions can be used to provide the processor with hints for this speculative behavior. Because this speculative fetching can occur at any time and is not tied to instruction execution, the CLFLUSH instruction is not ordered with respect to PREFETCH</string><italic><string>h</string></italic><string> instructions or any of the speculative fetching mechanisms (that is, data can be specula&#173;tively loaded into a cache line just before, during, or after the execution of a CLFLUSH instruction that references the cache line).</string></para>
-  <para unique="1261245">
-   <string>Executions of the CLFLUSHOPT instruction are ordered with respect to fence instructions and to locked read-modify-write instructions; they are also ordered with respect to older writes to the cache line being invalidated. They are not ordered with respect to other executions of CLFLUSHOPT, to executions of CLFLUSH and CLWB, or to younger writes to the cache line being invalidated. Software can use the SFENCE instruction to order an execution of CLFLUSHOPT relative to one of those operations.</string></para>
-  <para unique="1261246">
-   <string>The CLFLUSHOPT instruction can be used at all privilege levels and is subject to all permission checking and faults associated with a byte load (and in addition, a CLFLUSHOPT instruction is allowed to flush a linear address in an execute-only segment). Like a load, the CLFLUSHOPT instruction sets the A bit but not the D bit in the page tables.</string></para>
-  <para unique="1261247">
-   <string>In some implementations, the CLFLUSHOPT instruction may always cause transactional abort with Transactional Synchronization Extensions (TSX). The CLFLUSHOPT instruction is not expected to be commonly used inside typical transactional regions. However, programmers must not rely on CLFLUSHOPT instruction to force a transac&#173;tional abort, since whether they cause transactional abort is implementation dependent.</string></para>
-  <para unique="1261248">
-   <string>CLFLUSHOPT operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th colspan="2"><para unique="1261193">Opcode /</para>
+      <para unique="1261194">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64-bit Mode</para>
+      </th>
+     <th><para unique="1261202">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><col width="85.1184pt"/>
+   <col width="96.55704pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="47.999520000000004pt"/>
+   <col width="46.728pt"/>
+   <col width="210.20328pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1261206">NFx 66 0F AE /7</para>
+      <para unique="1261207">CLFLUSHOPT m8</para>
+      </td>
+     <td><para unique="1261211">M</para>
+      </td>
+     <td><para unique="1261213">Valid</para>
+      </td>
+     <td><para unique="1261215">Valid</para>
+      </td>
+     <td><para unique="1261217">Flushes cache line containing m8.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261219">
+   <col width="41.52888pt"/>
+   <col width="113.26608pt"/>
+   <col width="121.12128pt"/>
+   <col width="110.98151999999999pt"/>
+   <col width="125.07191999999999pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261221">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261223">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261225">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261227">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261229">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261231">M</para>
+      </td>
+     <td valign="middle"><para unique="1261233">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261235">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261237">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261239">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261240">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261242">Invalidates from every level of the cache hierarchy in the cache coherence domain the cache line that contains the linear address specified with the memory operand. If that cache line contains modified data at any level of the cache hierarchy, that data is written back to memory. The source operand is a byte memory location.</para>
+  <para unique="1261243">The availability of CLFLUSHOPT is indicated by the presence of the CPUID feature flag CLFLUSHOPT (CPUID.07H.00H:EBX[23]). The aligned cache line size affected is also indicated by the value in CPUID.01H:EBX[15:8].</para>
+  <para unique="1261244">The memory attribute of the page containing the affected line has no effect on the behavior of this instruction. It should be noted that processors are free to speculatively fetch and cache data from system memory regions assigned a memory-type allowing for speculative reads (such as, the WB, WC, and WT memory types). PREFETCH<italic>h</italic> instructions can be used to provide the processor with hints for this speculative behavior. Because this speculative fetching can occur at any time and is not tied to instruction execution, the CLFLUSH instruction is not ordered with respect to PREFETCH<italic>h</italic> instructions or any of the speculative fetching mechanisms (that is, data can be specula&#173;tively loaded into a cache line just before, during, or after the execution of a CLFLUSH instruction that references the cache line).</para>
+  <para unique="1261245">Executions of the CLFLUSHOPT instruction are ordered with respect to fence instructions and to locked read-modify-write instructions; they are also ordered with respect to older writes to the cache line being invalidated. They are not ordered with respect to other executions of CLFLUSHOPT, to executions of CLFLUSH and CLWB, or to younger writes to the cache line being invalidated. Software can use the SFENCE instruction to order an execution of CLFLUSHOPT relative to one of those operations.</para>
+  <para unique="1261246">The CLFLUSHOPT instruction can be used at all privilege levels and is subject to all permission checking and faults associated with a byte load (and in addition, a CLFLUSHOPT instruction is allowed to flush a linear address in an execute-only segment). Like a load, the CLFLUSHOPT instruction sets the A bit but not the D bit in the page tables.</para>
+  <para unique="1261247">In some implementations, the CLFLUSHOPT instruction may always cause transactional abort with Transactional Synchronization Extensions (TSX). The CLFLUSHOPT instruction is not expected to be commonly used inside typical transactional regions. However, programmers must not rely on CLFLUSHOPT instruction to force a transac&#173;tional abort, since whether they cause transactional abort is implementation dependent.</para>
+  <para unique="1261248">CLFLUSHOPT operation is the same in non-64-bit modes and 64-bit mode.</para>
   </longdesc>
+ <operation>
+  <programlisting>Flush_Cache_Line_Optimized(SRC);</programlisting>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalents">
-  <programlisting><string>CLFLUSHOPT	 void _mm_clflushopt(void const *p)</string><string>
-</string></programlisting>
+  <programlisting>CLFLUSHOPT	 void _mm_clflushopt(void const *p)</programlisting>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>For an illegal memory operand effective address in the CS, DS, ES, FS or GS segments.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261254">For an illegal memory operand effective address in the CS, DS, ES, FS or GS segments.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0) </string></term>
-    <listitem><string>For an illegal address in the SS segment. </string></listitem>
+    <term>#SS(0) </term>
+    <listitem><para unique="1261255">For an illegal address in the SS segment. </para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code) </string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF(fault-code) </term>
+    <listitem><para unique="1261256">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.07H.00H:EBX.CLFLUSHOPT[23] = 0.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If an instruction prefix F2H or F3H is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261257">If CPUID.07H.00H:EBX.CLFLUSHOPT[23] = 0.</para>
+     </listitem>
+    <listitem><para unique="1261258">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1261259">If an instruction prefix F2H or F3H is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If any part of the operand lies outside the effective address space from 0 to FFFFH.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1261261">If any part of the operand lies outside the effective address space from 0 to FFFFH.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.07H.00H:EBX.CLFLUSHOPT[23] = 0.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If an instruction prefix F2H or F3H is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261262">If CPUID.07H.00H:EBX.CLFLUSHOPT[23] = 0.</para>
+     </listitem>
+    <listitem><para unique="1261263">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1261264">If an instruction prefix F2H or F3H is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1261266">
-   <string>Same exceptions as in real address mode.</string></para>
+  <para unique="1261266">Same exceptions as in real address mode.</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#PF(fault-code) </string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF(fault-code) </term>
+    <listitem><para unique="1261267">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261269" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261269" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261271">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261272">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code) </string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF(fault-code) </term>
+    <listitem><para unique="1261273">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.07H.00H:EBX.CLFLUSHOPT[23] = 0.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If an instruction prefix F2H or F3H is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261274">If CPUID.07H.00H:EBX.CLFLUSHOPT[23] = 0.</para>
+     </listitem>
+    <listitem><para unique="1261275">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1261276">If an instruction prefix F2H or F3H is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

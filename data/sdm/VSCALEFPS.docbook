@@ -1,91 +1,208 @@
 <instruction name="VSCALEFPS">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Scale Packed Float32 Values With Float32 Values</shortdesc>
- <longdesc><para unique="1046173">
-   <string>Performs a floating-point scale of the packed single precision floating-point values in the first source operand by multiplying them by 2 to the power of the float32 values in second source operand.</string></para>
-  <para unique="1046174">
-   <string>The equation of this operation is given by:</string></para>
-  <para unique="1046175">
-   <string>zmm1 := zmm2*2</string><superscript><string>floor(zmm3)</string></superscript><string>.</string></para>
-  <para unique="1046176">
-   <string>Floor(zmm3) means maximum integer value &#8804; zmm3.</string></para>
-  <para unique="1046178">
-   <string>If the result cannot be represented in single precision, then the proper overflow response (for positive scaling operand), or the proper underflow response (for negative scaling operand) is issued. The overflow and underflow responses are dependent on the rounding mode (for IEEE-compliant rounding), as well as on other settings in MXCSR (exception mask bits, FTZ bit), and on the SAE bit.</string></para>
-  <para unique="1046179">
-   <string>EVEX.512 encoded version: The first source operand is a ZMM register. The second source operand is a ZMM register, a 512-bit memory location or a 512-bit vector broadcasted from a 32-bit memory location. The destina&#173;tion operand is a ZMM register conditionally updated with writemask k1.</string></para>
-  <para unique="1046180">
-   <string>EVEX.256 encoded version: The first source operand is a YMM register. The second source operand is a YMM register, a 256-bit memory location, or a 256-bit vector broadcasted from a 32-bit memory location. The destina&#173;tion operand is a YMM register, conditionally updated using writemask k1. </string></para>
-  <para unique="1046181">
-   <string>EVEX.128 encoded version: The first source operand is an XMM register. The second source operand is a XMM register, a 128-bit memory location, or a 128-bit vector broadcasted from a 32-bit memory location. The destina&#173;tion operand is a XMM register, conditionally updated using writemask k1. </string></para>
-  <para unique="1046184">
-   <string>Handling of special-case input values are listed in </string><link linkend="43524: 06_Table: Table 5-30. \VSCALEFPD Special Cases"><string>Table 5&#8209;37</string></link><string> and </string><link linkend="52133: 06_Table: Table 5-32. Additional VSCALEFPS/SS Special Cases"><string>Table 5&#8209;41</string></link><string>.</string></para>
-  <table>
-   <caption>Table 5-41.  Additional VSCALEFPS/SS Special Cases</caption>
-   <colgroup><col width="133.85952pt" align="leftright"/>
-    <col width="267.2928pt"/>
-    <col width="110.4984pt"/>
-    <col width="80.40312pt"/>
-    </colgroup>
+ <encoding_table><table unique="1046081">
+   <col width="62.60112pt"/>
+   <col width="89.06544pt"/>
+   <col width="29.24928pt"/>
+   <col width="47.249280000000006pt"/>
+   <col width="72.74952pt"/>
+   <col width="211.35024pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1046083">Opcode/</para>
+      <para unique="1046084">Instruction</para>
+      </th>
+     <th><para unique="1046088">Op / En</para>
+      </th>
+     <th><para unique="1046090">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1046092">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1046094">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1046673">EVEX.128.66.0F38.W0 2C /r </para>
+      <para unique="1046674">VSCALEFPS xmm1 {k1}{z}, xmm2, xmm3/m128/m32bcst</para>
+      </td>
+     <td><para unique="1046678">A</para>
+      </td>
+     <td><para unique="1046680">V/V</para>
+      </td>
+     <td><para unique="1046682">(AVX512VL AND AVX512F) OR AVX10.1<anchor id="+941941"/></para>
+      </td>
+     <td><para unique="1046690">Scale the packed single-precision floating-point values in xmm2 using values from xmm3/m128/m32bcst. Under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046657">EVEX.256.66.0F38.W0 2C /r </para>
+      <para unique="1046658">VSCALEFPS ymm1 {k1}{z}, ymm2, ymm3/m256/m32bcst</para>
+      </td>
+     <td><para unique="1046662">A</para>
+      </td>
+     <td><para unique="1046664">V/V</para>
+      </td>
+     <td><para unique="1046666">(AVX512VL AND AVX512F) OR AVX10.1<anchor id="+789463"/></para>
+      </td>
+     <td><para unique="1046671">Scale the packed single-precision values in ymm2 using floating-point values from ymm3/m256/m32bcst. Under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046640">EVEX.512.66.0F38.W0 2C /r </para>
+      <para unique="1046641">VSCALEFPS zmm1 {k1}{z}, zmm2, zmm3/m512/m32bcst{er}</para>
+      </td>
+     <td><para unique="1046645">A</para>
+      </td>
+     <td><para unique="1046647">V/V</para>
+      </td>
+     <td><para unique="1046652">AVX512F </para>
+      <para unique="1046653">OR AVX10.1<anchor id="+903667"/></para>
+      </td>
+     <td><para unique="1046655">Scale the packed single-precision floating-point values in zmm2 using floating-point values from zmm3/m512/m32bcst. Under writemask k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1046146">
+   <col width="39.21768pt"/>
+   <col width="71.61696pt"/>
+   <col width="97.12944pt"/>
+   <col width="99.32544pt"/>
+   <col width="101.87136pt"/>
+   <col width="100.90944pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1046148">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1046150">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1046152">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1046154">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1046156">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1046158">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1046160">A</para>
+      </td>
+     <td valign="middle"><para unique="1046162">Full</para>
+      </td>
+     <td valign="middle"><para unique="1046164">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046166">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046168">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046170">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046171">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046173">Performs a floating-point scale of the packed single precision floating-point values in the first source operand by multiplying them by 2 to the power of the float32 values in second source operand.</para>
+  <para unique="1046174">The equation of this operation is given by:</para>
+  <para unique="1046175">zmm1 := zmm2*2<superscript>floor(zmm3)</superscript>.</para>
+  <para unique="1046176">Floor(zmm3) means maximum integer value &#8804; zmm3.</para>
+  <para unique="1046178">If the result cannot be represented in single precision, then the proper overflow response (for positive scaling operand), or the proper underflow response (for negative scaling operand) is issued. The overflow and underflow responses are dependent on the rounding mode (for IEEE-compliant rounding), as well as on other settings in MXCSR (exception mask bits, FTZ bit), and on the SAE bit.</para>
+  <para unique="1046179">EVEX.512 encoded version: The first source operand is a ZMM register. The second source operand is a ZMM register, a 512-bit memory location or a 512-bit vector broadcasted from a 32-bit memory location. The destina&#173;tion operand is a ZMM register conditionally updated with writemask k1.</para>
+  <para unique="1046180">EVEX.256 encoded version: The first source operand is a YMM register. The second source operand is a YMM register, a 256-bit memory location, or a 256-bit vector broadcasted from a 32-bit memory location. The destina&#173;tion operand is a YMM register, conditionally updated using writemask k1. </para>
+  <para unique="1046181">EVEX.128 encoded version: The first source operand is an XMM register. The second source operand is a XMM register, a 128-bit memory location, or a 128-bit vector broadcasted from a 32-bit memory location. The destina&#173;tion operand is a XMM register, conditionally updated using writemask k1. </para>
+  <para unique="1046184">Handling of special-case input values are listed in <link unique="1046183" linkend="&lt;c&gt;VSCALEFPD-Scale-Packed-Float64-Values-With-Float64-Values.fm#43524: 06_Table: Table 5-30. \\VSCALEFPD Special Cases" xrefstyle="TableNum">Table 5&#8209;37</link> and <link unique="1046187" linkend="#52133: 06_Table: Table 5-32. Additional VSCALEFPS/SS Special Cases" xrefstyle="TableNum">Table 5&#8209;41</link>.</para>
+  <table id="52133: 06_Table: Table 5-32. Additional VSCALEFPS/SS Special Cases" unique="1046189">
+   <caption><anchor id="52133: 06_Table: Table 5-32. Additional VSCALEFPS/SS Special Cases"/>Additional VSCALEFPS/SS Special Cases</caption>
+   <col width="133.85952pt"/>
+   <col width="267.2928pt"/>
+   <col width="110.4984pt"/>
    <tbody>
     <tr>
-     <th><para unique="1046198" format="CellRowHeadL">
-       <string>Special Case</string></para>
+     <th><para unique="1046198">Special Case</para>
       </th>
-     <th><para unique="1046200" format="CellRowHeadL">
-       <string> Returned value </string></para>
+     <th><para unique="1046200"> Returned value </para>
       </th>
-     <th><para unique="1046202" format="CellRowHeadL">
-       <string>Faults</string></para>
+     <th><para unique="1046202">Faults</para>
       </th>
      </tr>
     <tr>
-     <td><para unique="1046204" format="CellBodyL">
-       <string>|result| &lt; 2</string><superscript><string>-149</string></superscript></para>
+     <td><para unique="1046204">|result| &lt; 2<superscript>-149</superscript></para>
       </td>
-     <td><para unique="1046206" format="CellBodyL">
-       <string>&#177;0 or &#177;Min-Denormal (Src1 sign)</string></para>
+     <td><para unique="1046206">&#177;0 or &#177;Min-Denormal (Src1 sign)</para>
       </td>
-     <td><para unique="1046208" format="CellBodyL">
-       <string>Underflow</string></para>
+     <td><para unique="1046208">Underflow</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046210" format="CellBodyL">
-       <string>|result| &#8805; 2</string><superscript><string>128</string></superscript></para>
+     <td><para unique="1046210">|result| &#8805; 2<superscript>128</superscript></para>
       </td>
-     <td><para unique="1046212" format="CellBodyL">
-       <string>&#177;INF (Src1 sign) or &#177;Max-normal (Src1 sign)</string></para>
+     <td><para unique="1046212">&#177;INF (Src1 sign) or &#177;Max-normal (Src1 sign)</para>
       </td>
-     <td><para unique="1046214" format="CellBodyL">
-       <string>Overflow</string></para>
+     <td><para unique="1046214">Overflow</para>
       </td>
      </tr>
     </tbody>
    </table>
   </longdesc>
+ <operation>
+  <programlisting>SCALE(SRC1, SRC2)
+{			; Check for denormal operands
+TMP_SRC2 := SRC2
+TMP_SRC1 := SRC1
+IF (SRC2 is denormal AND MXCSR.DAZ) THEN TMP_SRC2=0
+IF (SRC1 is denormal AND MXCSR.DAZ) THEN TMP_SRC1=0
+/* SRC2 is a 32 bits floating-point value */
+DEST[31:0] := TMP_SRC1[31:0] * POW(2, Floor(TMP_SRC2[31:0]))
+}</programlisting>
+  <section level="7">
+   <title unique="1046227">VSCALEFPS (EVEX encoded versions)</title>
+   <programlisting>(KL, VL) = (4, 128), (8, 256), (16, 512)
+IF (VL = 512) AND (EVEX.b = 1) AND (SRC2 *is register*)
+	THEN
+		SET_ROUNDING_MODE_FOR_THIS_INSTRUCTION(EVEX.RC);
+	ELSE
+		SET_ROUNDING_MODE_FOR_THIS_INSTRUCTION(MXCSR.RC);
+FI;
+FOR j := 0 TO KL-1
+	i := j * 32
+	IF k1[j] OR *no writemask* THEN
+			IF (EVEX.b = 1) AND (SRC2 *is memory*)
+				THEN DEST[i+31:i] := SCALE(SRC1[i+31:i], SRC2[31:0]);
+				ELSE DEST[i+31:i] := SCALE(SRC1[i+31:i], SRC2[i+31:i]);
+			FI;
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+31:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+31:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0;</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VSCALEFPS __m512 _mm512_scalef_round_ps(__m512 a, __m512 b, int rounding);</string><string>
-</string><string>VSCALEFPS __m512 _mm512_mask_scalef_round_ps(__m512 s, __mmask16 k, __m512 a, __m512 b, int rounding);</string><string>
-</string><string>VSCALEFPS __m512 _mm512_maskz_scalef_round_ps(__mmask16 k, __m512 a, __m512 b, int rounding);</string><string>
-</string><string>VSCALEFPS __m512 _mm512_scalef_ps(__m512 a, __m512 b);</string><string>
-</string><string>VSCALEFPS __m512 _mm512_mask_scalef_ps(__m512 s, __mmask16 k, __m512 a, __m512 b);</string><string>
-</string><string>VSCALEFPS __m512 _mm512_maskz_scalef_ps(__mmask16 k, __m512 a, __m512 b);</string><string>
-</string><string>VSCALEFPS __m256 _mm256_scalef_ps(__m256 a, __m256 b);</string><string>
-</string><string>VSCALEFPS __m256 _mm256_mask_scalef_ps(__m256 s, __mmask8 k, __m256 a, __m256 b);</string><string>
-</string><string>VSCALEFPS __m256 _mm256_maskz_scalef_ps(__mmask8 k, __m256 a, __m256 b);</string><string>
-</string><string>VSCALEFPS __m128 _mm_scalef_ps(__m128 a, __m128 b);</string><string>
-</string><string>VSCALEFPS __m128 _mm_mask_scalef_ps(__m128 s, __mmask8 k, __m128 a, __m128 b);</string><string>
-</string><string>VSCALEFPS __m128 _mm_maskz_scalef_ps(__mmask8 k, __m128 a, __m128 b);</string><string>
-</string></programlisting>
+  <programlisting>VSCALEFPS __m512 _mm512_scalef_round_ps(__m512 a, __m512 b, int rounding);
+VSCALEFPS __m512 _mm512_mask_scalef_round_ps(__m512 s, __mmask16 k, __m512 a, __m512 b, int rounding);
+VSCALEFPS __m512 _mm512_maskz_scalef_round_ps(__mmask16 k, __m512 a, __m512 b, int rounding);
+VSCALEFPS __m512 _mm512_scalef_ps(__m512 a, __m512 b);
+VSCALEFPS __m512 _mm512_mask_scalef_ps(__m512 s, __mmask16 k, __m512 a, __m512 b);
+VSCALEFPS __m512 _mm512_maskz_scalef_ps(__mmask16 k, __m512 a, __m512 b);
+VSCALEFPS __m256 _mm256_scalef_ps(__m256 a, __m256 b);
+VSCALEFPS __m256 _mm256_mask_scalef_ps(__m256 s, __mmask8 k, __m256 a, __m256 b);
+VSCALEFPS __m256 _mm256_maskz_scalef_ps(__mmask8 k, __m256 a, __m256 b);
+VSCALEFPS __m128 _mm_scalef_ps(__m128 a, __m128 b);
+VSCALEFPS __m128 _mm_mask_scalef_ps(__m128 s, __mmask8 k, __m128 a, __m128 b);
+VSCALEFPS __m128 _mm_maskz_scalef_ps(__mmask8 k, __m128 a, __m128 b);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046265">
-   <string>Overflow, Underflow, Invalid, Precision, Denormal (for Src1).</string></para>
-  <para unique="1046266">
-   <string>Denormal is not reported for Src2.</string></para>
+  <para unique="1046265">Overflow, Underflow, Invalid, Precision, Denormal (for Src1).</para>
+  <para unique="1046266">Denormal is not reported for Src2.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046271">
-   <string>See </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046271">See <link unique="1046269" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

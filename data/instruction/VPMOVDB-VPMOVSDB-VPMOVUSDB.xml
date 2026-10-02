@@ -60,7 +60,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let result_element_size := 8;</code>
      </decode_args>
     <read_instr><code>let disp8n := 4;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let old := Zero(result_size);</code>
      <code>let k := Read_Mask(context.evex_aaa);</code>
      <code>let src := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
@@ -86,7 +86,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVUSi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVUSi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Masked_Vector_Mem_Write?(result_size, result_element_size, k, segment, effective_address, result, fault_suppression=&gt;True);</code>
@@ -101,8 +101,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_128_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="32"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="32"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -167,7 +167,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVUSi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVUSi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -182,8 +182,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_128_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -247,7 +247,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVUSi_narrowing_z(element_size, register_size, result_size, result_element_size, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVUSi_narrowing_z(element_size, register_size, result_element_size, result_size, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -262,8 +262,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_128_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -304,8 +304,8 @@ If you give Intel any comments or suggestions related to this document or the in
   <other-copy>VPMOVWB/VPMOVSWB/VPMOVUSWB</other-copy>
   <input name="element_size" type="Integer"/>
   <input name="register_size" type="Integer"/>
-  <input name="result_size" type="Integer"/>
   <input name="result_element_size" type="Integer"/>
+  <input name="result_size" type="Integer"/>
   <input name="old" type="Bits(result_size)"/>
   <input name="k" type="Bits(64)"/>
   <input name="src" type="Bits(register_size)"/>
@@ -341,8 +341,8 @@ If you give Intel any comments or suggestions related to this document or the in
   <other-copy>VPMOVWB/VPMOVSWB/VPMOVUSWB</other-copy>
   <input name="element_size" type="Integer"/>
   <input name="register_size" type="Integer"/>
-  <input name="result_size" type="Integer"/>
   <input name="result_element_size" type="Integer"/>
+  <input name="result_size" type="Integer"/>
   <input name="k" type="Bits(64)"/>
   <input name="src" type="Bits(register_size)"/>
   <input name="context" type="Instruction_Context"/>
@@ -383,7 +383,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let result_element_size := 8;</code>
      </decode_args>
     <read_instr><code>let disp8n := 4;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let old := Zero(result_size);</code>
      <code>let k := Read_Mask(context.evex_aaa);</code>
      <code>let src := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
@@ -409,7 +409,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVSi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVSi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Masked_Vector_Mem_Write?(result_size, result_element_size, k, segment, effective_address, result, fault_suppression=&gt;True);</code>
@@ -424,8 +424,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_128_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="32"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="32"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -490,7 +490,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVSi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVSi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -505,8 +505,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_128_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -570,7 +570,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVSi_narrowing_z(element_size, register_size, result_size, result_element_size, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVSi_narrowing_z(element_size, register_size, result_element_size, result_size, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -585,8 +585,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_128_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -627,8 +627,8 @@ If you give Intel any comments or suggestions related to this document or the in
   <other-copy>VPMOVWB/VPMOVSWB/VPMOVUSWB</other-copy>
   <input name="element_size" type="Integer"/>
   <input name="register_size" type="Integer"/>
-  <input name="result_size" type="Integer"/>
   <input name="result_element_size" type="Integer"/>
+  <input name="result_size" type="Integer"/>
   <input name="old" type="Bits(result_size)"/>
   <input name="k" type="Bits(64)"/>
   <input name="src" type="Bits(register_size)"/>
@@ -664,8 +664,8 @@ If you give Intel any comments or suggestions related to this document or the in
   <other-copy>VPMOVWB/VPMOVSWB/VPMOVUSWB</other-copy>
   <input name="element_size" type="Integer"/>
   <input name="register_size" type="Integer"/>
-  <input name="result_size" type="Integer"/>
   <input name="result_element_size" type="Integer"/>
+  <input name="result_size" type="Integer"/>
   <input name="k" type="Bits(64)"/>
   <input name="src" type="Bits(register_size)"/>
   <input name="context" type="Instruction_Context"/>
@@ -706,7 +706,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let result_element_size := 8;</code>
      </decode_args>
     <read_instr><code>let disp8n := 4;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let old := Zero(result_size);</code>
      <code>let k := Read_Mask(context.evex_aaa);</code>
      <code>let src := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, register_size);</code>
@@ -732,7 +732,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Masked_Vector_Mem_Write?(result_size, result_element_size, k, segment, effective_address, result, fault_suppression=&gt;True);</code>
@@ -747,8 +747,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_128_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="32"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="32"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -813,7 +813,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -828,8 +828,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_128_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -893,7 +893,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVi_narrowing_z(element_size, register_size, result_size, result_element_size, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVi_narrowing_z(element_size, register_size, result_element_size, result_size, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -908,8 +908,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_128_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -948,8 +948,8 @@ If you give Intel any comments or suggestions related to this document or the in
   <other-copy>VPMOVWB/VPMOVSWB/VPMOVUSWB</other-copy>
   <input name="element_size" type="Integer"/>
   <input name="register_size" type="Integer"/>
-  <input name="result_size" type="Integer"/>
   <input name="result_element_size" type="Integer"/>
+  <input name="result_size" type="Integer"/>
   <input name="old" type="Bits(result_size)"/>
   <input name="k" type="Bits(64)"/>
   <input name="src" type="Bits(register_size)"/>
@@ -983,8 +983,8 @@ If you give Intel any comments or suggestions related to this document or the in
   <other-copy>VPMOVWB/VPMOVSWB/VPMOVUSWB</other-copy>
   <input name="element_size" type="Integer"/>
   <input name="register_size" type="Integer"/>
-  <input name="result_size" type="Integer"/>
   <input name="result_element_size" type="Integer"/>
+  <input name="result_size" type="Integer"/>
   <input name="k" type="Bits(64)"/>
   <input name="src" type="Bits(register_size)"/>
   <input name="context" type="Instruction_Context"/>
@@ -1025,7 +1025,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let result_element_size := 8;</code>
      </decode_args>
     <read_instr><code>let disp8n := 8;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let old := Zero(result_size);</code>
      <code>let k := Read_Mask(context.evex_aaa);</code>
      <code>let src := Read_YMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
@@ -1051,7 +1051,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVUSi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVUSi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Masked_Vector_Mem_Write?(result_size, result_element_size, k, segment, effective_address, result, fault_suppression=&gt;True);</code>
@@ -1066,8 +1066,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_256_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="256"/>
-   <encoding-size name="result_size" size="64"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="64"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -1133,7 +1133,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVUSi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVUSi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -1148,8 +1148,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_256_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="256"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -1213,7 +1213,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVUSi_narrowing_z(element_size, register_size, result_size, result_element_size, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVUSi_narrowing_z(element_size, register_size, result_element_size, result_size, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -1228,8 +1228,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_256_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="256"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -1276,7 +1276,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let result_element_size := 8;</code>
      </decode_args>
     <read_instr><code>let disp8n := 8;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let old := Zero(result_size);</code>
      <code>let k := Read_Mask(context.evex_aaa);</code>
      <code>let src := Read_YMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
@@ -1302,7 +1302,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVSi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVSi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Masked_Vector_Mem_Write?(result_size, result_element_size, k, segment, effective_address, result, fault_suppression=&gt;True);</code>
@@ -1317,8 +1317,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_256_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="256"/>
-   <encoding-size name="result_size" size="64"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="64"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -1384,7 +1384,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVSi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVSi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -1399,8 +1399,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_256_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="256"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -1464,7 +1464,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVSi_narrowing_z(element_size, register_size, result_size, result_element_size, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVSi_narrowing_z(element_size, register_size, result_element_size, result_size, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -1479,8 +1479,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_256_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="256"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -1527,7 +1527,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let result_element_size := 8;</code>
      </decode_args>
     <read_instr><code>let disp8n := 8;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let old := Zero(result_size);</code>
      <code>let k := Read_Mask(context.evex_aaa);</code>
      <code>let src := Read_YMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
@@ -1553,7 +1553,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Masked_Vector_Mem_Write?(result_size, result_element_size, k, segment, effective_address, result, fault_suppression=&gt;True);</code>
@@ -1568,8 +1568,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_256_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="256"/>
-   <encoding-size name="result_size" size="64"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="64"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -1635,7 +1635,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -1650,8 +1650,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_256_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="256"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -1715,7 +1715,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVi_narrowing_z(element_size, register_size, result_size, result_element_size, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVi_narrowing_z(element_size, register_size, result_element_size, result_size, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -1730,8 +1730,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_256_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="256"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -1778,7 +1778,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let result_element_size := 8;</code>
      </decode_args>
     <read_instr><code>let disp8n := 16;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let old := Zero(result_size);</code>
      <code>let k := Read_Mask(context.evex_aaa);</code>
      <code>let src := Read_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
@@ -1804,7 +1804,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVUSi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVUSi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Masked_Vector_Mem_Write?(result_size, result_element_size, k, segment, effective_address, result, fault_suppression=&gt;True);</code>
@@ -1819,8 +1819,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="512"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -1886,7 +1886,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVUSi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVUSi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -1901,8 +1901,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="512"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -1966,7 +1966,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVUSi_narrowing_z(element_size, register_size, result_size, result_element_size, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVUSi_narrowing_z(element_size, register_size, result_element_size, result_size, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -1981,8 +1981,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="512"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -2029,7 +2029,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let result_element_size := 8;</code>
      </decode_args>
     <read_instr><code>let disp8n := 16;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let old := Zero(result_size);</code>
      <code>let k := Read_Mask(context.evex_aaa);</code>
      <code>let src := Read_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
@@ -2055,7 +2055,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVSi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVSi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Masked_Vector_Mem_Write?(result_size, result_element_size, k, segment, effective_address, result, fault_suppression=&gt;True);</code>
@@ -2070,8 +2070,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="512"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -2137,7 +2137,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVSi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVSi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -2152,8 +2152,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="512"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -2217,7 +2217,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVSi_narrowing_z(element_size, register_size, result_size, result_element_size, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVSi_narrowing_z(element_size, register_size, result_element_size, result_size, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -2232,8 +2232,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="512"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -2280,7 +2280,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let result_element_size := 8;</code>
      </decode_args>
     <read_instr><code>let disp8n := 16;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let old := Zero(result_size);</code>
      <code>let k := Read_Mask(context.evex_aaa);</code>
      <code>let src := Read_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
@@ -2306,7 +2306,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Masked_Vector_Mem_Write?(result_size, result_element_size, k, segment, effective_address, result, fault_suppression=&gt;True);</code>
@@ -2321,8 +2321,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="512"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -2388,7 +2388,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVi_narrowing_m(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVi_narrowing_m(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -2403,8 +2403,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="512"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -2468,7 +2468,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_PMOVi_narrowing_z(element_size, register_size, result_size, result_element_size, k, src, context, mod);</code>
+     <code>let result := Instr_PMOVi_narrowing_z(element_size, register_size, result_element_size, result_size, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(Calculate_RM(mod, rm, context), result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -2483,8 +2483,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512F_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="512"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="8"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:r/m</encoding>
@@ -2501,8 +2501,8 @@ If you give Intel any comments or suggestions related to this document or the in
  <category>data_transfer</category>
  <size name="element_size"/>
  <size name="register_size"/>
- <size name="result_size"/>
  <size name="result_element_size"/>
+ <size name="result_size"/>
  <input name="src"/>
  <output name="result"/>
  <footnote id="f"><para>Memory faults while reading inactive elements are suppressed.</para>

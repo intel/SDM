@@ -1,28 +1,123 @@
 <instruction name="VCVTTSH2SI">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Convert with Truncation Low FP16 Value to a Signed Integer</shortdesc>
- <longdesc><para unique="1045951">
-   <string>This instruction converts the low FP16 element in the source operand to a signed integer in the destination general purpose register.</string></para>
-  <para unique="1045952">
-   <string>When a conversion is inexact, a truncated (round toward zero) value is returned. </string></para>
-  <para unique="1046532">
-   <string>If a converted result exceeds the range limits of signed doubleword integer (in non-64-bit modes or 64-bit mode with REX.W/VEX.W/EVEX.W=0), the floating-point invalid exception is raised, and if this exception is masked, the indefinite integer value 80000000H is returned. </string></para>
-  <para unique="1046535">
-   <string>If a converted result exceeds the range limits of signed quadword integer (in 64-bit mode and REX.W/VEX.W/EVEX.W = 1), the floating-point invalid exception is raised, and if this exception is masked, the indefinite integer value 80000000_00000000H is returned.</string></para>
+ <encoding_table><table unique="1045885">
+   <col width="153.5976pt"/>
+   <col width="29.2752pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="200.02464pt"/>
+   <thead><tr>
+     <th><para unique="1045887">Opcode/</para>
+      <para unique="1045888">Instruction</para>
+      </th>
+     <th><para unique="1045890">Op/</para>
+      <para unique="1045891">En</para>
+      </th>
+     <th><para unique="1045893">64/32 Bit Mode Support</para>
+      </th>
+     <th><para unique="1045895">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1045897">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1046278">EVEX.LLIG.F3.MAP5.W0 2C /r</para>
+      <para unique="1046279">VCVTTSH2SI r32, xmm1/m16 {sae}</para>
+      </td>
+     <td><para unique="1046281">A</para>
+      </td>
+     <td><para unique="1046286">V/V<footnote><para unique="1046285" format="TableFootnote">Outside of 64b mode, the EVEX.W field is ignored. The instruction behaves as if W=0 was used.</para>
+        </footnote></para>
+      </td>
+     <td><para unique="1046288">AVX512_FP16 </para>
+      <para unique="1046292">OR AVX10.1<anchor id="+704029"/></para>
+      </td>
+     <td><para unique="1046294">Convert FP16 value in the low element of xmm1/m16 to a signed doubleword integer and store the result in r32 using truncation.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046266">EVEX.LLIG.F3.MAP5.W1 2C /r</para>
+      <para unique="1046267">VCVTTSH2SI r64, xmm1/m16 {sae}</para>
+      </td>
+     <td><para unique="1046269">A</para>
+      </td>
+     <td><para unique="1046271">V/N.E.</para>
+      </td>
+     <td><para unique="1046273">AVX512_FP16 </para>
+      <para unique="1046274">OR AVX10.1<anchor id="+830593"/></para>
+      </td>
+     <td><para unique="1046276">Convert FP16 value in the low element of xmm1/m16 to a signed quadword integer and store the result in r64 using truncation.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1045924">
+   <col width="43.01352pt"/>
+   <col width="61.01352pt"/>
+   <col width="95.65272pt"/>
+   <col width="104.62608pt"/>
+   <col width="103.85784pt"/>
+   <col width="102.5676pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1045926">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1045928">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1045930">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1045932">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1045934">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1045936">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1045938">A</para>
+      </td>
+     <td valign="middle"><para unique="1045940">Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1045942">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1045944">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045946">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1045948">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1045949">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1045951">This instruction converts the low FP16 element in the source operand to a signed integer in the destination general purpose register.</para>
+  <para unique="1045952">When a conversion is inexact, a truncated (round toward zero) value is returned. </para>
+  <para unique="1046532">If a converted result exceeds the range limits of signed doubleword integer (in non-64-bit modes or 64-bit mode with REX.W/VEX.W/EVEX.W=0), the floating-point invalid exception is raised, and if this exception is masked, the indefinite integer value 80000000H is returned. </para>
+  <para unique="1046535">If a converted result exceeds the range limits of signed quadword integer (in 64-bit mode and REX.W/VEX.W/EVEX.W = 1), the floating-point invalid exception is raised, and if this exception is masked, the indefinite integer value 80000000_00000000H is returned.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1045954">VCVTTSH2SI dest, src</title>
+   <programlisting>IF 64-mode and OperandSize == 64:
+	DEST.qword := Convert_fp16_to_integer64_truncate(SRC.fp16[0])
+ELSE:
+	DEST.dword := Convert_fp16_to_integer32_truncate(SRC.fp16[0])</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VCVTTSH2SI int _mm_cvtt_roundsh_i32 (__m128h a, int sae);</string><string>
-</string><string>VCVTTSH2SI __int64 _mm_cvtt_roundsh_i64 (__m128h a, int sae);</string><string>
-</string><string>VCVTTSH2SI int _mm_cvttsh_i32 (__m128h a);</string><string>
-</string><string>VCVTTSH2SI __int64 _mm_cvttsh_i64 (__m128h a);</string><string>
-</string></programlisting>
+  <programlisting>VCVTTSH2SI int _mm_cvtt_roundsh_i32 (__m128h a, int sae);
+VCVTTSH2SI __int64 _mm_cvtt_roundsh_i64 (__m128h a, int sae);
+VCVTTSH2SI int _mm_cvttsh_i32 (__m128h a);
+VCVTTSH2SI __int64 _mm_cvttsh_i64 (__m128h a);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1045965">
-   <string>Invalid, Precision.</string></para>
+  <para unique="1045965">Invalid, Precision.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1045970" format="xIndent1">
-   <string>EVEX-encoded instructions, see </string><link linkend="71006: 06_Table: Table 2-48. Type E3NF Class Exception Conditions"><string>Table&#160;2&#8209;50, &#8220;Type E3NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1045970" format="xIndent1">EVEX-encoded instructions, see <link unique="1045968" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#71006: 06_Table: Table 2-48. Type E3NF Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;50, &#8220;Type E3NF Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

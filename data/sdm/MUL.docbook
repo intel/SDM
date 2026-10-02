@@ -1,191 +1,308 @@
 <instruction name="MUL">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Unsigned Multiply</shortdesc>
- <longdesc><para unique="1091490">
-   <string>Performs an unsigned multiplication of the first operand (destination operand) and the second operand (source operand) and stores the result in the destination operand. The destination operand is an implied operand located in register AL, AX or EAX (depending on the size of the operand); the source operand is located in a general-purpose register or a memory location. The action of this instruction and the location of the result depends on the opcode and the operand size as shown in </string><link linkend="43000: 06_Table: Table 3-55. MUL Results"><string>Table 4&#8209;9</string></link><string>.</string></para>
-  <para unique="1091494">
-   <string>The result is stored in register AX, register pair DX:AX, or register pair EDX:EAX (depending on the operand size), with the high-order bits of the product contained in register AH, DX, or EDX, respectively. If the high-order bits of the product are 0, the </string><indexterm><primary>CF (carry) flag, EFLAGS register;OF (overflow) flag, EFLAGS register</primary></indexterm><string>CF and OF flags are cleared; otherwise, the flags are set.</string></para>
-  <para unique="1091496">
-   <string>In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. </string></para>
-  <para unique="1091497">
-   <string>See the summary chart at the beginning of this section for encoding data and limits.</string></para>
-  <table>
-   <caption>Table 4-9.  MUL Results</caption>
-   <colgroup><col align="left"/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    </colgroup>
+ <encoding_table><table unique="1091390">
    <thead><tr>
-     <th><para unique="1091509" format="CellColHead">
-       <string>Operand Size</string></para>
+     <th><para unique="1091392">Opcode</para>
       </th>
-     <th><para unique="1091511" format="CellColHead">
-       <string>Source 1</string></para>
+     <th><para unique="1091394">Instruction</para>
       </th>
-     <th><para unique="1091513" format="CellColHead">
-       <string>Source 2</string></para>
+     <th><para unique="1091396">Op/ En</para>
       </th>
-     <th><para unique="1091515" format="CellColHead">
-       <string>Destination</string></para>
+     <th><para unique="1091398">64-Bit Mode</para>
+      </th>
+     <th><para unique="1091400">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1091402">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.25984pt"/>
+   <col width="111.46464pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="180.65448pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1091404">F6 /4</para>
+      </td>
+     <td><para unique="1091406">MUL r/m8<footnote><para unique="1092122" format="TableFootnote"><anchor id="70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce"/>With a REX prefix in 64-bit mode, attempts to access AH, BH, CH, or DH will instead access SPL, DIL, BPL, or SIL, respectively.</para>
+        </footnote></para>
+      </td>
+     <td><para unique="1091408">M</para>
+      </td>
+     <td><para unique="1091410">Valid</para>
+      </td>
+     <td><para unique="1091412">Valid</para>
+      </td>
+     <td><para unique="1091414">Unsigned multiply (AX <sans>:= </sans>AL * r/m8).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091431">F7 /4</para>
+      </td>
+     <td><para unique="1091433">MUL r/m16</para>
+      </td>
+     <td><para unique="1091435">M</para>
+      </td>
+     <td><para unique="1091437">Valid</para>
+      </td>
+     <td><para unique="1091439">Valid</para>
+      </td>
+     <td><para unique="1091441">Unsigned multiply (DX:AX <sans>:= </sans>AX * r/m16).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091443">F7 /4</para>
+      </td>
+     <td><para unique="1091445">MUL r/m32</para>
+      </td>
+     <td><para unique="1091447">M</para>
+      </td>
+     <td><para unique="1091449">Valid</para>
+      </td>
+     <td><para unique="1091451">Valid</para>
+      </td>
+     <td><para unique="1091453">Unsigned multiply (EDX:EAX <sans>:= </sans>EAX * r/m32).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091455">REX.W + F7 /4</para>
+      </td>
+     <td><para unique="1091457">MUL r/m64</para>
+      </td>
+     <td><para unique="1091459">M</para>
+      </td>
+     <td><para unique="1091461">Valid </para>
+      </td>
+     <td><para unique="1091463">N.E.</para>
+      </td>
+     <td><para unique="1091465">Unsigned multiply (RDX:RAX <sans>:= </sans>RAX * r/m64).</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091467">
+   <col width="46.81224pt"/>
+   <col width="117.16848pt"/>
+   <col width="116.16408000000001pt"/>
+   <col width="114.1164pt"/>
+   <col width="117.70848000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091469">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091471">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091473">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091475">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091477">Operand 4</para>
       </th>
      </tr>
     </thead><tbody>
     <tr>
-     <td><para unique="1091517" format="CellBodyC">
-       <string>Byte</string></para>
+     <td valign="middle"><para unique="1091479">M</para>
       </td>
-     <td><para unique="1091519" format="CellBodyC">
-       <string>AL</string></para>
+     <td valign="middle"><para unique="1091481">ModRM:r/m (r)</para>
       </td>
-     <td><para unique="1091521" format="CellBodyC">
-       <string>r/m8</string></para>
+     <td valign="middle"><para unique="1091483">N/A</para>
       </td>
-     <td><para unique="1091523" format="CellBodyC">
-       <string>AX</string></para>
+     <td valign="middle"><para unique="1091485">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091487">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091488">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091490">Performs an unsigned multiplication of the first operand (destination operand) and the second operand (source operand) and stores the result in the destination operand. The destination operand is an implied operand located in register AL, AX or EAX (depending on the size of the operand); the source operand is located in a general-purpose register or a memory location. The action of this instruction and the location of the result depends on the opcode and the operand size as shown in <link unique="1091492" linkend="#43000: 06_Table: Table 3-55. MUL Results" xrefstyle="TableNum">Table 4&#8209;9</link>.</para>
+  <para unique="1091494">The result is stored in register AX, register pair DX:AX, or register pair EDX:EAX (depending on the operand size), with the high-order bits of the product contained in register AH, DX, or EDX, respectively. If the high-order bits of the product are 0, the <indexterm><primary>CF (carry) flag, EFLAGS register;OF (overflow) flag, EFLAGS register</primary></indexterm>CF and OF flags are cleared; otherwise, the flags are set.</para>
+  <para unique="1091496">In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. </para>
+  <para unique="1091497">See the summary chart at the beginning of this section for encoding data and limits.</para>
+  <table id="43000: 06_Table: Table 3-55. MUL Results" unique="1091498">
+   <caption><anchor id="43000: 06_Table: Table 3-55. MUL Results"/>MUL Results</caption>
+   <col width="127.41911999999999pt"/>
+   <col width="127.41911999999999pt"/>
+   <col width="127.41911999999999pt"/>
+   <col width="127.41911999999999pt"/>
+   <thead><tr>
+     <th><para unique="1091509">Operand Size</para>
+      </th>
+     <th><para unique="1091511">Source 1</para>
+      </th>
+     <th><para unique="1091513">Source 2</para>
+      </th>
+     <th><para unique="1091515">Destination</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1091517">Byte</para>
+      </td>
+     <td><para unique="1091519">AL</para>
+      </td>
+     <td><para unique="1091521">r/m8</para>
+      </td>
+     <td><para unique="1091523">AX</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1091525" format="CellBodyC">
-       <string>Word</string></para>
+     <td><para unique="1091525">Word</para>
       </td>
-     <td><para unique="1091527" format="CellBodyC">
-       <string>AX</string></para>
+     <td><para unique="1091527">AX</para>
       </td>
-     <td><para unique="1091529" format="CellBodyC">
-       <string>r/m16</string></para>
+     <td><para unique="1091529">r/m16</para>
       </td>
-     <td><para unique="1091531" format="CellBodyC">
-       <string>DX:AX</string></para>
+     <td><para unique="1091531">DX:AX</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1091533" format="CellBodyC">
-       <string>Doubleword</string></para>
+     <td><para unique="1091533">Doubleword</para>
       </td>
-     <td><para unique="1091535" format="CellBodyC">
-       <string>EAX</string></para>
+     <td><para unique="1091535">EAX</para>
       </td>
-     <td><para unique="1091537" format="CellBodyC">
-       <string>r/m32</string></para>
+     <td><para unique="1091537">r/m32</para>
       </td>
-     <td><para unique="1091539" format="CellBodyC">
-       <string>EDX:EAX</string></para>
+     <td><para unique="1091539">EDX:EAX</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1091541" format="CellBodyC">
-       <string>Quadword</string></para>
+     <td><para unique="1091541">Quadword</para>
       </td>
-     <td><para unique="1091543" format="CellBodyC">
-       <string>RAX</string></para>
+     <td><para unique="1091543">RAX</para>
       </td>
-     <td><para unique="1091545" format="CellBodyC">
-       <string>r/m64</string></para>
+     <td><para unique="1091545">r/m64</para>
       </td>
-     <td><para unique="1091547" format="CellBodyC">
-       <string>RDX:RAX</string></para>
+     <td><para unique="1091547">RDX:RAX</para>
       </td>
      </tr>
     </tbody>
    </table>
   </longdesc>
+ <operation>
+  <programlisting>IF (Byte operation)
+	THEN
+		AX := AL * SRC;
+	ELSE (* Word or doubleword operation *)
+		IF OperandSize = 16
+			THEN
+				DX:AX := AX * SRC;
+			ELSE IF OperandSize = 32
+				THEN EDX:EAX := EAX * SRC; FI;
+			ELSE (* OperandSize = 64 *)
+				RDX:RAX := RAX * SRC;
+		FI;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1091564">
-   <string>The OF and CF flags are set to 0 if the upper half of the result is 0; otherwise, they are set to 1. The SF, ZF, AF, and PF flags are undefined.</string></para>
+  <para unique="1091564">The OF and CF flags are set to 0 if the upper half of the result is 0; otherwise, they are set to 1. The SF, ZF, AF, and PF flags are undefined.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091566">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1091567">If the DS, ES, FS, or GS register contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091568">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091569">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091570">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091571">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1091573">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS</term>
+    <listitem><para unique="1091574">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091575">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091577">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091578">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091579">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091580">If alignment checking is enabled and an unaligned memory reference is made.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091581">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091583" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1091583" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091585">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091586">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091587">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091588">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

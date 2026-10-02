@@ -1,18 +1,106 @@
 <instruction name="ENDBR64">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Terminate an Indirect Branch in 64-bit Mode</shortdesc>
- <longdesc><para unique="1261245">
-   <string>Terminate an indirect branch in 64 bit mode. This opcode is a NOP when CET indirect branch tracking is not enabled, on processors that do not support CET, and outside 64-bit mode.</string></para>
+ <encoding_table><table unique="1261190">
+   <col width="83.79pt"/>
+   <col width="83.79pt"/>
+   <col width="30.443759999999997pt"/>
+   <col width="48.74976pt"/>
+   <col width="52.24968pt"/>
+   <col width="212.08391999999998pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1261192">Opcode/</para>
+      <para unique="1261193">Instruction</para>
+      </th>
+     <th><para unique="1261197">Op / En</para>
+      </th>
+     <th><para unique="1261199">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1261201">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261203">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1261205">F3 0F 1E FA</para>
+      <para unique="1261206">ENDBR64</para>
+      </td>
+     <td><para unique="1261210">ZO</para>
+      </td>
+     <td><para unique="1261212">V/V</para>
+      </td>
+     <td><para unique="1261214">CET_IBT</para>
+      </td>
+     <td><para unique="1261216">Terminate indirect branch in 64-bit mode.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261218">
+   <col width="50.64192pt"/>
+   <col width="61.44192pt"/>
+   <col width="99.74016pt"/>
+   <col width="97.96608pt"/>
+   <col width="98.86896pt"/>
+   <col width="103.85856pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261220">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261222">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1261224">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261226">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261228">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261230">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261232">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1261234">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261236">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261238">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261240">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261242">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261243">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261245">Terminate an indirect branch in 64 bit mode. This opcode is a NOP when CET indirect branch tracking is not enabled, on processors that do not support CET, and outside 64-bit mode.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF EndbranchEnabled(CPL) &amp; IA32_EFER.LMA = 1 &amp; CS.L = 1
+	IF CPL = 3
+		THEN
+			IA32_U_CET.TRACKER = IDLE
+			IA32_U_CET.SUPPRESS = 0
+		ELSE
+			IA32_S_CET.TRACKER = IDLE
+			IA32_S_CET.SUPPRESS = 0
+	FI;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261258">
-   <string>None.</string></para>
+  <para unique="1261258">None.</para>
   </subsection>
  <subsection title="Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1260557">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

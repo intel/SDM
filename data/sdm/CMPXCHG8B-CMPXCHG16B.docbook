@@ -1,115 +1,245 @@
 <instruction name="CMPXCHG8B/CMPXCHG16B">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Compare and Exchange Bytes</shortdesc>
- <longdesc><para unique="1261269">
-   <string>Compares the 64-bit value in EDX:EAX (or 128-bit value in RDX:RAX if operand size is 128 bits) with the operand (destination operand). If the values are equal, the 64&#8209;bit value in ECX:EBX (or 128-bit value in RCX:RBX) is stored in the destination operand. Otherwise, the value in the destination operand is loaded into EDX:EAX (or RDX:RAX). The destination operand is an 8-byte memory location (or 16-byte memory location if operand size is 128 bits). For the EDX:EAX and ECX:EBX register pairs, EDX and ECX contain the high-order 32 bits and EAX and EBX contain the low-order 32 bits of a 64-bit value. For the RDX:RAX and RCX:RBX register pairs, RDX and RCX contain the high-order 64 bits and RAX and RBX contain the low-order 64bits of a 128-bit value. </string></para>
-  <para unique="1261270">
-   <string>This instruction can be used with a LOCK prefix to allow the instruction to be executed atomically. To simplify the interface to the processor&#8217;s bus, the destination operand receives a write cycle without regard to the result of the comparison. The destination operand is written back if the comparison fails; otherwise, the source operand is written into the destination. (The processor never produces a locked read without also producing a locked write.)</string></para>
-  <para unique="1261271">
-   <string>In 64-bit mode, default operation size is 64 bits. Use of the REX.W prefix promotes operation to 128 bits. Note that CMPXCHG16B requires that the destination (memory) operand be 16&#8209;byte aligned. See the summary chart at the beginning of this section for encoding data and limits. For information on the CPUID flag that indicates CMPX&#173;CHG16B, see </string><link linkend="41478: H1Heading: Chapter 9 Processor Identification and Feature Determination"><string>Chapter 21</string></link><string> in the Intel</string><superscript><string>&#174;</string></superscript><string> 64 and IA-32 Architectures Software Developer&#8217;s Manual, Volume 1</string><string>.</string></para>
-  <section level="7">
-   <title unique="1261275"><string>IA-32 Architecture Compatibility</string></title>
-   <para unique="1261276">
-    <string>This instruction encoding is not supported on Intel processors earlier than the Pentium processors.</string></para>
-   </section>
+ <encoding_table><table unique="1261192">
+   <thead><tr>
+     <th colspan="2"><para unique="1261194">Opcode/</para>
+      <para unique="1261195">Instruction</para>
+      </th>
+     <th><para unique="1261199">Op/ En</para>
+      </th>
+     <th><para unique="1261201">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261203">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261205">Description</para>
+      </th>
+     </tr>
+    </thead><col width="71.06255999999999pt"/>
+   <col width="80.61264pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="240.80328pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1261207">0F C7 /1 </para>
+      <para unique="1261208">CMPXCHG8B m64</para>
+      </td>
+     <td><para unique="1261212">M</para>
+      </td>
+     <td><para unique="1261214">Valid</para>
+      </td>
+     <td><para unique="1261216">Valid*</para>
+      </td>
+     <td><para unique="1261218">Compare EDX:EAX with m64. If equal, set ZF and load ECX:EBX into m64. Else, clear ZF and load m64 into EDX:EAX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261220">REX.W + 0F C7 /1 </para>
+      <para unique="1261221">CMPXCHG16B m128</para>
+      </td>
+     <td><para unique="1261225">M</para>
+      </td>
+     <td><para unique="1261227">Valid</para>
+      </td>
+     <td><para unique="1261229">N.E.</para>
+      </td>
+     <td><para unique="1261231">Compare RDX:RAX with m128. If equal, set ZF and load RCX:RBX into m128. Else, clear ZF and load m128 into RDX:RAX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="6"><para unique="1261233">NOTES:</para>
+      <para unique="1261234">*	See IA-32 Architecture Compatibility section below.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261246">
+   <col width="42.1668pt"/>
+   <col width="121.17888pt"/>
+   <col width="114.09408pt"/>
+   <col width="111.40343999999999pt"/>
+   <col width="121.62744pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261248">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261250">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261252">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261254">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261256">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261258">M</para>
+      </td>
+     <td valign="middle"><para unique="1261260">ModRM:r/m (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1261262">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261264">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261266">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261267">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261269">Compares the 64-bit value in EDX:EAX (or 128-bit value in RDX:RAX if operand size is 128 bits) with the operand (destination operand). If the values are equal, the 64&#8209;bit value in ECX:EBX (or 128-bit value in RCX:RBX) is stored in the destination operand. Otherwise, the value in the destination operand is loaded into EDX:EAX (or RDX:RAX). The destination operand is an 8-byte memory location (or 16-byte memory location if operand size is 128 bits). For the EDX:EAX and ECX:EBX register pairs, EDX and ECX contain the high-order 32 bits and EAX and EBX contain the low-order 32 bits of a 64-bit value. For the RDX:RAX and RCX:RBX register pairs, RDX and RCX contain the high-order 64 bits and RAX and RBX contain the low-order 64bits of a 128-bit value. </para>
+  <para unique="1261270">This instruction can be used with a LOCK prefix to allow the instruction to be executed atomically. To simplify the interface to the processor&#8217;s bus, the destination operand receives a write cycle without regard to the result of the comparison. The destination operand is written back if the comparison fails; otherwise, the source operand is written into the destination. (The processor never produces a locked read without also producing a locked write.)</para>
+  <para unique="1261271">In 64-bit mode, default operation size is 64 bits. Use of the REX.W prefix promotes operation to 128 bits. Note that CMPXCHG16B requires that the destination (memory) operand be 16&#8209;byte aligned. See the summary chart at the beginning of this section for encoding data and limits. For information on the CPUID flag that indicates CMPX&#173;CHG16B, see <link unique="1262245" linkend="&lt;c&gt;__sdm_vol1_ch21-cpuid.fm#41478: H1Heading: Chapter 9 Processor Identification and Feature Determination" xrefstyle="ChapterNum">Chapter 21</link> in the Intel<superscript>&#174;</superscript> 64 and IA-32 Architectures Software Developer&#8217;s Manual, Volume 1.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF (64-Bit Mode and OperandSize = 64)
+	THEN
+		TEMP128 := DEST
+		IF (RDX:RAX = TEMP128)
+			THEN
+				ZF := 1;
+				DEST := RCX:RBX;
+			ELSE
+				ZF := 0;
+				RDX:RAX := TEMP128;
+				DEST := TEMP128;
+				FI;
+		FI
+	ELSE
+		TEMP64 := DEST;
+		IF (EDX:EAX = TEMP64)
+			THEN
+				ZF := 1;
+				DEST := ECX:EBX;
+			ELSE
+				ZF := 0;
+				EDX:EAX := TEMP64;
+				DEST := TEMP64;
+				FI;
+		FI;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261305">
-   <string>The ZF flag is set if the destination operand and EDX:EAX are equal; otherwise it is cleared. The CF, PF, AF, SF, and OF flags are unaffected.</string></para>
+  <para unique="1261305">The ZF flag is set if the destination operand and EDX:EAX are equal; otherwise it is cleared. The CF, PF, AF, SF, and OF flags are unaffected.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the destination is not a memory operand.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261307">If the destination is not a memory operand.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the destination is located in a non-writable segment.</string></listitem>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261308">If the destination is located in a non-writable segment.</para>
+     </listitem>
+    <listitem><para unique="1261309">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1261310">If the DS, ES, FS, or GS register contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261311">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261312">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261313">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If the destination operand is not a memory location.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1261315">If the destination operand is not a memory location.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1261316">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS</term>
+    <listitem><para unique="1261317">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If the destination operand is not a memory location.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1261319">If the destination operand is not a memory location.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261320">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261321">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261322">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261323">If alignment checking is enabled and an unaligned memory reference is made.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261325" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261325" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261327">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
-    <listitem><string>If memory operand for CMPXCHG16B is not aligned on a 16-byte boundary.</string></listitem>
-    <listitem><string>If CPUID.01H:ECX.CMPXCHG16B[13] = 0.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261328">If the memory address is in a non-canonical form.</para>
+     </listitem>
+    <listitem><para unique="1261329">If memory operand for CMPXCHG16B is not aligned on a 16-byte boundary.</para>
+     </listitem>
+    <listitem><para unique="1261330">If CPUID.01H:ECX.CMPXCHG16B[13] = 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If the destination operand is not a memory location.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1261331">If the destination operand is not a memory location.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261332">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261333">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

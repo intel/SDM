@@ -1,101 +1,292 @@
 <instruction name="MOVSX/MOVSXD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Move With Sign-Extension</shortdesc>
- <longdesc><para unique="1091526">
-   <string>Copies the contents of the source operand (register or memory location) to the destination operand (register) and sign extends the value to 16 or 32 bits (see </string><string>Figure 7-6</string><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Devel&#173;oper&#8217;s Manual, Volume 1). The size of the converted value depends on the operand-size attribute.</string></para>
-  <para unique="1091530">
-   <string>In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</string></para>
+ <encoding_table><table unique="1091390">
+   <thead><tr>
+     <th><para unique="1091392">Opcode</para>
+      </th>
+     <th><para unique="1091394">Instruction</para>
+      </th>
+     <th><para unique="1091396">Op/ En</para>
+      </th>
+     <th><para unique="1091398">64-Bit Mode</para>
+      </th>
+     <th><para unique="1091400">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1091402">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.6112pt"/>
+   <col width="111.86352000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="181.404pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1091404">0F BE /r</para>
+      </td>
+     <td><para unique="1091406">MOVSX r16, r/m8<footnote><para unique="1092006" format="TableFootnote">With a REX prefix in 64-bit mode, attempts to access AH, BH, CH, or DH will instead access SPL, DIL, BPL, or SIL, respectively.</para>
+        </footnote></para>
+      </td>
+     <td><para unique="1091408">RM</para>
+      </td>
+     <td><para unique="1091410">Valid</para>
+      </td>
+     <td><para unique="1091412">Valid</para>
+      </td>
+     <td><para unique="1091414">Move byte to word with sign-extension.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091416">0F BE /r</para>
+      </td>
+     <td><para unique="1091418">MOVSX r32, r/m8<superscript>1</superscript></para>
+      </td>
+     <td><para unique="1091420">RM</para>
+      </td>
+     <td><para unique="1091422">Valid</para>
+      </td>
+     <td><para unique="1091424">Valid</para>
+      </td>
+     <td><para unique="1091426">Move byte to doubleword with sign-extension.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091428">REX.W + 0F BE /r</para>
+      </td>
+     <td><para unique="1091430">MOVSX r64, r/m8<superscript>1</superscript></para>
+      </td>
+     <td><para unique="1091432">RM</para>
+      </td>
+     <td><para unique="1091434">Valid</para>
+      </td>
+     <td><para unique="1091436">N.E.</para>
+      </td>
+     <td><para unique="1091438">Move byte to quadword with sign-extension.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091440">0F BF /r</para>
+      </td>
+     <td><para unique="1091442">MOVSX r32, r/m16</para>
+      </td>
+     <td><para unique="1091444">RM</para>
+      </td>
+     <td><para unique="1091446">Valid</para>
+      </td>
+     <td><para unique="1091448">Valid</para>
+      </td>
+     <td><para unique="1091450">Move word to doubleword, with sign-extension.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091452">REX.W + 0F BF /r</para>
+      </td>
+     <td><para unique="1091454">MOVSX r64, r/m16</para>
+      </td>
+     <td><para unique="1091456">RM</para>
+      </td>
+     <td><para unique="1091458">Valid </para>
+      </td>
+     <td><para unique="1091460">N.E.</para>
+      </td>
+     <td><para unique="1091462">Move word to quadword with sign-extension.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091467">63 /r<footnote><para unique="1091466" format="TableFootnote"><anchor id="60243: TableFootnote: 2. The use of MOVSXD without REX.W in 64-bit mode is"/>The use of MOVSXD without REX.W in 64-bit mode is discouraged. Regular MOV should be used instead of using MOVSXD without REX.W. </para>
+        </footnote></para>
+      </td>
+     <td><para unique="1091469">MOVSXD r16, r/m16</para>
+      </td>
+     <td><para unique="1091471">RM</para>
+      </td>
+     <td><para unique="1091473">Valid </para>
+      </td>
+     <td><para unique="1091475">N.E.</para>
+      </td>
+     <td><para unique="1091477">Move word to word with sign-extension.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091479">63 /r<superscript><link unique="1092405" linkend="#60243: TableFootnote: 2. The use of MOVSXD without REX.W in 64-bit mode is" xrefstyle="Paragraph Number">2</link></superscript></para>
+      </td>
+     <td><para unique="1091481">MOVSXD r32, r/m32</para>
+      </td>
+     <td><para unique="1091483">RM</para>
+      </td>
+     <td><para unique="1091485">Valid </para>
+      </td>
+     <td><para unique="1091487">N.E.</para>
+      </td>
+     <td><para unique="1091489">Move doubleword to doubleword with sign-extension.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091491">REX.W + 63 /r</para>
+      </td>
+     <td><para unique="1091493">MOVSXD r64, r/m32</para>
+      </td>
+     <td><para unique="1091495">RM</para>
+      </td>
+     <td><para unique="1091497">Valid </para>
+      </td>
+     <td><para unique="1091499">N.E.</para>
+      </td>
+     <td><para unique="1091501">Move doubleword to quadword with sign-extension.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091503">
+   <col width="48.263040000000004pt"/>
+   <col width="111.26304pt"/>
+   <col width="114.08832pt"/>
+   <col width="115.20936pt"/>
+   <col width="123.14592pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091505">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091507">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091509">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091511">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091513">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091515">RM</para>
+      </td>
+     <td valign="middle"><para unique="1091517">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091519">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091521">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091523">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091524">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091526">Copies the contents of the source operand (register or memory location) to the destination operand (register) and sign extends the value to 16 or 32 bits (see Figure 7-6 in the Intel&#174; 64 and IA&#8209;32 Architectures Software Devel&#173;oper&#8217;s Manual, Volume 1). The size of the converted value depends on the operand-size attribute.</para>
+  <para unique="1091530">In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</para>
   </longdesc>
+ <operation>
+  <programlisting>DEST := SignExtend(SRC);</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1091534">
-   <string>None.</string></para>
+  <para unique="1091534">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091536">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1091537">If the DS, ES, FS, or GS register contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091538">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091539">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091540">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091541">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1091543">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS</term>
+    <listitem><para unique="1091544">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091545">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091547">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091548">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091549">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091550">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091552" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1091552" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091554">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091555">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091556">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091557">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091558">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

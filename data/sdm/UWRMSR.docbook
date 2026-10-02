@@ -1,65 +1,171 @@
 <instruction name="UWRMSR">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>User Write to Model-Specific Register</shortdesc>
- <longdesc><para unique="1092708">
-   <string>UWRMSR writes the contents of operand 2 into the 64-bit MSR specified in operand 1. Operand 2 is a general-purpose register, while operand 1 may be either a general-purpose register or an immediate. UWRMSR writes the indicated MSR in the same manner as WRMSR, but it is limited to a specific set of MSRs. Currently, the only such MSR is the IA32_UARCH_MISC_CTL MSR (address 1B01H).</string><anchor id="+107957"/></para>
-  <para unique="1092741">
-   <string>The indicated MSRs can be written by UWRMSR at any privilege level but under OS control. The OS controls what MSRs can be read by the URDMSR and UWRMSR instructions with a 4-KByte </string><bold><string>user-MSR bitmap</string></bold><string> located at an aligned linear address in the IA32_USER_MSR_CTL MSR (address 1CH). The UWRMSR instruction is enabled only if bit 0 of this MSR is 1.</string></para>
-  <para unique="1092742">
-   <string>The high 2 KBytes of the bitmap control UWRMSR (they compose the UWRMSR bitmap); these 2 KBytes include one bit for each MSR address in the range 0H&#8211;3FFFH. UWRMSR may write to an MSR only if the bit corresponding to the MSR has value 1; otherwise (or if the MSR address is outside that range) UWRMSR causes a general-protec&#173;tion exception (#GP).</string></para>
-  <para unique="1092743">
-   <string>UWRMSR accesses to these bitmaps are implicit supervisor-mode accesses, which means they use supervisor priv&#173;ilege regardless of CPL. </string><anchor id="+967059"/><string>UWRMSR behaves like WRMSRNS and is not defined as a serializing instruction (see &#8220;Serializing Instructions&#8221; in </string><link linkend="36559: H1Heading: Chapter 7 Multiple-Processor Management"><string>Chapter 11</string></link><string> of the Intel</string><superscript><string>&#174;</string></superscript><string> 64 and IA-32 Architectures Software Developer's Manual, Volume 3A). Refer to the WRMSRNS instruction for a thorough explanation of what this implies. </string></para>
+ <encoding_table><table unique="1092634">
+   <thead><tr>
+     <th colspan="2"><para unique="1092636">Opcode /</para>
+      <para unique="1092637">Instruction</para>
+      </th>
+     <th><para unique="1092641">Op/ En</para>
+      </th>
+     <th><para unique="1092643">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1092645">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1092647">Description</para>
+      </th>
+     </tr>
+    </thead><col width="81.88488pt"/>
+   <col width="92.88936pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="50.92776pt"/>
+   <col width="213.65352000000001pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1092649">F3 0F 38 F8 11:rrr:bbb</para>
+      <para unique="1092650">UWRMSR r64, r64 </para>
+      </td>
+     <td><para unique="1092654">RM</para>
+      </td>
+     <td><para unique="1092656">V/N.E.</para>
+      </td>
+     <td><para unique="1092658">USER_MSR</para>
+      </td>
+     <td><para unique="1092660">	Write the value of register bbb to the MSR with address in rrr.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092662">VEX.128.F3.MAP7:W0.F8 11:000:bbb</para>
+      <para unique="1092663">UWRMSR imm32, r64 </para>
+      </td>
+     <td><para unique="1092667">IM</para>
+      </td>
+     <td><para unique="1092669">V/N.E.</para>
+      </td>
+     <td><para unique="1092671">USER_MSR</para>
+      </td>
+     <td><para unique="1092673">	Write the value of register bbb to the MSR specified in the 32-bit immediate. </para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1092675">
+   <col width="46.32624pt"/>
+   <col width="113.42304pt"/>
+   <col width="115.70472000000001pt"/>
+   <col width="115.29504pt"/>
+   <col width="122.57136pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1092677">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1092679">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1092681">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1092683">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1092685">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1092687">RM</para>
+      </td>
+     <td valign="middle"><para unique="1092689">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1092691">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1092693">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1092695">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1092697">IM</para>
+      </td>
+     <td valign="middle"><para unique="1092699">imm32</para>
+      </td>
+     <td valign="middle"><para unique="1092701">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1092703">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1092705">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1092706">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1092708">UWRMSR writes the contents of operand 2 into the 64-bit MSR specified in operand 1. Operand 2 is a general-purpose register, while operand 1 may be either a general-purpose register or an immediate. UWRMSR writes the indicated MSR in the same manner as WRMSR, but it is limited to a specific set of MSRs. Currently, the only such MSR is the IA32_UARCH_MISC_CTL MSR (address 1B01H).<anchor id="+107957"/></para>
+  <para unique="1092741">The indicated MSRs can be written by UWRMSR at any privilege level but under OS control. The OS controls what MSRs can be read by the URDMSR and UWRMSR instructions with a 4-KByte <bold>user-MSR bitmap</bold> located at an aligned linear address in the IA32_USER_MSR_CTL MSR (address 1CH). The UWRMSR instruction is enabled only if bit 0 of this MSR is 1.</para>
+  <para unique="1092742">The high 2 KBytes of the bitmap control UWRMSR (they compose the UWRMSR bitmap); these 2 KBytes include one bit for each MSR address in the range 0H&#8211;3FFFH. UWRMSR may write to an MSR only if the bit corresponding to the MSR has value 1; otherwise (or if the MSR address is outside that range) UWRMSR causes a general-protec&#173;tion exception (#GP).</para>
+  <para unique="1092743">UWRMSR accesses to these bitmaps are implicit supervisor-mode accesses, which means they use supervisor priv&#173;ilege regardless of CPL. <anchor id="+967059"/>UWRMSR behaves like WRMSRNS and is not defined as a serializing instruction (see &#8220;Serializing Instructions&#8221; in <link unique="1093400" linkend="&lt;c&gt;__sdm_vol3A_ch11.fm#36559: H1Heading: Chapter 7 Multiple-Processor Management" xrefstyle="ChapterNum">Chapter 11</link> of the Intel<superscript>&#174;</superscript> 64 and IA-32 Architectures Software Developer\qs Manual, Volume 3A). Refer to the WRMSRNS instruction for a thorough explanation of what this implies. </para>
   </longdesc>
+ <operation>
+  <programlisting>MSR[DEST] := SRC</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1092765">
-   <string>None.</string></para>
+  <para unique="1092765">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The UWRMSR instruction is not recognized outside 64-bit mode.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1092767">The UWRMSR instruction is not recognized outside 64-bit mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The UWRMSR instruction is not recognized outside 64-bit mode.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1092769">The UWRMSR instruction is not recognized outside 64-bit mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The UWRMSR instruction is not recognized outside 64-bit mode.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1092771">The UWRMSR instruction is not recognized outside 64-bit mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The UWRMSR instruction is not recognized outside 64-bit mode.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1092773">The UWRMSR instruction is not recognized outside 64-bit mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If MSR_address[63:14] is not all zero.</string></listitem>
-    <listitem><string>If the MSR address is in the range 0</string><string>&#8722;3FFH and bit n in UWRMSR bitmap is 0, where n is the MSR address.</string></listitem>
-    <listitem><string>If an MSR other than IA32_UARCH_MISC_CTL is specified.</string></listitem>
-    <listitem><string>If WRMSR to the specified MSR would result in a #GP(0) exception due to the MSR not being accessible or attempting to set bits that are reserved.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1092775">If MSR_address[63:14] is not all zero.</para>
+     </listitem>
+    <listitem><para unique="1092776">If the MSR address is in the range 0&#8722;3FFH and bit n in UWRMSR bitmap is 0, where n is the MSR address.</para>
+     </listitem>
+    <listitem><para unique="1092783">If an MSR other than IA32_UARCH_MISC_CTL is specified.</para>
+     </listitem>
+    <listitem><para unique="1092784">If WRMSR to the specified MSR would result in a #GP(0) exception due to the MSR not being accessible or attempting to set bits that are reserved.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If CPUID.07H.01H:EDX.USER_MSR[15] = 0.</string></listitem>
-    <listitem><string>If IA32_USER_MSR_CTL.ENABLE = 0.</string><indexterm><primary>AESDEC&#8212;Perform One Round of an AES Decryption Flow</primary></indexterm></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1092786">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1092787">If CPUID.07H.01H:EDX.USER_MSR[15] = 0.</para>
+     </listitem>
+    <listitem><para unique="1092789">If IA32_USER_MSR_CTL.ENABLE = 0.<indexterm><primary>AESDEC&#8212;Perform One Round of an AES Decryption Flow</primary></indexterm></para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

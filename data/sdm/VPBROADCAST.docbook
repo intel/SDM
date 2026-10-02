@@ -1,288 +1,940 @@
 <instruction name="VPBROADCAST">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Load Integer and Broadcast</shortdesc>
- <longdesc><para unique="1046600">
-   <string>Load integer data from the source operand (the second operand) and broadcast to all elements of the destination operand (the first operand).</string></para>
-  <para unique="1046601">
-   <string>VEX256-encoded VPBROADCASTB/W/D/Q: The source operand is 8-bit, 16-bit, 32-bit, 64-bit memory location or the low 8-bit, 16-bit 32-bit, 64-bit data in an XMM register. The destination operand is a YMM register. VPBROAD&#173;CASTI128 support the source operand of 128-bit memory location. Register source encodings for VPBROADCAS&#173;TI128 is reserved and will #UD. Bits (MAXVL-1:256) of the destination register are zeroed.</string></para>
-  <para unique="1046602">
-   <string>EVEX-encoded VPBROADCASTD/Q: The source operand is a 32-bit, 64-bit memory location or the low 32-bit, 64-bit data in an XMM register. The destination operand is a ZMM/YMM/XMM register and updated according to the writemask k1. </string></para>
-  <para unique="1046603">
-   <string>VPBROADCASTI32X4 and VPBROADCASTI64X4: The destination operand is a ZMM register and updated according to the writemask k1. The source operand is 128-bit or 256-bit memory location. Register source encodings for </string><sans><string>VBROADCASTI32X4 and VBROADCASTI64X4 </string></sans><string>are reserved and will #UD.</string></para>
-  <para unique="1046604">
-   <string>Note: VEX.vvvv and EVEX.vvvv are reserved and must be 1111b otherwise instructions will #UD.</string></para>
-  <para unique="1046605">
-   <string>If VPBROADCASTI128 is encoded with VEX.L= 0, an attempt to execute the instruction encoded with VEX.L= 0 will cause an #UD exception.</string></para>
-  <table>
-   <caption>Figure 5-16.  VPBROADCASTD Operation (VEX.256 encoded version)</caption>
-   <colgroup><col/>
-    <col/>
-    </colgroup>
-   <tbody>
+ <encoding_table><table unique="1046081">
+   <col width="89.24832pt"/>
+   <col width="89.24904000000001pt"/>
+   <col width="29.244239999999998pt"/>
+   <col width="48.74976pt"/>
+   <col width="77.33304000000001pt"/>
+   <col width="178.66728pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1046083">Opcode/</para>
+      <para unique="1046084">Instruction</para>
+      </th>
+     <th><para unique="1046088">Op / En</para>
+      </th>
+     <th><para unique="1046090">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1046092">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1046094">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
     <tr>
-     <td><para unique="1046645" format="05_FigureGraphic">
-       <svg width="1000" height="279.6078130396408" viewBox="0 0 375.2496 104.92272">
-        <defs>
-        <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
-          <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
-        </marker>
-      </defs>
-        <text x="13.093919999999999" y="85.45248" font-size="6">DEST</text>
-        <text x="254.44656" y="16.20072" font-size="6">m32</text>
-        <polyline points="309.52512,19.54152 198.15264000000002,76.91615999999999" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
-        <rect width="37.12392" height="13.5" x="292.65048" y="6.04152" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="303.73272000000003" y="14.57712" font-size="6">X0</text>
-        <polyline points="310.08816,19.540799999999997 309.52512,76.91615999999999" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <polyline points="309.52512,19.54152 272.4012,76.91615999999999" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <polyline points="309.52512,19.54152 235.27656,76.91615999999999" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <rect width="37.12392" height="13.5" x="292.65048" y="76.91615999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="306.15048" y="87.07535999999999" font-size="6">X0</text>
-        <rect width="37.12392" height="13.5" x="218.40192000000002" y="76.91615999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="231.90192000000002" y="87.07535999999999" font-size="6">X0</text>
-        <rect width="37.12392" height="13.5" x="255.52656" y="76.91615999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="269.08776" y="87.07535999999999" font-size="6">X0</text>
-        <rect width="37.12392" height="13.5" x="144.15336000000002" y="76.91615999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="157.65336000000002" y="87.07535999999999" font-size="6">X0</text>
-        <rect width="37.12392" height="13.5" x="181.278" y="76.91615999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="194.8392" y="87.07535999999999" font-size="6">X0</text>
-        <rect width="37.12392" height="13.5" x="69.9048" y="76.91615999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="83.40480000000001" y="87.07535999999999" font-size="6">X0</text>
-        <rect width="37.12392" height="13.5" x="107.02944000000001" y="76.91615999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="120.59064000000001" y="87.07535999999999" font-size="6">X0</text>
-        <rect width="37.12392" height="13.5" x="32.780879999999996" y="76.91615999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="46.342079999999996" y="87.07535999999999" font-size="6">X0</text>
-        <polyline points="309.52512,19.54152 164.40336000000002,76.91615999999999" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <polyline points="309.52512,19.54152 123.90408000000001,76.91615999999999" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <polyline points="309.52512,19.54152 90.15480000000001,76.91615999999999" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <polyline points="309.52512,19.54152 49.65552,76.91615999999999" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        </svg></para>
+     <td colspan="2"><para unique="1047805">VEX.128.66.0F38.W0 78 /r</para>
+      <para unique="1047806">VPBROADCASTB xmm1, xmm2/m8</para>
+      </td>
+     <td><para unique="1047810">A</para>
+      </td>
+     <td><para unique="1047812">V/V</para>
+      </td>
+     <td><para unique="1047814">AVX2</para>
+      </td>
+     <td><para unique="1047816">Broadcast a byte integer in the source operand to sixteen locations in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047792">VEX.256.66.0F38.W0 78 /r</para>
+      <para unique="1047793">VPBROADCASTB ymm1, xmm2/m8</para>
+      </td>
+     <td><para unique="1047797">A</para>
+      </td>
+     <td><para unique="1047799">V/V</para>
+      </td>
+     <td><para unique="1047801">AVX2</para>
+      </td>
+     <td><para unique="1047803">Broadcast a byte integer in the source operand to thirty-two locations in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047775">EVEX.128.66.0F38.W0 78 /r</para>
+      <para unique="1047776">VPBROADCASTB xmm1{k1}{z}, xmm2/m8</para>
+      </td>
+     <td><para unique="1047780">B</para>
+      </td>
+     <td><para unique="1047782">V/V</para>
+      </td>
+     <td><para unique="1047784">(AVX512VL AND</para>
+      <para unique="1047785">AVX512BW) OR AVX10.1<anchor id="+371759"/></para>
+      </td>
+     <td><para unique="1047790">Broadcast a byte integer in the source operand to locations in xmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047761">EVEX.256.66.0F38.W0 78 /r</para>
+      <para unique="1047762">VPBROADCASTB ymm1{k1}{z}, xmm2/m8</para>
+      </td>
+     <td><para unique="1047766">B</para>
+      </td>
+     <td><para unique="1047768">V/V</para>
+      </td>
+     <td><para unique="1047770">(AVX512VL AND</para>
+      <para unique="1047771">AVX512BW) OR AVX10.1<anchor id="+343763"/></para>
+      </td>
+     <td><para unique="1047773">Broadcast a byte integer in the source operand to locations in ymm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047747">EVEX.512.66.0F38.W0 78 /r</para>
+      <para unique="1047748">VPBROADCASTB zmm1{k1}{z}, xmm2/m8</para>
+      </td>
+     <td><para unique="1047752">B</para>
+      </td>
+     <td><para unique="1047754">V/V</para>
+      </td>
+     <td><para unique="1047756">AVX512BW </para>
+      <para unique="1047757">OR AVX10.1<anchor id="+675100"/></para>
+      </td>
+     <td><para unique="1047759">Broadcast a byte integer in the source operand to 64 locations in zmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047734">VEX.128.66.0F38.W0 79 /r</para>
+      <para unique="1047735">VPBROADCASTW xmm1, xmm2/m16</para>
+      </td>
+     <td><para unique="1047739">A</para>
+      </td>
+     <td><para unique="1047741">V/V</para>
+      </td>
+     <td><para unique="1047743">AVX2</para>
+      </td>
+     <td><para unique="1047745">Broadcast a word integer in the source operand to eight locations in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047721">VEX.256.66.0F38.W0 79 /r</para>
+      <para unique="1047722">VPBROADCASTW ymm1, xmm2/m16</para>
+      </td>
+     <td><para unique="1047726">A</para>
+      </td>
+     <td><para unique="1047728">V/V</para>
+      </td>
+     <td><para unique="1047730">AVX2</para>
+      </td>
+     <td><para unique="1047732">Broadcast a word integer in the source operand to sixteen locations in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047707">EVEX.128.66.0F38.W0 79 /r</para>
+      <para unique="1047708">VPBROADCASTW xmm1{k1}{z}, xmm2/m16</para>
+      </td>
+     <td><para unique="1047712">B</para>
+      </td>
+     <td><para unique="1047714">V/V</para>
+      </td>
+     <td><para unique="1047716">(AVX512VL AND</para>
+      <para unique="1047717">AVX512BW) OR AVX10.1<anchor id="+172154"/></para>
+      </td>
+     <td><para unique="1047719">Broadcast a word integer in the source operand to locations in xmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047693">EVEX.256.66.0F38.W0 79 /r</para>
+      <para unique="1047694">VPBROADCASTW ymm1{k1}{z}, xmm2/m16</para>
+      </td>
+     <td><para unique="1047698">B</para>
+      </td>
+     <td><para unique="1047700">V/V</para>
+      </td>
+     <td><para unique="1047702">(AVX512VL AND</para>
+      <para unique="1047703">AVX512BW) OR AVX10.1<anchor id="+232100"/></para>
+      </td>
+     <td><para unique="1047705">Broadcast a word integer in the source operand to locations in ymm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047679">EVEX.512.66.0F38.W0 79 /r</para>
+      <para unique="1047680">VPBROADCASTW zmm1{k1}{z}, xmm2/m16</para>
+      </td>
+     <td><para unique="1047684">B</para>
+      </td>
+     <td><para unique="1047686">V/V</para>
+      </td>
+     <td><para unique="1047688">AVX512BW </para>
+      <para unique="1047689">OR AVX10.1<anchor id="+647260"/></para>
+      </td>
+     <td><para unique="1047691">Broadcast a word integer in the source operand to 32 locations in zmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047666">VEX.128.66.0F38.W0 58 /r</para>
+      <para unique="1047667">VPBROADCASTD xmm1, xmm2/m32</para>
+      </td>
+     <td><para unique="1047671">A</para>
+      </td>
+     <td><para unique="1047673">V/V</para>
+      </td>
+     <td><para unique="1047675">AVX2</para>
+      </td>
+     <td><para unique="1047677">Broadcast a dword integer in the source operand to four locations in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047653">VEX.256.66.0F38.W0 58 /r</para>
+      <para unique="1047654">VPBROADCASTD ymm1, xmm2/m32</para>
+      </td>
+     <td><para unique="1047658">A</para>
+      </td>
+     <td><para unique="1047660">V/V</para>
+      </td>
+     <td><para unique="1047662">AVX2</para>
+      </td>
+     <td><para unique="1047664">Broadcast a dword integer in the source operand to eight locations in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047636">EVEX.128.66.0F38.W0 58 /r</para>
+      <para unique="1047637">VPBROADCASTD xmm1 {k1}{z}, xmm2/m32</para>
+      </td>
+     <td><para unique="1047641">B</para>
+      </td>
+     <td><para unique="1047643">V/V</para>
+      </td>
+     <td><para unique="1047645">(AVX512VL AND</para>
+      <para unique="1047649">AVX512F) OR AVX10.1<anchor id="+390810"/></para>
+      </td>
+     <td><para unique="1047651">Broadcast a dword integer in the source operand to locations in xmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047619">EVEX.256.66.0F38.W0 58 /r</para>
+      <para unique="1047620">VPBROADCASTD ymm1 {k1}{z}, xmm2/m32</para>
+      </td>
+     <td><para unique="1047624">B</para>
+      </td>
+     <td><para unique="1047626">V/V</para>
+      </td>
+     <td><para unique="1047628">(AVX512VL AND</para>
+      <para unique="1047632">AVX512F) OR AVX10.1<anchor id="+589159"/></para>
+      </td>
+     <td><para unique="1047634">Broadcast a dword integer in the source operand to locations in ymm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047602">EVEX.512.66.0F38.W0 58 /r</para>
+      <para unique="1047603">VPBROADCASTD zmm1 {k1}{z}, xmm2/m32</para>
+      </td>
+     <td><para unique="1047607">B</para>
+      </td>
+     <td><para unique="1047609">V/V</para>
+      </td>
+     <td><para unique="1047614">AVX512F </para>
+      <para unique="1047615">OR AVX10.1<anchor id="+246776"/></para>
+      </td>
+     <td><para unique="1047617">Broadcast a dword integer in the source operand to locations in zmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047589">VEX.128.66.0F38.W0 59 /r</para>
+      <para unique="1047590">VPBROADCASTQ xmm1, xmm2/m64</para>
+      </td>
+     <td><para unique="1047594">A</para>
+      </td>
+     <td><para unique="1047596">V/V</para>
+      </td>
+     <td><para unique="1047598">AVX2</para>
+      </td>
+     <td><para unique="1047600">Broadcast a qword element in source operand to two locations in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047576">VEX.256.66.0F38.W0 59 /r</para>
+      <para unique="1047577">VPBROADCASTQ ymm1, xmm2/m64</para>
+      </td>
+     <td><para unique="1047581">A</para>
+      </td>
+     <td><para unique="1047583">V/V</para>
+      </td>
+     <td><para unique="1047585">AVX2</para>
+      </td>
+     <td><para unique="1047587">Broadcast a qword element in source operand to four locations in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047559">EVEX.128.66.0F38.W1 59 /r</para>
+      <para unique="1047560">VPBROADCASTQ xmm1 {k1}{z}, xmm2/m64</para>
+      </td>
+     <td><para unique="1047564">B</para>
+      </td>
+     <td><para unique="1047566">V/V</para>
+      </td>
+     <td><para unique="1047568">(AVX512VL AND</para>
+      <para unique="1047572">AVX512F) OR AVX10.1<anchor id="+337886"/></para>
+      </td>
+     <td><para unique="1047574">Broadcast a qword element in source operand to locations in xmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047542">EVEX.256.66.0F38.W1 59 /r</para>
+      <para unique="1047543">VPBROADCASTQ ymm1 {k1}{z}, xmm2/m64</para>
+      </td>
+     <td><para unique="1047547">B</para>
+      </td>
+     <td><para unique="1047549">V/V</para>
+      </td>
+     <td><para unique="1047551">(AVX512VL AND</para>
+      <para unique="1047555">AVX512F) OR AVX10.1<anchor id="+534657"/></para>
+      </td>
+     <td><para unique="1047557">Broadcast a qword element in source operand to locations in ymm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047525">EVEX.512.66.0F38.W1 59 /r</para>
+      <para unique="1047526">VPBROADCASTQ zmm1 {k1}{z}, xmm2/m64</para>
+      </td>
+     <td><para unique="1047530">B</para>
+      </td>
+     <td><para unique="1047532">V/V</para>
+      </td>
+     <td><para unique="1047537">AVX512F </para>
+      <para unique="1047538">OR AVX10.1<anchor id="+350867"/></para>
+      </td>
+     <td><para unique="1047540">Broadcast a qword element in source operand to locations in zmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047511">EVEX.128.66.0F38.W0 59 /r</para>
+      <para unique="1047512">VBROADCASTI32x2 xmm1 {k1}{z}, xmm2/m64</para>
+      </td>
+     <td><para unique="1047516">C</para>
+      </td>
+     <td><para unique="1047518">V/V</para>
+      </td>
+     <td><para unique="1047520">(AVX512VL AND</para>
+      <para unique="1047521">AVX512DQ) OR AVX10.1<anchor id="+928269"/></para>
+      </td>
+     <td><para unique="1047523">Broadcast two dword elements in source operand to locations in xmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047497">EVEX.256.66.0F38.W0 59 /r</para>
+      <para unique="1047498">VBROADCASTI32x2 ymm1 {k1}{z}, xmm2/m64</para>
+      </td>
+     <td><para unique="1047502">C</para>
+      </td>
+     <td><para unique="1047504">V/V</para>
+      </td>
+     <td><para unique="1047506">(AVX512VL AND</para>
+      <para unique="1047507">AVX512DQ) OR AVX10.1<anchor id="+532076"/></para>
+      </td>
+     <td><para unique="1047509">Broadcast two dword elements in source operand to locations in ymm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047483">EVEX.512.66.0F38.W0 59 /r</para>
+      <para unique="1047484">VBROADCASTI32x2 zmm1 {k1}{z}, xmm2/m64</para>
+      </td>
+     <td><para unique="1047488">C</para>
+      </td>
+     <td><para unique="1047490">V/V</para>
+      </td>
+     <td><para unique="1047492">AVX512DQ </para>
+      <para unique="1047493">OR AVX10.1<anchor id="+546646"/></para>
+      </td>
+     <td><para unique="1047495">Broadcast two dword elements in source operand to locations in zmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047470">VEX.256.66.0F38.W0 5A /r</para>
+      <para unique="1047471">VBROADCASTI128 ymm1, m128</para>
+      </td>
+     <td><para unique="1047475">A</para>
+      </td>
+     <td><para unique="1047477">V/V</para>
+      </td>
+     <td><para unique="1047479">AVX2</para>
+      </td>
+     <td><para unique="1047481">Broadcast 128 bits of integer data in mem to low and high 128-bits in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047453">EVEX.256.66.0F38.W0 5A /r</para>
+      <para unique="1047454">VBROADCASTI32X4 ymm1 {k1}{z}, m128</para>
+      </td>
+     <td><para unique="1047458">D</para>
+      </td>
+     <td><para unique="1047460">V/V</para>
+      </td>
+     <td><para unique="1047462">(AVX512VL AND</para>
+      <para unique="1047466">AVX512F) OR AVX10.1<anchor id="+685114"/></para>
+      </td>
+     <td><para unique="1047468">Broadcast 128 bits of 4 doubleword integer data in mem to locations in ymm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047436">EVEX.512.66.0F38.W0 5A /r</para>
+      <para unique="1047437">VBROADCASTI32X4 zmm1 {k1}{z}, m128</para>
+      </td>
+     <td><para unique="1047441">D</para>
+      </td>
+     <td><para unique="1047443">V/V</para>
+      </td>
+     <td><para unique="1047448">AVX512F </para>
+      <para unique="1047449">OR AVX10.1<anchor id="+675223"/></para>
+      </td>
+     <td><para unique="1047451">Broadcast 128 bits of 4 doubleword integer data in mem to locations in zmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047422">EVEX.256.66.0F38.W1 5A /r</para>
+      <para unique="1047423">VBROADCASTI64X2 ymm1 {k1}{z}, m128</para>
+      </td>
+     <td><para unique="1047427">C</para>
+      </td>
+     <td><para unique="1047429">V/V</para>
+      </td>
+     <td><para unique="1047431">(AVX512VL AND</para>
+      <para unique="1047432">AVX512DQ) OR AVX10.1<anchor id="+196798"/></para>
+      </td>
+     <td><para unique="1047434">Broadcast 128 bits of 2 quadword integer data in mem to locations in ymm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047408">EVEX.512.66.0F38.W1 5A /r</para>
+      <para unique="1047409">VBROADCASTI64X2 zmm1 {k1}{z}, m128</para>
+      </td>
+     <td><para unique="1047413">C</para>
+      </td>
+     <td><para unique="1047415">V/V</para>
+      </td>
+     <td><para unique="1047417">AVX512DQ </para>
+      <para unique="1047418">OR AVX10.1<anchor id="+670819"/></para>
+      </td>
+     <td><para unique="1047420">Broadcast 128 bits of 2 quadword integer data in mem to locations in zmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047394">EVEX.512.66.0F38.W0 5B /r</para>
+      <para unique="1047395">VBROADCASTI32X8 zmm1 {k1}{z}, m256</para>
+      </td>
+     <td><para unique="1047399">E</para>
+      </td>
+     <td><para unique="1047401">V/V</para>
+      </td>
+     <td><para unique="1047403">AVX512DQ </para>
+      <para unique="1047404">OR AVX10.1<anchor id="+674699"/></para>
+      </td>
+     <td><para unique="1047406">Broadcast 256 bits of 8 doubleword integer data in mem to locations in zmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1047377">EVEX.512.66.0F38.W1 5B /r</para>
+      <para unique="1047378">VBROADCASTI64X4 zmm1 {k1}{z}, m256</para>
+      </td>
+     <td><para unique="1047382">D</para>
+      </td>
+     <td><para unique="1047384">V/V</para>
+      </td>
+     <td><para unique="1047389">AVX512F</para>
+      <para unique="1047390">OR AVX10.1<anchor id="+923536"/></para>
+      </td>
+     <td><para unique="1047392">Broadcast 256 bits of 4 quadword integer data in mem to locations in zmm1 using writemask k1.</para>
       </td>
      </tr>
     </tbody>
    </table>
-  <table>
-   <caption>Figure 5-17.  VPBROADCASTD Operation (128-bit version)</caption>
-   <colgroup><col/>
-    <col/>
-    </colgroup>
-   <tbody>
+  </encoding_table>
+ <operand_table><table unique="1046525">
+   <col width="42.884640000000005pt"/>
+   <col width="74.68415999999999pt"/>
+   <col width="97.1352pt"/>
+   <col width="101.79216pt"/>
+   <col width="95.59152pt"/>
+   <col width="97.3656pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1046527">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1046529">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1046531">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1046533">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1046535">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1046537">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
     <tr>
-     <td><para unique="1046683" format="05_FigureGraphic">
-       <svg width="1000" height="280.8837637668368" viewBox="0 0 375.2496 105.40152">
-        <defs>
+     <td valign="middle"><para unique="1046539">A</para>
+      </td>
+     <td valign="middle"><para unique="1046541">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1046543">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046545">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046547">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1046549">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1046551">B</para>
+      </td>
+     <td valign="middle"><para unique="1046553">Tuple1 Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1046555">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046557">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046559">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1046561">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1046563">C</para>
+      </td>
+     <td valign="middle"><para unique="1046565">Tuple2</para>
+      </td>
+     <td valign="middle"><para unique="1046567">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046569">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046571">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1046573">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1046575">D</para>
+      </td>
+     <td valign="middle"><para unique="1046577">Tuple4</para>
+      </td>
+     <td valign="middle"><para unique="1046579">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046581">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046583">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1046585">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1046587">E</para>
+      </td>
+     <td valign="middle"><para unique="1046589">Tuple8</para>
+      </td>
+     <td valign="middle"><para unique="1046591">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046593">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046595">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1046597">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046598">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046600">Load integer data from the source operand (the second operand) and broadcast to all elements of the destination operand (the first operand).</para>
+  <para unique="1046601">VEX256-encoded VPBROADCASTB/W/D/Q: The source operand is 8-bit, 16-bit, 32-bit, 64-bit memory location or the low 8-bit, 16-bit 32-bit, 64-bit data in an XMM register. The destination operand is a YMM register. VPBROAD&#173;CASTI128 support the source operand of 128-bit memory location. Register source encodings for VPBROADCAS&#173;TI128 is reserved and will #UD. Bits (MAXVL-1:256) of the destination register are zeroed.</para>
+  <para unique="1046602">EVEX-encoded VPBROADCASTD/Q: The source operand is a 32-bit, 64-bit memory location or the low 32-bit, 64-bit data in an XMM register. The destination operand is a ZMM/YMM/XMM register and updated according to the writemask k1. </para>
+  <para unique="1046603">VPBROADCASTI32X4 and VPBROADCASTI64X4: The destination operand is a ZMM register and updated according to the writemask k1. The source operand is 128-bit or 256-bit memory location. Register source encodings for <sans>VBROADCASTI32X4 and VBROADCASTI64X4 </sans>are reserved and will #UD.</para>
+  <para unique="1046604">Note: VEX.vvvv and EVEX.vvvv are reserved and must be 1111b otherwise instructions will #UD.</para>
+  <para unique="1046605">If VPBROADCASTI128 is encoded with VEX.L= 0, an attempt to execute the instruction encoded with VEX.L= 0 will cause an #UD exception.</para>
+  <figure><title>VPBROADCASTD Operation (VEX.256 encoded version)</title>
+   <mediaobject><imageobject><svg width="1000" height="279.6078130396408" viewBox="0 0 375.2496 104.92272">
+      <defs>
         <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
           <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
         </marker>
       </defs>
-        <text x="13.093919999999999" y="86.59223999999999" font-size="6">DEST</text>
-        <text x="254.44656" y="17.34048" font-size="6">m32</text>
-        <polyline points="309.52512,20.68128 198.15264000000002,78.05664" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
-        <rect width="37.12392" height="13.5" x="292.65048" y="7.181279999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="303.73272000000003" y="15.716880000000002" font-size="6">X0</text>
-        <polyline points="310.08816,20.68056 309.52512,78.05664" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <polyline points="309.52512,20.68128 272.4012,78.05664" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <polyline points="309.52512,20.68128 235.27656,78.05664" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <rect width="37.12392" height="13.5" x="292.65048" y="78.05664" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="306.15048" y="88.21512" font-size="6">X0</text>
-        <rect width="37.12392" height="13.5" x="218.40192000000002" y="78.05664" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="231.90192000000002" y="88.21512" font-size="6">X0</text>
-        <rect width="37.12392" height="13.5" x="255.52656" y="78.05664" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="269.08776" y="88.21512" font-size="6">X0</text>
-        <rect width="37.12392" height="13.5" x="144.15336000000002" y="78.05664" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="157.65336000000002" y="88.21512" font-size="6">0</text>
-        <rect width="37.12392" height="13.5" x="181.278" y="78.05664" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="194.8392" y="88.21512" font-size="6">X0</text>
-        <rect width="37.12392" height="13.5" x="69.9048" y="78.05664" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="83.40480000000001" y="88.21512" font-size="6">0</text>
-        <rect width="37.12392" height="13.5" x="107.02944000000001" y="78.05664" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="120.59064000000001" y="88.21512" font-size="6">0</text>
-        <rect width="37.12392" height="13.5" x="32.780879999999996" y="78.05664" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="46.342079999999996" y="88.21512" font-size="6">0</text>
-        </svg></para>
-      </td>
-     </tr>
-    </tbody>
-   </table>
-  <table>
-   <caption>Figure 5-18.  VPBROADCASTQ Operation (256-bit version)</caption>
-   <colgroup><col/>
-    <col/>
-    </colgroup>
-   <tbody>
-    <tr>
-     <td><para unique="1046710" format="05_FigureGraphic">
-       <svg width="1000" height="280.04994183735874" viewBox="0 0 396.74952 111.10968">
-        <defs>
+      <text x="13.093919999999999" y="85.45248" font-size="6">DEST</text>
+      <text x="254.44656" y="16.20072" font-size="6">m32</text>
+      <polyline points="309.52512,19.54152 198.15264000000002,76.91615999999999" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+      <rect width="37.12392" height="13.5" x="292.65048" y="6.04152" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="303.73272000000003" y="14.57712" font-size="6">X0</text>
+      <polyline points="310.08816,19.540799999999997 309.52512,76.91615999999999" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <polyline points="309.52512,19.54152 272.4012,76.91615999999999" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <polyline points="309.52512,19.54152 235.27656,76.91615999999999" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <rect width="37.12392" height="13.5" x="292.65048" y="76.91615999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="306.15048" y="87.07535999999999" font-size="6">X0</text>
+      <rect width="37.12392" height="13.5" x="218.40192000000002" y="76.91615999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="231.90192000000002" y="87.07535999999999" font-size="6">X0</text>
+      <rect width="37.12392" height="13.5" x="255.52656" y="76.91615999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="269.08776" y="87.07535999999999" font-size="6">X0</text>
+      <rect width="37.12392" height="13.5" x="144.15336000000002" y="76.91615999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="157.65336000000002" y="87.07535999999999" font-size="6">X0</text>
+      <rect width="37.12392" height="13.5" x="181.278" y="76.91615999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="194.8392" y="87.07535999999999" font-size="6">X0</text>
+      <rect width="37.12392" height="13.5" x="69.9048" y="76.91615999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="83.40480000000001" y="87.07535999999999" font-size="6">X0</text>
+      <rect width="37.12392" height="13.5" x="107.02944000000001" y="76.91615999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="120.59064000000001" y="87.07535999999999" font-size="6">X0</text>
+      <rect width="37.12392" height="13.5" x="32.780879999999996" y="76.91615999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="46.342079999999996" y="87.07535999999999" font-size="6">X0</text>
+      <polyline points="309.52512,19.54152 164.40336000000002,76.91615999999999" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <polyline points="309.52512,19.54152 123.90408000000001,76.91615999999999" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <polyline points="309.52512,19.54152 90.15480000000001,76.91615999999999" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <polyline points="309.52512,19.54152 49.65552,76.91615999999999" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      </svg></imageobject></mediaobject></figure><figure><title>VPBROADCASTD Operation (128-bit version)</title>
+   <mediaobject><imageobject><svg width="1000" height="280.8837637668368" viewBox="0 0 375.2496 105.40152">
+      <defs>
         <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
           <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
         </marker>
       </defs>
-        <text x="19.594079999999998" y="92.0484" font-size="6">DEST</text>
-        <text x="224.90208" y="21.17376" font-size="6">m64</text>
-        <polyline points="299.15064,26.138160000000003 224.90208,83.5128" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
-        <rect width="74.24856000000001" height="13.5" x="262.026" y="12.63816" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="292.40064" y="22.79664" font-size="6">X0</text>
-        <polyline points="299.15064,26.138160000000003 299.15064,83.5128" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <polyline points="299.15064,26.138160000000003 150.65352000000001,83.5128" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <polyline points="299.15064,26.138160000000003 73.03032,83.5128" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <rect width="74.24856000000001" height="13.5" x="262.026" y="83.5128" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="292.40064" y="93.672" font-size="6">X0</text>
-        <rect width="74.24856000000001" height="13.5" x="187.77815999999999" y="83.5128" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="218.15208" y="93.672" font-size="6">X0</text>
-        <rect width="74.24856000000001" height="13.5" x="113.5296" y="83.5128" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="143.90352000000001" y="93.672" font-size="6">X0</text>
-        <rect width="74.24856000000001" height="13.5" x="39.28104" y="83.5128" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="69.65496" y="93.672" font-size="6">X0</text>
-        </svg></para>
-      </td>
-     </tr>
-    </tbody>
-   </table>
-  <table>
-   <caption>Figure 5-19.  VBROADCASTI128 Operation (256-bit version)</caption>
-   <colgroup><col/>
-    <col/>
-    </colgroup>
-   <tbody>
-    <tr>
-     <td><para unique="1046731" format="05_FigureGraphic">
-       <svg width="1000" height="233.59381130029743" viewBox="0 0 403.75008 94.31352">
-        <defs>
+      <text x="13.093919999999999" y="86.59223999999999" font-size="6">DEST</text>
+      <text x="254.44656" y="17.34048" font-size="6">m32</text>
+      <polyline points="309.52512,20.68128 198.15264000000002,78.05664" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+      <rect width="37.12392" height="13.5" x="292.65048" y="7.181279999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="303.73272000000003" y="15.716880000000002" font-size="6">X0</text>
+      <polyline points="310.08816,20.68056 309.52512,78.05664" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <polyline points="309.52512,20.68128 272.4012,78.05664" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <polyline points="309.52512,20.68128 235.27656,78.05664" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <rect width="37.12392" height="13.5" x="292.65048" y="78.05664" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="306.15048" y="88.21512" font-size="6">X0</text>
+      <rect width="37.12392" height="13.5" x="218.40192000000002" y="78.05664" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="231.90192000000002" y="88.21512" font-size="6">X0</text>
+      <rect width="37.12392" height="13.5" x="255.52656" y="78.05664" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="269.08776" y="88.21512" font-size="6">X0</text>
+      <rect width="37.12392" height="13.5" x="144.15336000000002" y="78.05664" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="157.65336000000002" y="88.21512" font-size="6">0</text>
+      <rect width="37.12392" height="13.5" x="181.278" y="78.05664" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="194.8392" y="88.21512" font-size="6">X0</text>
+      <rect width="37.12392" height="13.5" x="69.9048" y="78.05664" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="83.40480000000001" y="88.21512" font-size="6">0</text>
+      <rect width="37.12392" height="13.5" x="107.02944000000001" y="78.05664" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="120.59064000000001" y="88.21512" font-size="6">0</text>
+      <rect width="37.12392" height="13.5" x="32.780879999999996" y="78.05664" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="46.342079999999996" y="88.21512" font-size="6">0</text>
+      </svg></imageobject></mediaobject></figure><figure><title>VPBROADCASTQ Operation (256-bit version)</title>
+   <mediaobject><imageobject><svg width="1000" height="280.0499418373587" viewBox="0 0 396.74952 111.10968">
+      <defs>
         <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
           <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
         </marker>
       </defs>
-        <text x="26.59392" y="77.09904" font-size="6">DEST</text>
-        <text x="170.4924" y="22.742639999999998" font-size="6">m128</text>
-        <polyline points="262.27655999999996,28.21536 262.27655999999996,68.56344" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
-        <rect width="148.49712000000002" height="13.5" x="194.11704" y="14.206320000000002" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="254.8656" y="24.36552" font-size="6">X0</text>
-        <polyline points="262.27655999999996,28.21536 113.77944000000001,68.56344" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <rect width="148.49712000000002" height="13.5" x="194.778" y="68.56344" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="255.52656" y="78.72264" font-size="6">X0</text>
-        <rect width="148.49712000000002" height="13.5" x="46.280879999999996" y="68.56344" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="107.02944000000001" y="78.72264" font-size="6">X0</text>
-        </svg></para>
-      </td>
-     </tr>
-    </tbody>
-   </table>
-  <table>
-   <caption>Figure 5-20.  VBROADCASTI256 Operation (512-bit version)</caption>
-   <colgroup><col/>
-    <col/>
-    </colgroup>
-   <tbody>
-    <tr>
-     <td><para unique="1046752" format="05_FigureGraphic">
-       <svg width="1000" height="231.95675899308802" viewBox="0 0 403.75008 93.65256">
-        <defs>
+      <text x="19.594079999999998" y="92.0484" font-size="6">DEST</text>
+      <text x="224.90208" y="21.17376" font-size="6">m64</text>
+      <polyline points="299.15064,26.138160000000003 224.90208,83.5128" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+      <rect width="74.24856000000001" height="13.5" x="262.026" y="12.63816" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="292.40064" y="22.79664" font-size="6">X0</text>
+      <polyline points="299.15064,26.138160000000003 299.15064,83.5128" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <polyline points="299.15064,26.138160000000003 150.65352000000001,83.5128" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <polyline points="299.15064,26.138160000000003 73.03032,83.5128" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <rect width="74.24856000000001" height="13.5" x="262.026" y="83.5128" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="292.40064" y="93.672" font-size="6">X0</text>
+      <rect width="74.24856000000001" height="13.5" x="187.77815999999999" y="83.5128" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="218.15208" y="93.672" font-size="6">X0</text>
+      <rect width="74.24856000000001" height="13.5" x="113.5296" y="83.5128" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="143.90352000000001" y="93.672" font-size="6">X0</text>
+      <rect width="74.24856000000001" height="13.5" x="39.28104" y="83.5128" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="69.65496" y="93.672" font-size="6">X0</text>
+      </svg></imageobject></mediaobject></figure><figure><title>VBROADCASTI128 Operation (256-bit version)</title>
+   <mediaobject><imageobject><svg width="1000" height="233.59381130029746" viewBox="0 0 403.75008 94.31352">
+      <defs>
         <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
           <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
         </marker>
       </defs>
-        <text x="26.59392" y="75.77784" font-size="6">DEST</text>
-        <text x="168.51024" y="22.081680000000002" font-size="6">m256</text>
-        <polyline points="262.27655999999996,27.47448 262.27655999999996,67.24224" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
-        <rect width="148.49712000000002" height="13.5" x="192.13488" y="13.545359999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="252.88344" y="23.70456" font-size="6">X0</text>
-        <polyline points="262.27655999999996,27.47448 113.77944000000001,67.24224" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <rect width="148.49712000000002" height="13.5" x="194.778" y="67.24224" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="255.52656" y="77.40144000000001" font-size="6">X0</text>
-        <rect width="148.49712000000002" height="13.5" x="46.280879999999996" y="67.24224" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="107.02944000000001" y="77.40144000000001" font-size="6">X0</text>
-        </svg></para>
-      </td>
-     </tr>
-    </tbody>
-   </table>
-  </longdesc>
+      <text x="26.59392" y="77.09904" font-size="6">DEST</text>
+      <text x="170.4924" y="22.742639999999998" font-size="6">m128</text>
+      <polyline points="262.27655999999996,28.21536 262.27655999999996,68.56344" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+      <rect width="148.49712000000002" height="13.5" x="194.11704" y="14.206320000000002" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="254.8656" y="24.36552" font-size="6">X0</text>
+      <polyline points="262.27655999999996,28.21536 113.77944000000001,68.56344" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <rect width="148.49712000000002" height="13.5" x="194.778" y="68.56344" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="255.52656" y="78.72264" font-size="6">X0</text>
+      <rect width="148.49712000000002" height="13.5" x="46.280879999999996" y="68.56344" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="107.02944000000001" y="78.72264" font-size="6">X0</text>
+      </svg></imageobject></mediaobject></figure><figure><title>VBROADCASTI256 Operation (512-bit version)</title>
+   <mediaobject><imageobject><svg width="1000" height="231.956758993088" viewBox="0 0 403.75008 93.65256">
+      <defs>
+        <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+          <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
+        </marker>
+      </defs>
+      <text x="26.59392" y="75.77784" font-size="6">DEST</text>
+      <text x="168.51024" y="22.081680000000002" font-size="6">m256</text>
+      <polyline points="262.27655999999996,27.47448 262.27655999999996,67.24224" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: none;"/>
+      <rect width="148.49712000000002" height="13.5" x="192.13488" y="13.545359999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="252.88344" y="23.70456" font-size="6">X0</text>
+      <polyline points="262.27655999999996,27.47448 113.77944000000001,67.24224" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <rect width="148.49712000000002" height="13.5" x="194.778" y="67.24224" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="255.52656" y="77.40144000000001" font-size="6">X0</text>
+      <rect width="148.49712000000002" height="13.5" x="46.280879999999996" y="67.24224" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="107.02944000000001" y="77.40144000000001" font-size="6">X0</text>
+      </svg></imageobject></mediaobject></figure></longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1046757">VPBROADCASTB (EVEX encoded versions)</title>
+   <programlisting>(KL, VL) = (16, 128), (32, 256), (64, 512)
+FOR j := 0 TO KL-1
+	i := j * 8
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+7:i] := SRC[7:0]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+7:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+7:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046773">VPBROADCASTW (EVEX encoded versions)</title>
+   <programlisting>(KL, VL) = (8, 128), (16, 256), (32, 512)
+FOR j := 0 TO KL-1
+	i := j * 16
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+15:i] := SRC[15:0]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+15:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+15:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046789">VPBROADCASTD (128 bit version)</title>
+   <programlisting>temp := SRC[31:0]
+DEST[31:0] := temp
+DEST[63:32] := temp
+DEST[95:64] := temp
+DEST[127:96] := temp
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046797">VPBROADCASTD (VEX.256 encoded version)</title>
+   <programlisting>temp := SRC[31:0]
+DEST[31:0] := temp
+DEST[63:32] := temp
+DEST[95:64] := temp
+DEST[127:96] := temp
+DEST[159:128] := temp
+DEST[191:160] := temp
+DEST[223:192] := temp
+DEST[255:224] := temp
+DEST[MAXVL-1:256] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046809">VPBROADCASTD (EVEX encoded versions)</title>
+   <programlisting>(KL, VL) = (4, 128), (8, 256), (16, 512)
+FOR j := 0 TO KL-1
+	i := j * 32
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+31:i] := SRC[31:0]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+31:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+31:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046825">VPBROADCASTQ (VEX.256 encoded version)</title>
+   <programlisting>temp := SRC[63:0]
+DEST[63:0] := temp
+DEST[127:64] := temp
+DEST[191:128] := temp
+DEST[255:192] := temp
+DEST[MAXVL-1:256] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046833">VPBROADCASTQ (EVEX encoded versions)</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+63:i] := SRC[63:0]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+63:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0
+VBROADCASTI32x2 (EVEX encoded versions)
+(KL, VL) = (4, 128), (8, 256), (16, 512)
+FOR j := 0 TO KL-1
+	i := j * 32
+	n := (j mod 2) * 32
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+31:i] := SRC[n+31:n]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+31:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+31:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046865">VBROADCASTI128 (VEX.256 encoded version)</title>
+   <programlisting>temp := SRC[127:0]
+DEST[127:0] := temp
+DEST[255:128] := temp
+DEST[MAXVL-1:256] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046871">VBROADCASTI32X4 (EVEX encoded versions)</title>
+   <programlisting>(KL, VL) = (8, 256), (16, 512)
+FOR j := 0 TO KL-1
+	i := j* 32
+	n := (j modulo 4) * 32
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+31:i] := SRC[n+31:n]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+31:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+31:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046888">VBROADCASTI64X2 (EVEX encoded versions)</title>
+   <programlisting>(KL, VL) = (8, 256), (16, 512)
+FOR j := 0 TO KL-1
+	i := j * 64
+	n := (j modulo 2) * 64
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+63:i] := SRC[n+63:n]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+63:i] = 0
+			FI
+	FI;
+ENDFOR;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046904">VBROADCASTI32X8 (EVEX.U1.512 encoded version)</title>
+   <programlisting>FOR j := 0 TO 15
+	i := j * 32
+	n := (j modulo 8) * 32
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+31:i] := SRC[n+31:n]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+31:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+31:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046920">VBROADCASTI64X4 (EVEX.512 encoded version)</title>
+   <programlisting>FOR j := 0 TO 7
+	i := j * 64
+	n := (j modulo 4) * 64
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+63:i] := SRC[n+63:n]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+63:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VPBROADCASTB __m512i _mm512_broadcastb_epi8( __m128i a);</string><string>
-</string><string>VPBROADCASTB __m512i _mm512_mask_broadcastb_epi8(__m512i s, __mmask64 k, __m128i a);</string><string>
-</string><string>VPBROADCASTB __m512i _mm512_maskz_broadcastb_epi8( __mmask64 k, __m128i a);</string><string>
-</string><string>VPBROADCASTB __m256i _mm256_broadcastb_epi8(__m128i a);</string><string>
-</string><string>VPBROADCASTB __m256i _mm256_mask_broadcastb_epi8(__m256i s, __mmask32 k, __m128i a);</string><string>
-</string><string>VPBROADCASTB __m256i _mm256_maskz_broadcastb_epi8( __mmask32 k, __m128i a);</string><string>
-</string><string>VPBROADCASTB __m128i _mm_mask_broadcastb_epi8(__m128i s, __mmask16 k, __m128i a);</string><string>
-</string><string>VPBROADCASTB __m128i _mm_maskz_broadcastb_epi8( __mmask16 k, __m128i a);</string><string>
-</string><string>VPBROADCASTB __m128i _mm_broadcastb_epi8(__m128i a);</string><string>
-</string><string>VPBROADCASTD __m512i _mm512_broadcastd_epi32( __m128i a);</string><string>
-</string><string>VPBROADCASTD __m512i _mm512_mask_broadcastd_epi32(__m512i s, __mmask16 k, __m128i a);</string><string>
-</string><string>VPBROADCASTD __m512i _mm512_maskz_broadcastd_epi32( __mmask16 k, __m128i a);</string><string>
-</string><string>VPBROADCASTD __m256i _mm256_broadcastd_epi32( __m128i a);</string><string>
-</string><string>VPBROADCASTD __m256i _mm256_mask_broadcastd_epi32(__m256i s, __mmask8 k, __m128i a);</string><string>
-</string><string>VPBROADCASTD __m256i _mm256_maskz_broadcastd_epi32( __mmask8 k, __m128i a);</string><string>
-</string><string>VPBROADCASTD __m128i _mm_broadcastd_epi32(__m128i a);</string><string>
-</string><string>VPBROADCASTD __m128i _mm_mask_broadcastd_epi32(__m128i s, __mmask8 k, __m128i a);</string><string>
-</string><string>VPBROADCASTD __m128i _mm_maskz_broadcastd_epi32( __mmask8 k, __m128i a);</string><string>
-</string><string>VPBROADCASTQ __m512i _mm512_broadcastq_epi64( __m128i a);</string><string>
-</string><string>VPBROADCASTQ __m512i _mm512_mask_broadcastq_epi64(__m512i s, __mmask8 k, __m128i a);</string><string>
-</string><string>VPBROADCASTQ __m512i _mm512_maskz_broadcastq_epi64( __mmask8 k, __m128i a);</string><string>
-</string><string>VPBROADCASTQ __m256i _mm256_broadcastq_epi64(__m128i a);</string><string>
-</string><string>VPBROADCASTQ __m256i _mm256_mask_broadcastq_epi64(__m256i s, __mmask8 k, __m128i a);</string><string>
-</string><string>VPBROADCASTQ __m256i _mm256_maskz_broadcastq_epi64( __mmask8 k, __m128i a);</string><string>
-</string><string>VPBROADCASTQ __m128i _mm_broadcastq_epi64(__m128i a);</string><string>
-</string><string>VPBROADCASTQ __m128i _mm_mask_broadcastq_epi64(__m128i s, __mmask8 k, __m128i a);</string><string>
-</string><string>VPBROADCASTQ __m128i _mm_maskz_broadcastq_epi64( __mmask8 k, __m128i a);</string><string>
-</string><string>VPBROADCASTW __m512i _mm512_broadcastw_epi16(__m128i a);</string><string>
-</string><string>VPBROADCASTW __m512i _mm512_mask_broadcastw_epi16(__m512i s, __mmask32 k, __m128i a);</string><string>
-</string><string>VPBROADCASTW __m512i _mm512_maskz_broadcastw_epi16( __mmask32 k, __m128i a);</string><string>
-</string><string>VPBROADCASTW __m256i _mm256_broadcastw_epi16(__m128i a);</string><string>
-</string><string>VPBROADCASTW __m256i _mm256_mask_broadcastw_epi16(__m256i s, __mmask16 k, __m128i a);</string><string>
-</string><string>VPBROADCASTW __m256i _mm256_maskz_broadcastw_epi16( __mmask16 k, __m128i a);</string><string>
-</string><string>VPBROADCASTW __m128i _mm_broadcastw_epi16(__m128i a);</string><string>
-</string><string>VPBROADCASTW __m128i _mm_mask_broadcastw_epi16(__m128i s, __mmask8 k, __m128i a);</string><string>
-</string><string>VPBROADCASTW __m128i _mm_maskz_broadcastw_epi16( __mmask8 k, __m128i a);</string><string>
-</string><string>VBROADCASTI32x2 __m512i _mm512_broadcast_i32x2( __m128i a);</string><string>
-</string><string>VBROADCASTI32x2 __m512i _mm512_mask_broadcast_i32x2(__m512i s, __mmask16 k, __m128i a);</string><string>
-</string><string>VBROADCASTI32x2 __m512i _mm512_maskz_broadcast_i32x2( __mmask16 k, __m128i a);</string><string>
-</string><string>VBROADCASTI32x2 __m256i _mm256_broadcast_i32x2( __m128i a);</string><string>
-</string><string>VBROADCASTI32x2 __m256i _mm256_mask_broadcast_i32x2(__m256i s, __mmask8 k, __m128i a);</string><string>
-</string><string>VBROADCASTI32x2 __m256i _mm256_maskz_broadcast_i32x2( __mmask8 k, __m128i a);</string><string>
-</string><string>VBROADCASTI32x2 __m128i _mm_broadcast_i32x2(__m128i a);</string><string>
-</string><string>VBROADCASTI32x2 __m128i _mm_mask_broadcast_i32x2(__m128i s, __mmask8 k, __m128i a);</string><string>
-</string><string>VBROADCASTI32x2 __m128i _mm_maskz_broadcast_i32x2( __mmask8 k, __m128i a);</string><string>
-</string><string>VBROADCASTI32x4 __m512i _mm512_broadcast_i32x4( __m128i a);</string><string>
-</string><string>VBROADCASTI32x4 __m512i _mm512_mask_broadcast_i32x4(__m512i s, __mmask16 k, __m128i a);</string><string>
-</string><string>VBROADCASTI32x4 __m512i _mm512_maskz_broadcast_i32x4( __mmask16 k, __m128i a);</string><string>
-</string><string>VBROADCASTI32x4 __m256i _mm256_broadcast_i32x4( __m128i a);</string><string>
-</string><string>VBROADCASTI32x4 __m256i _mm256_mask_broadcast_i32x4(__m256i s, __mmask8 k, __m128i a);</string><string>
-</string><string>VBROADCASTI32x4 __m256i _mm256_maskz_broadcast_i32x4( __mmask8 k, __m128i a);</string><string>
-</string><string>VBROADCASTI32x8 __m512i _mm512_broadcast_i32x8( __m256i a);</string><string>
-</string><string>VBROADCASTI32x8 __m512i _mm512_mask_broadcast_i32x8(__m512i s, __mmask16 k, __m256i a);</string><string>
-</string><string>VBROADCASTI32x8 __m512i _mm512_maskz_broadcast_i32x8( __mmask16 k, __m256i a);</string><string>
-</string><string>VBROADCASTI64x2 __m512i _mm512_broadcast_i64x2( __m128i a);</string><string>
-</string><string>VBROADCASTI64x2 __m512i _mm512_mask_broadcast_i64x2(__m512i s, __mmask8 k, __m128i a);</string><string>
-</string><string>VBROADCASTI64x2 __m512i _mm512_maskz_broadcast_i64x2( __mmask8 k, __m128i a);</string><string>
-</string><string>VBROADCASTI64x2 __m256i _mm256_broadcast_i64x2( __m128i a);</string><string>
-</string><string>VBROADCASTI64x2 __m256i _mm256_mask_broadcast_i64x2(__m256i s, __mmask8 k, __m128i a);</string><string>
-</string><string>VBROADCASTI64x2 __m256i _mm256_maskz_broadcast_i64x2( __mmask8 k, __m128i a);</string><string>
-</string><string>VBROADCASTI64x4 __m512i _mm512_broadcast_i64x4( __m256i a);</string><string>
-</string><string>VBROADCASTI64x4 __m512i _mm512_mask_broadcast_i64x4(__m512i s, __mmask8 k, __m256i a);</string><string>
-</string><string>VBROADCASTI64x4 __m512i _mm512_maskz_broadcast_i64x4( __mmask8 k, __m256i a);</string><string>
-</string></programlisting>
+  <programlisting>VPBROADCASTB __m512i _mm512_broadcastb_epi8( __m128i a);
+VPBROADCASTB __m512i _mm512_mask_broadcastb_epi8(__m512i s, __mmask64 k, __m128i a);
+VPBROADCASTB __m512i _mm512_maskz_broadcastb_epi8( __mmask64 k, __m128i a);
+VPBROADCASTB __m256i _mm256_broadcastb_epi8(__m128i a);
+VPBROADCASTB __m256i _mm256_mask_broadcastb_epi8(__m256i s, __mmask32 k, __m128i a);
+VPBROADCASTB __m256i _mm256_maskz_broadcastb_epi8( __mmask32 k, __m128i a);
+VPBROADCASTB __m128i _mm_mask_broadcastb_epi8(__m128i s, __mmask16 k, __m128i a);
+VPBROADCASTB __m128i _mm_maskz_broadcastb_epi8( __mmask16 k, __m128i a);
+VPBROADCASTB __m128i _mm_broadcastb_epi8(__m128i a);
+VPBROADCASTD __m512i _mm512_broadcastd_epi32( __m128i a);
+VPBROADCASTD __m512i _mm512_mask_broadcastd_epi32(__m512i s, __mmask16 k, __m128i a);
+VPBROADCASTD __m512i _mm512_maskz_broadcastd_epi32( __mmask16 k, __m128i a);
+VPBROADCASTD __m256i _mm256_broadcastd_epi32( __m128i a);
+VPBROADCASTD __m256i _mm256_mask_broadcastd_epi32(__m256i s, __mmask8 k, __m128i a);
+VPBROADCASTD __m256i _mm256_maskz_broadcastd_epi32( __mmask8 k, __m128i a);
+VPBROADCASTD __m128i _mm_broadcastd_epi32(__m128i a);
+VPBROADCASTD __m128i _mm_mask_broadcastd_epi32(__m128i s, __mmask8 k, __m128i a);
+VPBROADCASTD __m128i _mm_maskz_broadcastd_epi32( __mmask8 k, __m128i a);
+VPBROADCASTQ __m512i _mm512_broadcastq_epi64( __m128i a);
+VPBROADCASTQ __m512i _mm512_mask_broadcastq_epi64(__m512i s, __mmask8 k, __m128i a);
+VPBROADCASTQ __m512i _mm512_maskz_broadcastq_epi64( __mmask8 k, __m128i a);
+VPBROADCASTQ __m256i _mm256_broadcastq_epi64(__m128i a);
+VPBROADCASTQ __m256i _mm256_mask_broadcastq_epi64(__m256i s, __mmask8 k, __m128i a);
+VPBROADCASTQ __m256i _mm256_maskz_broadcastq_epi64( __mmask8 k, __m128i a);
+VPBROADCASTQ __m128i _mm_broadcastq_epi64(__m128i a);
+VPBROADCASTQ __m128i _mm_mask_broadcastq_epi64(__m128i s, __mmask8 k, __m128i a);
+VPBROADCASTQ __m128i _mm_maskz_broadcastq_epi64( __mmask8 k, __m128i a);
+VPBROADCASTW __m512i _mm512_broadcastw_epi16(__m128i a);
+VPBROADCASTW __m512i _mm512_mask_broadcastw_epi16(__m512i s, __mmask32 k, __m128i a);
+VPBROADCASTW __m512i _mm512_maskz_broadcastw_epi16( __mmask32 k, __m128i a);
+VPBROADCASTW __m256i _mm256_broadcastw_epi16(__m128i a);
+VPBROADCASTW __m256i _mm256_mask_broadcastw_epi16(__m256i s, __mmask16 k, __m128i a);
+VPBROADCASTW __m256i _mm256_maskz_broadcastw_epi16( __mmask16 k, __m128i a);
+VPBROADCASTW __m128i _mm_broadcastw_epi16(__m128i a);
+VPBROADCASTW __m128i _mm_mask_broadcastw_epi16(__m128i s, __mmask8 k, __m128i a);
+VPBROADCASTW __m128i _mm_maskz_broadcastw_epi16( __mmask8 k, __m128i a);
+VBROADCASTI32x2 __m512i _mm512_broadcast_i32x2( __m128i a);
+VBROADCASTI32x2 __m512i _mm512_mask_broadcast_i32x2(__m512i s, __mmask16 k, __m128i a);
+VBROADCASTI32x2 __m512i _mm512_maskz_broadcast_i32x2( __mmask16 k, __m128i a);
+VBROADCASTI32x2 __m256i _mm256_broadcast_i32x2( __m128i a);
+VBROADCASTI32x2 __m256i _mm256_mask_broadcast_i32x2(__m256i s, __mmask8 k, __m128i a);
+VBROADCASTI32x2 __m256i _mm256_maskz_broadcast_i32x2( __mmask8 k, __m128i a);
+VBROADCASTI32x2 __m128i _mm_broadcast_i32x2(__m128i a);
+VBROADCASTI32x2 __m128i _mm_mask_broadcast_i32x2(__m128i s, __mmask8 k, __m128i a);
+VBROADCASTI32x2 __m128i _mm_maskz_broadcast_i32x2( __mmask8 k, __m128i a);
+VBROADCASTI32x4 __m512i _mm512_broadcast_i32x4( __m128i a);
+VBROADCASTI32x4 __m512i _mm512_mask_broadcast_i32x4(__m512i s, __mmask16 k, __m128i a);
+VBROADCASTI32x4 __m512i _mm512_maskz_broadcast_i32x4( __mmask16 k, __m128i a);
+VBROADCASTI32x4 __m256i _mm256_broadcast_i32x4( __m128i a);
+VBROADCASTI32x4 __m256i _mm256_mask_broadcast_i32x4(__m256i s, __mmask8 k, __m128i a);
+VBROADCASTI32x4 __m256i _mm256_maskz_broadcast_i32x4( __mmask8 k, __m128i a);
+VBROADCASTI32x8 __m512i _mm512_broadcast_i32x8( __m256i a);
+VBROADCASTI32x8 __m512i _mm512_mask_broadcast_i32x8(__m512i s, __mmask16 k, __m256i a);
+VBROADCASTI32x8 __m512i _mm512_maskz_broadcast_i32x8( __mmask16 k, __m256i a);
+VBROADCASTI64x2 __m512i _mm512_broadcast_i64x2( __m128i a);
+VBROADCASTI64x2 __m512i _mm512_mask_broadcast_i64x2(__m512i s, __mmask8 k, __m128i a);
+VBROADCASTI64x2 __m512i _mm512_maskz_broadcast_i64x2( __mmask8 k, __m128i a);
+VBROADCASTI64x2 __m256i _mm256_broadcast_i64x2( __m128i a);
+VBROADCASTI64x2 __m256i _mm256_mask_broadcast_i64x2(__m256i s, __mmask8 k, __m128i a);
+VBROADCASTI64x2 __m256i _mm256_maskz_broadcast_i64x2( __mmask8 k, __m128i a);
+VBROADCASTI64x4 __m512i _mm512_broadcast_i64x4( __m256i a);
+VBROADCASTI64x4 __m512i _mm512_mask_broadcast_i64x4(__m512i s, __mmask8 k, __m256i a);
+VBROADCASTI64x4 __m512i _mm512_maskz_broadcast_i64x4( __mmask8 k, __m256i a);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1047000">
-   <string>None.</string></para>
+  <para unique="1047000">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1047005" format="xIndent1">
-   <string>EVEX-encoded instructions, see </string><link linkend="57777: 06_Table: Table 2-23. Type 6 Class Exception Conditions"><string>Table&#160;2&#8209;23, &#8220;Type 6 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1047009" format="xIndent1">
-   <string>EVEX-encoded instructions, syntax with reg/mem operand, see </string><link linkend="70360: 06_Table: Table 2-53. Type E6 Class Exception Conditions"><string>Table&#160;2&#8209;55, &#8220;Type E6 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1047010" format="xIndent1">
-   <string>Additionally:</string></para>
+  <para unique="1047005" format="xIndent1">EVEX-encoded instructions, see <link unique="1047003" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#57777: 06_Table: Table 2-23. Type 6 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;23, &#8220;Type 6 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1047009" format="xIndent1">EVEX-encoded instructions, syntax with reg/mem operand, see <link unique="1047007" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#70360: 06_Table: Table 2-53. Type E6 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;55, &#8220;Type E6 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1047010" format="xIndent1">Additionally:</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If VEX.L = 0 for VPBROADCASTQ, VPBROADCASTI128.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1047011">If VEX.L = 0 for VPBROADCASTQ, VPBROADCASTI128.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
-  <para unique="1047012">
-   <string>	If EVEX.L&#8217;L = 0 for VBROADCASTI32X4/VBROADCASTI64X2.</string></para>
-  <para unique="1047013">
-   <string>	If EVEX.L&#8217;L &lt; 10b for VBROADCASTI32X8/VBROADCASTI64X4.</string></para>
+  <para unique="1047012">	If EVEX.L&#8217;L = 0 for VBROADCASTI32X4/VBROADCASTI64X2.</para>
+  <para unique="1047013">	If EVEX.L&#8217;L &lt; 10b for VBROADCASTI32X8/VBROADCASTI64X4.</para>
   </subsection>
  </instruction>

@@ -1,19 +1,176 @@
 <instruction name="KTESTW/KTESTB/KTESTQ/KTESTD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Packed Bit Test Masks and Set Flags</shortdesc>
- <longdesc><para unique="1261273">
-   <string>Performs a bitwise comparison of the bits of the first source operand and corresponding bits in the second source operand. If the AND operation produces all zeros, the ZF is set else the ZF is clear. If the bitwise AND operation of the inverted first source operand with the second source operand produces all zeros the CF is set else the CF is clear. Only the EFLAGS register is updated.</string></para>
-  <para unique="1261274">
-   <string>Note: In VEX-encoded versions, VEX.vvvv is reserved and must be 1111b, otherwise instructions will #UD.</string></para>
+ <encoding_table><table unique="1261191">
+   <col width="51.62328pt"/>
+   <col width="51.62328pt"/>
+   <col width="28.077119999999997pt"/>
+   <col width="48.74976pt"/>
+   <col width="60.91632pt"/>
+   <col width="272.87568pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1261193">Opcode/</para>
+      <para unique="1261194">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op En</para>
+      </th>
+     <th><para unique="1261200">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1261202">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1261206">VEX.L0.0F.W0 99 /r</para>
+      <para unique="1261207">KTESTW k1, k2</para>
+      </td>
+     <td><para unique="1261211">RR</para>
+      </td>
+     <td><para unique="1261213">V/V</para>
+      </td>
+     <td><para unique="1261666">AVX512DQ</para>
+      <para unique="1261667">OR AVX10.1</para>
+      </td>
+     <td><para unique="1261217">Set ZF and CF depending on sign bit AND and ANDN of 16 bits mask register sources.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261219">VEX.L0.66.0F.W0 99 /r</para>
+      <para unique="1261220">KTESTB k1, k2</para>
+      </td>
+     <td><para unique="1261224">RR</para>
+      </td>
+     <td><para unique="1261226">V/V</para>
+      </td>
+     <td><para unique="1261669">AVX512DQ</para>
+      <para unique="1261670">OR AVX10.1</para>
+      </td>
+     <td><para unique="1261230">Set ZF and CF depending on sign bit AND and ANDN of 8 bits mask reg&#173;ister sources.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261232">VEX.L0.0F.W1 99 /r</para>
+      <para unique="1261233">KTESTQ k1, k2</para>
+      </td>
+     <td><para unique="1261237">RR</para>
+      </td>
+     <td><para unique="1261239">V/V</para>
+      </td>
+     <td><para unique="1261672">AVX512BW</para>
+      <para unique="1261673">OR AVX10.1</para>
+      </td>
+     <td><para unique="1261243">Set ZF and CF depending on sign bit AND and ANDN of 64 bits mask register sources.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261245">VEX.L0.66.0F.W1 99 /r</para>
+      <para unique="1261246">KTESTD k1, k2</para>
+      </td>
+     <td><para unique="1261250">RR</para>
+      </td>
+     <td><para unique="1261252">V/V</para>
+      </td>
+     <td><para unique="1261675">AVX512BW</para>
+      <para unique="1261676">OR AVX10.1</para>
+      </td>
+     <td><para unique="1261256">Set ZF and CF depending on sign bit AND and ANDN of 32 bits mask register sources.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261258">
+   <col width="78.00336pt"/>
+   <col width="107.28504pt"/>
+   <col width="326.75112pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261260">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261262">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261264">Operand 2</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261266">RR</para>
+      </td>
+     <td valign="middle"><para unique="1261268">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261270">ModRM:r/m (r, ModRM:[7:6] must be 11b)</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261271">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261273">Performs a bitwise comparison of the bits of the first source operand and corresponding bits in the second source operand. If the AND operation produces all zeros, the ZF is set else the ZF is clear. If the bitwise AND operation of the inverted first source operand with the second source operand produces all zeros the CF is set else the CF is clear. Only the EFLAGS register is updated.</para>
+  <para unique="1261274">Note: In VEX-encoded versions, VEX.vvvv is reserved and must be 1111b, otherwise instructions will #UD.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1261276">KTESTW </title>
+   <programlisting>TEMP[15:0] := SRC2[15:0] AND SRC1[15:0]
+IF (TEMP[15:0] = = 0)
+	THEN ZF :=1	;
+	ELSE ZF := 0;
+FI;
+TEMP[15:0] := SRC2[15:0] AND NOT SRC1[15:0]
+IF (TEMP[15:0] = = 0)
+	THEN CF :=1;
+	ELSE CF := 0;
+FI;
+AF := OF := PF := SF := 0;
+KTESTB
+TEMP[7:0] := SRC2[7:0] AND SRC1[7:0]
+IF (TEMP[7:0] = = 0)
+	THEN ZF :=1	;
+	ELSE ZF := 0;
+FI;
+TEMP[7:0] := SRC2[7:0] AND NOT SRC1[7:0]
+IF (TEMP[7:0] = = 0)
+	THEN CF :=1;
+	ELSE CF := 0;
+FI;
+AF := OF := PF := SF := 0;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261302">KTESTQ </title>
+   <programlisting>TEMP[63:0] := SRC2[63:0] AND SRC1[63:0]
+IF (TEMP[63:0] = = 0)
+	THEN ZF :=1	;
+	ELSE ZF := 0;
+FI;
+TEMP[63:0] := SRC2[63:0] AND NOT SRC1[63:0]
+IF (TEMP[63:0] = = 0)
+	THEN CF :=1;
+	ELSE CF := 0;
+FI;
+AF := OF := PF := SF := 0;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261315">KTESTD </title>
+   <programlisting>TEMP[31:0] := SRC2[31:0] AND SRC1[31:0]
+IF (TEMP[31:0] = = 0)
+	THEN ZF :=1	;
+	ELSE ZF := 0;
+FI;
+TEMP[31:0] := SRC2[31:0] AND NOT SRC1[31:0]
+IF (TEMP[31:0] = = 0)
+	THEN CF :=1;
+	ELSE CF := 0;
+FI;
+AF := OF := PF := SF := 0;</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1261330">
-   <string>None.</string></para>
+  <para unique="1261330">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1261335" format="xIndent1">
-   <string>See </string><link linkend="42536: 06_Table: Table 2-63. TYPE K20 Exception Definition (VEX-Encoded OpMask"><string>Table&#160;2&#8209;65, &#8220;TYPE K20 Exception Definition (VEX-Encoded OpMask Instructions w/o Memory Arg).&#8221;</string></link></para>
+  <para unique="1261335" format="xIndent1">See <link unique="1261333" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#42536: 06_Table: Table 2-63. TYPE K20 Exception Definition (VEX-Encoded OpMask" xrefstyle="Table All - no page-period">Table&#160;2&#8209;65, &#8220;TYPE K20 Exception Definition (VEX-Encoded OpMask Instructions w/o Memory Arg).&#8221;</link></para>
   </subsection>
  </instruction>

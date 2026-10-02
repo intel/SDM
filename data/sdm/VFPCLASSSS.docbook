@@ -1,31 +1,142 @@
 <instruction name="VFPCLASSSS">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Tests Type of a Scalar Float32 Value</shortdesc>
- <longdesc><para unique="1045940">
-   <string>The FPCLASSSS instruction checks the low single precision floating-point value in the source operand for special categories, specified by the set bits in the imm8 byte. Each set bit in imm8 specifies a category of floating-point values that the input data element is classified against. The classified results of all specified categories of an input value are ORed together to form the final boolean result for the input element. The result is written to the low bit in a mask register k2 according to the writemask k1. Bits MAX_KL-1: 1 of the destination are cleared.</string></para>
-  <para unique="1045943">
-   <string>The classification categories specified by imm8 are shown in </string><link linkend="62402: 05_FigureFrame: Figure 5-24. VFPCLASSPD Immediate Control Description"><string>Figure&#160;5&#8209;13</string></link><string>. The classification test for each category is listed in </string><link linkend="58310: 06_Table: Table 5-13. VFPCLASSPD Test Comparison Operation"><string>Table 5&#8209;11</string></link><string>.</string></para>
-  <para unique="1045948">
-   <string>EVEX.vvvv is reserved and must be 1111b otherwise instructions will #UD.</string></para>
+ <encoding_table><table unique="1045885">
+   <col width="52.21296pt"/>
+   <col width="74.286pt"/>
+   <col width="29.24928pt"/>
+   <col width="48.74976pt"/>
+   <col width="64.99943999999999pt"/>
+   <col width="242.50104pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1045887">Opcode/</para>
+      <para unique="1045888">Instruction</para>
+      </th>
+     <th><para unique="1045892">Op / En</para>
+      </th>
+     <th><para unique="1045894">64/32 Bit Mode Support</para>
+      </th>
+     <th><para unique="1045896">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1045898">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1046336">EVEX.LLIG.66.0F3A.W0 67 /r</para>
+      <para unique="1046337">VFPCLASSSS k2 {k1}, xmm2/m32, imm8</para>
+      </td>
+     <td><para unique="1046341">A</para>
+      </td>
+     <td><para unique="1046343">V/V</para>
+      </td>
+     <td><para unique="1046345">AVX512DQ </para>
+      <para unique="1046349">OR AVX10.1<anchor id="+282855"/></para>
+      </td>
+     <td><para unique="1046351">Tests the input for the following categories: NaN, +0, -0, +Infinity, -Infinity, denormal, finite negative. The immediate field provides a mask bit for each of these category tests. The masked test results are OR-ed together to form a mask result.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1045913">
+   <col width="42.73416pt"/>
+   <col width="78.13368000000001pt"/>
+   <col width="94.47767999999999pt"/>
+   <col width="98.6508pt"/>
+   <col width="95.53608pt"/>
+   <col width="100.67688pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1045915">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1045917">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1045919">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1045921">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1045923">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1045925">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1045927">A</para>
+      </td>
+     <td valign="middle"><para unique="1045929">Tuple1 Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1045931">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1045933">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045935">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1045937">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1045938">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1045940">The FPCLASSSS instruction checks the low single precision floating-point value in the source operand for special categories, specified by the set bits in the imm8 byte. Each set bit in imm8 specifies a category of floating-point values that the input data element is classified against. The classified results of all specified categories of an input value are ORed together to form the final boolean result for the input element. The result is written to the low bit in a mask register k2 according to the writemask k1. Bits MAX_KL-1: 1 of the destination are cleared.</para>
+  <para unique="1045943">The classification categories specified by imm8 are shown in <link unique="1045942" linkend="&lt;c&gt;VFPCLASSPD-Tests-Types-of-Packed-Float64-Values.fm#62402: 05_FigureFrame: Figure 5-24. VFPCLASSPD Immediate Control Description" xrefstyle="FigureNum">Figure&#160;5&#8209;13</link>. The classification test for each category is listed in <link unique="1045946" linkend="&lt;c&gt;VFPCLASSPD-Tests-Types-of-Packed-Float64-Values.fm#58310: 06_Table: Table 5-13. VFPCLASSPD Test Comparison Operation" xrefstyle="TableNum">Table 5&#8209;11</link>.</para>
+  <para unique="1045948">EVEX.vvvv is reserved and must be 1111b otherwise instructions will #UD.</para>
   </longdesc>
+ <operation>
+  <para unique="1045950">CheckFPClassSP (tsrc[31:0], imm8[7:0]){</para>
+  <programlisting>//* Start checking the source operand for special type *//
+	NegNum		 := tsrc[31];
+	IF (tsrc[30:23]=0FFh) Then ExpAllOnes	 := 1; FI;
+	IF (tsrc[30:23]=0h) Then ExpAllZeros	 := 1;
+	IF (ExpAllZeros AND MXCSR.DAZ) Then
+		MantAllZeros	 := 1;
+	ELSIF (tsrc[22:0]=0h) Then
+		MantAllZeros	 := 1;
+	FI;
+	ZeroNumber	= ExpAllZeros AND MantAllZeros
+	SignalingBit	= tsrc[22];
+
+	sNaN_res := ExpAllOnes AND &#160;NOT(MantAllZeros) AND NOT(SignalingBit); // sNaN
+	qNaN_res := ExpAllOnes AND &#160;NOT(MantAllZeros) AND SignalingBit	; // qNaN
+	Pzero_res := NOT(NegNum) AND ExpAllZeros AND MantAllZeros		; // +0
+	Nzero_res := NegNum AND ExpAllZeros AND MantAllZeros		; // -0
+	PInf_res := NOT(NegNum) AND ExpAllOnes AND MantAllZeros		; // +Inf
+	NInf_res := NegNum AND ExpAllOnes AND MantAllZeros		; // -Inf
+	Denorm_res := ExpAllZeros AND &#160;NOT(MantAllZeros)			; // denorm
+	FinNeg_res := NegNum AND NOT(ExpAllOnes) AND NOT(ZeroNumber)	; // -finite
+
+	bResult = ( imm8[0] AND qNaN_res ) OR (imm8[1] AND Pzero_res ) OR
+			( imm8[2] AND Nzero_res ) OR ( imm8[3] AND PInf_res ) OR
+			( imm8[4] AND NInf_res ) OR ( imm8[5] AND Denorm_res ) OR
+			( imm8[6] AND FinNeg_res ) OR ( imm8[7] AND sNaN_res );
+	Return bResult;
+} //* end of CheckSPClassSP() *//</programlisting>
+  <section level="7">
+   <title unique="1045980">VFPCLASSSS (EVEX encoded version)</title>
+   <programlisting>IF k1[0] OR *no writemask*
+	THEN 	DEST[0] :=
+			CheckFPClassSP(SRC1[31:0], imm8[7:0])
+	ELSE 	 DEST[0] := 0						; zeroing-masking only
+FI;
+DEST[MAX_KL-1:1] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VFPCLASSSS __mmask8 _mm_fpclass_ss_mask( __m128 a, int c)</string><string>
-</string><string>VFPCLASSSS __mmask8 _mm_mask_fpclass_ss_mask( __mmask8 m, __m128 a, int c)</string><string>
-</string></programlisting>
+  <programlisting>VFPCLASSSS __mmask8 _mm_fpclass_ss_mask( __m128 a, int c)
+VFPCLASSSS __mmask8 _mm_mask_fpclass_ss_mask( __mmask8 m, __m128 a, int c)</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1045992">
-   <string>None.</string></para>
+  <para unique="1045992">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1045997">
-   <string>See </string><link linkend="70360: 06_Table: Table 2-53. Type E6 Class Exception Conditions"><string>Table&#160;2&#8209;55, &#8220;Type E6 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1045998">
-   <string>Additionally:</string></para>
+  <para unique="1045997">See <link unique="1045995" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#70360: 06_Table: Table 2-53. Type E6 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;55, &#8220;Type E6 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1045998">Additionally:</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If EVEX.vvvv != 1111B.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1045999">If EVEX.vvvv != 1111B.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

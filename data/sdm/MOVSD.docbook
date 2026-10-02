@@ -1,46 +1,396 @@
 <instruction name="MOVSD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Move or Merge Scalar Double Precision Floating-Point Value</shortdesc>
- <longdesc><para unique="1091671">
-   <string>Moves a scalar double precision floating-point value from the source operand (second operand) to the destination operand (first operand). The source and destination operands can be XMM registers or 64-bit memory locations. This instruction can be used to move a double precision floating-point value to and from the low quadword of an XMM register and a 64-bit memory location, or to move a double precision floating-point value between the low quadwords of two XMM registers. The instruction cannot be used to transfer data between memory locations.</string></para>
-  <para unique="1091672">
-   <string>Legacy version: When the source and destination operands are XMM registers, bits MAXVL:64 of the destination operand remains unchanged. When the source operand is a memory location and destination operand is an XMM registers, the quadword at bits 127:64 of the destination operand is cleared to all 0s, bits MAXVL:128 of the desti&#173;nation operand remains unchanged. </string></para>
-  <para unique="1091673">
-   <string>VEX and EVEX encoded register-register syntax: Moves a scalar double precision floating-point value from the second source operand (the third operand) to the low quadword element of the destination operand (the first operand). Bits 127:64 of the destination operand are copied from the first source operand (the second operand). Bits (MAXVL-1:128) of the corresponding destination register are zeroed.</string></para>
-  <para unique="1091674">
-   <string>VEX and EVEX encoded memory store syntax: When the source operand is a memory location and destination operand is an XMM registers, bits MAXVL:64 of the destination operand is cleared to all 0s.</string></para>
-  <para unique="1091675">
-   <string>EVEX encoded versions: The low quadword of the destination is updated according to the writemask.</string></para>
-  <para unique="1091676">
-   <string>Note: For VMOVSD (memory store and load forms), VEX.vvvv and EVEX.vvvv are reserved and must be 1111b, otherwise instruction will #UD.</string></para>
+ <encoding_table><table unique="1091390">
+   <col width="78.98184pt"/>
+   <col width="78.98184pt"/>
+   <col width="43.04376pt"/>
+   <col width="48.74976pt"/>
+   <col width="63.916560000000004pt"/>
+   <col width="198.75096pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091392">Opcode/</para>
+      <para unique="1091393">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op / En</para>
+      </th>
+     <th><para unique="1091399">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091401">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1091405">F2 0F 10 /r</para>
+      <para unique="1091406">MOVSD xmm1, xmm2</para>
+      </td>
+     <td><para unique="1091410">A</para>
+      </td>
+     <td><para unique="1091412">V/V</para>
+      </td>
+     <td><para unique="1091414">SSE2</para>
+      </td>
+     <td><para unique="1091416">Move scalar double precision floating-point value from xmm2 to xmm1 register.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091418">F2 0F 10 /r</para>
+      <para unique="1091419">MOVSD xmm1, m64</para>
+      </td>
+     <td><para unique="1091423">A</para>
+      </td>
+     <td><para unique="1091425">V/V</para>
+      </td>
+     <td><para unique="1091427">SSE2</para>
+      </td>
+     <td><para unique="1091429">Load scalar double precision floating-point value from m64 to xmm1 register.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091431">F2 0F 11 /r</para>
+      <para unique="1091432">MOVSD xmm1/m64, xmm2</para>
+      </td>
+     <td><para unique="1091436">C</para>
+      </td>
+     <td><para unique="1091438">V/V</para>
+      </td>
+     <td><para unique="1091440">SSE2</para>
+      </td>
+     <td><para unique="1091442">Move scalar double precision floating-point value from xmm2 register to xmm1/m64.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091444">VEX.LIG.F2.0F.WIG 10 /r</para>
+      <para unique="1091445">VMOVSD xmm1, xmm2, xmm3</para>
+      </td>
+     <td><para unique="1091449">B</para>
+      </td>
+     <td><para unique="1091451">V/V</para>
+      </td>
+     <td><para unique="1091456">AVX</para>
+      </td>
+     <td><para unique="1091458">Merge scalar double precision floating-point value from xmm2 and xmm3 to xmm1 register.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091460">VEX.LIG.F2.0F.WIG 10 /r</para>
+      <para unique="1091461">VMOVSD xmm1, m64</para>
+      </td>
+     <td><para unique="1091465">D</para>
+      </td>
+     <td><para unique="1091467">V/V</para>
+      </td>
+     <td><para unique="1091472">AVX</para>
+      </td>
+     <td><para unique="1091474">Load scalar double precision floating-point value from m64 to xmm1 register.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091476">VEX.LIG.F2.0F.WIG 11 /r</para>
+      <para unique="1091477">VMOVSD xmm1, xmm2, xmm3</para>
+      </td>
+     <td><para unique="1091481">E</para>
+      </td>
+     <td><para unique="1091483">V/V</para>
+      </td>
+     <td><para unique="1091488">AVX</para>
+      </td>
+     <td><para unique="1091490">Merge scalar double precision floating-point value from xmm2 and xmm3 registers to xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091492">VEX.LIG.F2.0F.WIG 11 /r</para>
+      <para unique="1091493">VMOVSD m64, xmm1</para>
+      </td>
+     <td><para unique="1091497">C</para>
+      </td>
+     <td><para unique="1091499">V/V</para>
+      </td>
+     <td><para unique="1091504">AVX</para>
+      </td>
+     <td><para unique="1091506">Store scalar double precision floating-point value from xmm1 register to m64.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092134">EVEX.LLIG.F2.0F.W1 10 /r</para>
+      <para unique="1092135">VMOVSD xmm1 {k1}{z}, xmm2, xmm3</para>
+      </td>
+     <td><para unique="1092139">B</para>
+      </td>
+     <td><para unique="1092141">V/V</para>
+      </td>
+     <td><para unique="1092146">AVX512F</para>
+      <para unique="1092150">OR AVX10.1<anchor id="+513784"/></para>
+      </td>
+     <td><para unique="1092152">Merge scalar double precision floating-point value from xmm2 and xmm3 registers to xmm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092117">EVEX.LLIG.F2.0F.W1 10 /r</para>
+      <para unique="1092118">VMOVSD xmm1 {k1}{z}, m64</para>
+      </td>
+     <td><para unique="1092122">F</para>
+      </td>
+     <td><para unique="1092124">V/V</para>
+      </td>
+     <td><para unique="1092129">AVX512F</para>
+      <para unique="1092130">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092132">Load scalar double precision floating-point value from m64 to xmm1 register under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092100">EVEX.LLIG.F2.0F.W1 11 /r</para>
+      <para unique="1092101">VMOVSD xmm1 {k1}{z}, xmm2, xmm3</para>
+      </td>
+     <td><para unique="1092105">E</para>
+      </td>
+     <td><para unique="1092107">V/V</para>
+      </td>
+     <td><para unique="1092112">AVX512F</para>
+      <para unique="1092113">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092115">Merge scalar double precision floating-point value from xmm2 and xmm3 registers to xmm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092083">EVEX.LLIG.F2.0F.W1 11 /r</para>
+      <para unique="1092084">VMOVSD m64 {k1}, xmm1</para>
+      </td>
+     <td><para unique="1092088">G</para>
+      </td>
+     <td><para unique="1092090">V/V</para>
+      </td>
+     <td><para unique="1092095">AVX512F</para>
+      <para unique="1092096">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092098">Store scalar double precision floating-point value from xmm1 register to m64 under writemask k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091572">
+   <col width="51.76728pt"/>
+   <col width="66.16656pt"/>
+   <col width="95.23151999999999pt"/>
+   <col width="100.64448pt"/>
+   <col width="99.6732pt"/>
+   <col width="95.88528pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091574">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091576">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091578">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091580">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091582">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091584">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091586">A</para>
+      </td>
+     <td valign="middle"><para unique="1091588">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091590">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091592">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091594">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091596">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091598">B</para>
+      </td>
+     <td valign="middle"><para unique="1091600">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091602">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091604">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091606">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091608">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091610">C</para>
+      </td>
+     <td valign="middle"><para unique="1091612">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091614">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091616">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091618">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091620">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091622">D</para>
+      </td>
+     <td valign="middle"><para unique="1091624">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091626">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091628">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091630">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091632">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091634">E</para>
+      </td>
+     <td valign="middle"><para unique="1091636">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091638">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091640">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091642">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091644">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091646">F</para>
+      </td>
+     <td valign="middle"><para unique="1091648">Tuple1 Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1091650">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091652">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091654">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091656">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091658">G</para>
+      </td>
+     <td valign="middle"><para unique="1091660">Tuple1 Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1091662">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091664">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091666">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091668">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091669">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091671">Moves a scalar double precision floating-point value from the source operand (second operand) to the destination operand (first operand). The source and destination operands can be XMM registers or 64-bit memory locations. This instruction can be used to move a double precision floating-point value to and from the low quadword of an XMM register and a 64-bit memory location, or to move a double precision floating-point value between the low quadwords of two XMM registers. The instruction cannot be used to transfer data between memory locations.</para>
+  <para unique="1091672">Legacy version: When the source and destination operands are XMM registers, bits MAXVL:64 of the destination operand remains unchanged. When the source operand is a memory location and destination operand is an XMM registers, the quadword at bits 127:64 of the destination operand is cleared to all 0s, bits MAXVL:128 of the desti&#173;nation operand remains unchanged. </para>
+  <para unique="1091673">VEX and EVEX encoded register-register syntax: Moves a scalar double precision floating-point value from the second source operand (the third operand) to the low quadword element of the destination operand (the first operand). Bits 127:64 of the destination operand are copied from the first source operand (the second operand). Bits (MAXVL-1:128) of the corresponding destination register are zeroed.</para>
+  <para unique="1091674">VEX and EVEX encoded memory store syntax: When the source operand is a memory location and destination operand is an XMM registers, bits MAXVL:64 of the destination operand is cleared to all 0s.</para>
+  <para unique="1091675">EVEX encoded versions: The low quadword of the destination is updated according to the writemask.</para>
+  <para unique="1091676">Note: For VMOVSD (memory store and load forms), VEX.vvvv and EVEX.vvvv are reserved and must be 1111b, otherwise instruction will #UD.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091678">VMOVSD (EVEX.LLIG.F2.0F 10 /r: VMOVSD xmm1, m64 With Support for 32 Registers)</title>
+   <programlisting>IF k1[0] or *no writemask*
+	THEN		DEST[63:0] := SRC[63:0]
+	ELSE
+		IF *merging-masking*								; merging-masking
+			THEN *DEST[63:0] remains unchanged*
+			ELSE 							; zeroing-masking
+				THEN DEST[63:0] := 0
+		FI;
+FI;
+DEST[MAXVL-1:64] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091690">VMOVSD (EVEX.LLIG.F2.0F 11 /r: VMOVSD m64, xmm1 With Support for 32 Registers)</title>
+   <programlisting>IF k1[0] or *no writemask*
+	THEN		DEST[63:0] := SRC[63:0]
+	ELSE		*DEST[63:0] remains unchanged*					 				; merging-masking
+FI;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091696">VMOVSD (EVEX.LLIG.F2.0F 11 /r: VMOVSD xmm1, xmm2, xmm3)</title>
+   <programlisting>IF k1[0] or *no writemask*
+	THEN		DEST[63:0] := SRC2[63:0]
+	ELSE
+		IF *merging-masking*								; merging-masking
+			THEN *DEST[63:0] remains unchanged*
+			ELSE 							; zeroing-masking
+				THEN DEST[63:0] := 0
+		FI;
+FI;
+DEST[127:64] := SRC1[127:64]
+DEST[MAXVL-1:128] := 0</programlisting>
+   <para unique="1091709" format="CellBodyL">MOVSD (128-bit Legacy SSE Version: MOVSD xmm1, xmm2)</para>
+   <programlisting>DEST[63:0] := SRC[63:0]
+DEST[MAXVL-1:64] (Unmodified)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091713">VMOVSD (VEX.128.F2.0F 11 /r: VMOVSD xmm1, xmm2, xmm3)</title>
+   <programlisting>DEST[63:0] := SRC2[63:0]
+DEST[127:64] := SRC1[127:64]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091718">VMOVSD (VEX.128.F2.0F 10 /r: VMOVSD xmm1, xmm2, xmm3)</title>
+   <programlisting>DEST[63:0] := SRC2[63:0]
+DEST[127:64] := SRC1[127:64]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091723">VMOVSD (VEX.128.F2.0F 10 /r: VMOVSD xmm1, m64)</title>
+   <programlisting>DEST[63:0] := SRC[63:0]
+DEST[MAXVL-1:64] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091727">MOVSD/VMOVSD (128-bit Versions: MOVSD m64, xmm1 or VMOVSD m64, xmm1)</title>
+   <programlisting>DEST[63:0] := SRC[63:0]</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091730">MOVSD (128-bit Legacy SSE Version: MOVSD xmm1, m64)</title>
+   <programlisting>DEST[63:0] := SRC[63:0]
+DEST[127:64] := 0
+DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VMOVSD __m128d _mm_mask_load_sd(__m128d s, __mmask8 k, double * p); </string><string>
-</string><string>VMOVSD __m128d _mm_maskz_load_sd( __mmask8 k, double * p); </string><string>
-</string><string>VMOVSD __m128d _mm_mask_move_sd(__m128d sh, __mmask8 k, __m128d sl, __m128d a); </string><string>
-</string><string>VMOVSD __m128d _mm_maskz_move_sd( __mmask8 k, __m128d s, __m128d a); </string><string>
-</string><string>VMOVSD void _mm_mask_store_sd(double * p, __mmask8 k, __m128d s); </string><string>
-</string><string>MOVSD __m128d _mm_load_sd (double *p)</string><string>
-</string><string>MOVSD void _mm_store_sd (double *p, __m128d a)</string><string>
-</string><string>MOVSD __m128d _mm_move_sd ( __m128d a, __m128d b)</string><string>
-</string></programlisting>
+  <programlisting>VMOVSD __m128d _mm_mask_load_sd(__m128d s, __mmask8 k, double * p);
+VMOVSD __m128d _mm_maskz_load_sd( __mmask8 k, double * p);
+VMOVSD __m128d _mm_mask_move_sd(__m128d sh, __mmask8 k, __m128d sl, __m128d a);
+VMOVSD __m128d _mm_maskz_move_sd( __mmask8 k, __m128d s, __m128d a);
+VMOVSD void _mm_mask_store_sd(double * p, __mmask8 k, __m128d s);
+MOVSD __m128d _mm_load_sd (double *p)
+MOVSD void _mm_store_sd (double *p, __m128d a)
+MOVSD __m128d _mm_move_sd ( __m128d a, __m128d b)</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091744">
-   <string>None.</string></para>
+  <para unique="1091744">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091749" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="48385: 06_Table: Table 2-22. Type 5 Class Exception Conditions"><string>Table&#160;2&#8209;22, &#8220;Type 5 Class Exception Conditions,&#8221;</string></link><string> additionally:</string></para>
+  <para unique="1091749" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1091747" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#48385: 06_Table: Table 2-22. Type 5 Class Exception Conditions" xrefstyle="Table All - no page-comma">Table&#160;2&#8209;22, &#8220;Type 5 Class Exception Conditions,&#8221;</link> additionally:</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If VEX.vvvv != 1111B.</string></listitem>
-    </variablelistentry>
-   <variablelistentry>
-    <term><string>EVEX-encoded instruction, see </string></term>
-    <listitem><link linkend="31368: 06_Table: Table 2-58. Type E10 Class Exception Conditions"><string>Table&#160;2&#8209;60, &#8220;Type E10 Class Exception Conditions.&#8221;</string></link></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091750">If VEX.vvvv != 1111B.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
+  <para unique="1091754" format="xIndent1">EVEX-encoded instruction, see <link unique="1091752" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#31368: 06_Table: Table 2-58. Type E10 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;60, &#8220;Type E10 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

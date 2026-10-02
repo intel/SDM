@@ -1,28 +1,122 @@
 <instruction name="VCVTNEOPH2PS">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Convert Odd Elements of Packed FP16 Values to FP32 Values</shortdesc>
- <longdesc><para unique="1049593">
-   <string>This instruction loads packed FP16 elements from memory, converts the odd elements to FP32, and writes the result to the destination SIMD register.</string></para>
-  <para unique="1049594">
-   <string>This instruction does not generate floating-point exceptions and does not consult or update MXCSR. </string></para>
-  <para unique="1049595">
-   <string>Input FP16 denormals are converted to normal FP32 numbers and not treated as zero. Since any FP16 number can be represented in FP32, the conversion result is exact and no rounding is needed.</string></para>
+ <encoding_table><table unique="1047410">
+   <col width="65.23631999999999pt"/>
+   <col width="92.81448pt"/>
+   <col width="39.900240000000004pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="184.14936pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1047052">Opcode/</para>
+      <para unique="1047053">Instruction</para>
+      </th>
+     <th><para unique="1047057">Op/</para>
+      <para unique="1047058">En</para>
+      </th>
+     <th><para unique="1047060">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1047062">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1047064">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1049572">VEX.128.NP.0F38.W0 B0 !(11):rrr:bbb</para>
+      <para unique="1049573">VCVTNEOPH2PS xmm1, m128</para>
+      </td>
+     <td><para unique="1048638">A</para>
+      </td>
+     <td><para unique="1048640">V/V</para>
+      </td>
+     <td><para unique="1048642">AVX_NE_&#8232;CONVERT</para>
+      </td>
+     <td><para unique="1049586">Convert odd elements of packed FP16 values from m128 to FP32 values and store in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1049577">VEX.256.NP.0F38.W0 B0 !(11):rrr:bbb</para>
+      <para unique="1049578">VCVTNEOPH2PS ymm1, m256</para>
+      </td>
+     <td><para unique="1048651">A</para>
+      </td>
+     <td><para unique="1048653">V/V</para>
+      </td>
+     <td><para unique="1048655">AVX_NE_&#8232;CONVERT</para>
+      </td>
+     <td><para unique="1049588">Convert odd elements of packed FP16 values from m256 to FP32 values and store in ymm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1047440">
+   <col width="39.114000000000004pt"/>
+   <col width="52.614000000000004pt"/>
+   <col width="99.25704pt"/>
+   <col width="111.48624pt"/>
+   <col width="105.63624pt"/>
+   <col width="104.32368pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1047081">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1047083">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1047085">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1047087">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1047089">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1047091">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1048663">A</para>
+      </td>
+     <td valign="middle"><para unique="1048982">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1048984">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1048986">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1048988">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1048990">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1047104">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1049593">This instruction loads packed FP16 elements from memory, converts the odd elements to FP32, and writes the result to the destination SIMD register.</para>
+  <para unique="1049594">This instruction does not generate floating-point exceptions and does not consult or update MXCSR. </para>
+  <para unique="1049595">Input FP16 denormals are converted to normal FP32 numbers and not treated as zero. Since any FP16 number can be represented in FP32, the conversion result is exact and no rounding is needed.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1049597">VCVTNEOPH2PS dest, src (VEX encoded version)</title>
+   <programlisting>VL = (128, 256)
+KL = VL/32
+FOR i in range(0, KL):
+	dest.dword[i] = convert_fp16_to_fp32(src.dword[i].word[1]) //SAE
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1048329">
-   <string>None.</string></para>
+  <para unique="1048329">None.</para>
   </subsection>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VCVTNEOPH2PS __m128 _mm_cvtneoph_ps (const __m128h* __A);</string><string>
-</string><string>VCVTNEOPH2PS __m256 _mm256_cvtneoph_ps (const __m256h* __A);</string><string>
-</string></programlisting>
+  <programlisting>VCVTNEOPH2PS __m128 _mm_cvtneoph_ps (const __m128h* __A);
+VCVTNEOPH2PS __m256 _mm256_cvtneoph_ps (const __m256h* __A);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1047135">
-   <string>None.</string></para>
+  <para unique="1047135">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046793">
-   <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046793">See <link unique="1047157" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

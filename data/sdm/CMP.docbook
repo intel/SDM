@@ -1,103 +1,483 @@
 <instruction name="CMP">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Compare Two Operands</shortdesc>
- <longdesc><para unique="1261536">
-   <string>Compares the first source operand with the second source operand and sets the status flags in the EFLAGS register according to the results. The comparison is performed by subtracting the second operand from the first operand and then setting the status flags in the same manner as the SUB instruction. When an immediate value is used as an operand, it is sign-extended to the length of the first operand.</string></para>
-  <para unique="1261537">
-   <string>The condition codes used by the J</string><italic><string>cc</string></italic><string>, CMOV</string><italic><string>cc</string></italic><string>, and SET</string><italic><string>cc</string></italic><string> instructions are based on the results of a CMP instruction. </string><link linkend="17542: A1Heading: Appendix D Condition Codes"><string>Appendix B, &#8220;EFLAGS Condition Codes,&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, shows the relationship of the status flags and the condition codes.</string></para>
-  <para unique="1261541">
-   <string>In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</string></para>
+ <encoding_table><table unique="1261192">
+   <thead><tr>
+     <th><para unique="1261194">Opcode</para>
+      </th>
+     <th><para unique="1261196">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261202">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.81712pt"/>
+   <col width="112.09752pt"/>
+   <col width="24.732000000000003pt"/>
+   <col width="47.95343999999999pt"/>
+   <col width="46.6596pt"/>
+   <col width="181.13832000000002pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261206">3C ib</para>
+      </td>
+     <td><para unique="1261208">CMP AL, imm8</para>
+      </td>
+     <td><para unique="1261210">I</para>
+      </td>
+     <td><para unique="1261212">Valid</para>
+      </td>
+     <td><para unique="1261214">Valid</para>
+      </td>
+     <td><para unique="1261216">Compare imm8 with AL.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261218">3D iw</para>
+      </td>
+     <td><para unique="1261220">CMP AX, imm16</para>
+      </td>
+     <td><para unique="1261222">I</para>
+      </td>
+     <td><para unique="1261224">Valid</para>
+      </td>
+     <td><para unique="1261226">Valid</para>
+      </td>
+     <td><para unique="1261228">Compare imm16 with AX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261230">3D id</para>
+      </td>
+     <td><para unique="1261232">CMP EAX, imm32</para>
+      </td>
+     <td><para unique="1261234">I</para>
+      </td>
+     <td><para unique="1261236">Valid</para>
+      </td>
+     <td><para unique="1261238">Valid</para>
+      </td>
+     <td><para unique="1261240">Compare imm32 with EAX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261242">REX.W + 3D id</para>
+      </td>
+     <td><para unique="1261244">CMP RAX, imm32</para>
+      </td>
+     <td><para unique="1261246">I</para>
+      </td>
+     <td><para unique="1261248">Valid</para>
+      </td>
+     <td><para unique="1261250">N.E.</para>
+      </td>
+     <td><para unique="1261252">Compare imm32 sign-extended to 64-bits with RAX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261254">80 /7 ib </para>
+      </td>
+     <td><para unique="1261256">CMP r/m8<footnote><para unique="1261920" format="TableFootnote"><anchor id="70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce"/>With a REX prefix in 64-bit mode, attempts to access AH, BH, CH, or DH will instead access SPL, DIL, BPL, or SIL, respectively.</para>
+        </footnote>, imm8</para>
+      </td>
+     <td><para unique="1261258">MI</para>
+      </td>
+     <td><para unique="1261260">Valid</para>
+      </td>
+     <td><para unique="1261262">Valid</para>
+      </td>
+     <td><para unique="1261264">Compare imm8 with r/m8.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261278">81 /7 iw</para>
+      </td>
+     <td><para unique="1261280">CMP r/m16, imm16</para>
+      </td>
+     <td><para unique="1261282">MI</para>
+      </td>
+     <td><para unique="1261284">Valid</para>
+      </td>
+     <td><para unique="1261286">Valid</para>
+      </td>
+     <td><para unique="1261288">Compare imm16 with r/m16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261290">81 /7 id</para>
+      </td>
+     <td><para unique="1261292">CMP r/m32, imm32</para>
+      </td>
+     <td><para unique="1261294">MI</para>
+      </td>
+     <td><para unique="1261296">Valid</para>
+      </td>
+     <td><para unique="1261298">Valid</para>
+      </td>
+     <td><para unique="1261300">Compare imm32 with r/m32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261302">REX.W + 81 /7 id</para>
+      </td>
+     <td><para unique="1261304">CMP r/m64, imm32</para>
+      </td>
+     <td><para unique="1261306">MI</para>
+      </td>
+     <td><para unique="1261308">Valid</para>
+      </td>
+     <td><para unique="1261310">N.E.</para>
+      </td>
+     <td><para unique="1261312">Compare imm32 sign-extended to 64-bits with r/m64.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261314">83 /7 ib</para>
+      </td>
+     <td><para unique="1261316">CMP r/m16, imm8</para>
+      </td>
+     <td><para unique="1261318">MI</para>
+      </td>
+     <td><para unique="1261320">Valid</para>
+      </td>
+     <td><para unique="1261322">Valid</para>
+      </td>
+     <td><para unique="1261324">Compare imm8 with r/m16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261326">83 /7 ib</para>
+      </td>
+     <td><para unique="1261328">CMP r/m32, imm8</para>
+      </td>
+     <td><para unique="1261330">MI</para>
+      </td>
+     <td><para unique="1261332">Valid</para>
+      </td>
+     <td><para unique="1261334">Valid</para>
+      </td>
+     <td><para unique="1261336">Compare imm8 with r/m32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261338">REX.W + 83 /7 ib</para>
+      </td>
+     <td><para unique="1261340">CMP r/m64, imm8</para>
+      </td>
+     <td><para unique="1261342">MI</para>
+      </td>
+     <td><para unique="1261344">Valid</para>
+      </td>
+     <td><para unique="1261346">N.E.</para>
+      </td>
+     <td><para unique="1261348">Compare imm8 with r/m64.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261350">38 /r </para>
+      </td>
+     <td><para unique="1261352">CMP r/m8<link unique="1261990" linkend="#70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link>, r8<link unique="1261937" linkend="#70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link></para>
+      </td>
+     <td><para unique="1261354">MR</para>
+      </td>
+     <td><para unique="1261356">Valid</para>
+      </td>
+     <td><para unique="1261358">Valid</para>
+      </td>
+     <td><para unique="1261360">Compare r8 with r/m8.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261374">39 /r</para>
+      </td>
+     <td><para unique="1261376">CMP r/m16, r16</para>
+      </td>
+     <td><para unique="1261378">MR</para>
+      </td>
+     <td><para unique="1261380">Valid</para>
+      </td>
+     <td><para unique="1261382">Valid</para>
+      </td>
+     <td><para unique="1261384">Compare r16 with r/m16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261386">39 /r</para>
+      </td>
+     <td><para unique="1261388">CMP r/m32, r32</para>
+      </td>
+     <td><para unique="1261390">MR</para>
+      </td>
+     <td><para unique="1261392">Valid</para>
+      </td>
+     <td><para unique="1261394">Valid</para>
+      </td>
+     <td><para unique="1261396">Compare r32 with r/m32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261398">REX.W + 39 /r</para>
+      </td>
+     <td><para unique="1261400">CMP r/m64,r64</para>
+      </td>
+     <td><para unique="1261402">MR</para>
+      </td>
+     <td><para unique="1261404">Valid</para>
+      </td>
+     <td><para unique="1261406">N.E.</para>
+      </td>
+     <td><para unique="1261408">Compare r64 with r/m64.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261410">3A /r </para>
+      </td>
+     <td><para unique="1261412">CMP r8<link unique="1262005" linkend="#70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link>, r/m8<link unique="1261944" linkend="#70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link></para>
+      </td>
+     <td><para unique="1261414">RM</para>
+      </td>
+     <td><para unique="1261416">Valid</para>
+      </td>
+     <td><para unique="1261418">Valid</para>
+      </td>
+     <td><para unique="1261420">Compare r/m8 with r8.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261434">3B /r</para>
+      </td>
+     <td><para unique="1261436">CMP r16, r/m16</para>
+      </td>
+     <td><para unique="1261438">RM</para>
+      </td>
+     <td><para unique="1261440">Valid</para>
+      </td>
+     <td><para unique="1261442">Valid</para>
+      </td>
+     <td><para unique="1261444">Compare r/m16 with r16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261446">3B /r</para>
+      </td>
+     <td><para unique="1261448">CMP r32, r/m32</para>
+      </td>
+     <td><para unique="1261450">RM</para>
+      </td>
+     <td><para unique="1261452">Valid</para>
+      </td>
+     <td><para unique="1261454">Valid</para>
+      </td>
+     <td><para unique="1261456">Compare r/m32 with r32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261458">REX.W + 3B /r</para>
+      </td>
+     <td><para unique="1261460">CMP r64, r/m64</para>
+      </td>
+     <td><para unique="1261462">RM</para>
+      </td>
+     <td><para unique="1261464">Valid</para>
+      </td>
+     <td><para unique="1261466">N.E.</para>
+      </td>
+     <td><para unique="1261468">Compare r/m64 with r64.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261483">
+   <col width="44.45568pt"/>
+   <col width="112.85784pt"/>
+   <col width="118.152pt"/>
+   <col width="116.15544pt"/>
+   <col width="118.84824pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261485">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261487">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261489">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261491">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261493">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261495">RM</para>
+      </td>
+     <td valign="middle"><para unique="1261497">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261499">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261501">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261503">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1261505">MR</para>
+      </td>
+     <td valign="middle"><para unique="1261507">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261509">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261511">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261513">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1261515">MI</para>
+      </td>
+     <td valign="middle"><para unique="1261517">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261519">imm8/16/32</para>
+      </td>
+     <td valign="middle"><para unique="1261521">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261523">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1261525">I</para>
+      </td>
+     <td valign="middle"><para unique="1261527">AL/AX/EAX/RAX (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261529">imm8/16/32</para>
+      </td>
+     <td valign="middle"><para unique="1261531">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261533">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261534">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261536">Compares the first source operand with the second source operand and sets the status flags in the EFLAGS register according to the results. The comparison is performed by subtracting the second operand from the first operand and then setting the status flags in the same manner as the SUB instruction. When an immediate value is used as an operand, it is sign-extended to the length of the first operand.</para>
+  <para unique="1261537">The condition codes used by the J<italic>cc</italic>, CMOV<italic>cc</italic>, and SET<italic>cc</italic> instructions are based on the results of a CMP instruction. <link unique="1261539" linkend="&lt;c&gt;__sdm_vol1_apxB.fm#17542: A1Heading: Appendix D Condition Codes" xrefstyle="AppendixNum&amp;Title(,)_CR">Appendix B, &#8220;EFLAGS Condition Codes,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, shows the relationship of the status flags and the condition codes.</para>
+  <para unique="1261541">In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</para>
   </longdesc>
+ <operation>
+  <programlisting>temp := SRC1 &#8722; SignExtend(SRC2);
+ModifyStatusFlags; (* Modify status flags in the same manner as the SUB instruction*)</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261546">
-   <string>The CF, OF, SF, ZF, AF, and PF flags are set according to the result.</string></para>
+  <para unique="1261546">The CF, OF, SF, ZF, AF, and PF flags are set according to the result.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261548">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1261549">If the DS, ES, FS, or GS register contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261550">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261551">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261552">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261553">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1261555">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS</term>
+    <listitem><para unique="1261556">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261558">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261559">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261560">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261561">If alignment checking is enabled and an unaligned memory reference is made.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261562">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261564" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261564" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261566">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261567">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261568">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261569">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261570">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

@@ -1,36 +1,192 @@
 <instruction name="ADDSS">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Add Scalar Single Precision Floating-Point Values</shortdesc>
- <longdesc><para unique="1261302">
-   <string>Adds the low single precision floating-point values from the second source operand and the first source operand, and stores the double precision floating-point result in the destination operand.</string></para>
-  <para unique="1261303">
-   <string>The second source operand can be an XMM register or a 64-bit memory location. The first source and destination operands are XMM registers. </string></para>
-  <para unique="1261304">
-   <string>128-bit Legacy SSE version: The first source and destination operands are the same. Bits (MAXVL-1:32) of the corresponding the destination register remain unchanged.</string></para>
-  <para unique="1261305">
-   <string>EVEX and VEX.128 encoded version: The first source operand is encoded by EVEX.vvvv/VEX.vvvv. Bits (127:32) of the XMM register destination are copied from corresponding bits in the first source operand. Bits (MAXVL-1:128) of the destination register are zeroed.</string></para>
-  <para unique="1261306">
-   <string>EVEX version: The low doubleword element of the destination is updated according to the writemask.</string></para>
-  <para unique="1261307">
-   <string>Software should ensure VADDSS is encoded with VEX.L=0. Encoding VADDSS with VEX.L=1 may encounter unpre&#173;dictable behavior across different processor generations.</string></para>
+ <encoding_table><table unique="1261191">
+   <col width="62.41536pt"/>
+   <col width="62.41536pt"/>
+   <col width="30.44448pt"/>
+   <col width="48.74976pt"/>
+   <col width="58.08312pt"/>
+   <col width="248.91696000000002pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1261193">Opcode/</para>
+      <para unique="1261194">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op / En</para>
+      </th>
+     <th><para unique="1261200">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1261202">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1261206">F3 0F 58 /r</para>
+      <para unique="1261207">ADDSS xmm1, xmm2/m32</para>
+      </td>
+     <td><para unique="1261211">A</para>
+      </td>
+     <td><para unique="1261213">V/V</para>
+      </td>
+     <td><para unique="1261215">SSE</para>
+      </td>
+     <td><para unique="1261217">Add the low single precision floating-point value from xmm2/mem to xmm1 and store the result in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261219">VEX.LIG.F3.0F.WIG 58 /r</para>
+      <para unique="1261220">VADDSS xmm1,xmm2, xmm3/m32</para>
+      </td>
+     <td><para unique="1261224">B</para>
+      </td>
+     <td><para unique="1261226">V/V</para>
+      </td>
+     <td><para unique="1261231">AVX</para>
+      </td>
+     <td><para unique="1261233">Add the low single precision floating-point value from xmm3/mem to xmm2 and store the result in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261235">EVEX.LLIG.F3.0F.W0 58 /r</para>
+      <para unique="1261236">VADDSS xmm1{k1}{z}, xmm2, xmm3/m32{er}</para>
+      </td>
+     <td><para unique="1261240">C</para>
+      </td>
+     <td><para unique="1261242">V/V</para>
+      </td>
+     <td><para unique="1261646">AVX512F </para>
+      <para unique="1261650">OR AVX10.1<anchor id="+690914"/></para>
+      <para unique="1261247"/>
+      </td>
+     <td><para unique="1261249">Add the low single precision floating-point value from xmm3/m32 to xmm2 and store the result in xmm1with writemask k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261251">
+   <col width="55.242pt"/>
+   <col width="59.24232000000001pt"/>
+   <col width="97.36416pt"/>
+   <col width="101.25072pt"/>
+   <col width="99.32328000000001pt"/>
+   <col width="100.30463999999999pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261253">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261255">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1261257">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261259">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261261">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261263">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261265">A</para>
+      </td>
+     <td valign="middle"><para unique="1261267">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261269">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1261271">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261273">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261275">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1261277">B</para>
+      </td>
+     <td valign="middle"><para unique="1261279">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261281">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261283">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261285">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261287">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1261289">C</para>
+      </td>
+     <td valign="middle"><para unique="1261291">Tuple1 Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1261293">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261295">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261297">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261299">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261300">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261302">Adds the low single precision floating-point values from the second source operand and the first source operand, and stores the double precision floating-point result in the destination operand.</para>
+  <para unique="1261303">The second source operand can be an XMM register or a 64-bit memory location. The first source and destination operands are XMM registers. </para>
+  <para unique="1261304">128-bit Legacy SSE version: The first source and destination operands are the same. Bits (MAXVL-1:32) of the corresponding the destination register remain unchanged.</para>
+  <para unique="1261305">EVEX and VEX.128 encoded version: The first source operand is encoded by EVEX.vvvv/VEX.vvvv. Bits (127:32) of the XMM register destination are copied from corresponding bits in the first source operand. Bits (MAXVL-1:128) of the destination register are zeroed.</para>
+  <para unique="1261306">EVEX version: The low doubleword element of the destination is updated according to the writemask.</para>
+  <para unique="1261307">Software should ensure VADDSS is encoded with VEX.L=0. Encoding VADDSS with VEX.L=1 may encounter unpre&#173;dictable behavior across different processor generations.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1261309">VADDSS (EVEX Encoded Versions)</title>
+   <programlisting>IF (EVEX.b = 1) AND SRC2 *is a register*
+	THEN
+		SET_ROUNDING_MODE_FOR_THIS_INSTRUCTION(EVEX.RC);
+	ELSE
+		SET_ROUNDING_MODE_FOR_THIS_INSTRUCTION(MXCSR.RC);
+FI;
+IF k1[0] or *no writemask*
+	THEN		DEST[31:0] := SRC1[31:0] + SRC2[31:0]
+	ELSE
+		IF *merging-masking*								; merging-masking
+			THEN *DEST[31:0] remains unchanged*
+			ELSE 							; zeroing-masking
+				THEN DEST[31:0] := 0
+		FI;
+FI;
+DEST[127:32] := SRC1[127:32]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261328">VADDSS DEST, SRC1, SRC2 (VEX.128 Encoded Version)</title>
+   <programlisting>DEST[31:0] := SRC1[31:0] + SRC2[31:0]
+DEST[127:32] := SRC1[127:32]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261333">ADDSS DEST, SRC (128-bit Legacy SSE Version)</title>
+   <programlisting>DEST[31:0] := DEST[31:0] + SRC[31:0]
+DEST[MAXVL-1:32] (Unmodified)</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VADDSS __m128 _mm_mask_add_ss (__m128 s, __mmask8 k, __m128 a, __m128 b);</string><string>
-</string><string>VADDSS __m128 _mm_maskz_add_ss (__mmask8 k, __m128 a, __m128 b);</string><string>
-</string><string>VADDSS __m128 _mm_add_round_ss (__m128 a, __m128 b, int);</string><string>
-</string><string>VADDSS __m128 _mm_mask_add_round_ss (__m128 s, __mmask8 k, __m128 a, __m128 b, int);</string><string>
-</string><string>VADDSS __m128 _mm_maskz_add_round_ss (__mmask8 k, __m128 a, __m128 b, int);</string><string>
-</string><string>ADDSS __m128 _mm_add_ss (__m128 a, __m128 b);</string><string>
-</string></programlisting>
+  <programlisting>VADDSS __m128 _mm_mask_add_ss (__m128 s, __mmask8 k, __m128 a, __m128 b);
+VADDSS __m128 _mm_maskz_add_ss (__mmask8 k, __m128 a, __m128 b);
+VADDSS __m128 _mm_add_round_ss (__m128 a, __m128 b, int);
+VADDSS __m128 _mm_mask_add_round_ss (__m128 s, __mmask8 k, __m128 a, __m128 b, int);
+VADDSS __m128 _mm_maskz_add_round_ss (__mmask8 k, __m128 a, __m128 b, int);
+ADDSS __m128 _mm_add_ss (__m128 a, __m128 b);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1261344">
-   <string>Overflow, Underflow, Invalid, Precision, Denormal.</string></para>
+  <para unique="1261344">Overflow, Underflow, Invalid, Precision, Denormal.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1261349">
-   <string>VEX-encoded instruction, see </string><link linkend="35386: 06_Table: Table 2-20. Type 3 Class Exception Conditions"><string>Table&#160;2&#8209;20, &#8220;Type 3 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1261353">
-   <string>EVEX-encoded instruction, see </string><link linkend="63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions"><string>Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1261349">VEX-encoded instruction, see <link unique="1261347" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#35386: 06_Table: Table 2-20. Type 3 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;20, &#8220;Type 3 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1261353">EVEX-encoded instruction, see <link unique="1261351" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

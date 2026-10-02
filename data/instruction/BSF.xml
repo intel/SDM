@@ -49,10 +49,12 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_BSF(operand_size, src);</code>
+     <code>let (result, write_result) := Instr_BSF(operand_size, src);</code>
      </execute>
     <post_execute>
-     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     <code>if write_result then</code>
+     <code>    Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     <code>endif;</code>
      </post_execute>
     </instr_code>
    <assembly-syntax mnemonic="BSF">
@@ -88,7 +90,7 @@ If you give Intel any comments or suggestions related to this document or the in
     <decode_args>
      </decode_args>
     <read_instr><code>let disp8n := 1;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
      </read_instr><decode_checks>
      </decode_checks>
@@ -101,10 +103,12 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_BSF(operand_size, src);</code>
+     <code>let (result, write_result) := Instr_BSF(operand_size, src);</code>
      </execute>
     <post_execute>
-     <code>Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     <code>if write_result then</code>
+     <code>    Write_GPR(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
+     <code>endif;</code>
      </post_execute>
     </instr_code>
    <assembly-syntax mnemonic="BSF">
@@ -126,11 +130,15 @@ If you give Intel any comments or suggestions related to this document or the in
   </iform-group>
  <operation name="BSF" variant_kind="Standard variant" mnemonic="BSF">
   <code>var result : Bits(operand_size);</code>
+  <code>var write_result : Boolean;</code>
+  <code></code>
   <code>if Is_Zero(src) then</code>
   <code>    result := UNSPECIFIED : Bits(operand_size);</code>
+  <code>    write_result := False;</code>
   <code>    RFLAGS.ZF := 0b1;</code>
   <code>else</code>
   <code>    result := Count_Trailing_Zero_Bits(src)[0 +: operand_size];</code>
+  <code>    write_result := True;</code>
   <code>    RFLAGS.ZF := 0b0;</code>
   <code>endif;</code>
   <code></code>
@@ -141,10 +149,13 @@ If you give Intel any comments or suggestions related to this document or the in
   <code>RFLAGS.CF := UNSPECIFIED : Bit;</code>
   <callee>Std::Bits::Is_Zero</callee>
   <callee>Std::Bits::Count_Trailing_Zero_Bits</callee>
+  <var-used>True</var-used>
+  <var-used>False</var-used>
   <var-used>RFLAGS</var-used>
   <input name="operand_size" type="Integer"/>
   <input name="src" type="Bits(operand_size)"/>
   <output name="result" type="Bits(operand_size)"/>
+  <output name="write_result" type="Boolean"/>
   </operation>
  <category>scalar</category>
  <category>integer/bit</category>

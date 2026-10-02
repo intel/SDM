@@ -1,47 +1,132 @@
 <instruction name="MASKMOVDQU">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Store Selected Bytes of Double Quadword</shortdesc>
- <longdesc><para unique="1091456">
-   <string>Stores selected bytes from the source operand (first operand) into an 128-bit memory location. The mask operand (second operand) selects which bytes from the source operand are written to memory. The source and mask oper&#173;ands are XMM registers. The memory location specified by the effective address in the DI/EDI/RDI register (the default segment register is DS, but this may be overridden with a segment-override prefix). The memory location does not need to be aligned on a natural boundary. (The size of the store address depends on the address-size attribute.)</string></para>
-  <para unique="1091457">
-   <string>The most significant bit in each byte of the mask operand determines whether the corresponding byte in the source operand is written to the corresponding byte location in memory: 0 indicates no write and 1 indicates write. </string></para>
-  <para unique="1091458">
-   <string>The MASKMOVDQU instruction generates a non-temporal hint to the processor to minimize cache pollution. The non-temporal hint is implemented by using a write combining (WC) memory type protocol (see </string><string>&#8220;Caching of Temporal vs. Non-Temporal Data&#8221;</string><string> in </string><link linkend="40469: H1Heading: Chapter 8 Input/Output"><string>Chapter 10</string></link><string>, of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1). Because the WC protocol uses a weakly-ordered memory consistency model, a fencing opera&#173;tion implemented with the SFENCE or MFENCE instruction should be used in conjunction with MASKMOVDQU instructions if multiple processors might use different memory types to read/write the destination memory loca&#173;tions.</string></para>
-  <para unique="1091465">
-   <string>Behavior with a mask of all 0s is as follows:</string></para>
-  <itemizedlist><listitem><para unique="1091466">
-     <string>No data will be written to memory. </string></para>
+ <encoding_table><table unique="1091389">
+   <thead><tr>
+     <th colspan="2"><para unique="1091391">Opcode/</para>
+      <para unique="1091392">Instruction</para>
+      </th>
+     <th><para unique="1091396">Op/ En</para>
+      </th>
+     <th><para unique="1091398">64/32-bit Mode</para>
+      </th>
+     <th><para unique="1091400">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091402">Description</para>
+      </th>
+     </tr>
+    </thead><col width="75.42pt"/>
+   <col width="85.55543999999999pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="231.15384pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1091404">66 0F F7 /r</para>
+      <para unique="1091405">MASKMOVDQU xmm1, xmm2</para>
+      </td>
+     <td><para unique="1091409">RM</para>
+      </td>
+     <td><para unique="1091411">V/V</para>
+      </td>
+     <td><para unique="1091413">SSE2</para>
+      </td>
+     <td><para unique="1091415">Selectively write bytes from xmm1 to memory location using the byte mask in xmm2. The default memory location is specified by DS:DI/EDI/RDI.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091417">VEX.128.66.0F.WIG F7 /r</para>
+      <para unique="1091418">VMASKMOVDQU xmm1, xmm2</para>
+      </td>
+     <td><para unique="1091422">RM</para>
+      </td>
+     <td><para unique="1091424">V/V</para>
+      </td>
+     <td><para unique="1091426">AVX</para>
+      </td>
+     <td><para unique="1091428">Selectively write bytes from xmm1 to memory location using the byte mask in xmm2. The default memory location is specified by DS:DI/EDI/RDI.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091430">
+   <col width="44.0712pt"/>
+   <col width="118.10376000000001pt"/>
+   <col width="124.51535999999999pt"/>
+   <col width="112.83624pt"/>
+   <col width="113.19264pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091432">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091434">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091436">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091438">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091440">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091442">RM</para>
+      </td>
+     <td valign="middle"><para unique="1091444">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091446">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091448">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091450">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091454">Instruction Operand Encoding<sans><footnote><para unique="1091453" format="TableFootnote">ModRM.MOD = 011B required</para>
+      </footnote></sans></caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091456">Stores selected bytes from the source operand (first operand) into an 128-bit memory location. The mask operand (second operand) selects which bytes from the source operand are written to memory. The source and mask oper&#173;ands are XMM registers. The memory location specified by the effective address in the DI/EDI/RDI register (the default segment register is DS, but this may be overridden with a segment-override prefix). The memory location does not need to be aligned on a natural boundary. (The size of the store address depends on the address-size attribute.)</para>
+  <para unique="1091457">The most significant bit in each byte of the mask operand determines whether the corresponding byte in the source operand is written to the corresponding byte location in memory: 0 indicates no write and 1 indicates write. </para>
+  <para unique="1091458">The MASKMOVDQU instruction generates a non-temporal hint to the processor to minimize cache pollution. The non-temporal hint is implemented by using a write combining (WC) memory type protocol (see &#8220;Caching of Temporal vs. Non-Temporal Data&#8221; in <link unique="1091463" linkend="&lt;c&gt;__sdm_vol1_ch10.fm#40469: H1Heading: Chapter 8 Input/Output" xrefstyle="ChapterNum_CR">Chapter 10</link>, of the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1). Because the WC protocol uses a weakly-ordered memory consistency model, a fencing opera&#173;tion implemented with the SFENCE or MFENCE instruction should be used in conjunction with MASKMOVDQU instructions if multiple processors might use different memory types to read/write the destination memory loca&#173;tions.</para>
+  <para unique="1091465">Behavior with a mask of all 0s is as follows:</para>
+  <itemizedlist>
+   <listitem><para unique="1091466">No data will be written to memory. </para>
     </listitem>
-   <listitem><para unique="1091467">
-     <string>Signaling of breakpoints (code or data) is not guaranteed; different processor implementations may signal or not signal these breakpoints.</string></para>
+   <listitem><para unique="1091467">Signaling of breakpoints (code or data) is not guaranteed; different processor implementations may signal or not signal these breakpoints.</para>
     </listitem>
-   <listitem><para unique="1091468">
-     <string>Exceptions associated with addressing memory and page faults may still be signaled (implementation dependent).</string></para>
+   <listitem><para unique="1091468">Exceptions associated with addressing memory and page faults may still be signaled (implementation dependent).</para>
     </listitem>
-   <listitem><para unique="1091469">
-     <string>If the destination memory region is mapped as UC or WP, enforcement of associated semantics for these memory types is not guaranteed (that is, is reserved) and is implementation-specific. </string></para>
+   <listitem><para unique="1091469">If the destination memory region is mapped as UC or WP, enforcement of associated semantics for these memory types is not guaranteed (that is, is reserved) and is implementation-specific. </para>
     </listitem>
-   </itemizedlist><para unique="1091470">
-   <string>The MASKMOVDQU instruction can be used to improve performance of algorithms that need to merge data on a byte-by-byte basis. MASKMOVDQU should not cause a read for ownership; doing so generates unnecessary band&#173;width since data is to be written directly using the byte-mask without allocating old data prior to the store. </string></para>
-  <para unique="1091471">
-   <string>In 64-bit mode, use of the REX.R prefix permits this instruction to access additional registers (XMM8-XMM15).</string></para>
-  <para unique="1091472">
-   <string>Note: In VEX-encoded versions, VEX.vvvv is reserved and must be 1111b otherwise instructions will #UD.</string></para>
-  <para unique="1091473">
-   <string>If VMASKMOVDQU is encoded with VEX.L= 1, an attempt to execute the instruction encoded with VEX.L= 1 will cause an #UD exception.</string></para>
+   </itemizedlist>
+  <para unique="1091470">The MASKMOVDQU instruction can be used to improve performance of algorithms that need to merge data on a byte-by-byte basis. MASKMOVDQU should not cause a read for ownership; doing so generates unnecessary band&#173;width since data is to be written directly using the byte-mask without allocating old data prior to the store. </para>
+  <para unique="1091471">In 64-bit mode, use of the REX.R prefix permits this instruction to access additional registers (XMM8-XMM15).</para>
+  <para unique="1091472">Note: In VEX-encoded versions, VEX.vvvv is reserved and must be 1111b otherwise instructions will #UD.</para>
+  <para unique="1091473">If VMASKMOVDQU is encoded with VEX.L= 1, an attempt to execute the instruction encoded with VEX.L= 1 will cause an #UD exception.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF (MASK[7] = 1)
+	THEN DEST[DI/EDI] := SRC[7:0] ELSE (* Memory location unchanged *); FI;
+IF (MASK[15] = 1)
+	THEN DEST[DI/EDI +1] := SRC[15:8] ELSE (* Memory location unchanged *); FI;
+	(* Repeat operation for 3rd through 14th bytes in source operand *)
+IF (MASK[127] = 1)
+	THEN DEST[DI/EDI +15] := SRC[127:120] ELSE (* Memory location unchanged *); FI;</programlisting>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>void _mm_maskmoveu_si128(__m128i d, __m128i n, char * p)</string><string>
-</string></programlisting>
+  <programlisting>void _mm_maskmoveu_si128(__m128i d, __m128i n, char * p)</programlisting>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091488" format="xIndent1">
-   <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions,&#8221;</string></link><string> additionally:</string></para>
+  <para unique="1091488" format="xIndent1">See <link unique="1091486" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-comma">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions,&#8221;</link> additionally:</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If VEX.L= 1</string></listitem>
-    <listitem><string>If VEX.vvvv &#8800; 1111B.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091489">If VEX.L= 1</para>
+     </listitem>
+    <listitem><para unique="1091490">If VEX.vvvv &#8800; 1111B.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

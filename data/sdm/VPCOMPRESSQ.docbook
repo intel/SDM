@@ -1,37 +1,169 @@
 <instruction name="VPCOMPRESSQ">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Store Sparse Packed Quadword Integer Values Into Dense Memory/Register</shortdesc>
- <longdesc><para unique="1046173">
-   <string>Compress (stores) up to 8/4/2 quadword integer values from the source operand (second operand) to the destina&#173;tion operand (first operand). The source operand is a ZMM/YMM/XMM register, the destination operand can be a ZMM/YMM/XMM register or a 512/256/128-bit memory location.</string></para>
-  <para unique="1046174">
-   <string>The opmask register k1 selects the active elements (partial vector or possibly non-contiguous if less than 8 active elements) from the source operand to compress into a contiguous vector. The contiguous vector is written to the destination starting from the low element of the destination operand.</string></para>
-  <para unique="1046175">
-   <string>Memory destination version: Only the contiguous vector is written to the destination memory location. EVEX.z must be zero.</string></para>
-  <para unique="1046176">
-   <string>Register destination version: If the vector length of the contiguous vector is less than that of the input vector in the source operand, the upper bits of the destination register are unmodified if EVEX.z is not set, otherwise the upper bits are zeroed.</string></para>
-  <para unique="1046177">
-   <string>Note: EVEX.vvvv is reserved and must be 1111b otherwise instructions will #UD.</string></para>
-  <para unique="1046178">
-   <string>Note that the compressed displacement assumes a pre-scaling (N) corresponding to the size of one single element instead of the size of the full vector.</string></para>
+ <encoding_table><table unique="1046081">
+   <col width="73.52568000000001pt"/>
+   <col width="104.60736pt"/>
+   <col width="30.150000000000002pt"/>
+   <col width="47.41632pt"/>
+   <col width="78.41592pt"/>
+   <col width="177.58368pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1046083">Opcode/</para>
+      <para unique="1046084">Instruction</para>
+      </th>
+     <th><para unique="1046088">Op/En</para>
+      </th>
+     <th><para unique="1046090">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1046092">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1046094">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1046575">EVEX.128.66.0F38.W1 8B /r</para>
+      <para unique="1046576">VPCOMPRESSQ xmm1/m128 {k1}{z}, xmm2</para>
+      </td>
+     <td><para unique="1046580">A</para>
+      </td>
+     <td><para unique="1046582">V/V</para>
+      </td>
+     <td><para unique="1046584">(AVX512VL AND</para>
+      <para unique="1046588">AVX512F) OR AVX10.1<anchor id="+797488"/></para>
+      </td>
+     <td><para unique="1046593">Compress packed quadword integer values from xmm2 to xmm1/m128 using control mask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046558">EVEX.256.66.0F38.W1 8B /r</para>
+      <para unique="1046559">VPCOMPRESSQ ymm1/m256 {k1}{z}, ymm2</para>
+      </td>
+     <td><para unique="1046563">A</para>
+      </td>
+     <td><para unique="1046565">V/V</para>
+      </td>
+     <td><para unique="1046567">(AVX512VL AND</para>
+      <para unique="1046571">AVX512F) OR AVX10.1<anchor id="+247198"/></para>
+      </td>
+     <td><para unique="1046573">Compress packed quadword integer values from ymm2 to ymm1/m256 using control mask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046541">EVEX.512.66.0F38.W1 8B /r</para>
+      <para unique="1046542">VPCOMPRESSQ zmm1/m512 {k1}{z}, zmm2</para>
+      </td>
+     <td><para unique="1046546">A</para>
+      </td>
+     <td><para unique="1046548">V/V</para>
+      </td>
+     <td><para unique="1046553">AVX512F </para>
+      <para unique="1046554">OR AVX10.1<anchor id="+167003"/></para>
+      </td>
+     <td><para unique="1046556">Compress packed quadword integer values from zmm2 to zmm1/m512 using control mask k1. </para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1046146">
+   <col width="45.03168pt"/>
+   <col width="68.43096pt"/>
+   <col width="94.55904000000001pt"/>
+   <col width="103.79592000000001pt"/>
+   <col width="99.22752pt"/>
+   <col width="97.31952000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1046148">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1046150">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1046152">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1046154">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1046156">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1046158">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1046160">A</para>
+      </td>
+     <td valign="middle"><para unique="1046162">Tuple1 Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1046164">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046166">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046168">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1046170">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046171">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046173">Compress (stores) up to 8/4/2 quadword integer values from the source operand (second operand) to the destina&#173;tion operand (first operand). The source operand is a ZMM/YMM/XMM register, the destination operand can be a ZMM/YMM/XMM register or a 512/256/128-bit memory location.</para>
+  <para unique="1046174">The opmask register k1 selects the active elements (partial vector or possibly non-contiguous if less than 8 active elements) from the source operand to compress into a contiguous vector. The contiguous vector is written to the destination starting from the low element of the destination operand.</para>
+  <para unique="1046175">Memory destination version: Only the contiguous vector is written to the destination memory location. EVEX.z must be zero.</para>
+  <para unique="1046176">Register destination version: If the vector length of the contiguous vector is less than that of the input vector in the source operand, the upper bits of the destination register are unmodified if EVEX.z is not set, otherwise the upper bits are zeroed.</para>
+  <para unique="1046177">Note: EVEX.vvvv is reserved and must be 1111b otherwise instructions will #UD.</para>
+  <para unique="1046178">Note that the compressed displacement assumes a pre-scaling (N) corresponding to the size of one single element instead of the size of the full vector.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1046180">VPCOMPRESSQ (EVEX encoded versions) store form</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+SIZE := 64
+k := 0
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no controlmask*
+		THEN
+			DEST[k+SIZE-1:k] := 	SRC[i+63:i]
+			k := k + SIZE
+	FI;
+ENFOR</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046193">VPCOMPRESSQ (EVEX encoded versions) reg-reg form</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+SIZE := 64
+k := 0
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no controlmask*
+		THEN
+			DEST[k+SIZE-1:k] := 	SRC[i+63:i]
+			k := k + SIZE
+	FI;
+ENDFOR
+IF *merging-masking*
+	THEN *DEST[VL-1:k] remains unchanged*
+	ELSE DEST[VL-1:k] := 0
+FI
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VPCOMPRESSQ __m512i _mm512_mask_compress_epi64(__m512i s, __mmask8 c, __m512i a);</string><string>
-</string><string>VPCOMPRESSQ __m512i _mm512_maskz_compress_epi64( __mmask8 c, __m512i a);</string><string>
-</string><string>VPCOMPRESSQ void _mm512_mask_compressstoreu_epi64(void * a, __mmask8 c, __m512i s);</string><string>
-</string><string>VPCOMPRESSQ __m256i _mm256_mask_compress_epi64(__m256i s, __mmask8 c, __m256i a);</string><string>
-</string><string>VPCOMPRESSQ __m256i _mm256_maskz_compress_epi64( __mmask8 c, __m256i a);</string><string>
-</string><string>VPCOMPRESSQ void _mm256_mask_compressstoreu_epi64(void * a, __mmask8 c, __m256i s);</string><string>
-</string><string>VPCOMPRESSQ __m128i _mm_mask_compress_epi64(__m128i s, __mmask8 c, __m128i a);</string><string>
-</string><string>VPCOMPRESSQ __m128i _mm_maskz_compress_epi64( __mmask8 c, __m128i a);</string><string>
-</string><string>VPCOMPRESSQ void _mm_mask_compressstoreu_epi64(void * a, __mmask8 c, __m128i s);</string><string>
-</string></programlisting>
+  <programlisting>VPCOMPRESSQ __m512i _mm512_mask_compress_epi64(__m512i s, __mmask8 c, __m512i a);
+VPCOMPRESSQ __m512i _mm512_maskz_compress_epi64( __mmask8 c, __m512i a);
+VPCOMPRESSQ void _mm512_mask_compressstoreu_epi64(void * a, __mmask8 c, __m512i s);
+VPCOMPRESSQ __m256i _mm256_mask_compress_epi64(__m256i s, __mmask8 c, __m256i a);
+VPCOMPRESSQ __m256i _mm256_maskz_compress_epi64( __mmask8 c, __m256i a);
+VPCOMPRESSQ void _mm256_mask_compressstoreu_epi64(void * a, __mmask8 c, __m256i s);
+VPCOMPRESSQ __m128i _mm_mask_compress_epi64(__m128i s, __mmask8 c, __m128i a);
+VPCOMPRESSQ __m128i _mm_maskz_compress_epi64( __mmask8 c, __m128i a);
+VPCOMPRESSQ void _mm_mask_compressstoreu_epi64(void * a, __mmask8 c, __m128i s);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046221">
-   <string>None.</string></para>
+  <para unique="1046221">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046226">
-   <string>EVEX-encoded instruction, see Exceptions Type E4.nb in </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046226">EVEX-encoded instruction, see Exceptions Type E4.nb in <link unique="1046224" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

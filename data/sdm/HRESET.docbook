@@ -1,53 +1,132 @@
 <instruction name="HRESET">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>History Reset</shortdesc>
- <longdesc><para unique="1261247">
-   <string>Requests the processor to selectively reset selected components of hardware history maintained by the current logical processor. HRESET operation is controlled by the implicit EAX operand. The value of the explicit imm8 operand is ignored. This instruction can only be executed at privilege level 0.</string></para>
-  <para unique="1261248">
-   <string>The HRESET instruction can be used to request reset of multiple components of hardware history. Prior to the execution of HRESET, the system software must take the following steps:</string></para>
-  <para unique="1261249" format="ListLev1Begin">
-   <string>Enumerate the HRESET capabilities via CPUID.20H.00H:EBX, which indicates what components of hardware history can be reset.</string></para>
-  <para unique="1261250" format="ListLev1Next">
-   <string>Only the bits enumerated by CPUID.20H.00H:EBX can be set in the IA32_HRESET_ENABLE MSR. </string></para>
-  <para unique="1261251">
-   <string>HRESET causes a general-protection exception (#GP) if EAX sets any bits that are not set in the IA32_HRESET_EN&#173;ABLE MSR. </string></para>
-  <para unique="1261252">
-   <string>Any attempt to execute the HRESET instruction inside a transactional region will result in a transaction abort.</string></para>
+ <encoding_table><table unique="1261191">
+   <col width="62.346959999999996pt"/>
+   <col width="88.704pt"/>
+   <col width="26.70048pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="206.84952pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1261193">Opcode/</para>
+      <para unique="1261194">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/</para>
+      <para unique="1261199">En</para>
+      </th>
+     <th><para unique="1261201">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1261203">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261205">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1261207">F3 0F 3A F0 C0 /ib </para>
+      <para unique="1261208">HRESET imm8, &lt;EAX&gt; </para>
+      </td>
+     <td><para unique="1261212">A</para>
+      </td>
+     <td><para unique="1261214">V/V</para>
+      </td>
+     <td><para unique="1261216">HRESET</para>
+      </td>
+     <td><para unique="1261218">Processor history reset request. Controlled by the EAX implicit operand.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261220">
+   <col width="40.61376pt"/>
+   <col width="48.41352pt"/>
+   <col width="100.38816pt"/>
+   <col width="108.07848pt"/>
+   <col width="107.28504pt"/>
+   <col width="105.95232pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261222">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261224">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1261226">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261228">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261230">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261232">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261234">A</para>
+      </td>
+     <td valign="middle"><para unique="1261236">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261238">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261240">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261242">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261244">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261245">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261247">Requests the processor to selectively reset selected components of hardware history maintained by the current logical processor. HRESET operation is controlled by the implicit EAX operand. The value of the explicit imm8 operand is ignored. This instruction can only be executed at privilege level 0.</para>
+  <para unique="1261248">The HRESET instruction can be used to request reset of multiple components of hardware history. Prior to the execution of HRESET, the system software must take the following steps:</para>
+  <para unique="1261249" format="ListLev1Begin">Enumerate the HRESET capabilities via CPUID.20H.00H:EBX, which indicates what components of hardware history can be reset.</para>
+  <para unique="1261250" format="ListLev1Next">Only the bits enumerated by CPUID.20H.00H:EBX can be set in the IA32_HRESET_ENABLE MSR. </para>
+  <para unique="1261251">HRESET causes a general-protection exception (#GP) if EAX sets any bits that are not set in the IA32_HRESET_EN&#173;ABLE MSR. </para>
+  <para unique="1261252">Any attempt to execute the HRESET instruction inside a transactional region will result in a transaction abort.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF EAX = 0
+    THEN NOP
+    ELSE
+         FOREACH i such that EAX[i] = 1
+             Reset prediction history for feature i
+FI</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261261">
-   <string>None.</string></para>
+  <para unique="1261261">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0) </string></term>
-    <listitem><string>If CPL &gt; 0 or (EAX AND NOT IA32_HRESET_ENABLE) </string><string>&#8800;0.</string></listitem>
+    <term>#GP(0) </term>
+    <listitem><para unique="1261263">If CPL &gt; 0 or (EAX AND NOT IA32_HRESET_ENABLE) &#8800;0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.07H.01H:EAX.HRESET[22] = 0.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261264">If CPUID.07H.01H:EAX.HRESET[22] = 0.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
-  <para unique="1261266" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261266" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0) </string></term>
-    <listitem><string>HRESET instruction is not recognized in virtual-8086 mode.</string></listitem>
+    <term>#GP(0) </term>
+    <listitem><para unique="1261268">HRESET instruction is not recognized in virtual-8086 mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261270">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261270">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
-  <para unique="1261272" format="xIndent1">
-   <string>Same exceptions as in protected mode. </string></para>
+  <para unique="1261272" format="xIndent1">Same exceptions as in protected mode. </para>
   </subsection>
  </instruction>

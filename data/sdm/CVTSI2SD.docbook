@@ -1,37 +1,239 @@
 <instruction name="CVTSI2SD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Convert Signed Integer to Scalar Double Precision Floating-Point Value</shortdesc>
- <longdesc><para unique="1261349">
-   <string>Converts a signed doubleword or quadword integer in the &#8220;convert-from&#8221; source operand to a double precision floating-point value in the destination operand. The result is stored in the low quadword of the destination operand, and the high quadword left unchanged. When conversion is inexact, the value returned is rounded according to the rounding control bits in the MXCSR register.</string></para>
-  <para unique="1261350">
-   <string>The second source operand can be a general-purpose register or a 32/64-bit memory location. The first source and destination operands are XMM registers. </string></para>
-  <para unique="1261351">
-   <string>128-bit Legacy SSE version: Use of the REX.W prefix promotes the instruction to 64-bit operands. The &#8220;convert-from&#8221; source operand (the second operand) is a general-purpose register or memory location. The destination is an XMM register Bits (MAXVL-1:64) of the corresponding destination register remain unchanged.</string></para>
-  <para unique="1261352">
-   <string>VEX.128 and EVEX encoded versions: The &#8220;convert-from&#8221; source operand (the third operand) can be a general-purpose register or a memory location. The first source and destination operands are XMM registers. Bits (127:64) of the XMM register destination are copied from the corresponding bits in the first source operand. Bits (MAXVL-1:128) of the destination register are zeroed.</string></para>
-  <para unique="1261353">
-   <string>EVEX.W0 version: attempt to encode this instruction with EVEX embedded rounding is ignored.</string></para>
-  <para unique="1261354">
-   <string>VEX.W1 and EVEX.W1 versions: promotes the instruction to use 64-bit input value in 64-bit mode.</string></para>
-  <para unique="1261355">
-   <string>Software should ensure VCVTSI2SD is encoded with VEX.L=0. Encoding VCVTSI2SD with VEX.L=1 may encounter unpredictable behavior across different processor generations.</string></para>
+ <encoding_table><table unique="1261190">
+   <col width="88.8732pt"/>
+   <col width="88.8732pt"/>
+   <col width="31.644pt"/>
+   <col width="48.74976pt"/>
+   <col width="54.24984pt"/>
+   <col width="200.00016pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1261192">Opcode/</para>
+      <para unique="1261193">Instruction</para>
+      </th>
+     <th><para unique="1261197">Op / En</para>
+      </th>
+     <th><para unique="1261199">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1261201">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261203">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1261205">F2 0F 2A /r</para>
+      <para unique="1261206">CVTSI2SD xmm1, r32/m32</para>
+      </td>
+     <td><para unique="1261210">A</para>
+      </td>
+     <td><para unique="1261212">V/V</para>
+      </td>
+     <td><para unique="1261214">SSE2</para>
+      </td>
+     <td><para unique="1261216">Convert one signed doubleword integer from r32/m32 to one double precision floating-point value in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261218">F2 REX.W 0F 2A /r</para>
+      <para unique="1261219">CVTSI2SD xmm1, r/m64</para>
+      </td>
+     <td><para unique="1261223">A</para>
+      </td>
+     <td><para unique="1261225">V/N.E.</para>
+      </td>
+     <td><para unique="1261227">SSE2</para>
+      </td>
+     <td><para unique="1261229">Convert one signed quadword integer from r/m64 to one double precision floating-point value in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261231">VEX.LIG.F2.0F.W0 2A /r</para>
+      <para unique="1261232">VCVTSI2SD xmm1, xmm2, r/m32</para>
+      </td>
+     <td><para unique="1261236">B</para>
+      </td>
+     <td><para unique="1261238">V/V</para>
+      </td>
+     <td><para unique="1261243">AVX</para>
+      </td>
+     <td><para unique="1261245">Convert one signed doubleword integer from r/m32 to one double precision floating-point value in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261247">VEX.LIG.F2.0F.W1 2A /r</para>
+      <para unique="1261248">VCVTSI2SD xmm1, xmm2, r/m64</para>
+      </td>
+     <td><para unique="1261252">B</para>
+      </td>
+     <td><para unique="1261254">V/N.E.<footnote><para unique="1261288" format="TableFootnote">VEX.W1/EVEX.W1 in non-64 bit is ignored; the instructions behaves as if the W0 version is used.</para>
+        </footnote></para>
+      </td>
+     <td><para unique="1261259">AVX</para>
+      </td>
+     <td><para unique="1261261">Convert one signed quadword integer from r/m64 to one double precision floating-point value in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261911">EVEX.LLIG.F2.0F.W0 2A /r</para>
+      <para unique="1261912">VCVTSI2SD xmm1, xmm2, r/m32</para>
+      </td>
+     <td><para unique="1261916">C</para>
+      </td>
+     <td><para unique="1261918">V/V</para>
+      </td>
+     <td><para unique="1261923">AVX512F</para>
+      <para unique="1261927">OR AVX10.1<anchor id="+303795"/></para>
+      </td>
+     <td><para unique="1261929">Convert one signed doubleword integer from r/m32 to one double precision floating-point value in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261931">EVEX.LLIG.F2.0F.W1 2A /r</para>
+      <para unique="1261932">VCVTSI2SD xmm1, xmm2, r/m64{er}</para>
+      </td>
+     <td><para unique="1261936">C</para>
+      </td>
+     <td><para unique="1261941">V/N.E.<superscript>1</superscript></para>
+      </td>
+     <td><para unique="1261946">AVX512F</para>
+      <para unique="1261947">OR AVX10.1<anchor id="+394475"/> </para>
+      </td>
+     <td><para unique="1261949">Convert one signed quadword integer from r/m64 to one double precision floating-point value in xmm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261298">
+   <col width="51.08184pt"/>
+   <col width="60.08184pt"/>
+   <col width="95.51808pt"/>
+   <col width="100.84536pt"/>
+   <col width="100.40328pt"/>
+   <col width="102.46752pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261300">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261302">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1261304">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261306">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261308">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261310">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261312">A</para>
+      </td>
+     <td valign="middle"><para unique="1261314">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261316">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261318">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261320">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261322">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1261324">B</para>
+      </td>
+     <td valign="middle"><para unique="1261326">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261328">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261330">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261332">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261334">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1261336">C</para>
+      </td>
+     <td valign="middle"><para unique="1261338">Tuple1 Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1261340">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261342">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261344">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261346">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261347">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261349">Converts a signed doubleword or quadword integer in the &#8220;convert-from&#8221; source operand to a double precision floating-point value in the destination operand. The result is stored in the low quadword of the destination operand, and the high quadword left unchanged. When conversion is inexact, the value returned is rounded according to the rounding control bits in the MXCSR register.</para>
+  <para unique="1261350">The second source operand can be a general-purpose register or a 32/64-bit memory location. The first source and destination operands are XMM registers. </para>
+  <para unique="1261351">128-bit Legacy SSE version: Use of the REX.W prefix promotes the instruction to 64-bit operands. The &#8220;convert-from&#8221; source operand (the second operand) is a general-purpose register or memory location. The destination is an XMM register Bits (MAXVL-1:64) of the corresponding destination register remain unchanged.</para>
+  <para unique="1261352">VEX.128 and EVEX encoded versions: The &#8220;convert-from&#8221; source operand (the third operand) can be a general-purpose register or a memory location. The first source and destination operands are XMM registers. Bits (127:64) of the XMM register destination are copied from the corresponding bits in the first source operand. Bits (MAXVL-1:128) of the destination register are zeroed.</para>
+  <para unique="1261353">EVEX.W0 version: attempt to encode this instruction with EVEX embedded rounding is ignored.</para>
+  <para unique="1261354">VEX.W1 and EVEX.W1 versions: promotes the instruction to use 64-bit input value in 64-bit mode.</para>
+  <para unique="1261355">Software should ensure VCVTSI2SD is encoded with VEX.L=0. Encoding VCVTSI2SD with VEX.L=1 may encounter unpredictable behavior across different processor generations.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1261357">VCVTSI2SD (EVEX Encoded Version)</title>
+   <programlisting>IF (SRC2 *is register*) AND (EVEX.b = 1)
+	THEN
+		SET_ROUNDING_MODE_FOR_THIS_INSTRUCTION(EVEX.RC);
+	ELSE
+		SET_ROUNDING_MODE_FOR_THIS_INSTRUCTION(MXCSR.RC);
+FI;
+IF 64-Bit Mode And OperandSize = 64
+THEN
+	DEST[63:0] := Convert_Integer_To_Double_Precision_Floating_Point(SRC2[63:0]);
+ELSE
+	DEST[63:0] := Convert_Integer_To_Double_Precision_Floating_Point(SRC2[31:0]);
+FI;
+DEST[127:64] := SRC1[127:64]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261373">VCVTSI2SD (VEX.128 Encoded Version)</title>
+   <programlisting>IF 64-Bit Mode And OperandSize = 64
+THEN
+	DEST[63:0] := Convert_Integer_To_Double_Precision_Floating_Point(SRC2[63:0]);
+ELSE
+	DEST[63:0] := Convert_Integer_To_Double_Precision_Floating_Point(SRC2[31:0]);
+FI;
+DEST[127:64] := SRC1[127:64]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261383">CVTSI2SD </title>
+   <programlisting>IF 64-Bit Mode And OperandSize = 64
+THEN
+	DEST[63:0] := Convert_Integer_To_Double_Precision_Floating_Point(SRC[63:0]);
+ELSE
+	DEST[63:0] := Convert_Integer_To_Double_Precision_Floating_Point(SRC[31:0]);
+FI;
+DEST[MAXVL-1:64] (Unmodified)</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VCVTSI2SD __m128d _mm_cvti32_sd(__m128d s, int a);</string><string>
-</string><string>VCVTSI2SD __m128d _mm_cvti64_sd(__m128d s, __int64 a);</string><string>
-</string><string>VCVTSI2SD __m128d _mm_cvt_roundi64_sd(__m128d s, __int64 a, int r);</string><string>
-</string><string>CVTSI2SD __m128d _mm_cvtsi64_sd(__m128d s, __int64 a);</string><string>
-</string><string>CVTSI2SD __m128d_mm_cvtsi32_sd(__m128d a, int b)</string><string>
-</string></programlisting>
+  <programlisting>VCVTSI2SD __m128d _mm_cvti32_sd(__m128d s, int a);
+VCVTSI2SD __m128d _mm_cvti64_sd(__m128d s, __int64 a);
+VCVTSI2SD __m128d _mm_cvt_roundi64_sd(__m128d s, __int64 a, int r);
+CVTSI2SD __m128d _mm_cvtsi64_sd(__m128d s, __int64 a);
+CVTSI2SD __m128d_mm_cvtsi32_sd(__m128d a, int b)</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1261398">
-   <string>Precision.</string></para>
+  <para unique="1261398">Precision.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1261405">
-   <string>VEX-encoded instructions, see </string><link linkend="35386: 06_Table: Table 2-20. Type 3 Class Exception Conditions"><string>Table&#160;2&#8209;20, &#8220;Type 3 Class Exception Conditions,&#8221;</string></link><string> if W1; else see </string><link linkend="48385: 06_Table: Table 2-22. Type 5 Class Exception Conditions"><string>Table&#160;2&#8209;22, &#8220;Type 5 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1261412">
-   <string>EVEX-encoded instructions, see </string><link linkend="71006: 06_Table: Table 2-48. Type E3NF Class Exception Conditions"><string>Table&#160;2&#8209;50, &#8220;Type E3NF Class Exception Conditions,&#8221;</string></link><string> if W1; else see </string><link linkend="87248: 06_Table: Table 2-59. Type E10NF Class Exception Conditions"><string>Table&#160;2&#8209;61, &#8220;Type E10NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1261405">VEX-encoded instructions, see <link unique="1261401" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#35386: 06_Table: Table 2-20. Type 3 Class Exception Conditions" xrefstyle="Table All - no page-comma">Table&#160;2&#8209;20, &#8220;Type 3 Class Exception Conditions,&#8221;</link> if W1; else see <link unique="1261404" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#48385: 06_Table: Table 2-22. Type 5 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;22, &#8220;Type 5 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1261412">EVEX-encoded instructions, see <link unique="1261408" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#71006: 06_Table: Table 2-48. Type E3NF Class Exception Conditions" xrefstyle="Table All - no page-comma">Table&#160;2&#8209;50, &#8220;Type E3NF Class Exception Conditions,&#8221;</link> if W1; else see <link unique="1261411" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#87248: 06_Table: Table 2-59. Type E10NF Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;61, &#8220;Type E10NF Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

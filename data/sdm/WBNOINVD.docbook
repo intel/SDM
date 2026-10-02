@@ -1,57 +1,134 @@
 <instruction name="WBNOINVD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Write Back and Do Not Invalidate Cache</shortdesc>
- <longdesc><para unique="1012597">
-   <string>The WBNOINVD instruction writes back all modified cache lines in the processor&#8217;s internal cache to main memory but does not invalidate (flush) the internal caches.</string></para>
-  <para unique="1012598">
-   <string>After executing this instruction, the processor does not wait for the external caches to complete their write-back operation before proceeding with instruction execution. It is the responsibility of hardware to respond to the cache write-back signal. The amount of time or cycles for WBNOINVD to complete will vary due to size and other factors of different cache hierarchies. As a consequence, the use of the WBNOINVD instruction can have an impact on logical processor interrupt/event response time. </string></para>
-  <para unique="1012599">
-   <string>The WBNOINVD instruction is a privileged instruction. When the processor is running in protected mode, the CPL of a program or procedure must be 0 to execute this instruction. This instruction is also a serializing instruction (see &#8220;Serializing Instructions&#8221; in Chapter 9 of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A).</string></para>
-  <para unique="1012600">
-   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+ <encoding_table><table unique="1012542">
+   <thead><tr>
+     <th colspan="2"><para unique="1012544">Opcode /</para>
+      <para unique="1012545">Instruction</para>
+      </th>
+     <th><para unique="1012549">Op/ En</para>
+      </th>
+     <th><para unique="1012551">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1012553">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1012555">Description</para>
+      </th>
+     </tr>
+    </thead><col width="93.27024pt"/>
+   <col width="105.80472pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="49.72824pt"/>
+   <col width="190.85399999999998pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1012557">F3 0F 09</para>
+      <para unique="1012558">WBNOINVD</para>
+      </td>
+     <td><para unique="1012562">ZO</para>
+      </td>
+     <td><para unique="1012564">V/V</para>
+      </td>
+     <td><para unique="1012566">WBNOINVD</para>
+      </td>
+     <td><para unique="1012568">Write back and do not flush internal caches; initiate writing-back without flushing of external caches.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1012570">
+   <col width="51.98472pt"/>
+   <col width="51.98472pt"/>
+   <col width="98.83224pt"/>
+   <col width="102.04128pt"/>
+   <col width="101.67984pt"/>
+   <col width="106.7328pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1012572">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1012574">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1012576">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1012578">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1012580">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1012582">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1012584">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1012586">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012588">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012590">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012592">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012594">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1012595">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1012597">The WBNOINVD instruction writes back all modified cache lines in the processor&#8217;s internal cache to main memory but does not invalidate (flush) the internal caches.</para>
+  <para unique="1012598">After executing this instruction, the processor does not wait for the external caches to complete their write-back operation before proceeding with instruction execution. It is the responsibility of hardware to respond to the cache write-back signal. The amount of time or cycles for WBNOINVD to complete will vary due to size and other factors of different cache hierarchies. As a consequence, the use of the WBNOINVD instruction can have an impact on logical processor interrupt/event response time. </para>
+  <para unique="1012599">The WBNOINVD instruction is a privileged instruction. When the processor is running in protected mode, the CPL of a program or procedure must be 0 to execute this instruction. This instruction is also a serializing instruction (see &#8220;Serializing Instructions&#8221; in Chapter 9 of the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A).</para>
+  <para unique="1012600">This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</para>
   </longdesc>
+ <operation>
+  <programlisting>WriteBack(InternalCaches);
+Continue; (* Continue execution *)</programlisting>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>WBNOINVD void _wbnoinvd(void);</string><string>
-</string></programlisting>
+  <programlisting>WBNOINVD void _wbnoinvd(void);</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1012607">
-   <string>None.</string></para>
+  <para unique="1012607">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the current privilege level is not 0.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1012609">If the current privilege level is not 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1012610">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1012612">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>WBNOINVD cannot be executed at the virtual-8086 mode.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1012614">WBNOINVD cannot be executed at the virtual-8086 mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1012616" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1012616" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
-  <para unique="1012618" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1012618" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  </instruction>

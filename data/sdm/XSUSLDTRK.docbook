@@ -1,31 +1,117 @@
 <instruction name="XSUSLDTRK">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Suspend Tracking Load Addresses</shortdesc>
- <longdesc><para unique="1012597">
-   <string>The instruction marks the start of an Intel TSX (RTM) suspend load address tracking region. If the instruction is used inside a transactional region, subsequent loads are not added to the read set of the transaction. If the instruc&#173;tion is used inside a suspend load address tracking region it will cause transaction abort.</string></para>
-  <para unique="1012598">
-   <string>If the instruction is used outside of a transactional region it behaves like a NOP.</string></para>
-  <para unique="1012599">
-   <string>Chapter 16, &#8220;Programming with Intel&#174; Transactional Synchronization Extensions&#8218;&#8221; in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1 provides additional information on Intel</string><superscript><string>&#174;</string></superscript><string> TSX Suspend Load Address Tracking.</string></para>
+ <encoding_table><table unique="1012541">
+   <col width="62.346959999999996pt"/>
+   <col width="88.704pt"/>
+   <col width="39.900240000000004pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="190.64952pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1012543">Opcode/</para>
+      <para unique="1012544">Instruction</para>
+      </th>
+     <th><para unique="1012548">Op/</para>
+      <para unique="1012549">En</para>
+      </th>
+     <th><para unique="1012551">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1012553">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1012555">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1012557">F2 0F 01 E8</para>
+      <para unique="1012558">XSUSLDTRK</para>
+      </td>
+     <td><para unique="1012562">ZO</para>
+      </td>
+     <td><para unique="1012564">V/V</para>
+      </td>
+     <td><para unique="1012566">TSXLDTRK</para>
+      </td>
+     <td><para unique="1012568">Specifies the start of an Intel TSX suspend read address tracking region.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1012570">
+   <col width="43.01352pt"/>
+   <col width="61.01352pt"/>
+   <col width="95.65272pt"/>
+   <col width="104.62608pt"/>
+   <col width="103.85784pt"/>
+   <col width="102.5676pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1012572">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1012574">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1012576">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1012578">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1012580">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1012582">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1012584">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1012586">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012588">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012590">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012592">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012594">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1012595">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1012597">The instruction marks the start of an Intel TSX (RTM) suspend load address tracking region. If the instruction is used inside a transactional region, subsequent loads are not added to the read set of the transaction. If the instruc&#173;tion is used inside a suspend load address tracking region it will cause transaction abort.</para>
+  <para unique="1012598">If the instruction is used outside of a transactional region it behaves like a NOP.</para>
+  <para unique="1012599">Chapter 16, &#8220;Programming with Intel&#174; Transactional Synchronization Extensions&#8218;&#8221; in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1 provides additional information on Intel<superscript>&#174;</superscript> TSX Suspend Load Address Tracking.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1012601">XSUSLDTRK</title>
+   <programlisting>IF RTM_ACTIVE = 1:
+	IF SUSLDTRK_ACTIVE = 0:
+		SUSLDTRK_ACTIVE := 1
+	ELSE:
+		RTM_ABORT
+ELSE:
+	NOP</programlisting>
+   </section>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1012610">
-   <string>None.</string></para>
+  <para unique="1012610">None.</para>
   </subsection>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>XSUSLDTRK void _xsusldtrk(void);</string><string>
-</string></programlisting>
+  <programlisting>XSUSLDTRK void _xsusldtrk(void);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1012614">
-   <string>None.</string></para>
+  <para unique="1012614">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CPUID.07H.00H:EDX.TSXLDTRK[16] = 0.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1012616">If CPUID.07H.00H:EDX.TSXLDTRK[16] = 0.</para>
+     </listitem>
+    <listitem><para unique="1012617">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

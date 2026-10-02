@@ -1,23 +1,125 @@
 <instruction name="VSM3MSG2">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Perform Final Calculation for the Next Four SM3 Message Words</shortdesc>
- <longdesc><para unique="1048102">
-   <string>The VSM3MSG2 instruction is one of the two SM3 message scheduling instructions. The instruction performs the final calculation for the next four SM3 message words.</string></para>
+ <encoding_table><table unique="1047410">
+   <col width="62.346959999999996pt"/>
+   <col width="88.704pt"/>
+   <col width="39.900240000000004pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="190.64952pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1047052">Opcode/</para>
+      <para unique="1047053">Instruction</para>
+      </th>
+     <th><para unique="1047057">Op/</para>
+      <para unique="1047058">En</para>
+      </th>
+     <th><para unique="1047060">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1047062">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1047064">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1047906">VEX.128.66.0F38.W0 DA /r</para>
+      <para unique="1047907">VSM3MSG2 xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1047911">A</para>
+      </td>
+     <td><para unique="1047913">V/V</para>
+      </td>
+     <td><para unique="1047915">AVX</para>
+      <para unique="1047916">SM3</para>
+      </td>
+     <td><para unique="1047918">Performs the final calculation for the next four SM3 message words using previous message words from xmm2 and xmm3/m128, storing the result in xmm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1047440">
+   <col width="39.114000000000004pt"/>
+   <col width="52.614000000000004pt"/>
+   <col width="99.25704pt"/>
+   <col width="111.48624pt"/>
+   <col width="105.63624pt"/>
+   <col width="104.32368pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1047081">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1047083">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1047085">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1047087">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1047089">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1047091">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1047093">A</para>
+      </td>
+     <td valign="middle"><para unique="1047095">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1047097">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1047099">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1047101">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1047103">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1047104">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1048102">The VSM3MSG2 instruction is one of the two SM3 message scheduling instructions. The instruction performs the final calculation for the next four SM3 message words.</para>
   </longdesc>
+ <operation>
+  <programlisting>//see the VSM3MSG1 instruction for definition of ROL32()</programlisting>
+  <section level="7">
+   <title unique="1048106">VSM3MSG2 SRCDEST, SRC1, SRC2</title>
+   <programlisting>WTMP[0] := SRCDEST.dword[0]
+WTMP[1] := SRCDEST.dword[1]
+WTMP[2] := SRCDEST.dword[2]
+WTMP[3] := SRCDEST.dword[3]
+// Dword array W[] has indices are based on the SM3 specification.
+W[3] := SRC1.dword[0]
+W[4] := SRC1.dword[1]
+W[5] := SRC1.dword[2]
+W[6] := SRC1.dword[3]
+W[10] := SRC2.dword[0]
+W[11] := SRC2.dword[1]
+W[12] := SRC2.dword[2]
+W[13] := SRC2.dword[3]
+W[16] := ROL32(W[3], 7) ^ W[10] ^ WTMP[0]
+W[17] := ROL32(W[4], 7) ^ W[11] ^ WTMP[1]
+W[18] := ROL32(W[5], 7) ^ W[12] ^ WTMP[2]
+W[19] := ROL32(W[6], 7) ^ W[13] ^ WTMP[3]
+W[19] := W[19] ^ ROL32(W[16], 6) ^ ROL32(W[16], 15) ^ ROL32(W[16], 30)
+SRCDEST.dword[0] := W[16]
+SRCDEST.dword[1] := W[17]
+SRCDEST.dword[2] := W[18]
+SRCDEST.dword[3] := W[19]</programlisting>
+   </section>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1048135">
-   <string>None.</string></para>
+  <para unique="1048135">None.</para>
   </subsection>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VSM3MSG2 __m128i _mm_sm3msg2_epi32 (__m128i __A, __m128i __B, __m128i __C);</string><string>
-</string></programlisting>
+  <programlisting>VSM3MSG2 __m128i _mm_sm3msg2_epi32 (__m128i __A, __m128i __B, __m128i __C);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1047135">
-   <string>None.</string></para>
+  <para unique="1047135">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046793">
-   <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046793">See <link unique="1047157" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

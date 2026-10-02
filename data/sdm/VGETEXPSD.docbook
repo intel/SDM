@@ -1,36 +1,123 @@
 <instruction name="VGETEXPSD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Convert Exponents of Scalar Double Precision Floating-Point Value to Double Precision Floating-Point Value</shortdesc>
- <longdesc><para unique="1045943">
-   <string>Extracts the biased exponent from the normalized double precision floating-point representation of the low qword data element of the source operand (the third operand) as unbiased signed integer value, or convert the denormal representation of input data to unbiased negative integer values. The integer value of the unbiased exponent is converted to double precision floating-point value and written to the destination operand (the first operand) as double precision floating-point numbers. Bits (127:64) of the XMM register destination are copied from corre&#173;sponding bits in the first source operand.</string></para>
-  <para unique="1045944">
-   <string>The destination must be a XMM register, the source operand can be a XMM register or a float64 memory location.</string></para>
-  <para unique="1045945">
-   <string>If writemasking is used, the low quadword element of the destination operand is conditionally updated depending on the value of writemask register k1. If writemasking is not used, the low quadword element of the destination operand is unconditionally updated.</string></para>
-  <para unique="1045946">
-   <string>Each GETEXP operation converts the exponent value into a floating-point number (permitting input value in denormal representation). Special cases of input values are listed in </string><link linkend="53045: 06_Table: Table 5-14. VGETEXPPD Special Cases"><string>Table 5&#8209;13</string></link><string>.</string></para>
-  <para unique="1045950">
-   <string>The formula is:</string></para>
-  <para unique="1045951">
-   <string>GETEXP(x) = floor(log</string><subscript><string>2</string></subscript><string>(|x|)) </string></para>
-  <para unique="1045952">
-   <string>Notation </string><bold><string>floor(x)</string></bold><string> stands for maximal integer not exceeding real number x. </string></para>
+ <encoding_table><table unique="1045886">
+   <thead><tr>
+     <th colspan="2"><para unique="1045888">Opcode/</para>
+      <para unique="1045889">Instruction</para>
+      </th>
+     <th><para unique="1045893">Op/En</para>
+      </th>
+     <th><para unique="1045895">64/32 Bit Mode Support</para>
+      </th>
+     <th><para unique="1045897">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1045899">Description</para>
+      </th>
+     </tr>
+    </thead><col width="61.72848pt"/>
+   <col width="77.32151999999999pt"/>
+   <col width="28.05048pt"/>
+   <col width="49.25016pt"/>
+   <col width="67.33296pt"/>
+   <col width="227.484pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1046307">EVEX.LLIG.66.0F38.W1 43 /r</para>
+      <para unique="1046308">VGETEXPSD xmm1 {k1}{z}, xmm2, xmm3/m64{sae}</para>
+      </td>
+     <td><para unique="1046312">A</para>
+      </td>
+     <td><para unique="1046314">V/V</para>
+      </td>
+     <td><para unique="1046319">AVX512F</para>
+      <para unique="1046323">OR AVX10.1<anchor id="+912882"/></para>
+      </td>
+     <td><para unique="1046325">Convert the biased exponent (bits 62:52) of the low double precision floating-point value in xmm3/m64 to a double precision floating-point value representing unbiased integer exponent. Stores the result to the low 64-bit of xmm1 under the writemask k1 and merge with the other elements of xmm2.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1045916">
+   <col width="42.53544pt"/>
+   <col width="73.73447999999999pt"/>
+   <col width="95.75135999999999pt"/>
+   <col width="99.41904pt"/>
+   <col width="100.08144pt"/>
+   <col width="98.85024pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1045918">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1045920">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1045922">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1045924">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1045926">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1045928">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1045930">A</para>
+      </td>
+     <td valign="middle"><para unique="1045932">Tuple1 Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1045934">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1045936">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045938">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045940">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1045941">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1045943">Extracts the biased exponent from the normalized double precision floating-point representation of the low qword data element of the source operand (the third operand) as unbiased signed integer value, or convert the denormal representation of input data to unbiased negative integer values. The integer value of the unbiased exponent is converted to double precision floating-point value and written to the destination operand (the first operand) as double precision floating-point numbers. Bits (127:64) of the XMM register destination are copied from corre&#173;sponding bits in the first source operand.</para>
+  <para unique="1045944">The destination must be a XMM register, the source operand can be a XMM register or a float64 memory location.</para>
+  <para unique="1045945">If writemasking is used, the low quadword element of the destination operand is conditionally updated depending on the value of writemask register k1. If writemasking is not used, the low quadword element of the destination operand is unconditionally updated.</para>
+  <para unique="1045946">Each GETEXP operation converts the exponent value into a floating-point number (permitting input value in denormal representation). Special cases of input values are listed in <link unique="1045948" linkend="&lt;c&gt;VGETEXPPD-Convert-Exponents-of-Packed-Double-Precision-Floating-Point-Values-to-Double-Precision-Floating-Point-Values.fm#53045: 06_Table: Table 5-14. VGETEXPPD Special Cases" xrefstyle="TableNum">Table 5&#8209;13</link>.</para>
+  <para unique="1045950">The formula is:</para>
+  <para unique="1045951">GETEXP(x) = floor(log<subscript>2</subscript>(|x|)) </para>
+  <para unique="1045952">Notation <bold>floor(x)</bold> stands for maximal integer not exceeding real number x. </para>
   </longdesc>
+ <operation>
+  <programlisting>// NormalizeExpTinyDPFP(SRC[63:0]) is defined in the Operation section of VGETEXPPD
+// ConvertExpDPFP(SRC[63:0]) is defined in the Operation section of VGETEXPPD</programlisting>
+  <section level="7">
+   <title unique="1045958">VGETEXPSD (EVEX encoded version) </title>
+   <programlisting>IF k1[0] OR *no writemask*
+	THEN DEST[63:0] :=
+			ConvertExpDPFP(SRC2[63:0])
+	ELSE
+		IF *merging-masking*								; merging-masking
+			THEN *DEST[63:0] remains unchanged*
+			ELSE 							; zeroing-masking
+				DEST[63:0] := 0
+		FI
+FI;
+DEST[127:64] := SRC1[127:64]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VGETEXPSD __m128d _mm_getexp_sd( __m128d a, __m128d b);</string><string>
-</string><string>VGETEXPSD __m128d _mm_mask_getexp_sd(__m128d s, __mmask8 k, __m128d a, __m128d b);</string><string>
-</string><string>VGETEXPSD __m128d _mm_maskz_getexp_sd( __mmask8 k, __m128d a, __m128d b);</string><string>
-</string><string>VGETEXPSD __m128d _mm_getexp_round_sd( __m128d a, __m128d b, int sae);</string><string>
-</string><string>VGETEXPSD __m128d _mm_mask_getexp_round_sd(__m128d s, __mmask8 k, __m128d a, __m128d b, int sae);</string><string>
-</string><string>VGETEXPSD __m128d _mm_maskz_getexp_round_sd( __mmask8 k, __m128d a, __m128d b, int sae);</string><string>
-</string></programlisting>
+  <programlisting>VGETEXPSD __m128d _mm_getexp_sd( __m128d a, __m128d b);
+VGETEXPSD __m128d _mm_mask_getexp_sd(__m128d s, __mmask8 k, __m128d a, __m128d b);
+VGETEXPSD __m128d _mm_maskz_getexp_sd( __mmask8 k, __m128d a, __m128d b);
+VGETEXPSD __m128d _mm_getexp_round_sd( __m128d a, __m128d b, int sae);
+VGETEXPSD __m128d _mm_mask_getexp_round_sd(__m128d s, __mmask8 k, __m128d a, __m128d b, int sae);
+VGETEXPSD __m128d _mm_maskz_getexp_round_sd( __mmask8 k, __m128d a, __m128d b, int sae);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1045979">
-   <string>Invalid, Denormal</string></para>
+  <para unique="1045979">Invalid, Denormal</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1045984" format="xIndent1">
-   <string>See </string><link linkend="63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions"><string>Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1045984" format="xIndent1">See <link unique="1045982" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

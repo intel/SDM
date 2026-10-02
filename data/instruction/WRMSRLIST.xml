@@ -97,7 +97,8 @@ If you give Intel any comments or suggestions related to this document or the in
   <code>    let msr_index := Count_Trailing_Zero_Bits(RCX);</code>
   <code></code>
   <code>    if not is_pipelined or not MSRLIST::In_Process then</code>
-  <code>        MSRLIST::Next_Address := Linear_Mem_Read?(RSI + (msr_index * 8), 64);</code>
+  <code>        MSRLIST::Next_Address :=</code>
+  <code>            Linear_Mem_Read?(RSI + (msr_index * 8), 64, is_implicit_supervisor_mode_access=&gt;False);</code>
   <code>    endif;</code>
   <code></code>
   <code>    if not Is_Zero(MSRLIST::Next_Address[63:32]) then</code>
@@ -114,14 +115,16 @@ If you give Intel any comments or suggestions related to this document or the in
   <code>        Report_General_Protection_Exception!(Zero(32));</code>
   <code>    endif;</code>
   <code></code>
-  <code>    let new_value := Linear_Mem_Read?(RDI + (msr_index * 8), 64);</code>
+  <code>    let new_value := Linear_Mem_Read?(RDI + (msr_index * 8), 64,</code>
+  <code>                                        is_implicit_supervisor_mode_access=&gt;False);</code>
   <code>    var new_rcx := RCX;</code>
   <code>    new_rcx[msr_index] := 0b0;</code>
   <code></code>
   <code>    if is_pipelined and not Is_Zero(new_rcx) then</code>
   <code>        // read ahead the next MSR address</code>
   <code>        let next_msr_index := Count_Trailing_Zero_Bits(new_rcx);</code>
-  <code>        MSRLIST::Next_Address := Linear_Mem_Read?(RSI + (next_msr_index * 8), 64);</code>
+  <code>        MSRLIST::Next_Address := Linear_Mem_Read?(RSI + (next_msr_index * 8), 64,</code>
+  <code>                                                    is_implicit_supervisor_mode_access=&gt;False);</code>
   <code>    endif;</code>
   <code></code>
   <code>    if not Is_WRMSR_Allowed(msr_address, new_value) then</code>

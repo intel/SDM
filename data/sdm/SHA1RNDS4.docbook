@@ -1,23 +1,124 @@
 <instruction name="SHA1RNDS4">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Perform Four Rounds of SHA1 Operation</shortdesc>
- <longdesc><para unique="1091435">
-   <string>The SHA1RNDS4 instruction performs four rounds of SHA1 operation using an initial SHA1 state (A,B,C,D) from the first operand (which is a source operand and the destination operand) and some pre-computed sum of the next 4 round message dwords, and state variable E from the second operand (a source operand). The updated SHA1 state (A,B,C,D) after four rounds of processing is stored in the destination operand.</string></para>
+ <encoding_table><table unique="1091389">
+   <col width="50.66568pt"/>
+   <col width="72.08424pt"/>
+   <col width="37.49976pt"/>
+   <col width="48.74976pt"/>
+   <col width="44.24976pt"/>
+   <col width="259.7508pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091391">Opcode/&#8232;Instruction</para>
+      </th>
+     <th><para unique="1091395">Op/En</para>
+      </th>
+     <th><para unique="1091397">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091399">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091401">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1091403">NP 0F 3A CC /r ib</para>
+      <para unique="1091404">SHA1RNDS4 xmm1, xmm2/m128, imm8</para>
+      </td>
+     <td><para unique="1091408">RMI</para>
+      </td>
+     <td><para unique="1091410">V/V</para>
+      </td>
+     <td><para unique="1091412">SHA</para>
+      </td>
+     <td><para unique="1091414">Performs four rounds of SHA1 operation operating on SHA1 state (A,B,C,D) from xmm1, with a pre-computed sum of the next 4 round message dwords and state variable E from xmm2/m128. The immediate byte controls logic functions and round constants.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091416">
+   <col width="66.492pt"/>
+   <col width="150.93431999999999pt"/>
+   <col width="148.90895999999998pt"/>
+   <col width="144.5796pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091418">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091420">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091422">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091424">Operand 3</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091426">RMI</para>
+      </td>
+     <td valign="middle"><para unique="1091428">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091430">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091432">imm8</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091433">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091435">The SHA1RNDS4 instruction performs four rounds of SHA1 operation using an initial SHA1 state (A,B,C,D) from the first operand (which is a source operand and the destination operand) and some pre-computed sum of the next 4 round message dwords, and state variable E from the second operand (a source operand). The updated SHA1 state (A,B,C,D) after four rounds of processing is stored in the destination operand.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091437">SHA1RNDS4 </title>
+   <programlisting>The function f() and Constant K are dependent on the value of the immediate.
+IF ( imm8[1:0] = 0 )
+	THEN f() := f0(), K := K0;
+ELSE IF ( imm8[1:0] = 1 )
+	THEN f() := f1(), K := K1;
+ELSE IF ( imm8[1:0] = 2 )
+	THEN f() := f2(), K := K2;
+ELSE IF ( imm8[1:0] = 3 )
+	THEN f() := f3(), K := K3;
+FI;
+A := SRC1[127:96];
+B := SRC1[95:64];
+C := SRC1[63:32];
+D := SRC1[31:0];
+W0E := SRC2[127:96];
+W1 := SRC2[95:64];
+W2 := SRC2[63:32];
+W3 := SRC2[31:0];
+Round i = 0 operation:
+A_1 := f (B, C, D) + (A ROL 5) +W0E +K;
+B_1 := A;
+C_1 := B ROL 30;
+D_1 := C;
+E_1 := D;
+FOR i = 1 to 3
+	A_(i +1) := f (B_i, C_i, D_i) + (A_i ROL 5) +Wi+ E_i +K;
+	B_(i +1) := A_i;
+	C_(i +1) := B_i ROL 30;
+	D_(i +1) := C_i;
+	E_(i +1) := D_i;
+ENDFOR
+DEST[127:96] := A_4;
+DEST[95:64] := B_4;
+DEST[63:32] := C_4;
+DEST[31:0] := D_4;</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>SHA1RNDS4 __m128i _mm_sha1rnds4_epu32(__m128i, __m128i, const int);</string><string>
-</string></programlisting>
+  <programlisting>SHA1RNDS4 __m128i _mm_sha1rnds4_epu32(__m128i, __m128i, const int);</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1091481">
-   <string>None.</string></para>
+  <para unique="1091481">None.</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091483">
-   <string>None.</string></para>
+  <para unique="1091483">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091488">
-   <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091488">See <link unique="1091486" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

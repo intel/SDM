@@ -1,27 +1,123 @@
 <instruction name="XABORT">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Transactional Abort</shortdesc>
- <longdesc><para unique="1012592">
-   <string>XABORT forces an RTM abort. Following an RTM abort, the logical processor resumes execution at the fallback address computed through the outermost XBEGIN instruction. The EAX register is updated to reflect an XABORT instruction caused the abort, and the imm8 argument will be provided in bits 31:24 of EAX. </string></para>
+ <encoding_table><table unique="1012542">
+   <col width="50.407199999999996pt"/>
+   <col width="71.71704pt"/>
+   <col width="27.49968pt"/>
+   <col width="48.74976pt"/>
+   <col width="44.24976pt"/>
+   <col width="271.50048000000004pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1012544">Opcode/Instruction</para>
+      </th>
+     <th><para unique="1012548">Op/ En</para>
+      </th>
+     <th><para unique="1012550">64/32bit Mode Support</para>
+      </th>
+     <th><para unique="1012552">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1012554">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1012556">C6 F8 ib</para>
+      <para unique="1012557">XABORT imm8</para>
+      </td>
+     <td><para unique="1012561">A</para>
+      </td>
+     <td><para unique="1012563">V/V</para>
+      </td>
+     <td><para unique="1012565">RTM</para>
+      </td>
+     <td><para unique="1012567">Causes an RTM abort if in RTM execution.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1012569">
+   <col width="43.31016pt"/>
+   <col width="111.48407999999999pt"/>
+   <col width="119.21544pt"/>
+   <col width="117.99648pt"/>
+   <col width="120.71448000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1012571">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1012573">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1012575">Operand2</para>
+      </th>
+     <th valign="middle"><para unique="1012577">Operand3</para>
+      </th>
+     <th valign="middle"><para unique="1012579">Operand4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1012581">A</para>
+      </td>
+     <td valign="middle"><para unique="1012583">imm8</para>
+      </td>
+     <td valign="middle"><para unique="1012585">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012587">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012589">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1012590">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1012592">XABORT forces an RTM abort. Following an RTM abort, the logical processor resumes execution at the fallback address computed through the outermost XBEGIN instruction. The EAX register is updated to reflect an XABORT instruction caused the abort, and the imm8 argument will be provided in bits 31:24 of EAX. </para>
   </longdesc>
- <subsection title="Flags Affected">
-  <programlisting><string>None.</string><string>
-</string></programlisting>
-  </subsection>
+ <operation>
+  <section level="7">
+   <title unique="1012594">XABORT</title>
+   <programlisting>IF RTM_ACTIVE = 0
+	THEN
+		Treat as NOP;
+	ELSE
+		GOTO RTM_ABORT_PROCESSING;
+FI;
+(* For any RTM abort condition encountered during RTM execution *)
+RTM_ABORT_PROCESSING:
+	Restore architectural register state;
+	Discard memory updates performed in transaction;
+	Update EAX with status and XABORT argument;
+	RTM_NEST_COUNT:= 0;
+	RTM_ACTIVE:= 0;
+	SUSLDTRK_ACTIVE := 0;
+	IF 64-bit Mode
+		THEN
+			RIP:= fallbackRIP;
+		ELSE
+			EIP := fallbackEIP;
+	FI;
+END</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1012618">Flags Affected</title>
+   <programlisting>None.</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>XABORT void _xabort( unsigned int);</string><string>
-</string></programlisting>
+  <programlisting>XABORT void _xabort( unsigned int);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1012623">
-   <string>None.</string></para>
+  <para unique="1012623">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CPUID.07H.00H:EBX.RTM[11] = 0.</string></listitem>
-    <listitem><string>If LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1012625">If CPUID.07H.00H:EBX.RTM[11] = 0.</para>
+     </listitem>
+    <listitem><para unique="1012626">If LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

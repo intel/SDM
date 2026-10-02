@@ -1,39 +1,234 @@
 <instruction name="PSRLDQ">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Shift Double Quadword Right Logical</shortdesc>
- <longdesc><para unique="1091536">
-   <string>Shifts the destination operand (first operand) to the right by the number of bytes specified in the count operand (second operand). The empty high-order bytes are cleared (set to all 0s). If the value specified by the count operand is greater than 15, the destination operand is set to all 0s. The count operand is an 8-bit immediate.</string></para>
-  <para unique="1091537">
-   <string>In 64-bit mode and not encoded with VEX/EVEX, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).</string></para>
-  <para unique="1091538">
-   <string>128-bit Legacy SSE version: The source and destination operands are the same. Bits (MAXVL-1:128) of the corre&#173;sponding YMM destination register remain unchanged.</string></para>
-  <para unique="1091539">
-   <string>VEX.128 encoded version: The source and destination operands are XMM registers. Bits (MAXVL-1:128) of the destination YMM register are zeroed. </string></para>
-  <para unique="1091541">
-   <string>VEX.256 encoded version: The source operand is a YMM register. The destination operand is an YMM register. Bits (MAXVL-1:256) of the corresponding ZMM register are zeroed. The count operand applies to both the low and high 128-bit lanes.</string></para>
-  <para unique="1091542">
-   <string>EVEX encoded versions: The source operand is a ZMM/YMM/XMM register or a 512/256/128-bit memory location. The destination operand is a ZMM/YMM/XMM register. The count operand applies to each 128-bit lanes.</string></para>
-  <para unique="1091543">
-   <string>Note: VEX.vvvv/EVEX.vvvv encodes the destination register.</string></para>
+ <encoding_table><table unique="1091390">
+   <thead><tr>
+     <th colspan="2"><para unique="1091392">Opcode/</para>
+      <para unique="1091393">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op/ En</para>
+      </th>
+     <th><para unique="1091399">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091401">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><col width="78.34752pt"/>
+   <col width="88.8768pt"/>
+   <col width="27.768240000000002pt"/>
+   <col width="48.024pt"/>
+   <col width="76.97808pt"/>
+   <col width="191.90448pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1091405">66 0F 73 /3 ib</para>
+      <para unique="1091406">PSRLDQ xmm1, imm8</para>
+      </td>
+     <td><para unique="1091410">A</para>
+      </td>
+     <td><para unique="1091412">V/V</para>
+      </td>
+     <td><para unique="1091414">SSE2</para>
+      </td>
+     <td><para unique="1091416">Shift xmm1 right by imm8 while shifting in 0s.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091418">VEX.128.66.0F.WIG 73 /3 ib</para>
+      <para unique="1091419">VPSRLDQ xmm1, xmm2, imm8</para>
+      </td>
+     <td><para unique="1091423">B</para>
+      </td>
+     <td><para unique="1091425">V/V</para>
+      </td>
+     <td><para unique="1091427">AVX</para>
+      </td>
+     <td><para unique="1091429">Shift xmm2 right by imm8 bytes while shifting in 0s.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091431">VEX.256.66.0F.WIG 73 /3 ib</para>
+      <para unique="1091432">VPSRLDQ ymm1, ymm2, imm8</para>
+      </td>
+     <td><para unique="1091436">B</para>
+      </td>
+     <td><para unique="1091438">V/V</para>
+      </td>
+     <td><para unique="1091440">AVX2</para>
+      </td>
+     <td><para unique="1091442">Shift ymm1 right by imm8 bytes while shifting in 0s.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091933">EVEX.128.66.0F.WIG 73 /3 ib</para>
+      <para unique="1091934">VPSRLDQ xmm1, xmm2/m128, imm8</para>
+      </td>
+     <td><para unique="1091938">C</para>
+      </td>
+     <td><para unique="1091940">V/V</para>
+      </td>
+     <td><para unique="1091942">(AVX512VL AND</para>
+      <para unique="1091943">AVX512BW) OR AVX10.1<anchor id="+238727"/></para>
+      </td>
+     <td><para unique="1091948">Shift xmm2/m128 right by imm8 bytes while shifting in 0s and store result in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091919">EVEX.256.66.0F.WIG 73 /3 ib</para>
+      <para unique="1091920">VPSRLDQ ymm1, ymm2/m256, imm8</para>
+      </td>
+     <td><para unique="1091924">C</para>
+      </td>
+     <td><para unique="1091926">V/V</para>
+      </td>
+     <td><para unique="1091928">(AVX512VL AND</para>
+      <para unique="1091929">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1091931">Shift ymm2/m256 right by imm8 bytes while shifting in 0s and store result in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091905">EVEX.512.66.0F.WIG 73 /3 ib</para>
+      <para unique="1091906">VPSRLDQ zmm1, zmm2/m512, imm8</para>
+      </td>
+     <td><para unique="1091910">C</para>
+      </td>
+     <td><para unique="1091912">V/V</para>
+      </td>
+     <td><para unique="1091914">AVX512BW </para>
+      <para unique="1091915">OR AVX10.1</para>
+      </td>
+     <td><para unique="1091917">Shift zmm2/m512 right by imm8 bytes while shifting in 0s and store result in zmm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091485">
+   <col width="42.23448pt"/>
+   <col width="78.83424pt"/>
+   <col width="94.89888pt"/>
+   <col width="96.12288pt"/>
+   <col width="99.63575999999999pt"/>
+   <col width="99.1296pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091487">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091489">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091491">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091493">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091495">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091497">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091499">A</para>
+      </td>
+     <td valign="middle"><para unique="1091501">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091503">ModRM:r/m (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091505">imm8</para>
+      </td>
+     <td valign="middle"><para unique="1091507">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091509">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091511">B</para>
+      </td>
+     <td valign="middle"><para unique="1091513">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091515">VEX.vvvv (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091517">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091519">imm8</para>
+      </td>
+     <td valign="middle"><para unique="1091521">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091523">C</para>
+      </td>
+     <td valign="middle"><para unique="1091525">Full Mem</para>
+      </td>
+     <td valign="middle"><para unique="1091527">EVEX.vvvv (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091529">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091531">imm8</para>
+      </td>
+     <td valign="middle"><para unique="1091533">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091534">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091536">Shifts the destination operand (first operand) to the right by the number of bytes specified in the count operand (second operand). The empty high-order bytes are cleared (set to all 0s). If the value specified by the count operand is greater than 15, the destination operand is set to all 0s. The count operand is an 8-bit immediate.</para>
+  <para unique="1091537">In 64-bit mode and not encoded with VEX/EVEX, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).</para>
+  <para unique="1091538">128-bit Legacy SSE version: The source and destination operands are the same. Bits (MAXVL-1:128) of the corre&#173;sponding YMM destination register remain unchanged.</para>
+  <para unique="1091539">VEX.128 encoded version: The source and destination operands are XMM registers. Bits (MAXVL-1:128) of the destination YMM register are zeroed. </para>
+  <para unique="1091541">VEX.256 encoded version: The source operand is a YMM register. The destination operand is an YMM register. Bits (MAXVL-1:256) of the corresponding ZMM register are zeroed. The count operand applies to both the low and high 128-bit lanes.</para>
+  <para unique="1091542">EVEX encoded versions: The source operand is a ZMM/YMM/XMM register or a 512/256/128-bit memory location. The destination operand is a ZMM/YMM/XMM register. The count operand applies to each 128-bit lanes.</para>
+  <para unique="1091543">Note: VEX.vvvv/EVEX.vvvv encodes the destination register.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091545">VPSRLDQ (EVEX.512 Encoded Version)</title>
+   <programlisting>TEMP := COUNT
+IF (TEMP &gt; 15) THEN TEMP := 16; FI
+DEST[127:0] := SRC[127:0] &gt;&gt; (TEMP * 8)
+DEST[255:128] := SRC[255:128] &gt;&gt; (TEMP * 8)
+DEST[383:256] := SRC[383:256] &gt;&gt; (TEMP * 8)
+DEST[511:384] := SRC[511:384] &gt;&gt; (TEMP * 8)
+DEST[MAXVL-1:512] := 0;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091554">VPSRLDQ (VEX.256 and EVEX.256 Encoded Version)</title>
+   <programlisting>TEMP := COUNT
+IF (TEMP &gt; 15) THEN TEMP := 16; FI
+DEST[127:0] := SRC[127:0] &gt;&gt; (TEMP * 8)
+DEST[255:128] := SRC[255:128] &gt;&gt; (TEMP * 8)
+DEST[MAXVL-1:256] := 0;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091561">VPSRLDQ (VEX.128 and EVEX.128 Encoded Version)</title>
+   <programlisting>TEMP := COUNT
+IF (TEMP &gt; 15) THEN TEMP := 16; FI
+DEST := SRC &gt;&gt; (TEMP * 8)
+DEST[MAXVL-1:128] := 0;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091567">PSRLDQ (128-bit Legacy SSE Version)</title>
+   <programlisting>TEMP := COUNT
+IF (TEMP &gt; 15) THEN TEMP := 16; FI
+DEST := DEST &gt;&gt; (TEMP * 8)
+DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalents">
-  <programlisting><string>(V)PSRLDQ __m128i _mm_srli_si128 ( __m128i a, int imm)</string><string>
-</string><string>VPSRLDQ __m256i _mm256_bsrli_epi128 ( __m256i, const int)</string><string>
-</string><string>VPSRLDQ __m512i _mm512_bsrli_epi128 ( __m512i, int)</string><string>
-</string></programlisting>
+  <programlisting>(V)PSRLDQ __m128i _mm_srli_si128 ( __m128i a, int imm)
+VPSRLDQ __m256i _mm256_bsrli_epi128 ( __m256i, const int)
+VPSRLDQ __m512i _mm512_bsrli_epi128 ( __m512i, int)</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1091577">
-   <string>None.</string></para>
+  <para unique="1091577">None.</para>
   </subsection>
  <subsection title="Numeric Exceptions">
-  <para unique="1091579">
-   <string>None.</string></para>
+  <para unique="1091579">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091584" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="94725: 06_Table: Table 2-14. Type 7 Class Exception Conditions"><string>Table&#160;2&#8209;24, &#8220;Type 7 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091588" format="xIndent1">
-   <string>EVEX-encoded instruction, see Exceptions Type E4NF.nb in </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091584" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1091582" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#94725: 06_Table: Table 2-14. Type 7 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;24, &#8220;Type 7 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091588" format="xIndent1">EVEX-encoded instruction, see Exceptions Type E4NF.nb in <link unique="1091586" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

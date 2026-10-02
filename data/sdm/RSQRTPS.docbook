@@ -1,41 +1,157 @@
 <instruction name="RSQRTPS">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Compute Reciprocals of Square Roots of Packed Single Precision Floating-Point Values</shortdesc>
- <longdesc><para unique="1091467">
-   <string>Performs a SIMD computation of the approximate reciprocals of the square roots of the four packed single precision floating-point values in the source operand (second operand) and stores the packed single precision floating-point results in the destination operand. The source operand can be an XMM register or a 128-bit memory location. The destination operand is an XMM register. See Figure 10-5 in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Devel&#173;oper&#8217;s Manual, Volume 1, for an illustration of a SIMD single precision floating-point operation.</string></para>
-  <para unique="1091468">
-   <string>The relative error for this approximation is:</string></para>
-  <programlisting><string>	|Relative Error| </string><string>&#8804; 1.5 </string><string>* 2</string><superscript><string>&#8722;</string></superscript><superscript><string>12</string></superscript><string> </string><string>
-</string></programlisting>
-  <para unique="1091470">
-   <string>The RSQRTPS instruction is not affected by the rounding control bits in the MXCSR register. When a source value is a 0.0, an </string><string>&#8734; of the sign of the source value is returned. A denormal source value is treated as a 0.0 (of the same sign). When a source value is a negative value (other than </string><string>&#8722;0.0), a floating-point indefinite is returned. When a source value is an SNaN or QNaN, the SNaN is converted to a QNaN or the source QNaN is returned. </string></para>
-  <para unique="1091471">
-   <string>In 64-bit mode, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).</string></para>
-  <para unique="1091472">
-   <string>128-bit Legacy SSE version: The second source can be an XMM register or an 128-bit memory location. The desti&#173;nation is not distinct from the first source XMM register and the upper bits (MAXVL-1:128) of the corresponding YMM register destination are unmodified.</string></para>
-  <para unique="1091473">
-   <string>VEX.128 encoded version: the first source operand is an XMM register or 128-bit memory location. The destination operand is an XMM register. The upper bits (MAXVL-1:128) of the corresponding YMM register destination are zeroed.</string></para>
-  <para unique="1091474">
-   <string>VEX.256 encoded version: The first source operand is a YMM register. The second source operand can be a YMM register or a 256-bit memory location. The destination operand is a YMM register. </string></para>
-  <para unique="1091475">
-   <string>Note: In VEX-encoded versions, VEX.vvvv is reserved and must be 1111b, otherwise instructions will #UD.</string></para>
+ <encoding_table><table unique="1091391">
+   <thead><tr>
+     <th colspan="2"><para unique="1091393">Opcode*/</para>
+      <para unique="1091394">Instruction</para>
+      </th>
+     <th><para unique="1091398">Op/ En</para>
+      </th>
+     <th><para unique="1091400">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091402">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091404">Description</para>
+      </th>
+     </tr>
+    </thead><col width="86.78088pt"/>
+   <col width="98.44344pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="208.15416000000002pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1091406">NP 0F 52 /r</para>
+      <para unique="1091407">RSQRTPS xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091411">RM</para>
+      </td>
+     <td><para unique="1091413">V/V</para>
+      </td>
+     <td><para unique="1091415">SSE</para>
+      </td>
+     <td><para unique="1091417">Computes the approximate reciprocals of the square roots of the packed single precision floating-point values in xmm2/m128 and stores the results in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091419">VEX.128.0F.WIG 52 /r</para>
+      <para unique="1091420">VRSQRTPS xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091424">RM</para>
+      </td>
+     <td><para unique="1091426">V/V</para>
+      </td>
+     <td><para unique="1091428">AVX</para>
+      </td>
+     <td><para unique="1091430">Computes the approximate reciprocals of the square roots of packed single precision values in xmm2/mem and stores the results in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091432">VEX.256.0F.WIG 52 /r</para>
+      <para unique="1091433">VRSQRTPS ymm1, ymm2/m256</para>
+      </td>
+     <td><para unique="1091437">RM</para>
+      </td>
+     <td><para unique="1091439">V/V</para>
+      </td>
+     <td><para unique="1091441">AVX</para>
+      </td>
+     <td><para unique="1091443">Computes the approximate reciprocals of the square roots of packed single precision values in ymm2/mem and stores the results in ymm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091444">
+   <col width="47.97864pt"/>
+   <col width="114.39720000000001pt"/>
+   <col width="113.41655999999999pt"/>
+   <col width="117.5616pt"/>
+   <col width="117.11591999999999pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091446">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091448">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091450">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091452">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091454">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091456">RM</para>
+      </td>
+     <td valign="middle"><para unique="1091458">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091460">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091462">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091464">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091465">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091467">Performs a SIMD computation of the approximate reciprocals of the square roots of the four packed single precision floating-point values in the source operand (second operand) and stores the packed single precision floating-point results in the destination operand. The source operand can be an XMM register or a 128-bit memory location. The destination operand is an XMM register. See Figure 10-5 in the Intel&#174; 64 and IA&#8209;32 Architectures Software Devel&#173;oper&#8217;s Manual, Volume 1, for an illustration of a SIMD single precision floating-point operation.</para>
+  <para unique="1091468">The relative error for this approximation is:</para>
+  <programlisting>|Relative Error| &#8804; 1.5 * 2&#8722;12
+The RSQRTPS instruction is not affected by the rounding control bits in the MXCSR register. When a source value is a 0.0, an &#8734; of the sign of the source value is returned. A denormal source value is treated as a 0.0 (of the same sign). When a source value is a negative value (other than &#8722;0.0), a floating-point indefinite is returned. When a source value is an SNaN or QNaN, the SNaN is converted to a QNaN or the source QNaN is returned.
+In 64-bit mode, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).
+128-bit Legacy SSE version: The second source can be an XMM register or an 128-bit memory location. The desti&#173;nation is not distinct from the first source XMM register and the upper bits (MAXVL-1:128) of the corresponding YMM register destination are unmodified.
+VEX.128 encoded version: the first source operand is an XMM register or 128-bit memory location. The destination operand is an XMM register. The upper bits (MAXVL-1:128) of the corresponding YMM register destination are zeroed.
+VEX.256 encoded version: The first source operand is a YMM register. The second source operand can be a YMM register or a 256-bit memory location. The destination operand is a YMM register.
+Note: In VEX-encoded versions, VEX.vvvv is reserved and must be 1111b, otherwise instructions will #UD.</programlisting>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091477">RSQRTPS (128-bit Legacy SSE Version)</title>
+   <programlisting>DEST[31:0] := APPROXIMATE(1/SQRT(SRC[31:0]))
+DEST[63:32] := APPROXIMATE(1/SQRT(SRC1[63:32]))
+DEST[95:64] := APPROXIMATE(1/SQRT(SRC1[95:64]))
+DEST[127:96] := APPROXIMATE(1/SQRT(SRC2[127:96]))
+DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091484">VRSQRTPS (VEX.128 Encoded Version)</title>
+   <programlisting>DEST[31:0] := APPROXIMATE(1/SQRT(SRC[31:0]))
+DEST[63:32] := APPROXIMATE(1/SQRT(SRC1[63:32]))
+DEST[95:64] := APPROXIMATE(1/SQRT(SRC1[95:64]))
+DEST[127:96] := APPROXIMATE(1/SQRT(SRC2[127:96]))
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091491">VRSQRTPS (VEX.256 Encoded Version)</title>
+   <programlisting>DEST[31:0] := APPROXIMATE(1/SQRT(SRC[31:0]))
+DEST[63:32] := APPROXIMATE(1/SQRT(SRC1[63:32]))
+DEST[95:64] := APPROXIMATE(1/SQRT(SRC1[95:64]))
+DEST[127:96] := APPROXIMATE(1/SQRT(SRC2[127:96]))
+DEST[159:128] := APPROXIMATE(1/SQRT(SRC2[159:128]))
+DEST[191:160] := APPROXIMATE(1/SQRT(SRC2[191:160]))
+DEST[223:192] := APPROXIMATE(1/SQRT(SRC2[223:192]))
+DEST[255:224] := APPROXIMATE(1/SQRT(SRC2[255:224]))</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>RSQRTPS __m128 _mm_rsqrt_ps(__m128 a)</string><string>
-</string><string>RSQRTPS __m256 _mm256_rsqrt_ps (__m256 a);</string><string>
-</string></programlisting>
+  <programlisting>RSQRTPS __m128 _mm_rsqrt_ps(__m128 a)
+RSQRTPS __m256 _mm256_rsqrt_ps (__m256 a);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091504">
-   <string>None.</string></para>
+  <para unique="1091504">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091509" format="xIndent1">
-   <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions,&#8221;</string></link><string> additionally:</string></para>
+  <para unique="1091509" format="xIndent1">See <link unique="1091507" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-comma">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions,&#8221;</link> additionally:</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If VEX.vvvv &#8800; 1111B.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091510">If VEX.vvvv &#8800; 1111B.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

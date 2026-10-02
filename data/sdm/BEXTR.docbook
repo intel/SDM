@@ -1,31 +1,117 @@
 <instruction name="BEXTR">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Bit Field Extract</shortdesc>
- <longdesc><para unique="1261255">
-   <string>Extracts contiguous bits from the first source operand (the second operand) using an index value and length value specified in the second source operand (the third operand). Bit 7:0 of the second source operand specifies the starting bit position of bit extraction. A START value exceeding the operand size will not extract any bits from the second source operand. Bit 15:8 of the second source operand specifies the maximum number of bits (LENGTH) beginning at the START position to extract. Only bit positions up to (OperandSize -1) of the first source operand are extracted. The extracted bits are written to the destination register, starting from the least significant bit. All higher order bits in the destination operand (starting at bit position LENGTH) are zeroed. The destination register is cleared if no bits are extracted.</string></para>
-  <para unique="1261256">
-   <string>This instruction is not supported in real mode and virtual-8086 mode. The operand size is always 32 bits if not in 64-bit mode. In 64-bit mode operand size 64 requires VEX.W1. VEX.W1 is ignored in non-64-bit modes. An attempt to execute this instruction with VEX.L not equal to 0 will cause #UD.</string></para>
+ <encoding_table><table unique="1261191">
+   <col width="50.92344pt"/>
+   <col width="72.45144pt"/>
+   <col width="29.87496pt"/>
+   <col width="38.25pt"/>
+   <col width="44.24976pt"/>
+   <col width="279.0pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1261194">Opcode/<anchor id="+861230"/>Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64/32-bit Mode</para>
+      </th>
+     <th><para unique="1261202">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1261206">VEX.LZ.0F38.W0 F7 /r</para>
+      <para unique="1261207">BEXTR r32a, r/m32, r32b</para>
+      </td>
+     <td><para unique="1261211">RMV</para>
+      </td>
+     <td><para unique="1261213">V/V</para>
+      </td>
+     <td><para unique="1261215">BMI1</para>
+      </td>
+     <td><para unique="1261217">Contiguous bitwise extract from r/m32 using r32b as control; store result in r32a.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261219">VEX.LZ.0F38.W1 F7 /r</para>
+      <para unique="1261220">BEXTR r64a, r/m64, r64b</para>
+      </td>
+     <td><para unique="1261224">RMV</para>
+      </td>
+     <td><para unique="1261226">V/N.E.</para>
+      </td>
+     <td><para unique="1261228">BMI1</para>
+      </td>
+     <td><para unique="1261230">Contiguous bitwise extract from r/m64 using r64b as control; store result in r64a.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261232">
+   <col width="46.456559999999996pt"/>
+   <col width="115.87752pt"/>
+   <col width="121.31352pt"/>
+   <col width="114.39936pt"/>
+   <col width="113.92272pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261234">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261236">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261238">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261240">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261242">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261244">RMV</para>
+      </td>
+     <td valign="middle"><para unique="1261246">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261248">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261250">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261252">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261253">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261255">Extracts contiguous bits from the first source operand (the second operand) using an index value and length value specified in the second source operand (the third operand). Bit 7:0 of the second source operand specifies the starting bit position of bit extraction. A START value exceeding the operand size will not extract any bits from the second source operand. Bit 15:8 of the second source operand specifies the maximum number of bits (LENGTH) beginning at the START position to extract. Only bit positions up to (OperandSize -1) of the first source operand are extracted. The extracted bits are written to the destination register, starting from the least significant bit. All higher order bits in the destination operand (starting at bit position LENGTH) are zeroed. The destination register is cleared if no bits are extracted.</para>
+  <para unique="1261256">This instruction is not supported in real mode and virtual-8086 mode. The operand size is always 32 bits if not in 64-bit mode. In 64-bit mode operand size 64 requires VEX.W1. VEX.W1 is ignored in non-64-bit modes. An attempt to execute this instruction with VEX.L not equal to 0 will cause #UD.</para>
   </longdesc>
+ <operation>
+  <programlisting>START := SRC2[7:0];
+LEN := SRC2[15:8];
+TEMP := ZERO_EXTEND_TO_512 (SRC1 );
+DEST := ZERO_EXTEND(TEMP[START+LEN -1: START]);
+ZF := (DEST = 0);</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <programlisting><string>ZF is updated based on the result. AF, SF, and PF are undefined. All other flags are cleared. </string><string>
-</string></programlisting>
+  <programlisting>ZF is updated based on the result. AF, SF, and PF are undefined. All other flags are cleared.</programlisting>
   </subsection>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>BEXTR unsigned __int32 _bextr_u32(unsigned __int32 src, unsigned __int32 start. unsigned __int32 len);</string><string>
-</string><string>BEXTR unsigned __int64 _bextr_u64(unsigned __int64 src, unsigned __int32 start. unsigned __int32 len);</string><string>
-</string></programlisting>
+  <programlisting>BEXTR unsigned __int32 _bextr_u32(unsigned __int32 src, unsigned __int32 start. unsigned __int32 len);
+BEXTR unsigned __int64 _bextr_u64(unsigned __int64 src, unsigned __int32 start. unsigned __int32 len);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1261269">
-   <string>None.</string></para>
+  <para unique="1261269">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1261274" format="xIndent1">
-   <string>See </string><link linkend="59669: 06_Table: Table 2-30. Exception Definition (VEX-Encoded GPR Instructions)"><string>Table&#160;2&#8209;29, &#8220;Type 13 Class Exception Conditions,&#8221;</string></link><string> additionally:</string></para>
+  <para unique="1261274" format="xIndent1">See <link unique="1261272" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#59669: 06_Table: Table 2-30. Exception Definition (VEX-Encoded GPR Instructions)" xrefstyle="Table All - no page-comma">Table&#160;2&#8209;29, &#8220;Type 13 Class Exception Conditions,&#8221;</link> additionally:</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If VEX.W = 1.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261275">If VEX.W = 1.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

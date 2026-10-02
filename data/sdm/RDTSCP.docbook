@@ -1,70 +1,152 @@
 <instruction name="RDTSCP">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Read Time-Stamp Counter and Processor ID</shortdesc>
- <longdesc><para unique="1091441">
-   <string>Reads the current value of the processor&#8217;s </string><indexterm><primary>Time-stamp counter, reading</primary></indexterm><string>time-stamp counter (a 64-bit MSR) into the EDX:EAX registers and also reads the value of the IA32_TSC_AUX MSR (address C0000103H) into the ECX register. The EDX register is loaded with the high-order 32 bits of the IA32_TSC MSR; the EAX register is loaded with the low-order 32 bits of the IA32_TSC MSR; and the ECX register is loaded with the low-order 32-bits of IA32_TSC_AUX MSR. On processors that support the Intel&#160;64 architecture, the high-order 32 bits of each of RAX, RDX, and RCX are cleared.</string></para>
-  <para unique="1091442">
-   <string>The processor monotonically increments the time-stamp counter MSR every clock cycle and resets it to 0 whenever the processor is reset. See &#8220;Time-Stamp Counter&#8221; in </string><link linkend="12383: H1Heading: Chapter 10 Debugging and Performance Monitoring"><string>Chapter 20</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B, for specific details of the time stamp counter behavior.</string></para>
-  <para unique="1091446">
-   <string>The time stamp disable (TSD) flag in register CR4 restricts the use of the RDTSCP instruction as follows. When the flag is clear, the RDTSCP instruction can be executed at any privilege level; when the flag is set, the instruction can only be executed at privilege level 0.</string></para>
-  <para unique="1091447">
-   <string>The RDTSCP instruction is not a serializing instruction, but it does wait until all previous instructions have executed and all previous loads are globally visible.</string><footnote><para unique="1091450">
-     <string>A load is considered to become globally visible when the value to be loaded is determined.</string></para>
-    </footnote><string> But it does not wait for previous stores to be globally visible, and subse&#173;quent instructions may begin execution before the read operation is performed. The following items may guide software seeking to order executions of RDTSCP:</string></para>
-  <itemizedlist><listitem><para unique="1091451">
-     <string>	If software requires RDTSCP to be executed only after all previous stores are globally visible, it can execute MFENCE immediately before RDTSCP.</string></para>
+ <encoding_table><table unique="1091391">
+   <thead><tr>
+     <th><para unique="1091393">Opcode*</para>
+      </th>
+     <th><para unique="1091395">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op/ En</para>
+      </th>
+     <th><para unique="1091399">64-Bit Mode</para>
+      </th>
+     <th><para unique="1091401">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.96256pt"/>
+   <col width="112.26168000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="182.15424000000002pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1091405">0F 01 F9</para>
+      </td>
+     <td><para unique="1091407">RDTSCP</para>
+      </td>
+     <td><para unique="1091409">ZO</para>
+      </td>
+     <td><para unique="1091411">Valid </para>
+      </td>
+     <td><para unique="1091413">Valid</para>
+      </td>
+     <td><para unique="1091415">Read 64-bit time-stamp counter and IA32_TSC_AUX value into EDX:EAX and ECX.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091417">
+   <col width="47.68056pt"/>
+   <col width="113.0148pt"/>
+   <col width="118.31616000000001pt"/>
+   <col width="112.36392000000001pt"/>
+   <col width="120.59424pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091419">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091421">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091423">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091425">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091427">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091429">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1091431">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091433">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091435">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091437">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091438">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091441">Reads the current value of the processor&#8217;s <indexterm><primary>Time-stamp counter, reading</primary></indexterm>time-stamp counter (a 64-bit MSR) into the EDX:EAX registers and also reads the value of the IA32_TSC_AUX MSR (address C0000103H) into the ECX register. The EDX register is loaded with the high-order 32 bits of the IA32_TSC MSR; the EAX register is loaded with the low-order 32 bits of the IA32_TSC MSR; and the ECX register is loaded with the low-order 32-bits of IA32_TSC_AUX MSR. On processors that support the Intel&#160;64 architecture, the high-order 32 bits of each of RAX, RDX, and RCX are cleared.</para>
+  <para unique="1091442">The processor monotonically increments the time-stamp counter MSR every clock cycle and resets it to 0 whenever the processor is reset. See &#8220;Time-Stamp Counter&#8221; in <link unique="1092410" linkend="&lt;c&gt;__sdm_vol3B_ch20.fm#12383: H1Heading: Chapter 10 Debugging and Performance Monitoring" xrefstyle="ChapterNum_CR">Chapter 20</link> of the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B, for specific details of the time stamp counter behavior.</para>
+  <para unique="1091446">The time stamp disable (TSD) flag in register CR4 restricts the use of the RDTSCP instruction as follows. When the flag is clear, the RDTSCP instruction can be executed at any privilege level; when the flag is set, the instruction can only be executed at privilege level 0.</para>
+  <para unique="1091447">The RDTSCP instruction is not a serializing instruction, but it does wait until all previous instructions have executed and all previous loads are globally visible.<footnote><para unique="1091450">A load is considered to become globally visible when the value to be loaded is determined.</para>
+    </footnote> But it does not wait for previous stores to be globally visible, and subse&#173;quent instructions may begin execution before the read operation is performed. The following items may guide software seeking to order executions of RDTSCP:</para>
+  <itemizedlist>
+   <listitem><para unique="1091451">	If software requires RDTSCP to be executed only after all previous stores are globally visible, it can execute MFENCE immediately before RDTSCP.</para>
     </listitem>
-   <listitem><para unique="1091452">
-     <string>	If software requires RDTSCP to be executed prior to execution of any subsequent instruction (including any memory accesses), it can execute LFENCE immediately after RDTSCP.</string></para>
+   <listitem><para unique="1091452">	If software requires RDTSCP to be executed prior to execution of any subsequent instruction (including any memory accesses), it can execute LFENCE immediately after RDTSCP.</para>
     </listitem>
-   </itemizedlist><para unique="1091456">
-   <string>See &#8220;Changes to Instruction Behavior in VMX Non-Root Operation&#8221; in </string><link linkend="12383: H1Heading: Chapter 10 Debugging and Performance Monitoring"><string>Chapter 27</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Archi&#173;tectures Software Developer&#8217;s Manual, Volume 3C, for more information about the behavior of this instruction in VMX non-root operation.</string></para>
+   </itemizedlist>
+  <para unique="1091456">See &#8220;Changes to Instruction Behavior in VMX Non-Root Operation&#8221; in <link unique="1091454" linkend="&lt;c&gt;__sdm_vol3C_ch27.fm#12383: H1Heading: Chapter 10 Debugging and Performance Monitoring" xrefstyle="ChapterNum_CR">Chapter 27</link> of the Intel&#174; 64 and IA&#8209;32 Archi&#173;tectures Software Developer&#8217;s Manual, Volume 3C, for more information about the behavior of this instruction in VMX non-root operation.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF (CR4.TSD = 0) or (CPL = 0) or (CR0.PE = 0)
+	THEN
+		EDX:EAX := TimeStampCounter;
+		ECX := IA32_TSC_AUX[31:0];
+	ELSE (* CR4.TSD = 1 and (CPL = 1, 2, or 3) and CR0.PE = 1 *)
+		#GP(0);
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1091466">
-   <string>None.</string></para>
+  <para unique="1091466">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the TSD flag in register CR4 is set and the CPL is greater than 0.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091468">If the TSD flag in register CR4 is set and the CPL is greater than 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If CPUID.80000001H:EDX.RDTSCP[27] = 0.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091469">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1091470">If CPUID.80000001H:EDX.RDTSCP[27] = 0.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If CPUID.80000001H:EDX.RDTSCP[27] = 0.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091472">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1091473">If CPUID.80000001H:EDX.RDTSCP[27] = 0.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the TSD flag in register CR4 is set.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091475">If the TSD flag in register CR4 is set.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If CPUID.80000001H:EDX.RDTSCP[27] = 0.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091476">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1091477">If CPUID.80000001H:EDX.RDTSCP[27] = 0.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091479" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1091479" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
-  <para unique="1091481" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1091481" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  </instruction>

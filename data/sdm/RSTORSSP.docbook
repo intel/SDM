@@ -1,99 +1,224 @@
 <instruction name="RSTORSSP">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Restore Saved Shadow Stack Pointer</shortdesc>
- <longdesc><para unique="1091442">
-   <string>Restores SSP from the shadow-stack-restore token pointed to by m64. If the SSP restore was successful then the instruction replaces the shadow-stack-restore token with a previous-ssp token. The instruction sets the CF flag to indicate whether the SSP address recorded in the shadow-stack-restore token that was processed was 4 byte aligned, i.e., whether an alignment hole was created when the restore-shadow-stack token was pushed on this shadow stack. </string></para>
-  <para unique="1091443">
-   <string>Following RSTORSSP if a restore-shadow-stack token needs to be saved on the previous shadow stack, use the SAVEPREVSSP instruction. </string></para>
-  <para unique="1091444">
-   <string>If pushing a restore-shadow-stack token on the previous shadow stack is not required, the previous-ssp token can be popped using the INCSSPQ instruction. If the CF flag was set to indicate presence of an alignment hole, an addi&#173;tional INCSSPD instruction is needed to advance the SSP past the alignment hole.</string></para>
+ <encoding_table><table unique="1091391">
+   <col width="81.97775999999999pt"/>
+   <col width="81.97775999999999pt"/>
+   <col width="26.994239999999998pt"/>
+   <col width="48.04992pt"/>
+   <col width="50.3532pt"/>
+   <col width="222.44904000000002pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091393">Opcode/</para>
+      <para unique="1091394">Instruction</para>
+      </th>
+     <th><para unique="1091398">Op/ En</para>
+      </th>
+     <th><para unique="1091400">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091402">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091404">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1091406">F3 0F 01 /5 (mod!=11, /5, memory only)</para>
+      <para unique="1091407">RSTORSSP m64</para>
+      </td>
+     <td><para unique="1091411">M</para>
+      </td>
+     <td><para unique="1091413">V/V</para>
+      </td>
+     <td><para unique="1091415">CET_SS</para>
+      </td>
+     <td><para unique="1091417">Restore SSP.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091419">
+   <col width="69.28056000000001pt"/>
+   <col width="109.74600000000001pt"/>
+   <col width="108.08927999999999pt"/>
+   <col width="110.59488pt"/>
+   <col width="113.05944000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091421">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091423">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091425">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091427">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091429">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091431">M</para>
+      </td>
+     <td valign="middle"><para unique="1091433">ModRM:r/m (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091435">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091437">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091439">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091440">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091442">Restores SSP from the shadow-stack-restore token pointed to by m64. If the SSP restore was successful then the instruction replaces the shadow-stack-restore token with a previous-ssp token. The instruction sets the CF flag to indicate whether the SSP address recorded in the shadow-stack-restore token that was processed was 4 byte aligned, i.e., whether an alignment hole was created when the restore-shadow-stack token was pushed on this shadow stack. </para>
+  <para unique="1091443">Following RSTORSSP if a restore-shadow-stack token needs to be saved on the previous shadow stack, use the SAVEPREVSSP instruction. </para>
+  <para unique="1091444">If pushing a restore-shadow-stack token on the previous shadow stack is not required, the previous-ssp token can be popped using the INCSSPQ instruction. If the CF flag was set to indicate presence of an alignment hole, an addi&#173;tional INCSSPD instruction is needed to advance the SSP past the alignment hole.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF CPL = 3
+	IF (CR4.CET &amp; IA32_U_CET.SH_STK_EN) = 0
+		THEN #UD; FI;
+ELSE
+	IF (CR4.CET &amp; IA32_S_CET.SH_STK_EN) = 0
+		THEN #UD; FI;
+FI;
+SSP_LA = Linear_Address(mem operand)
+IF SSP_LA not aligned to 8 bytes
+	THEN #GP(0); FI;
+previous_ssp_token = SSP | (IA32_EFER.LMA AND CS.L) | 0x02
+Start Atomic Execution
+restore_ssp_token = Locked shadow_stack_load 8 bytes from SSP_LA
+fault = 0
+IF ((restore_ssp_token &amp; 0x03) != (IA32_EFER.LMA &amp; CS.L))
+	THEN fault = 1; FI;					(* If L flag in token does not match IA32_EFER.LMA &amp; CS.L or bit 1 is not 0 *)
+IF ((IA32_EFER.LMA AND CS.L) = 0 AND restore_ssp_token[63:32] != 0)
+	THEN fault = 1; FI;					(* If compatibility/legacy mode and SSP to be restored not below 4G *)
+TMP = restore_ssp_token &amp; ~0x01
+TMP = (TMP - 8)
+TMP = TMP &amp; ~0x07
+IF TMP != SSP_LA
+	THEN fault = 1; FI;					(* If address in token does not match the requested top of stack *)
+TMP = (fault == 0) ? previous_ssp_token : restore_ssp_token
+shadow_stack_store 8 bytes of TMP to SSP_LA and release lock
+End Atomic Execution
+IF fault == 1
+    THEN #CP(RSTORSSP); FI;
+SSP = SSP_LA
+// Set the CF if the SSP in the restore token was 4 byte aligned, i.e., there is an alignment hole
+RFLAGS.CF = (restore_ssp_token &amp; 0x04) ? 1 : 0;
+RFLAGS.ZF,PF,AF,OF,SF := 0;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1091488">
-   <string>CF is set to indicate if the shadow stack pointer in the restore token was 4 byte aligned, else it is cleared. ZF, PF, AF, OF, and SF are cleared.</string></para>
+  <para unique="1091488">CF is set to indicate if the shadow stack pointer in the restore token was 4 byte aligned, else it is cleared. ZF, PF, AF, OF, and SF are cleared.</para>
   </subsection>
  <subsection title="C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>RSTORSSP 	void _rstorssp(void *);</string><string>
-</string></programlisting>
+  <programlisting>RSTORSSP 	void _rstorssp(void *);</programlisting>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If CR4.CET = 0.</string></listitem>
-    <listitem><string>IF CPL = 3 and IA32_U_CET.SH_STK_EN = 0.</string></listitem>
-    <listitem><string>IF CPL &lt; 3 and IA32_S_CET.SH_STK_EN = 0.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091492">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1091493">If CR4.CET = 0.</para>
+     </listitem>
+    <listitem><para unique="1091494">IF CPL = 3 and IA32_U_CET.SH_STK_EN = 0.</para>
+     </listitem>
+    <listitem><para unique="1091495">IF CPL &lt; 3 and IA32_S_CET.SH_STK_EN = 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If linear address of memory operand not 8 byte aligned.</string></listitem>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If destination is located in a non-writeable segment.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091496">If linear address of memory operand not 8 byte aligned.</para>
+     </listitem>
+    <listitem><para unique="1091497">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1091498">If destination is located in a non-writeable segment.</para>
+     </listitem>
+    <listitem><para unique="1091499">If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091500">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#CP(rstorssp)</string></term>
-    <listitem><string>If L bit in token does not match (IA32_EFER.LMA &amp; CS.L).</string></listitem>
-    <listitem><string>If address in token does not match linear address of memory operand.</string></listitem>
-    <listitem><string>If in 32-bit or compatibility mode and the address in token is not below 4G.</string></listitem>
+    <term>#CP(rstorssp)</term>
+    <listitem><para unique="1091501">If L bit in token does not match (IA32_EFER.LMA &amp; CS.L).</para>
+     </listitem>
+    <listitem><para unique="1091502">If address in token does not match linear address of memory operand.</para>
+     </listitem>
+    <listitem><para unique="1091503">If in 32-bit or compatibility mode and the address in token is not below 4G.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091504">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The RSTORSSP instruction is not recognized in real-address mode. </string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091506">The RSTORSSP instruction is not recognized in real-address mode. </para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The RSTORSSP instruction is not recognized in virtual-8086 mode. </string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091508">The RSTORSSP instruction is not recognized in virtual-8086 mode. </para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091510" format="xIndent1">
-   <string>Same as protected mode exceptions.</string></para>
+  <para unique="1091510" format="xIndent1">Same as protected mode exceptions.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If CR4.CET = 0.</string></listitem>
-    <listitem><string>If CPL = 3 and IA32_U_CET.SH_STK_EN = 0.</string></listitem>
-    <listitem><string>If CPL &lt; 3 and IA32_S_CET.SH_STK_EN = 0.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091512">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1091513">If CR4.CET = 0.</para>
+     </listitem>
+    <listitem><para unique="1091514">If CPL = 3 and IA32_U_CET.SH_STK_EN = 0.</para>
+     </listitem>
+    <listitem><para unique="1091515">If CPL &lt; 3 and IA32_S_CET.SH_STK_EN = 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If linear address of memory operand not 8 byte aligned.</string></listitem>
-    <listitem><string>If a memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091516">If linear address of memory operand not 8 byte aligned.</para>
+     </listitem>
+    <listitem><para unique="1091517">If a memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091518">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#CP(rstorssp)</string></term>
-    <listitem><string>If L bit in token does not match (IA32_EFER.LMA &amp; CS.L).</string></listitem>
-    <listitem><string>If address in token does not match linear address of memory operand.</string></listitem>
+    <term>#CP(rstorssp)</term>
+    <listitem><para unique="1091519">If L bit in token does not match (IA32_EFER.LMA &amp; CS.L).</para>
+     </listitem>
+    <listitem><para unique="1091520">If address in token does not match linear address of memory operand.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091521">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

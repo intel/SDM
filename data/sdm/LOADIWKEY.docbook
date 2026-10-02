@@ -1,63 +1,179 @@
 <instruction name="LOADIWKEY">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Load Internal Wrapping Key With Key Locker</shortdesc>
- <longdesc><para unique="1261251">
-   <string>The LOADIWKEY</string><footnote><para unique="1261248">
-     <string>Further details on Key Locker and usage of this instruction can be found here:</string></para>
-    <para unique="1261250">
-     <string>	</string><anchor id="message URL https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html"/><underline><string>https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html</string></underline><string>.</string></para>
-    </footnote><string> instruction writes the Key Locker internal wrapping key, which is called IWKey. This IWKey is used by the ENCODEKEY* instructions to wrap keys into handles. Conversely, the AESENC/DEC*KL instructions use IWKey to unwrap those keys from the handles and help verify the handle integrity. For security reasons, no instruction is designed to allow software to directly read the IWKey value.</string></para>
-  <para unique="1261252">
-   <string>IWKey includes two cryptographic keys as well as metadata. The two cryptographic keys are loaded from register sources so that LOADIWKEY can be executed without the keys ever being in memory.</string></para>
-  <para unique="1261253">
-   <string>The key input operands are:</string></para>
-  <itemizedlist><listitem><para unique="1261254">
-     <string>The 256-bit encryption key is loaded from the two explicit operands.</string></para>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th colspan="2"><para unique="1261193">Opcode/</para>
+      <para unique="1261194">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64/32-bit Mode</para>
+      </th>
+     <th><para unique="1261202">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><col width="84.96864000000001pt"/>
+   <col width="96.38712000000001pt"/>
+   <col width="24.69672pt"/>
+   <col width="47.85984pt"/>
+   <col width="48.39192pt"/>
+   <col width="208.76904000000002pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1261206">F3 0F 38 DC 11:rrr:bbb </para>
+      <para unique="1261207">LOADIWKEY xmm1, xmm2, &lt;EAX&gt;, &lt;XMM0&gt;</para>
+      </td>
+     <td><para unique="1261211">A</para>
+      </td>
+     <td><para unique="1261213">V/V</para>
+      </td>
+     <td><para unique="1261215">KEY_LOCKER</para>
+      </td>
+     <td><para unique="1261217">Load internal wrapping key from xmm1, xmm2, and XMM0.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261219">
+   <col width="39.92256pt"/>
+   <col width="45.620639999999995pt"/>
+   <col width="98.52768pt"/>
+   <col width="106.11720000000001pt"/>
+   <col width="110.42856pt"/>
+   <col width="109.11024pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261221">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261223">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1261225">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261227">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261229">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261231">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261233">A</para>
+      </td>
+     <td valign="middle"><para unique="1261235">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261237">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261239">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261241">Implicit EAX (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261243">Implicit XMM0 (r)</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261244">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261251">The LOADIWKEY<footnote><para unique="1261248">Further details on Key Locker and usage of this instruction can be found here:</para>
+    <para unique="1261250">	<anchor id="message URL https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html"/><underline>https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html</underline>.</para>
+    </footnote> instruction writes the Key Locker internal wrapping key, which is called IWKey. This IWKey is used by the ENCODEKEY* instructions to wrap keys into handles. Conversely, the AESENC/DEC*KL instructions use IWKey to unwrap those keys from the handles and help verify the handle integrity. For security reasons, no instruction is designed to allow software to directly read the IWKey value.</para>
+  <para unique="1261252">IWKey includes two cryptographic keys as well as metadata. The two cryptographic keys are loaded from register sources so that LOADIWKEY can be executed without the keys ever being in memory.</para>
+  <para unique="1261253">The key input operands are:</para>
+  <itemizedlist>
+   <listitem><para unique="1261254">The 256-bit encryption key is loaded from the two explicit operands.</para>
     </listitem>
-   <listitem><para unique="1261255">
-     <string>The 128-bit integrity key is loaded from the implicit operand XMM0.</string></para>
+   <listitem><para unique="1261255">The 128-bit integrity key is loaded from the implicit operand XMM0.</para>
     </listitem>
-   </itemizedlist><para unique="1261256">
-   <string>The implicit operand EAX specifies the KeySource and whether backing up the key is permitted:</string></para>
-  <itemizedlist><listitem><para unique="1261257">
-     <string>EAX[0] &#8211; When set, the wrapping key being initialized is not permitted to be backed up to platform-scoped storage.</string></para>
+   </itemizedlist>
+  <para unique="1261256">The implicit operand EAX specifies the KeySource and whether backing up the key is permitted:</para>
+  <itemizedlist>
+   <listitem><para unique="1261257">EAX[0] &#8211; When set, the wrapping key being initialized is not permitted to be backed up to platform-scoped storage.</para>
     </listitem>
-   <listitem><para unique="1261258">
-     <string>EAX[4:1] &#8211; This specifies the KeySource, which is the type of key. Currently only two encodings are supported. A KeySource of 0 indicates that the key input operands described above should be directly stored as the internal wrapping keys. LOADIWKEY with a KeySource of 1 will have random numbers from the on-chip random number generator XORed with the source registers (including XMM0) so that the software that executes the LOADIWKEY does not know the actual IWKey encryption and integrity keys. Software can choose to put additional random data into the source registers so that other sources of random data are combined with the hardware random number generator supplied value. Software should always check ZF after executing LOADIWKEY with KeySource of 1 as this operation may fail due to it being unable to get sufficient full-entropy data from the on-chip random number generator. Both KeySource of 0 and 1 specify that IWKey be used with the AES-GCM-SIV algorithm. CPUID.19H:ECX[1] enumerates support for KeySource of 1. All other KeySource encodings are reserved.</string></para>
+   <listitem><para unique="1261258">EAX[4:1] &#8211; This specifies the KeySource, which is the type of key. Currently only two encodings are supported. A KeySource of 0 indicates that the key input operands described above should be directly stored as the internal wrapping keys. LOADIWKEY with a KeySource of 1 will have random numbers from the on-chip random number generator XORed with the source registers (including XMM0) so that the software that executes the LOADIWKEY does not know the actual IWKey encryption and integrity keys. Software can choose to put additional random data into the source registers so that other sources of random data are combined with the hardware random number generator supplied value. Software should always check ZF after executing LOADIWKEY with KeySource of 1 as this operation may fail due to it being unable to get sufficient full-entropy data from the on-chip random number generator. Both KeySource of 0 and 1 specify that IWKey be used with the AES-GCM-SIV algorithm. CPUID.19H:ECX[1] enumerates support for KeySource of 1. All other KeySource encodings are reserved.</para>
     </listitem>
-   <listitem><para unique="1261259">
-     <string>EAX[31:5] &#8211; Reserved.</string></para>
+   <listitem><para unique="1261259">EAX[31:5] &#8211; Reserved.</para>
     </listitem>
-   </itemizedlist></longdesc>
+   </itemizedlist>
+  </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1261261">LOADIWKEY </title>
+   <programlisting>IF CPL &gt; 0 						// LOADKWKEY only allowed at ring 0 (supervisor mode)
+	THEN #GP (0); FI;
+IF EAX[4:1] &gt; 1 						// Reserved KeySource encoding used
+	THEN #GP (0); FI;
+IF EAX[31:5] != 0 						// Reserved bit in EAX is set
+	THEN #GP (0); FI;
+IF EAX[0] AND (CPUID.19H:ECX[0] == 0) // NoBackup is not supported on this part
+	THEN #GP (0); FI;
+IF (EAX[4:1] == 1) AND (CPUID.19H:ECX[1] == 0) // KeySource of 1 is not supported on this part
+	THEN #GP (0); FI;
+IF (EAX[4:1] == 0) 					// KeySource of 0
+	THEN
+		IWKey.Encryption Key[127:0] := SRC2[127:0]:
+		IWKey.Encryption Key[255:128] := SRC1[127:0];
+		IWKey.IntegrityKey[127:0] := XMM0[127:0];
+		IWKey.NoBackup = EAX [0];
+		IWKey.KeySource = EAX [4:1];
+		RFLAGS.ZF := 0;
+	ELSE 					// KeySource of 1. See RDSEED definition for details of randomness
+		IF HW_NRND_GEN.ready == 1 										// Full-entropy random data from RDSEED hardware block was received
+			THEN
+				IWKey.Encryption Key[127:0] := SRC2[127:0] XOR HW_NRND_GEN.data[127:0];
+				IWKey.Encryption Key[255:128] := SRC1[127:0] XOR HW_NRND_GEN.data[255:128];
+				IWKey.IntegrityKey[127:0] := XMM0[127:0] XOR HW_NRND_GEN.data[383:256];
+				IWKey.NoBackup = EAX [0];
+				IWKey.KeySource = EAX [4:1];
+				RFLAGS.ZF := 0;
+			ELSE 			// Random data was not returned from RDSEED hardware block. IWKey was not loaded
+				RFLAGS.ZF := 1;
+		FI;
+FI;
+RFLAGS.OF, SF, AF, PF, CF := 0;</programlisting>
+   </section>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261295">
-   <string>ZF is set to 0 if the operation succeeded and set to 1 if the operation failed due to full-entropy random data not being received from RDSEED. The other arithmetic flags (OF, SF, AF, PF, CF) are cleared to 0.</string></para>
+  <para unique="1261295">ZF is set to 0 if the operation succeeded and set to 1 if the operation failed due to full-entropy random data not being received from RDSEED. The other arithmetic flags (OF, SF, AF, PF, CF) are cleared to 0.</para>
   </subsection>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>LOADIWKEY					void _mm_loadiwkey(unsigned int ctl, __m128i intkey, __m128i enkey_lo, __m128i enkey_hi);</string><string>
-</string></programlisting>
+  <programlisting>LOADIWKEY					void _mm_loadiwkey(unsigned int ctl, __m128i intkey, __m128i enkey_lo, __m128i enkey_hi);</programlisting>
   </subsection>
  <subsection title="Exceptions (All Operating Modes)">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP </string></term>
-    <listitem><string>If CPL &gt; 0. (Does not apply in real-address mode.)</string></listitem>
-    <listitem><string>If EAX[4:1] &gt; 1.</string></listitem>
-    <listitem><string>If EAX[31:5] != 0.</string></listitem>
-    <listitem><string>If (EAX[0] == 1) AND (CPUID.19H:ECX[0] == 0).</string></listitem>
-    <listitem><string>If (EAX[4:1] == 1) AND (CPUID.19H:ECX[1] == 0).</string></listitem>
+    <term>#GP </term>
+    <listitem><para unique="1261299">If CPL &gt; 0. (Does not apply in real-address mode.)</para>
+     </listitem>
+    <listitem><para unique="1261300">If EAX[4:1] &gt; 1.</para>
+     </listitem>
+    <listitem><para unique="1261301">If EAX[31:5] != 0.</para>
+     </listitem>
+    <listitem><para unique="1261302">If (EAX[0] == 1) AND (CPUID.19H:ECX[0] == 0).</para>
+     </listitem>
+    <listitem><para unique="1261303">If (EAX[4:1] == 1) AND (CPUID.19H:ECX[1] == 0).</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If CPUID.07H.00H:ECX.KEY_LOCKER[23] = 0.</string></listitem>
-    <listitem><string>If CR4.KL = 0.</string></listitem>
-    <listitem><string>If CR0.EM = 1.</string></listitem>
-    <listitem><string>If CR4.OSFXSR = 0.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261304">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1261305">If CPUID.07H.00H:ECX.KEY_LOCKER[23] = 0.</para>
+     </listitem>
+    <listitem><para unique="1261306">If CR4.KL = 0.</para>
+     </listitem>
+    <listitem><para unique="1261307">If CR0.EM = 1.</para>
+     </listitem>
+    <listitem><para unique="1261308">If CR4.OSFXSR = 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#NM </string></term>
-    <listitem><string>If CR0.TS = 1.</string></listitem>
+    <term>#NM </term>
+    <listitem><para unique="1261309">If CR0.TS = 1.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

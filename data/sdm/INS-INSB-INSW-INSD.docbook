@@ -1,111 +1,308 @@
 <instruction name="INS/INSB/INSW/INSD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Input from Port to String</shortdesc>
- <longdesc><para unique="1261306">
-   <string>Copies the data from the I/O port specified with the source operand (second operand) to the destination operand (first operand). The source operand is an I/O port address (from 0 to 65,535) that is read from the DX register. The destination operand is a memory location, the address of which is read from either the ES:DI, ES:EDI or the RDI registers (depending on the address-size attribute of the instruction, 16, 32 or 64, respectively). (The ES segment cannot be overridden with a segment override prefix.) The size of the I/O port being accessed (that is, the size of the source and destination operands) is determined by the opcode for an 8-bit I/O port or by the operand-size attri&#173;bute of the instruction for a 16- or 32-bit I/O port.</string></para>
-  <para unique="1261307">
-   <string>At the assembly-code level, two forms of this instruction are allowed: the &#8220;explicit-operands&#8221; form and the &#8220;no-operands&#8221; form. The explicit-operands form (specified with the INS mnemonic) allows the source and destination operands to be specified explicitly. Here, the source operand must be &#8220;DX,&#8221; and the destination operand should be a symbol that indicates the size of the I/O port and the destination address. This explicit-operands form is provided to allow documentation; however, note that the documentation provided by this form can be misleading. That is, the destination operand symbol must specify the correct </string><bold><string>type</string></bold><string> (size) of the operand (byte, word, or doubleword), but it does not have to specify the correct </string><bold><string>location</string></bold><string>. The location is always specified by the ES:(E)DI registers, which must be loaded correctly before the INS instruction is executed.</string></para>
-  <para unique="1261308">
-   <string>The no-operands form provides &#8220;short forms&#8221; of the byte, word, and doubleword versions of the INS instructions. Here also DX is assumed by the processor to be the source operand and ES:(E)DI is assumed to be the destination operand. The size of the I/O port is specified with the choice of mnemonic: INSB (byte), INSW (word), or INSD (doubleword).</string></para>
-  <para unique="1261309">
-   <string>After the byte, word, or doubleword is transfer from the I/O port to the memory location, the DI/EDI/RDI register is incremented or decremented automatically according to the setting of the DF flag in the EFLAGS register. (If the </string><indexterm><primary>DF (direction) flag, EFLAGS register</primary></indexterm><string>DF flag is 0, the (E)DI register is incremented; if the DF flag is 1, the (E)DI register is decremented.) The (E)DI register is incremented or decremented by 1 for byte operations, by 2 for word operations, or by 4 for doubleword operations.</string></para>
-  <para unique="1261312">
-   <string>The INS, INSB, INSW, and INSD instructions can be preceded by the </string><indexterm><primary>REP/REPE/REPZ/REPNE/REPNZ prefixes</primary></indexterm><string>REP prefix for block input of ECX bytes, words, or doublewords. See </string><link linkend="String instructions"><string>&#8220;REP&#8212;Repeat String Operation (Prefix)&#8221;</string></link><string> in </string><link linkend="63695: 01_Level: Chapter 4 Instruction Set Reference, M-Z"><string>Chapter 4</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 2B, for a description of the REP prefix.</string></para>
-  <para unique="1261318">
-   <string>These instructions are only useful for accessing I/O ports located in the processor&#8217;s I/O address space. See </string><link linkend="40469: H1Heading: Chapter 16 Input/Output"><string>Chapter 20, &#8220;Input/Output,&#8221;</string></link><string> in the </string><string>Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for more information on accessing I/O ports in the I/O address space.</string></para>
-  <para unique="1261320">
-   <string>In 64-bit mode, default address size is 64 bits, 32 bit address size is supported using the prefix 67H. The address of the memory destination is specified by RDI or EDI. 16&#8209;bit address size is not supported in 64-bit mode. The operand size is not promoted.</string></para>
-  <para unique="1261321">
-   <string>These instructions may read from the I/O port without writing to the memory location if an exception or VM exit occurs due to the write (e.g. #PF). If this would be problematic, for example because the I/O port read has side-effects, software should ensure the write to the memory location does not cause an exception or VM exit.</string></para>
+ <encoding_table><table unique="1261194">
+   <thead><tr>
+     <th><para unique="1261196">Opcode</para>
+      </th>
+     <th><para unique="1261198">Instruction</para>
+      </th>
+     <th><para unique="1261200">Op/ En</para>
+      </th>
+     <th><para unique="1261202">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261204">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261206">Description</para>
+      </th>
+     </tr>
+    </thead><col width="97.55712pt"/>
+   <col width="110.66760000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="182.15424000000002pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261208">6C</para>
+      </td>
+     <td><para unique="1261210">INS m8, DX </para>
+      </td>
+     <td><para unique="1261212">ZO</para>
+      </td>
+     <td><para unique="1261214">Valid</para>
+      </td>
+     <td><para unique="1261216">Valid</para>
+      </td>
+     <td><para unique="1261218">Input byte from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.<footnote><para unique="1261221" format="TableFootnote">In 64-bit mode, only 64-bit (RDI) and 32-bit (EDI) address sizes are supported. In non-64-bit mode, only 32-bit (EDI) and 16-bit (DI) address sizes are supported.</para>
+        </footnote></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261223">6D</para>
+      </td>
+     <td><para unique="1261225">INS m16, DX</para>
+      </td>
+     <td><para unique="1261227">ZO</para>
+      </td>
+     <td><para unique="1261229">Valid</para>
+      </td>
+     <td><para unique="1261231">Valid</para>
+      </td>
+     <td><para unique="1261233">Input word from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.<superscript>1</superscript></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261235">6D</para>
+      </td>
+     <td><para unique="1261237">INS m32, DX</para>
+      </td>
+     <td><para unique="1261239">ZO</para>
+      </td>
+     <td><para unique="1261241">Valid</para>
+      </td>
+     <td><para unique="1261243">Valid</para>
+      </td>
+     <td><para unique="1261245">Input doubleword from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.<superscript>1</superscript></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261247">6C</para>
+      </td>
+     <td><para unique="1261249">INSB</para>
+      </td>
+     <td><para unique="1261251">ZO</para>
+      </td>
+     <td><para unique="1261253">Valid</para>
+      </td>
+     <td><para unique="1261255">Valid</para>
+      </td>
+     <td><para unique="1261257">Input byte from I/O port specified in DX into memory location specified with ES:(E)DI or RDI.<superscript>1</superscript></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261259">6D</para>
+      </td>
+     <td><para unique="1261261">INSW</para>
+      </td>
+     <td><para unique="1261263">ZO</para>
+      </td>
+     <td><para unique="1261265">Valid</para>
+      </td>
+     <td><para unique="1261267">Valid</para>
+      </td>
+     <td><para unique="1261269">Input word from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.<superscript>1</superscript></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261271">6D</para>
+      </td>
+     <td><para unique="1261273">INSD</para>
+      </td>
+     <td><para unique="1261275">ZO</para>
+      </td>
+     <td><para unique="1261277">Valid</para>
+      </td>
+     <td><para unique="1261279">Valid</para>
+      </td>
+     <td><para unique="1261281">Input doubleword from I/O port specified in DX into memory location specified in ES:(E)DI or RDI.<superscript>1</superscript></para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261283">
+   <col width="51.852239999999995pt"/>
+   <col width="113.976pt"/>
+   <col width="115.29pt"/>
+   <col width="111.80087999999999pt"/>
+   <col width="119.05056pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261285">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261287">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261289">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261291">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261293">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261295">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1261297">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261299">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261301">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261303">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261304">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261306">Copies the data from the I/O port specified with the source operand (second operand) to the destination operand (first operand). The source operand is an I/O port address (from 0 to 65,535) that is read from the DX register. The destination operand is a memory location, the address of which is read from either the ES:DI, ES:EDI or the RDI registers (depending on the address-size attribute of the instruction, 16, 32 or 64, respectively). (The ES segment cannot be overridden with a segment override prefix.) The size of the I/O port being accessed (that is, the size of the source and destination operands) is determined by the opcode for an 8-bit I/O port or by the operand-size attri&#173;bute of the instruction for a 16- or 32-bit I/O port.</para>
+  <para unique="1261307">At the assembly-code level, two forms of this instruction are allowed: the &#8220;explicit-operands&#8221; form and the &#8220;no-operands&#8221; form. The explicit-operands form (specified with the INS mnemonic) allows the source and destination operands to be specified explicitly. Here, the source operand must be &#8220;DX,&#8221; and the destination operand should be a symbol that indicates the size of the I/O port and the destination address. This explicit-operands form is provided to allow documentation; however, note that the documentation provided by this form can be misleading. That is, the destination operand symbol must specify the correct <bold>type</bold> (size) of the operand (byte, word, or doubleword), but it does not have to specify the correct <bold>location</bold>. The location is always specified by the ES:(E)DI registers, which must be loaded correctly before the INS instruction is executed.</para>
+  <para unique="1261308">The no-operands form provides &#8220;short forms&#8221; of the byte, word, and doubleword versions of the INS instructions. Here also DX is assumed by the processor to be the source operand and ES:(E)DI is assumed to be the destination operand. The size of the I/O port is specified with the choice of mnemonic: INSB (byte), INSW (word), or INSD (doubleword).</para>
+  <para unique="1261309">After the byte, word, or doubleword is transfer from the I/O port to the memory location, the DI/EDI/RDI register is incremented or decremented automatically according to the setting of the DF flag in the EFLAGS register. (If the <indexterm><primary>DF (direction) flag, EFLAGS register</primary></indexterm>DF flag is 0, the (E)DI register is incremented; if the DF flag is 1, the (E)DI register is decremented.) The (E)DI register is incremented or decremented by 1 for byte operations, by 2 for word operations, or by 4 for doubleword operations.</para>
+  <para unique="1261312">The INS, INSB, INSW, and INSD instructions can be preceded by the <indexterm><primary>REP/REPE/REPZ/REPNE/REPNZ prefixes</primary></indexterm>REP prefix for block input of ECX bytes, words, or doublewords. See <link unique="1262443" linkend="&lt;c&gt;REP-Repeat-String-Operation-Prefix.fm#String instructions" xrefstyle="Paratext">&#8220;REP&#8212;Repeat String Operation (Prefix)&#8221;</link> in <link unique="1261314" linkend="&lt;c&gt;__sdm_vol2B_ch04_instr-set-ref_M-U.fm#63695: 01_Level: Chapter 4 Instruction Set Reference, M-Z" xrefstyle="ChapterNum_CR">Chapter 4</link> of the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 2B, for a description of the REP prefix.</para>
+  <para unique="1261318">These instructions are only useful for accessing I/O ports located in the processor&#8217;s I/O address space. See <link unique="1261317" linkend="&lt;c&gt;__sdm_vol1_ch20.fm#40469: H1Heading: Chapter 16 Input/Output" xrefstyle="ChapterNum&amp;Title(,)_CR">Chapter 20, &#8220;Input/Output,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for more information on accessing I/O ports in the I/O address space.</para>
+  <para unique="1261320">In 64-bit mode, default address size is 64 bits, 32 bit address size is supported using the prefix 67H. The address of the memory destination is specified by RDI or EDI. 16&#8209;bit address size is not supported in 64-bit mode. The operand size is not promoted.</para>
+  <para unique="1261321">These instructions may read from the I/O port without writing to the memory location if an exception or VM exit occurs due to the write (e.g. #PF). If this would be problematic, for example because the I/O port read has side-effects, software should ensure the write to the memory location does not cause an exception or VM exit.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF ((PE = 1) and ((CPL &gt; IOPL) or (VM = 1)))
+	THEN (* Protected mode with CPL &gt; IOPL or virtual-8086 mode *)
+		IF (Any I/O Permission Bit for I/O port being accessed = 1)
+			THEN (* I/O operation is not allowed *)
+				#GP(0);
+			ELSE (* I/O operation is allowed *)
+				DEST := SRC; (* Read from I/O port *)
+		FI;
+	ELSE (Real Mode or Protected Mode with CPL IOPL *)
+		DEST := SRC; (* Read from I/O port *)
+FI;
+Non-64-bit Mode:
+IF (Byte transfer)
+	THEN IF DF = 0
+		THEN (E)DI := (E)DI + 1;
+		ELSE (E)DI := (E)DI &#8211; 1; FI;
+	ELSE IF (Word transfer)
+		THEN IF DF = 0
+			THEN (E)DI := (E)DI + 2;
+			ELSE (E)DI := (E)DI &#8211; 2; FI;
+		ELSE (* Doubleword transfer *)
+			THEN IF DF = 0
+				THEN (E)DI := (E)DI + 4;
+				ELSE (E)DI := (E)DI &#8211; 4; FI;
+		FI;
+FI;
+FI64-bit Mode:
+IF (Byte transfer)
+	THEN IF DF = 0
+		THEN (E|R)DI := (E|R)DI + 1;
+		ELSE (E|R)DI := (E|R)DI &#8211; 1; FI;
+	ELSE IF (Word transfer)
+		THEN IF DF = 0
+			THEN (E)DI := (E)DI + 2;
+			ELSE (E)DI := (E)DI &#8211; 2; FI;
+		ELSE (* Doubleword transfer *)
+			THEN IF DF = 0
+				THEN (E|R)DI := (E|R)DI + 4;
+				ELSE (E|R)DI := (E|R)DI &#8211; 4; FI;
+		FI;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261365">
-   <string>None.</string></para>
+  <para unique="1261365">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the CPL is greater than (has less privilege) the I/O privilege level (IOPL) and any of the corresponding I/O permission bits in TSS for the I/O port being accessed is 1.</string></listitem>
-    <listitem><string>If the destination is located in a non-writable segment.</string></listitem>
-    <listitem><string>If an illegal memory operand effective address in the ES segments is given.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261367">If the CPL is greater than (has less privilege) the I/O privilege level (IOPL) and any of the corresponding I/O permission bits in TSS for the I/O port being accessed is 1.</para>
+     </listitem>
+    <listitem><para unique="1261368">If the destination is located in a non-writable segment.</para>
+     </listitem>
+    <listitem><para unique="1261369">If an illegal memory operand effective address in the ES segments is given.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261370">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261371">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261372">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1261374">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS</term>
+    <listitem><para unique="1261375">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261376">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If any of the I/O permission bits in the TSS for the I/O port being accessed is 1.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261378">If any of the I/O permission bits in the TSS for the I/O port being accessed is 1.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261379">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261380">If alignment checking is enabled and an unaligned memory reference is made.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261381">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261383" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261383" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261385">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the CPL is greater than (has less privilege) the I/O privilege level (IOPL) and any of the corresponding I/O permission bits in TSS for the I/O port being accessed is 1.</string></listitem>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261386">If the CPL is greater than (has less privilege) the I/O privilege level (IOPL) and any of the corresponding I/O permission bits in TSS for the I/O port being accessed is 1.</para>
+     </listitem>
+    <listitem><para unique="1261387">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261388">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261389">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261390">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

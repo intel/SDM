@@ -1,75 +1,180 @@
 <instruction name="LKGS">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Load Kernel GS Base</shortdesc>
- <longdesc><para unique="1271500">
-   <string>LKGS operates in the same way as MOV to GS except that the descriptor&#8217;s base address is loaded into the IA32_KERNEL_GS_BASE MSR instead of the GS segment&#8217;s descriptor cache.</string></para>
-  <para unique="1271501">
-   <string>LKGS takes a single (source) operand, which can be a general-purpose register or a memory location.</string><indexterm><primary>Task switch:return from nested task, IRET instruction</primary></indexterm><string> The operand must be a valid segment selector. The instruction loads the segment descriptor referenced by that segment selector into the GS descriptor cache, with the exception of the base address. The base address in the GS descriptor cache is not modified; the base address from the segment descriptor is loaded into the
-IA32_KERNEL_GS_BASE MSR. (Since the base address in the descriptor is only 32 bits, the upper 32 bits of the MSR are cleared.)</string></para>
-  <para unique="1271503">
-   <string>A null segment selector (values 0000-0003) can be loaded without causing an exception. However, any subsequent attempt to reference GS outside 64-bit mode causes a general protection exception (#GP) and no memory refer&#173;ence occurs. LKGS with a null segment selector loads zero into IA32_KERNEL_GS_BASE.</string></para>
+ <encoding_table><table unique="1271451">
+   <thead><tr>
+     <th><para unique="1271453">Opcode</para>
+      </th>
+     <th><para unique="1271455">Instruction</para>
+      </th>
+     <th><para unique="1271457">Op/ En</para>
+      </th>
+     <th><para unique="1271459">64-Bit Mode</para>
+      </th>
+     <th><para unique="1271461">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1271463">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.25984pt"/>
+   <col width="111.46464pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="182.15424000000002pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1271465">F2 0F 00 /6</para>
+      </td>
+     <td><para unique="1271467">LKGS r/m16</para>
+      </td>
+     <td><para unique="1271469">A</para>
+      </td>
+     <td><para unique="1271471">Valid</para>
+      </td>
+     <td><para unique="1271473">N.E.</para>
+      </td>
+     <td><para unique="1271475">Load GS using r/m16, placing the base address instead in the IA32_KERNEL_GS_BASE MSR.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1271477">
+   <col width="42.27624pt"/>
+   <col width="110.98584pt"/>
+   <col width="118.68336pt"/>
+   <col width="116.67671999999999pt"/>
+   <col width="123.34752pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1271479">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1271481">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1271483">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1271485">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1271487">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1271489">A</para>
+      </td>
+     <td valign="middle"><para unique="1271491">16-bit selector</para>
+      </td>
+     <td valign="middle"><para unique="1271493">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1271495">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1271497">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1271498">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1271500">LKGS operates in the same way as MOV to GS except that the descriptor&#8217;s base address is loaded into the IA32_KERNEL_GS_BASE MSR instead of the GS segment&#8217;s descriptor cache.</para>
+  <para unique="1271501">LKGS takes a single (source) operand, which can be a general-purpose register or a memory location.<indexterm><primary>Task switch:return from nested task, IRET instruction</primary></indexterm> The operand must be a valid segment selector. The instruction loads the segment descriptor referenced by that segment selector into the GS descriptor cache, with the exception of the base address. The base address in the GS descriptor cache is not modified; the base address from the segment descriptor is loaded into the&#8232;IA32_KERNEL_GS_BASE MSR. (Since the base address in the descriptor is only 32 bits, the upper 32 bits of the MSR are cleared.)</para>
+  <para unique="1271503">A null segment selector (values 0000-0003) can be loaded without causing an exception. However, any subsequent attempt to reference GS outside 64-bit mode causes a general protection exception (#GP) and no memory refer&#173;ence occurs. LKGS with a null segment selector loads zero into IA32_KERNEL_GS_BASE.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF CPL &gt; 0 OR logical processor not in 64-bit mode
+	THEN #UD; FI;
+IF SRC is null
+	THEN
+		GS.selector := SRC;
+		mark GS as null;
+		IA32_KERNEL_GS_BASE := 0;
+	ELSE
+		IF SRC.index is outside descriptor table limits
+			THEN #GP(selector); FI;
+		read referenced descriptor for descriptor table;
+		IF the descriptor is not for a data or readable code segment OR SRC.RPL &gt; descriptor.DPL
+			THEN #GP(selector); FI;
+		IF the descriptor is not marked present
+			THEN #NP(selector);
+			ELSE
+				GS.selector := SRC;
+				GS.attributes := descriptor.attributes;
+				IA32_KERNEL_GS_BASE := descriptor.base; // bits 63:32 cleared
+		FI;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1271528">
-   <string>None.</string></para>
+  <para unique="1271528">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The LKGS instruction is not recognized in protected mode.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1271530">The LKGS instruction is not recognized in protected mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The LKGS instruction is not recognized in real-address mode.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1271532">The LKGS instruction is not recognized in real-address mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The LKGS instruction is not recognized in virtual-8086 mode.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1271534">The LKGS instruction is not recognized in virtual-8086 mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The LKGS instruction is not recognized in compatibility mode.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1271536">The LKGS instruction is not recognized in compatibility mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CPL &gt; 0.</string></listitem>
-    <listitem><string>If CPUID.07H.01H:EAX.LKGS[18] is not 1.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1271538">If CPL &gt; 0.</para>
+     </listitem>
+    <listitem><para unique="1271539">If CPUID.07H.01H:EAX.LKGS[18] is not 1.</para>
+     </listitem>
+    <listitem><para unique="1271540">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1271541">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(selector)</string></term>
-    <listitem><string>If segment selector index is outside descriptor table limits.</string></listitem>
-    <listitem><string>If the memory access to the descriptor table is non-canonical.</string></listitem>
-    <listitem><string>If the referenced descriptor is not for a data or readable code segment or the selector RPL is greater than the descriptor DPL.</string></listitem>
+    <term>#GP(selector)</term>
+    <listitem><para unique="1271542">If segment selector index is outside descriptor table limits.</para>
+     </listitem>
+    <listitem><para unique="1271543">If the memory access to the descriptor table is non-canonical.</para>
+     </listitem>
+    <listitem><para unique="1271544">If the referenced descriptor is not for a data or readable code segment or the selector RPL is greater than the descriptor DPL.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1271545">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1271546">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

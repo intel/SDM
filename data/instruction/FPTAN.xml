@@ -108,10 +108,7 @@ If you give Intel any comments or suggestions related to this document or the in
   <code>if not FP87::Is_STi_Empty(7) then</code>
   <code>    exceptions.IE := 0b1;</code>
   <code>    FP87_Status.SF := 0b1;</code>
-  <code></code>
-  <code>    if not FP87::Is_STi_Empty(0) then</code>
-  <code>        FP87_Status.C1 := 0b1;</code>
-  <code>    endif;</code>
+  <code>    FP87_Status.C1 := 0b1;</code>
   <code></code>
   <code>    result1 := FP87::QNaN_Indefinite();</code>
   <code>    result2 := FP87::QNaN_Indefinite();</code>
@@ -119,15 +116,15 @@ If you give Intel any comments or suggestions related to this document or the in
   <code>    exceptions.IE := 0b1;</code>
   <code>    FP87_Status.SF := 0b1;</code>
   <code></code>
-  <code>    if FP87_Control.IM == 0b1 then</code>
-  <code>        result1 := FP87::QNaN_Indefinite();</code>
-  <code>        result2 := FP87::QNaN_Indefinite();</code>
-  <code>    endif;</code>
+  <code>    result1 := FP87::QNaN_Indefinite();</code>
+  <code>    result2 := FP87::QNaN_Indefinite();</code>
   <code>else</code>
   <code>    var rounded_up : Boolean;</code>
   <code>    var out_of_range : Boolean;</code>
   <code>    (result1, result2, rounded_up, out_of_range, exceptions) := FP87::Tan(src);</code>
-  <code>    FP87_Status.C1 := Bit(rounded_up);</code>
+  <code>    if not (exceptions.DE == 0b1 and FP87_Control.DM == 0b0) then</code>
+  <code>        FP87_Status.C1 := Bit(rounded_up);</code>
+  <code>    endif;</code>
   <code>    FP87_Status.C2 := Bit(out_of_range);</code>
   <code>endif;</code>
   <code></code>

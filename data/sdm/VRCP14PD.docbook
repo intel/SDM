@@ -1,125 +1,215 @@
 <instruction name="VRCP14PD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Compute Approximate Reciprocals of Packed Float64 Values</shortdesc>
- <longdesc><para unique="1046173">
-   <string>This instruction performs a SIMD computation of the approximate reciprocals of eight/four/two packed double precision floating-point values in the source operand (the second operand) and stores the packed double precision floating-point results in the destination operand. The maximum relative error for this approximation is less than 2</string><superscript><string>-14</string></superscript><string>. </string></para>
-  <para unique="1046174">
-   <string>The source operand can be a ZMM register, a 512-bit memory location, or a 512-bit vector broadcasted from a 64-bit memory location. The destination operand is a ZMM register conditionally updated according to the writemask.</string></para>
-  <para unique="1046175">
-   <string>The VRCP14PD instruction is not affected by the rounding control bits in the MXCSR register. When a source value is a 0.0, an </string><string>&#8734; with the sign of the source value is returned. A denormal source value will be treated as zero only in case of DAZ bit set in MXCSR. Otherwise it is treated correctly (i.e., not as a 0.0). Underflow results are flushed to zero only in case of FTZ bit set in MXCSR. Otherwise it will be treated correctly (i.e., correct underflow result is written) with the sign of the operand. When a source value is a SNaN or QNaN, the SNaN is converted to a QNaN or the source QNaN is returned.</string></para>
-  <para unique="1046176">
-   <string>EVEX.vvvv is reserved and must be 1111b otherwise instructions will #UD.</string></para>
-  <para unique="1046177">
-   <string>MXCSR exception flags are not affected by this instruction and floating-point exceptions are not reported.</string></para>
-  <table>
-   <caption>Table 5-24.  VRCP14PD/VRCP14SD Special Cases</caption>
-   <colgroup><col align="leftright"/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    </colgroup>
-   <tbody>
-    <tr>
-     <th><para unique="1046187" format="CellRowHeadL">
-       <string>Input value</string></para>
+ <encoding_table><table unique="1046081">
+   <col width="67.66488pt"/>
+   <col width="67.66488pt"/>
+   <col width="28.494pt"/>
+   <col width="48.74976pt"/>
+   <col width="76.66632pt"/>
+   <col width="222.08399999999997pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1046083">Opcode/</para>
+      <para unique="1046084">Instruction</para>
       </th>
-     <th><para unique="1046189" format="CellRowHeadL">
-       <string>Result value</string></para>
+     <th><para unique="1046088">Op / En</para>
       </th>
-     <th><para unique="1046191" format="CellRowHeadL">
-       <string>Comments</string></para>
+     <th><para unique="1046090">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1046092">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1046094">Description</para>
       </th>
      </tr>
+    </thead><tbody>
     <tr>
-     <td><para unique="1046193" format="CellBodyL">
-       <string>0 &#8804; X &#8804; 2</string><superscript><string>-1024</string></superscript></para>
+     <td colspan="2"><para unique="1046623">EVEX.128.66.0F38.W1 4C /r</para>
+      <para unique="1046624">VRCP14PD xmm1 {k1}{z}, xmm2/m128/m64bcst</para>
       </td>
-     <td><para unique="1046195" format="CellBodyL">
-       <string>INF</string></para>
+     <td><para unique="1046628">A</para>
       </td>
-     <td><para unique="1046197" format="CellBodyL">
-       <string>Very small denormal</string></para>
+     <td><para unique="1046630">V/V</para>
+      </td>
+     <td><para unique="1046632">(AVX512VL AND</para>
+      <para unique="1046636">AVX512F) OR AVX10.1<anchor id="+450119"/></para>
+      </td>
+     <td><para unique="1046641">Computes the approximate reciprocals of the packed double precision floating-point values in xmm2/m128/m64bcst and stores the results in xmm1. Under writemask.</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046199" format="CellBodyL">
-       <string>-2</string><superscript><string>-1024 </string></superscript><string>&#8804; X &#8804; -0</string></para>
+     <td colspan="2"><para unique="1046606">EVEX.256.66.0F38.W1 4C /r</para>
+      <para unique="1046607">VRCP14PD ymm1 {k1}{z}, ymm2/m256/m64bcst</para>
       </td>
-     <td><para unique="1046201" format="CellBodyL">
-       <string>-INF</string></para>
+     <td><para unique="1046611">A</para>
       </td>
-     <td><para unique="1046203" format="CellBodyL">
-       <string>Very small denormal</string></para>
+     <td><para unique="1046613">V/V</para>
       </td>
-     </tr>
-    <tr>
-     <td><para unique="1046205" format="CellBodyL">
-       <string>X &gt; 2</string><superscript><string>1022</string></superscript></para>
+     <td><para unique="1046615">(AVX512VL AND</para>
+      <para unique="1046619">AVX512F) OR AVX10.1<anchor id="+496418"/></para>
       </td>
-     <td><para unique="1046207" format="CellBodyL">
-       <string>Underflow</string></para>
-      </td>
-     <td><para unique="1046209" format="CellBodyL">
-       <string>Up to 18 bits of fractions are returned*</string></para>
+     <td><para unique="1046621">Computes the approximate reciprocals of the packed double precision floating-point values in ymm2/m256/m64bcst and stores the results in ymm1. Under writemask.</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046211" format="CellBodyL">
-       <string>X &lt; -2</string><superscript><string>1022</string></superscript></para>
+     <td colspan="2"><para unique="1046589">EVEX.512.66.0F38.W1 4C /r</para>
+      <para unique="1046590">VRCP14PD zmm1 {k1}{z}, zmm2/m512/m64bcst</para>
       </td>
-     <td><para unique="1046213" format="CellBodyL">
-       <string>-Underflow</string></para>
+     <td><para unique="1046594">A</para>
       </td>
-     <td><para unique="1046215" format="CellBodyL">
-       <string>Up to 18 bits of fractions are returned*</string></para>
+     <td><para unique="1046596">V/V</para>
       </td>
-     </tr>
-    <tr>
-     <td><para unique="1046217" format="CellBodyL">
-       <string>X = 2</string><superscript><string>-n</string></superscript></para>
+     <td><para unique="1046601">AVX512F </para>
+      <para unique="1046602">OR AVX10.1<anchor id="+114969"/></para>
       </td>
-     <td><para unique="1046219" format="CellBodyL">
-       <string>2</string><superscript><string>n</string></superscript></para>
-      </td>
-     <td><para unique="1046221" format="CellBodyL">
-       </para>
-      </td>
-     </tr>
-    <tr>
-     <td><para unique="1046223" format="CellBodyL">
-       <string>X = -2</string><superscript><string>-n</string></superscript></para>
-      </td>
-     <td><para unique="1046225" format="CellBodyL">
-       <string>-2</string><superscript><string>n</string></superscript></para>
-      </td>
-     <td><para unique="1046227" format="CellBodyL">
-       </para>
+     <td><para unique="1046604">Computes the approximate reciprocals of the packed double precision floating-point values in zmm2/m512/m64bcst and stores the results in zmm1. Under writemask.</para>
       </td>
      </tr>
     </tbody>
    </table>
-  <programlisting><string>* in this case the mantissa is shifted right by one or two bits</string><string>
-</string></programlisting>
-  <para unique="1046232">
-   <string>A numerically exact implementation of VRCP14xx can be found at </string><anchor id="message URL https://software.intel.com/en-us/articles/reference-implementations-for-IA-approximation-instructions-vrcp14-vrsqrt14-vrcp28-vrsqrt28-vexp2"/><underline><string>https://software.intel.com/en-us/articles/refer&#173;ence-implementations-for-IA-approximation-instructions-vrcp14-vrsqrt14-vrcp28-vrsqrt28-vexp2</string></underline><string>.</string></para>
+  </encoding_table>
+ <operand_table><table unique="1046146">
+   <col width="39.617279999999994pt"/>
+   <col width="74.41704000000001pt"/>
+   <col width="99.05328pt"/>
+   <col width="101.106pt"/>
+   <col width="96.6276pt"/>
+   <col width="101.1816pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1046148">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1046150">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1046152">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1046154">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1046156">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1046158">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1046160">A</para>
+      </td>
+     <td valign="middle"><para unique="1046162">Full</para>
+      </td>
+     <td valign="middle"><para unique="1046164">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046166">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046168">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1046170">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046171">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046173">This instruction performs a SIMD computation of the approximate reciprocals of eight/four/two packed double precision floating-point values in the source operand (the second operand) and stores the packed double precision floating-point results in the destination operand. The maximum relative error for this approximation is less than 2<superscript>-14</superscript>. </para>
+  <para unique="1046174">The source operand can be a ZMM register, a 512-bit memory location, or a 512-bit vector broadcasted from a 64-bit memory location. The destination operand is a ZMM register conditionally updated according to the writemask.</para>
+  <para unique="1046175">The VRCP14PD instruction is not affected by the rounding control bits in the MXCSR register. When a source value is a 0.0, an &#8734; with the sign of the source value is returned. A denormal source value will be treated as zero only in case of DAZ bit set in MXCSR. Otherwise it is treated correctly (i.e., not as a 0.0). Underflow results are flushed to zero only in case of FTZ bit set in MXCSR. Otherwise it will be treated correctly (i.e., correct underflow result is written) with the sign of the operand. When a source value is a SNaN or QNaN, the SNaN is converted to a QNaN or the source QNaN is returned.</para>
+  <para unique="1046176">EVEX.vvvv is reserved and must be 1111b otherwise instructions will #UD.</para>
+  <para unique="1046177">MXCSR exception flags are not affected by this instruction and floating-point exceptions are not reported.</para>
+  <table id="99633: 06_Table: Table 5-22. VRCP14PD/VRCP14SD Special Cases" unique="1046178">
+   <caption><anchor id="99633: 06_Table: Table 5-22. VRCP14PD/VRCP14SD Special Cases"/>VRCP14PD/VRCP14SD Special Cases</caption>
+   <col width="122.562pt"/>
+   <col width="98.35271999999999pt"/>
+   <col width="287.48519999999996pt"/>
+   <tbody>
+    <tr>
+     <th><para unique="1046187">Input value</para>
+      </th>
+     <th><para unique="1046189">Result value</para>
+      </th>
+     <th><para unique="1046191">Comments</para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1046193">0 &#8804; X &#8804; 2<superscript>-1024</superscript></para>
+      </td>
+     <td><para unique="1046195">INF</para>
+      </td>
+     <td><para unique="1046197">Very small denormal</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046199">-2<superscript>-1024 </superscript>&#8804; X &#8804; -0</para>
+      </td>
+     <td><para unique="1046201">-INF</para>
+      </td>
+     <td><para unique="1046203">Very small denormal</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046205">X &gt; 2<superscript>1022</superscript></para>
+      </td>
+     <td><para unique="1046207">Underflow</para>
+      </td>
+     <td><para unique="1046209">Up to 18 bits of fractions are returned*</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046211">X &lt; -2<superscript>1022</superscript></para>
+      </td>
+     <td><para unique="1046213">-Underflow</para>
+      </td>
+     <td><para unique="1046215">Up to 18 bits of fractions are returned*</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046217">X = 2<superscript>-n</superscript></para>
+      </td>
+     <td><para unique="1046219">2<superscript>n</superscript></para>
+      </td>
+     <td><para unique="1046221"/>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046223">X = -2<superscript>-n</superscript></para>
+      </td>
+     <td><para unique="1046225">-2<superscript>n</superscript></para>
+      </td>
+     <td><para unique="1046227"/>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  <programlisting>* in this case the mantissa is shifted right by one or two bits
+A numerically exact implementation of VRCP14xx can be found at https://software.intel.com/en-us/articles/refer&#173;ence-implementations-for-IA-approximation-instructions-vrcp14-vrsqrt14-vrcp28-vrsqrt28-vexp2.</programlisting>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1046234">VRCP14PD ((EVEX encoded versions) </title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask* THEN
+			IF (EVEX.b = 1) AND (SRC *is memory*)
+				THEN DEST[i+63:i] := APPROXIMATE(1.0/SRC[63:0]);
+				ELSE DEST[i+63:i] := APPROXIMATE(1.0/SRC[i+63:i]);
+			FI;
+	ELSE
+		IF *merging-masking*								; merging-masking
+			THEN	 *DEST[i+63:i] remains unchanged*
+			ELSE 							; zeroing-masking
+				DEST[i+63:i] := 0
+		FI;
+	FI;
+ENDFOR;
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <para unique="1046254">
-   <string>VRCP14PD __m512d _mm512_rcp14_pd( __m512d a);</string></para>
-  <para unique="1046255">
-   <string>VRCP14PD __m512d _mm512_mask_rcp14_pd(__m512d s, __mmask8 k, __m512d a);</string></para>
-  <para unique="1046256">
-   <string>VRCP14PD __m512d _mm512_maskz_rcp14_pd( __mmask8 k, __m512d a);</string></para>
+  <para unique="1046254">VRCP14PD __m512d _mm512_rcp14_pd( __m512d a);</para>
+  <para unique="1046255">VRCP14PD __m512d _mm512_mask_rcp14_pd(__m512d s, __mmask8 k, __m512d a);</para>
+  <para unique="1046256">VRCP14PD __m512d _mm512_maskz_rcp14_pd( __mmask8 k, __m512d a);</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046258">
-   <string>None.</string></para>
+  <para unique="1046258">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046263" format="xIndent1">
-   <string>See </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046263" format="xIndent1">See <link unique="1046261" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

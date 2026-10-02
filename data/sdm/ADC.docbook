@@ -1,119 +1,498 @@
 <instruction name="ADC">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Add With Carry</shortdesc>
- <longdesc><para unique="1261536">
-   <string>Adds the destination operand (first operand), the source operand (second operand), and the carry (CF) flag and stores the result in the destination operand. The destination operand can be a register or a memory location; the source operand can be an immediate, a register, or a memory location. (However, two memory operands cannot be used in one instruction.) The state of the CF flag represents a carry from a previous addition. When an immediate value is used as an operand, it is sign-extended to the length of the destination operand format.</string></para>
-  <para unique="1261537">
-   <string>The ADC instruction does not distinguish between signed or unsigned operands. Instead, the processor evaluates the result for both data types and sets the OF and CF flags to indicate a carry in the signed or unsigned result, respectively. The SF flag indicates the sign of the signed result.</string></para>
-  <para unique="1261538">
-   <string>The ADC instruction is usually executed as part of a multibyte or multiword addition in which an ADD instruction is followed by an ADC instruction.</string></para>
-  <para unique="1261540">
-   <string>This instruction can be used with a </string><indexterm><primary>LOCK prefix</primary></indexterm><string>LOCK prefix to allow the instruction to be executed atomically.</string></para>
-  <para unique="1261541">
-   <string>In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Using a REX prefix in the form of REX.R permits access to additional registers (R8-R15). Using a REX prefix in the form of REX.W promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</string></para>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th><para unique="1261193">Opcode</para>
+      <para unique="1261194"/>
+      </th>
+     <th><para unique="1261196">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64-bit Mode</para>
+      </th>
+     <th><para unique="1261202">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.6112pt"/>
+   <col width="111.8628pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="47.999520000000004pt"/>
+   <col width="46.728pt"/>
+   <col width="183.654pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261206">14 ib</para>
+      </td>
+     <td><para unique="1261208">ADC AL, imm8</para>
+      </td>
+     <td><para unique="1261210">I</para>
+      </td>
+     <td><para unique="1261212">Valid</para>
+      </td>
+     <td><para unique="1261214">Valid</para>
+      </td>
+     <td><para unique="1261216">Add with carry imm8 to AL.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261218">15 iw</para>
+      </td>
+     <td><para unique="1261220">ADC AX, imm16</para>
+      </td>
+     <td><para unique="1261222">I</para>
+      </td>
+     <td><para unique="1261224">Valid</para>
+      </td>
+     <td><para unique="1261226">Valid</para>
+      </td>
+     <td><para unique="1261228">Add with carry imm16 to AX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261230">15 id</para>
+      </td>
+     <td><para unique="1261232">ADC EAX, imm32</para>
+      </td>
+     <td><para unique="1261234">I</para>
+      </td>
+     <td><para unique="1261236">Valid</para>
+      </td>
+     <td><para unique="1261238">Valid</para>
+      </td>
+     <td><para unique="1261240">Add with carry imm32 to EAX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261242">REX.W + 15 id</para>
+      </td>
+     <td><para unique="1261244">ADC RAX, imm32</para>
+      </td>
+     <td><para unique="1261246">I</para>
+      </td>
+     <td><para unique="1261248">Valid</para>
+      </td>
+     <td><para unique="1261250">N.E.</para>
+      </td>
+     <td><para unique="1261252">Add with carry imm32 sign extended to 64-bits to RAX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261254">80 /2 ib </para>
+      </td>
+     <td><para unique="1261256">ADC r/m8<footnote><para unique="1262309" format="TableFootnote"><anchor id="70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce"/>With a REX prefix in 64-bit mode, attempts to access AH, BH, CH, or DH will instead access SPL, DIL, BPL, or SIL, respectively.</para>
+        </footnote>, imm8</para>
+      </td>
+     <td><para unique="1261258">MI</para>
+      </td>
+     <td><para unique="1261260">Valid</para>
+      </td>
+     <td><para unique="1261262">Valid</para>
+      </td>
+     <td><para unique="1261264">Add with carry imm8 to r/m8.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261278">81 /2 iw</para>
+      </td>
+     <td><para unique="1261280">ADC r/m16, imm16</para>
+      </td>
+     <td><para unique="1261282">MI</para>
+      </td>
+     <td><para unique="1261284">Valid</para>
+      </td>
+     <td><para unique="1261286">Valid</para>
+      </td>
+     <td><para unique="1261288">Add with carry imm16 to r/m16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261290">81 /2 id</para>
+      </td>
+     <td><para unique="1261292">ADC r/m32, imm32</para>
+      </td>
+     <td><para unique="1261294">MI</para>
+      </td>
+     <td><para unique="1261296">Valid</para>
+      </td>
+     <td><para unique="1261298">Valid</para>
+      </td>
+     <td><para unique="1261300">Add with CF imm32 to r/m32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261302">REX.W + 81 /2 id</para>
+      </td>
+     <td><para unique="1261304">ADC r/m64, imm32</para>
+      </td>
+     <td><para unique="1261306">MI</para>
+      </td>
+     <td><para unique="1261308">Valid</para>
+      </td>
+     <td><para unique="1261310">N.E.</para>
+      </td>
+     <td><para unique="1261312">Add with CF imm32 sign extended to 64-bits to r/m64.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261314">83 /2 ib</para>
+      </td>
+     <td><para unique="1261316">ADC r/m16, imm8</para>
+      </td>
+     <td><para unique="1261318">MI</para>
+      </td>
+     <td><para unique="1261320">Valid</para>
+      </td>
+     <td><para unique="1261322">Valid</para>
+      </td>
+     <td><para unique="1261324">Add with CF sign-extended imm8 to r/m16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261326">83 /2 ib</para>
+      </td>
+     <td><para unique="1261328">ADC r/m32, imm8</para>
+      </td>
+     <td><para unique="1261330">MI</para>
+      </td>
+     <td><para unique="1261332">Valid</para>
+      </td>
+     <td><para unique="1261334">Valid</para>
+      </td>
+     <td><para unique="1261336">Add with CF sign-extended imm8 into r/m32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261338">REX.W + 83 /2 ib</para>
+      </td>
+     <td><para unique="1261340">ADC r/m64, imm8</para>
+      </td>
+     <td><para unique="1261342">MI</para>
+      </td>
+     <td><para unique="1261344">Valid</para>
+      </td>
+     <td><para unique="1261346">N.E.</para>
+      </td>
+     <td><para unique="1261348">Add with CF sign-extended imm8 into r/m64.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261350">10 /r</para>
+      </td>
+     <td><para unique="1261352">ADC r/m8<link unique="1262316" linkend="#70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link>, r8<link unique="1262324" linkend="#70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link></para>
+      </td>
+     <td><para unique="1261354">MR</para>
+      </td>
+     <td><para unique="1261356">Valid</para>
+      </td>
+     <td><para unique="1261358">Valid</para>
+      </td>
+     <td><para unique="1261360">Add with carry byte register to r/m8.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261374">11 /r</para>
+      </td>
+     <td><para unique="1261376">ADC r/m16, r16</para>
+      </td>
+     <td><para unique="1261378">MR</para>
+      </td>
+     <td><para unique="1261380">Valid</para>
+      </td>
+     <td><para unique="1261382">Valid</para>
+      </td>
+     <td><para unique="1261384">Add with carry r16 to r/m16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261386">11 /r</para>
+      </td>
+     <td><para unique="1261388">ADC r/m32, r32</para>
+      </td>
+     <td><para unique="1261390">MR</para>
+      </td>
+     <td><para unique="1261392">Valid</para>
+      </td>
+     <td><para unique="1261394">Valid</para>
+      </td>
+     <td><para unique="1261396">Add with CF r32 to r/m32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261398">REX.W + 11 /r</para>
+      </td>
+     <td><para unique="1261400">ADC r/m64, r64</para>
+      </td>
+     <td><para unique="1261402">MR</para>
+      </td>
+     <td><para unique="1261404">Valid</para>
+      </td>
+     <td><para unique="1261406">N.E.</para>
+      </td>
+     <td><para unique="1261408">Add with CF r64 to r/m64.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261410">12 /r</para>
+      </td>
+     <td><para unique="1261412">ADC r8<link unique="1262332" linkend="#70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link>, r/m8<link unique="1262340" linkend="#70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link></para>
+      </td>
+     <td><para unique="1261414">RM</para>
+      </td>
+     <td><para unique="1261416">Valid</para>
+      </td>
+     <td><para unique="1261418">Valid</para>
+      </td>
+     <td><para unique="1261420">Add with carry r/m8 to byte register.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261434">13 /r</para>
+      </td>
+     <td><para unique="1261436">ADC r16, r/m16</para>
+      </td>
+     <td><para unique="1261438">RM</para>
+      </td>
+     <td><para unique="1261440">Valid</para>
+      </td>
+     <td><para unique="1261442">Valid</para>
+      </td>
+     <td><para unique="1261444">Add with carry r/m16 to r16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261446">13 /r</para>
+      </td>
+     <td><para unique="1261448">ADC r32, r/m32</para>
+      </td>
+     <td><para unique="1261450">RM</para>
+      </td>
+     <td><para unique="1261452">Valid</para>
+      </td>
+     <td><para unique="1261454">Valid</para>
+      </td>
+     <td><para unique="1261456">Add with CF r/m32 to r32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261458">REX.W + 13 /r</para>
+      </td>
+     <td><para unique="1261460">ADC r64, r/m64</para>
+      </td>
+     <td><para unique="1261462">RM</para>
+      </td>
+     <td><para unique="1261464">Valid</para>
+      </td>
+     <td><para unique="1261466">N.E.</para>
+      </td>
+     <td><para unique="1261468">Add with CF r/m64 to r64.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261483">
+   <col width="43.80264pt"/>
+   <col width="110.83247999999999pt"/>
+   <col width="118.51848000000001pt"/>
+   <col width="118.09943999999999pt"/>
+   <col width="119.21688pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261485">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261487">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261489">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261491">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261493">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261495">RM</para>
+      </td>
+     <td valign="middle"><para unique="1261497">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1261499">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261501">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261503">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1261505">MR</para>
+      </td>
+     <td valign="middle"><para unique="1261507">ModRM:r/m (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1261509">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261511">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261513">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1261515">MI</para>
+      </td>
+     <td valign="middle"><para unique="1261517">ModRM:r/m (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1261519">imm8/16/32</para>
+      </td>
+     <td valign="middle"><para unique="1261521">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261523">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1261525">I</para>
+      </td>
+     <td valign="middle"><para unique="1261527">AL/AX/EAX/RAX</para>
+      </td>
+     <td valign="middle"><para unique="1261529">imm8/16/32</para>
+      </td>
+     <td valign="middle"><para unique="1261531">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261533">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261534">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261536">Adds the destination operand (first operand), the source operand (second operand), and the carry (CF) flag and stores the result in the destination operand. The destination operand can be a register or a memory location; the source operand can be an immediate, a register, or a memory location. (However, two memory operands cannot be used in one instruction.) The state of the CF flag represents a carry from a previous addition. When an immediate value is used as an operand, it is sign-extended to the length of the destination operand format.</para>
+  <para unique="1261537">The ADC instruction does not distinguish between signed or unsigned operands. Instead, the processor evaluates the result for both data types and sets the OF and CF flags to indicate a carry in the signed or unsigned result, respectively. The SF flag indicates the sign of the signed result.</para>
+  <para unique="1261538">The ADC instruction is usually executed as part of a multibyte or multiword addition in which an ADD instruction is followed by an ADC instruction.</para>
+  <para unique="1261540">This instruction can be used with a <indexterm><primary>LOCK prefix</primary></indexterm>LOCK prefix to allow the instruction to be executed atomically.</para>
+  <para unique="1261541">In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Using a REX prefix in the form of REX.R permits access to additional registers (R8-R15). Using a REX prefix in the form of REX.W promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</para>
   </longdesc>
+ <operation>
+  <programlisting>DEST := DEST + SRC + CF;</programlisting>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>ADC extern unsigned char _addcarry_u8(unsigned char c_in, unsigned char src1, unsigned char src2, unsigned char *sum_out);	</string><string>
-</string><string>ADC 	extern unsigned char _addcarry_u16(unsigned char c_in, unsigned short src1, unsigned short src2, unsigned short *sum_out);	</string><string>
-</string><string>ADC 	extern unsigned char _addcarry_u32(unsigned char c_in, unsigned int src1, unsigned char int, unsigned int *sum_out);	</string><string>
-</string><string>ADC 	extern unsigned char _addcarry_u64(unsigned char c_in, unsigned __int64 src1, unsigned __int64 src2, unsigned __int64 *sum_out);</string><string>
-</string></programlisting>
+  <programlisting>ADC extern unsigned char _addcarry_u8(unsigned char c_in, unsigned char src1, unsigned char src2, unsigned char *sum_out);
+ADC 	extern unsigned char _addcarry_u16(unsigned char c_in, unsigned short src1, unsigned short src2, unsigned short *sum_out);
+ADC 	extern unsigned char _addcarry_u32(unsigned char c_in, unsigned int src1, unsigned char int, unsigned int *sum_out);
+ADC 	extern unsigned char _addcarry_u64(unsigned char c_in, unsigned __int64 src1, unsigned __int64 src2, unsigned __int64 *sum_out);</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1261550">
-   <string>The OF, SF, ZF, AF, CF, and PF flags are set according to the result.</string></para>
+  <para unique="1261550">The OF, SF, ZF, AF, CF, and PF flags are set according to the result.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the destination is located in a non-writable segment.</string></listitem>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261552">If the destination is located in a non-writable segment.</para>
+     </listitem>
+    <listitem><para unique="1261553">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1261554">If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261555">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261556">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261557">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used but the destination is not a memory operand.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261558">If the LOCK prefix is used but the destination is not a memory operand.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1261560">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS</term>
+    <listitem><para unique="1261561">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used but the destination is not a memory operand.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261562">If the LOCK prefix is used but the destination is not a memory operand.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261564">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261565">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261566">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261567">If alignment checking is enabled and an unaligned memory reference is made.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used but the destination is not a memory operand.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261568">If the LOCK prefix is used but the destination is not a memory operand.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261570" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261570" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261572">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261573">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261574">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261575">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used but the destination is not a memory operand.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261576">If the LOCK prefix is used but the destination is not a memory operand.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

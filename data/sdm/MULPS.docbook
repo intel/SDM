@@ -1,40 +1,263 @@
 <instruction name="MULPS">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Multiply Packed Single Precision Floating-Point Values</shortdesc>
- <longdesc><para unique="1091551">
-   <string>Multiply the packed single precision floating-point values from the first source operand with the corresponding values in the second source operand, and stores the packed double precision floating-point results in the destina&#173;tion operand.</string></para>
-  <para unique="1091552">
-   <string>EVEX encoded versions: The first source operand (the second operand) is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 32-bit memory location. The destination operand is a ZMM/YMM/XMM register conditionally updated with writemask k1.</string></para>
-  <para unique="1091553">
-   <string>VEX.256 encoded version: The first source operand is a YMM register. The second source operand can be a YMM register or a 256-bit memory location. The destination operand is a YMM register. Bits (MAXVL-1:256) of the corre&#173;sponding destination ZMM register are zeroed.</string></para>
-  <para unique="1091554">
-   <string>VEX.128 encoded version: The first source operand is a XMM register. The second source operand can be a XMM register or a 128-bit memory location. The destination operand is a XMM register. The upper bits (MAXVL-1:128) of the destination YMM register destination are zeroed.</string></para>
-  <para unique="1091555">
-   <string>128-bit Legacy SSE version: The second source can be an XMM register or an 128-bit memory location. The desti&#173;nation is not distinct from the first source XMM register and the upper bits (MAXVL-1:128) of the corresponding ZMM register destination are unmodified.</string></para>
+ <encoding_table><table unique="1091390">
+   <col width="76.70664pt"/>
+   <col width="76.70664pt"/>
+   <col width="31.494239999999998pt"/>
+   <col width="48.74976pt"/>
+   <col width="70.416pt"/>
+   <col width="207.25056pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091392">Opcode/</para>
+      <para unique="1091393">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op / En</para>
+      </th>
+     <th><para unique="1091399">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091401">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1091405">NP 0F 59 /r</para>
+      <para unique="1091406">MULPS xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091410">A</para>
+      </td>
+     <td><para unique="1091412">V/V</para>
+      </td>
+     <td><para unique="1091414">SSE</para>
+      </td>
+     <td><para unique="1091416">Multiply packed single precision floating-point values in xmm2/m128 with xmm1 and store result in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091418">VEX.128.0F.WIG 59 /r</para>
+      <para unique="1091419">VMULPS xmm1,xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1091423">B</para>
+      </td>
+     <td><para unique="1091425">V/V</para>
+      </td>
+     <td><para unique="1091430">AVX</para>
+      </td>
+     <td><para unique="1091432">Multiply packed single precision floating-point values in xmm3/m128 with xmm2 and store result in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091434">VEX.256.0F.WIG 59 /r</para>
+      <para unique="1091435">VMULPS ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1091439">B</para>
+      </td>
+     <td><para unique="1091441">V/V</para>
+      </td>
+     <td><para unique="1091446">AVX</para>
+      </td>
+     <td><para unique="1091448">Multiply packed single precision floating-point values in ymm3/m256 with ymm2 and store result in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091996">EVEX.128.0F.W0 59 /r</para>
+      <para unique="1091997">VMULPS xmm1 {k1}{z}, xmm2, xmm3/m128/m32bcst</para>
+      </td>
+     <td><para unique="1092001">C</para>
+      </td>
+     <td><para unique="1092003">V/V</para>
+      </td>
+     <td><para unique="1092005">(AVX512VL AND</para>
+      <para unique="1092009">AVX512F) OR AVX10.1<anchor id="+727322"/></para>
+      </td>
+     <td><para unique="1092014">Multiply packed single precision floating-point values from xmm3/m128/m32bcst to xmm2 and store result in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091979">EVEX.256.0F.W0 59 /r</para>
+      <para unique="1091980">VMULPS ymm1 {k1}{z}, ymm2, ymm3/m256/m32bcst</para>
+      </td>
+     <td><para unique="1091984">C</para>
+      </td>
+     <td><para unique="1091986">V/V</para>
+      </td>
+     <td><para unique="1091988">(AVX512VL AND</para>
+      <para unique="1091992">AVX512F) OR AVX10.1<anchor id="+529128"/></para>
+      </td>
+     <td><para unique="1091994">Multiply packed single precision floating-point values from ymm3/m256/m32bcst to ymm2 and store result in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091962">EVEX.512.0F.W0 59 /r</para>
+      <para unique="1091963">VMULPS zmm1 {k1}{z}, zmm2, zmm3/m512/m32bcst {er}</para>
+      </td>
+     <td><para unique="1091967">C</para>
+      </td>
+     <td><para unique="1091969">V/V</para>
+      </td>
+     <td><para unique="1091974">AVX512F </para>
+      <para unique="1091975">OR AVX10.1<anchor id="+602127"/></para>
+      </td>
+     <td><para unique="1091977">Multiply packed single precision floating-point values in zmm3/m512/m32bcst with zmm2 and store result in zmm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091500">
+   <col width="51.98544pt"/>
+   <col width="60.38496pt"/>
+   <col width="99.09144pt"/>
+   <col width="102.70728pt"/>
+   <col width="98.6292pt"/>
+   <col width="98.00712pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091502">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091504">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091506">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091508">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091510">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091512">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091514">A</para>
+      </td>
+     <td valign="middle"><para unique="1091516">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091518">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091520">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091522">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091524">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091526">B</para>
+      </td>
+     <td valign="middle"><para unique="1091528">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091530">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091532">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091534">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091536">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091538">C</para>
+      </td>
+     <td valign="middle"><para unique="1091540">Full</para>
+      </td>
+     <td valign="middle"><para unique="1091542">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091544">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091546">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091548">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091549">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091551">Multiply the packed single precision floating-point values from the first source operand with the corresponding values in the second source operand, and stores the packed double precision floating-point results in the destina&#173;tion operand.</para>
+  <para unique="1091552">EVEX encoded versions: The first source operand (the second operand) is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 32-bit memory location. The destination operand is a ZMM/YMM/XMM register conditionally updated with writemask k1.</para>
+  <para unique="1091553">VEX.256 encoded version: The first source operand is a YMM register. The second source operand can be a YMM register or a 256-bit memory location. The destination operand is a YMM register. Bits (MAXVL-1:256) of the corre&#173;sponding destination ZMM register are zeroed.</para>
+  <para unique="1091554">VEX.128 encoded version: The first source operand is a XMM register. The second source operand can be a XMM register or a 128-bit memory location. The destination operand is a XMM register. The upper bits (MAXVL-1:128) of the destination YMM register destination are zeroed.</para>
+  <para unique="1091555">128-bit Legacy SSE version: The second source can be an XMM register or an 128-bit memory location. The desti&#173;nation is not distinct from the first source XMM register and the upper bits (MAXVL-1:128) of the corresponding ZMM register destination are unmodified.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091557">VMULPS (EVEX Encoded Version)</title>
+   <programlisting>(KL, VL) = (4, 128), (8, 256), (16, 512)
+IF (VL = 512) AND (EVEX.b = 1) AND SRC2 *is a register*
+	THEN
+		SET_ROUNDING_MODE_FOR_THIS_INSTRUCTION(EVEX.RC);
+	ELSE
+		SET_ROUNDING_MODE_FOR_THIS_INSTRUCTION(MXCSR.RC);
+FI;
+FOR j := 0 TO KL-1
+	i := j * 32
+	IF k1[j] OR *no writemask*
+		THEN
+			IF (EVEX.b = 1) AND (SRC2 *is memory*)
+				THEN
+					DEST[i+31:i] := SRC1[i+31:i] * SRC2[31:0]
+				ELSE
+					DEST[i+31:i] := SRC1[i+31:i] * SRC2[i+31:i]
+			FI;
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+31:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+31:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091585">VMULPS (VEX.256 Encoded Version)</title>
+   <programlisting>DEST[31:0] := SRC1[31:0] * SRC2[31:0]
+DEST[63:32] := SRC1[63:32] * SRC2[63:32]
+DEST[95:64] := SRC1[95:64] * SRC2[95:64]
+DEST[127:96] := SRC1[127:96] * SRC2[127:96]
+DEST[159:128] := SRC1[159:128] * SRC2[159:128]
+DEST[191:160] := SRC1[191:160] * SRC2[191:160]
+DEST[223:192] := SRC1[223:192] * SRC2[223:192]
+DEST[255:224] := SRC1[255:224] * SRC2[255:224].
+DEST[MAXVL-1:256] := 0;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091596">VMULPS (VEX.128 Encoded Version)</title>
+   <programlisting>DEST[31:0] := SRC1[31:0] * SRC2[31:0]
+DEST[63:32] := SRC1[63:32] * SRC2[63:32]
+DEST[95:64] := SRC1[95:64] * SRC2[95:64]
+DEST[127:96] := SRC1[127:96] * SRC2[127:96]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091603">MULPS (128-bit Legacy SSE Version)</title>
+   <programlisting>DEST[31:0] := SRC1[31:0] * SRC2[31:0]
+DEST[63:32] := SRC1[63:32] * SRC2[63:32]
+DEST[95:64] := SRC1[95:64] * SRC2[95:64]
+DEST[127:96] := SRC1[127:96] * SRC2[127:96]
+DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VMULPS __m512 _mm512_mul_ps( __m512 a, __m512 b);</string><string>
-</string><string>VMULPS __m512 _mm512_mask_mul_ps(__m512 s, __mmask16 k, __m512 a, __m512 b);</string><string>
-</string><string>VMULPS __m512 _mm512_maskz_mul_ps(__mmask16 k, __m512 a, __m512 b);</string><string>
-</string><string>VMULPS __m512 _mm512_mul_round_ps( __m512 a, __m512 b, int);</string><string>
-</string><string>VMULPS __m512 _mm512_mask_mul_round_ps(__m512 s, __mmask16 k, __m512 a, __m512 b, int);</string><string>
-</string><string>VMULPS __m512 _mm512_maskz_mul_round_ps(__mmask16 k, __m512 a, __m512 b, int);</string><string>
-</string><string>VMULPS __m256 _mm256_mask_mul_ps(__m256 s, __mmask8 k, __m256 a, __m256 b);</string><string>
-</string><string>VMULPS __m256 _mm256_maskz_mul_ps(__mmask8 k, __m256 a, __m256 b);</string><string>
-</string><string>VMULPS __m128 _mm_mask_mul_ps(__m128 s, __mmask8 k, __m128 a, __m128 b);</string><string>
-</string><string>VMULPS __m128 _mm_maskz_mul_ps(__mmask8 k, __m128 a, __m128 b);</string><string>
-</string><string>VMULPS __m256 _mm256_mul_ps (__m256 a, __m256 b);</string><string>
-</string><string>MULPS __m128 _mm_mul_ps (__m128 a, __m128 b);</string><string>
-</string></programlisting>
+  <programlisting>VMULPS __m512 _mm512_mul_ps( __m512 a, __m512 b);
+VMULPS __m512 _mm512_mask_mul_ps(__m512 s, __mmask16 k, __m512 a, __m512 b);
+VMULPS __m512 _mm512_maskz_mul_ps(__mmask16 k, __m512 a, __m512 b);
+VMULPS __m512 _mm512_mul_round_ps( __m512 a, __m512 b, int);
+VMULPS __m512 _mm512_mask_mul_round_ps(__m512 s, __mmask16 k, __m512 a, __m512 b, int);
+VMULPS __m512 _mm512_maskz_mul_round_ps(__mmask16 k, __m512 a, __m512 b, int);
+VMULPS __m256 _mm256_mask_mul_ps(__m256 s, __mmask8 k, __m256 a, __m256 b);
+VMULPS __m256 _mm256_maskz_mul_ps(__mmask8 k, __m256 a, __m256 b);
+VMULPS __m128 _mm_mask_mul_ps(__m128 s, __mmask8 k, __m128 a, __m128 b);
+VMULPS __m128 _mm_maskz_mul_ps(__mmask8 k, __m128 a, __m128 b);
+VMULPS __m256 _mm256_mul_ps (__m256 a, __m256 b);
+MULPS __m128 _mm_mul_ps (__m128 a, __m128 b);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091623">
-   <string>Overflow, Underflow, Invalid, Precision, Denormal.</string></para>
+  <para unique="1091623">Overflow, Underflow, Invalid, Precision, Denormal.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091628" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="73761: 06_Table: Table 2-19. Type 2 Class Exception Conditions"><string>Table&#160;2&#8209;19, &#8220;Type 2 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091632" format="xIndent1">
-   <string>EVEX-encoded instruction, see </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091628" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1091626" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#73761: 06_Table: Table 2-19. Type 2 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;19, &#8220;Type 2 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091632" format="xIndent1">EVEX-encoded instruction, see <link unique="1091630" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

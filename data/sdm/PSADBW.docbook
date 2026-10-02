@@ -1,133 +1,371 @@
 <instruction name="PSADBW">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Compute Sum of Absolute Differences</shortdesc>
- <longdesc><para unique="1091559">
-   <string>Computes the absolute value of the difference of 8 unsigned byte integers from the source operand (second operand) and from the destination operand (first operand). These 8 differences are then summed to produce an unsigned word integer result that is stored in the destination operand. </string><link linkend="35261: 05_FigureFrame: Figure 3-9. PSADBW Instruction Operation"><string>Figure&#160;4&#8209;14</string></link><string> shows the operation of the PSADBW instruction when using 64-bit operands.</string></para>
-  <para unique="1091563">
-   <string>When operating on 64-bit operands, the word integer result is stored in the low word of the destination operand, and the remaining bytes in the destination operand are cleared to all 0s.</string></para>
-  <para unique="1091564">
-   <string>When operating on 128-bit operands, two packed results are computed. Here, the 8 low-order bytes of the source and destination operands are operated on to produce a word result that is stored in the low word of the destination operand, and the 8 high-order bytes are operated on to produce a word result that is stored in bits 64 through 79 of the destination operand. The remaining bytes of the destination operand are cleared.</string></para>
-  <para unique="1091565">
-   <string>For 256-bit version, the third group of 8 differences are summed to produce an unsigned word in bits[143:128] of the destination register and the fourth group of 8 differences are summed to produce an unsigned word in bits[207:192] of the destination register. The remaining words of the destination are set to 0. </string></para>
-  <para unique="1091566">
-   <string>For 512-bit version, the fifth group result is stored in bits [271:256] of the destination. The result from the sixth group is stored in bits [335:320]. The results for the seventh and eighth group are stored respectively in bits [399:384] and bits [463:447], respectively. The remaining bits in the destination are set to 0.</string></para>
-  <para unique="1091567">
-   <string>In 64-bit mode and not encoded by VEX/EVEX prefix, using a REX prefix in the form of REX.R permits this instruc&#173;tion to access additional registers (XMM8-XMM15).</string></para>
-  <para unique="1091568">
-   <string>Legacy SSE version: The source operand can be an MMX technology register or a 64-bit memory location. The destination operand is an MMX technology register.</string></para>
-  <para unique="1091569">
-   <string>128-bit Legacy SSE version: The first source operand and destination register are XMM registers. The second source operand is an XMM register or a 128-bit memory location. Bits (MAXVL-1:128) of the corresponding ZMM destination register remain unchanged.</string></para>
-  <para unique="1091570">
-   <string>VEX.128 and EVEX.128 encoded versions: The first source operand and destination register are XMM registers. The second source operand is an XMM register or a 128-bit memory location. Bits (MAXVL-1:128) of the corresponding ZMM register are zeroed.</string></para>
-  <para unique="1091571">
-   <string>VEX.256 and EVEX.256 encoded versions: The first source operand and destination register are YMM registers. The second source operand is an YMM register or a 256-bit memory location. Bits (MAXVL-1:256) of the corresponding ZMM register are zeroed.</string></para>
-  <para unique="1091572">
-   <string>EVEX.512 encoded version: The first source operand and destination register are ZMM registers. The second source operand is a ZMM register or a 512-bit memory location.</string></para>
-  <table>
-   <caption>Figure 4-14.  PSADBW Instruction Operation Using 64-bit Operands</caption>
-   <colgroup><col/>
-    <col/>
-    </colgroup>
+ <encoding_table><table unique="1091391">
+   <thead><tr>
+     <th colspan="2"><para unique="1091393">Opcode/</para>
+      <para unique="1091394">Instruction</para>
+      </th>
+     <th><para unique="1091398">Op/ En</para>
+      </th>
+     <th><para unique="1091400">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091402">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091404">Description</para>
+      </th>
+     </tr>
+    </thead><col width="76.47336pt"/>
+   <col width="86.75064pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="80.72784000000001pt"/>
+   <col width="194.15448pt"/>
    <tbody>
     <tr>
-     <td><para unique="1091655" format="TableAnchor">
-       <svg width="1000" height="380.0453857119385" viewBox="0 0 324.26063999999997 123.23376">
-        <defs>
-        <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
-          <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
-        </marker>
-      </defs>
-        <rect width="36.3744" height="18.0" x="28.60632" y="6.73272" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="18.0" x="64.98072" y="6.73272" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="18.0" x="101.35512" y="6.73272" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.37512" height="18.0" x="137.72952" y="6.73272" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="18.0" x="174.28536" y="6.69744" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="18.0" x="210.66048" y="6.69744" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="18.0" x="247.03488" y="6.69744" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.37512" height="18.0" x="283.40928" y="6.69744" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="186.37488000000002" y="18.53208" font-size="6">X3</text>
-        <text x="224.08272" y="18.53208" font-size="6">X2</text>
-        <text x="260.92224" y="18.53208" font-size="6">X1</text>
-        <text x="296.99208" y="18.53208" font-size="6">X0</text>
-        <text x="25.46712" y="18.0" font-size="6" text-anchor="end">SRC</text>
-        <text x="25.46712" y="46.92888" font-size="6" text-anchor="end">DEST</text>
-        <text x="25.46712" y="77.87808" font-size="6" text-anchor="end">TEMP</text>
-        <text x="152.58888" y="18.53208" font-size="6">X4</text>
-        <text x="113.98104" y="18.53208" font-size="6">X5</text>
-        <text x="77.51664" y="18.53208" font-size="6">X6</text>
-        <text x="42.659279999999995" y="18.53208" font-size="6">X7</text>
-        <rect width="36.3744" height="18.0" x="28.03464" y="36.69768" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="18.0" x="64.40904" y="36.69768" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="18.0" x="100.78416" y="36.69768" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.37512" height="18.0" x="137.15856" y="36.69768" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="17.375040000000002" x="173.7144" y="37.286640000000006" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="17.375040000000002" x="210.0888" y="37.286640000000006" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="17.375040000000002" x="246.46319999999997" y="37.286640000000006" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.37512" height="17.375040000000002" x="282.8376" y="37.286640000000006" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="185.8032" y="48.496320000000004" font-size="6">Y3</text>
-        <text x="223.51104" y="48.496320000000004" font-size="6">Y2</text>
-        <text x="260.35056" y="48.496320000000004" font-size="6">Y1</text>
-        <text x="296.42040000000003" y="48.496320000000004" font-size="6">Y0</text>
-        <text x="152.0172" y="48.496320000000004" font-size="6">Y4</text>
-        <text x="113.40935999999999" y="48.496320000000004" font-size="6">Y5</text>
-        <text x="76.94496000000001" y="48.496320000000004" font-size="6">Y6</text>
-        <text x="42.0876" y="48.496320000000004" font-size="6">Y7</text>
-        <rect width="36.3744" height="18.0" x="28.57032" y="65.62656" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="18.0" x="64.94472" y="65.62656" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="18.0" x="101.31984" y="65.62656" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.37512" height="18.0" x="137.69424" y="65.62656" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="18.0" x="174.25008" y="65.59056" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="18.0" x="210.62447999999998" y="65.59056" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="18.0" x="246.99888" y="65.59056" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.37512" height="18.0" x="283.374" y="65.59056" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="285.04656" y="76.91328" font-size="6">ABS(X0:Y0)</text>
-        <text x="30.901680000000002" y="76.91328" font-size="6">ABS(X7:Y7)</text>
-        <text x="67.65191999999999" y="76.91328" font-size="6">ABS(X6:Y6)</text>
-        <text x="103.50936" y="76.91328" font-size="6">ABS(X5:Y5)</text>
-        <text x="140.2596" y="76.91328" font-size="6">ABS(X4:Y4)</text>
-        <text x="176.65272000000002" y="76.91328" font-size="6">ABS(X3:Y3)</text>
-        <text x="212.86728" y="76.91328" font-size="6">ABS(X2:Y2)</text>
-        <text x="249.25967999999997" y="76.91328" font-size="6">ABS(X1:Y1)</text>
-        <text x="25.46712" y="109.57176" font-size="6" text-anchor="end">DEST</text>
-        <rect width="36.3744" height="18.0" x="28.891440000000003" y="99.34056" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="18.0" x="65.26656" y="99.34056" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="18.0" x="101.64096" y="99.34056" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.37512" height="18.0" x="138.01536" y="99.34056" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="18.0" x="174.57119999999998" y="99.30528" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="36.3744" height="18.0" x="210.9456" y="99.30528" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <rect width="71.19648000000001" height="18.0" x="247.32072" y="99.30528" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="185.23152" y="111.13991999999999" font-size="6">00H</text>
-        <text x="222.93936" y="111.13991999999999" font-size="6">00H</text>
-        <text x="151.44552" y="111.13991999999999" font-size="6">00H</text>
-        <text x="112.8384" y="111.13991999999999" font-size="6">00H</text>
-        <text x="76.37400000000001" y="111.13991999999999" font-size="6">00H</text>
-        <text x="41.515919999999994" y="111.13991999999999" font-size="6">00H</text>
-        <text x="251.4744" y="109.48608" font-size="6">SUM(TEMP7...TEMP0)</text>
-        </svg></para>
+     <td colspan="2"><para unique="1091415">NP 0F F6 /r<superscript><footnote><para unique="1091411" format="TableFootnote">See note in <link unique="1091409" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#27214: 02_Level: 2.4 Instruction Exception Specification" xrefstyle="SectionNum&amp;Title(,)">Section 2.5, &#8220;Intel&#174; AVX and Intel&#174; SSE Instruction Exception Classification,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Soft&#173;ware Developer&#8217;s Manual, Volume 2A, and <link unique="1092561" linkend="&lt;c&gt;__sdm_vol3B_ch25.fm#65163: 03_Level: 19.25.3 Exception Conditions of Legacy SIMD Instruction Operating" xrefstyle="SectionNum&amp;Title(,)">Section 25.25.3, &#8220;Exception Conditions of Legacy SIMD Instructions Operating on MMX Registers,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B.</para>
+         </footnote></superscript></para>
+      <para unique="1091416">PSADBW mm1, mm2/m64</para>
+      </td>
+     <td><para unique="1091420">A</para>
+      </td>
+     <td><para unique="1091422">V/V</para>
+      </td>
+     <td><para unique="1091424">SSE</para>
+      </td>
+     <td><para unique="1091426">Computes the absolute differences of the packed unsigned byte integers from mm2 /m64 and mm1; differences are then summed to produce an unsigned word integer result.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091428">66 0F F6 /r</para>
+      <para unique="1091429">PSADBW xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091433">A</para>
+      </td>
+     <td><para unique="1091435">V/V</para>
+      </td>
+     <td><para unique="1091437">SSE2</para>
+      </td>
+     <td><para unique="1091439">Computes the absolute differences of the packed unsigned byte integers from xmm2 /m128 and xmm1; the 8 low differences and 8 high differences are then summed separately to produce two unsigned word integer results.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091441">VEX.128.66.0F.WIG F6 /r</para>
+      <para unique="1091442">VPSADBW xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1091446">B</para>
+      </td>
+     <td><para unique="1091448">V/V</para>
+      </td>
+     <td><para unique="1091450">AVX</para>
+      </td>
+     <td><para unique="1091452">Computes the absolute differences of the packed unsigned byte integers from xmm3 /m128 and xmm2; the 8 low differences and 8 high differences are then summed separately to produce two unsigned word integer results.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091454">VEX.256.66.0F.WIG F6 /r</para>
+      <para unique="1091455">VPSADBW ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1091459">B</para>
+      </td>
+     <td><para unique="1091461">V/V</para>
+      </td>
+     <td><para unique="1091463">AVX2</para>
+      </td>
+     <td><para unique="1091465">Computes the absolute differences of the packed unsigned byte integers from ymm3 /m256 and ymm2; then each consecutive 8 differences are summed separately to produce four unsigned word integer results.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092131">EVEX.128.66.0F.WIG F6 /r</para>
+      <para unique="1092132">VPSADBW xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1092136">C</para>
+      </td>
+     <td><para unique="1092138">V/V</para>
+      </td>
+     <td><para unique="1092140">(AVX512VL AND</para>
+      <para unique="1092141">AVX512BW) OR AVX10.1<anchor id="+820345"/></para>
+      </td>
+     <td><para unique="1092146">Computes the absolute differences of the packed unsigned byte integers from xmm3 /m128 and xmm2; then each consecutive 8 differences are summed separately to produce two unsigned word integer results.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092117">EVEX.256.66.0F.WIG F6 /r</para>
+      <para unique="1092118">VPSADBW ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1092122">C</para>
+      </td>
+     <td><para unique="1092124">V/V</para>
+      </td>
+     <td><para unique="1092126">(AVX512VL AND</para>
+      <para unique="1092127">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092129">Computes the absolute differences of the packed unsigned byte integers from ymm3 /m256 and ymm2; then each consecutive 8 differences are summed separately to produce four unsigned word integer results.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092103">EVEX.512.66.0F.WIG F6 /r</para>
+      <para unique="1092104">VPSADBW zmm1, zmm2, zmm3/m512</para>
+      </td>
+     <td><para unique="1092108">C</para>
+      </td>
+     <td><para unique="1092110">V/V</para>
+      </td>
+     <td><para unique="1092112">AVX512BW </para>
+      <para unique="1092113">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092115">Computes the absolute differences of the packed unsigned byte integers from zmm3 /m512 and zmm2; then each consecutive 8 differences are summed separately to produce eight unsigned word integer results.</para>
       </td>
      </tr>
     </tbody>
    </table>
-  </longdesc>
+  </encoding_table>
+ <operand_table><table unique="1091508">
+   <col width="42.09551999999999pt"/>
+   <col width="73.89576pt"/>
+   <col width="94.3092pt"/>
+   <col width="98.69256pt"/>
+   <col width="97.68383999999999pt"/>
+   <col width="103.88951999999999pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091510">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091512">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091514">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091516">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091518">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091520">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091522">A</para>
+      </td>
+     <td valign="middle"><para unique="1091524">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091526">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091528">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091530">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091532">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091534">B</para>
+      </td>
+     <td valign="middle"><para unique="1091536">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091538">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091540">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091542">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091544">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091546">C</para>
+      </td>
+     <td valign="middle"><para unique="1091548">Full Mem</para>
+      </td>
+     <td valign="middle"><para unique="1091550">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091552">EVEX.vvvv</para>
+      </td>
+     <td valign="middle"><para unique="1091554">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091556">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091557">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091559">Computes the absolute value of the difference of 8 unsigned byte integers from the source operand (second operand) and from the destination operand (first operand). These 8 differences are then summed to produce an unsigned word integer result that is stored in the destination operand. <link unique="1091561" linkend="#35261: 05_FigureFrame: Figure 3-9. PSADBW Instruction Operation" xrefstyle="FigureNum">Figure&#160;4&#8209;14</link> shows the operation of the PSADBW instruction when using 64-bit operands.</para>
+  <para unique="1091563">When operating on 64-bit operands, the word integer result is stored in the low word of the destination operand, and the remaining bytes in the destination operand are cleared to all 0s.</para>
+  <para unique="1091564">When operating on 128-bit operands, two packed results are computed. Here, the 8 low-order bytes of the source and destination operands are operated on to produce a word result that is stored in the low word of the destination operand, and the 8 high-order bytes are operated on to produce a word result that is stored in bits 64 through 79 of the destination operand. The remaining bytes of the destination operand are cleared.</para>
+  <para unique="1091565">For 256-bit version, the third group of 8 differences are summed to produce an unsigned word in bits[143:128] of the destination register and the fourth group of 8 differences are summed to produce an unsigned word in bits[207:192] of the destination register. The remaining words of the destination are set to 0. </para>
+  <para unique="1091566">For 512-bit version, the fifth group result is stored in bits [271:256] of the destination. The result from the sixth group is stored in bits [335:320]. The results for the seventh and eighth group are stored respectively in bits [399:384] and bits [463:447], respectively. The remaining bits in the destination are set to 0.</para>
+  <para unique="1091567">In 64-bit mode and not encoded by VEX/EVEX prefix, using a REX prefix in the form of REX.R permits this instruc&#173;tion to access additional registers (XMM8-XMM15).</para>
+  <para unique="1091568">Legacy SSE version: The source operand can be an MMX technology register or a 64-bit memory location. The destination operand is an MMX technology register.</para>
+  <para unique="1091569">128-bit Legacy SSE version: The first source operand and destination register are XMM registers. The second source operand is an XMM register or a 128-bit memory location. Bits (MAXVL-1:128) of the corresponding ZMM destination register remain unchanged.</para>
+  <para unique="1091570">VEX.128 and EVEX.128 encoded versions: The first source operand and destination register are XMM registers. The second source operand is an XMM register or a 128-bit memory location. Bits (MAXVL-1:128) of the corresponding ZMM register are zeroed.</para>
+  <para unique="1091571">VEX.256 and EVEX.256 encoded versions: The first source operand and destination register are YMM registers. The second source operand is an YMM register or a 256-bit memory location. Bits (MAXVL-1:256) of the corresponding ZMM register are zeroed.</para>
+  <para unique="1091572">EVEX.512 encoded version: The first source operand and destination register are ZMM registers. The second source operand is a ZMM register or a 512-bit memory location.</para>
+  <figure id="35261: 05_FigureFrame: Figure 3-9. PSADBW Instruction Operation"><title>PSADBW Instruction Operation Using 64-bit Operands</title>
+   <mediaobject><imageobject><svg width="1000" height="380.0453857119385" viewBox="0 0 324.26063999999997 123.23376">
+      <defs>
+        <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+          <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
+        </marker>
+      </defs>
+      <rect width="36.3744" height="18.0" x="28.60632" y="6.73272" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="18.0" x="64.98072" y="6.73272" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="18.0" x="101.35512" y="6.73272" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.37512" height="18.0" x="137.72952" y="6.73272" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="18.0" x="174.28536" y="6.69744" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="18.0" x="210.66048" y="6.69744" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="18.0" x="247.03488" y="6.69744" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.37512" height="18.0" x="283.40928" y="6.69744" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="186.37488000000002" y="18.53208" font-size="6">X3</text>
+      <text x="224.08272" y="18.53208" font-size="6">X2</text>
+      <text x="260.92224" y="18.53208" font-size="6">X1</text>
+      <text x="296.99208" y="18.53208" font-size="6">X0</text>
+      <text x="25.46712" y="18.0" font-size="6" text-anchor="end">SRC</text>
+      <text x="25.46712" y="46.92888" font-size="6" text-anchor="end">DEST</text>
+      <text x="25.46712" y="77.87808" font-size="6" text-anchor="end">TEMP</text>
+      <text x="152.58888" y="18.53208" font-size="6">X4</text>
+      <text x="113.98104" y="18.53208" font-size="6">X5</text>
+      <text x="77.51664" y="18.53208" font-size="6">X6</text>
+      <text x="42.659279999999995" y="18.53208" font-size="6">X7</text>
+      <rect width="36.3744" height="18.0" x="28.03464" y="36.69768" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="18.0" x="64.40904" y="36.69768" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="18.0" x="100.78416" y="36.69768" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.37512" height="18.0" x="137.15856" y="36.69768" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="17.375040000000002" x="173.7144" y="37.286640000000006" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="17.375040000000002" x="210.0888" y="37.286640000000006" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="17.375040000000002" x="246.46319999999997" y="37.286640000000006" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.37512" height="17.375040000000002" x="282.8376" y="37.286640000000006" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="185.8032" y="48.496320000000004" font-size="6">Y3</text>
+      <text x="223.51104" y="48.496320000000004" font-size="6">Y2</text>
+      <text x="260.35056" y="48.496320000000004" font-size="6">Y1</text>
+      <text x="296.42040000000003" y="48.496320000000004" font-size="6">Y0</text>
+      <text x="152.0172" y="48.496320000000004" font-size="6">Y4</text>
+      <text x="113.40935999999999" y="48.496320000000004" font-size="6">Y5</text>
+      <text x="76.94496000000001" y="48.496320000000004" font-size="6">Y6</text>
+      <text x="42.0876" y="48.496320000000004" font-size="6">Y7</text>
+      <rect width="36.3744" height="18.0" x="28.57032" y="65.62656" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="18.0" x="64.94472" y="65.62656" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="18.0" x="101.31984" y="65.62656" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.37512" height="18.0" x="137.69424" y="65.62656" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="18.0" x="174.25008" y="65.59056" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="18.0" x="210.62447999999998" y="65.59056" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="18.0" x="246.99888" y="65.59056" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.37512" height="18.0" x="283.374" y="65.59056" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="285.04656" y="76.91328" font-size="6">ABS(X0:Y0)</text>
+      <text x="30.901680000000002" y="76.91328" font-size="6">ABS(X7:Y7)</text>
+      <text x="67.65191999999999" y="76.91328" font-size="6">ABS(X6:Y6)</text>
+      <text x="103.50936" y="76.91328" font-size="6">ABS(X5:Y5)</text>
+      <text x="140.2596" y="76.91328" font-size="6">ABS(X4:Y4)</text>
+      <text x="176.65272000000002" y="76.91328" font-size="6">ABS(X3:Y3)</text>
+      <text x="212.86728" y="76.91328" font-size="6">ABS(X2:Y2)</text>
+      <text x="249.25967999999997" y="76.91328" font-size="6">ABS(X1:Y1)</text>
+      <text x="25.46712" y="109.57176" font-size="6" text-anchor="end">DEST</text>
+      <rect width="36.3744" height="18.0" x="28.891440000000003" y="99.34056" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="18.0" x="65.26656" y="99.34056" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="18.0" x="101.64096" y="99.34056" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.37512" height="18.0" x="138.01536" y="99.34056" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="18.0" x="174.57119999999998" y="99.30528" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="36.3744" height="18.0" x="210.9456" y="99.30528" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <rect width="71.19648000000001" height="18.0" x="247.32072" y="99.30528" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="185.23152" y="111.13991999999999" font-size="6">00H</text>
+      <text x="222.93936" y="111.13991999999999" font-size="6">00H</text>
+      <text x="151.44552" y="111.13991999999999" font-size="6">00H</text>
+      <text x="112.8384" y="111.13991999999999" font-size="6">00H</text>
+      <text x="76.37400000000001" y="111.13991999999999" font-size="6">00H</text>
+      <text x="41.515919999999994" y="111.13991999999999" font-size="6">00H</text>
+      <text x="251.4744" y="109.48608" font-size="6">SUM(TEMP7...TEMP0)</text>
+      </svg></imageobject></mediaobject></figure></longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091661">VPSADBW (EVEX Encoded Versions)</title>
+   <programlisting>VL = 128, 256, 512
+TEMP0 := ABS(SRC1[7:0] - SRC2[7:0])
+(* Repeat operation for bytes 1 through 15 *)
+TEMP15 := ABS(SRC1[127:120] - SRC2[127:120])
+DEST[15:0] := SUM(TEMP0:TEMP7)
+DEST[63:16] := 000000000000H
+DEST[79:64] := SUM(TEMP8:TEMP15)
+DEST[127:80] := 00000000000H
+IF VL &gt;= 256
+	(* Repeat operation for bytes 16 through 31*)
+	TEMP31 := ABS(SRC1[255:248] - SRC2[255:248])
+	DEST[143:128] := SUM(TEMP16:TEMP23)
+	DEST[191:144] := 000000000000H
+	DEST[207:192] := SUM(TEMP24:TEMP31)
+	DEST[223:208] := 00000000000H
+FI;
+IF VL &gt;= 512
+(* Repeat operation for bytes 32 through 63*)
+	TEMP63 := ABS(SRC1[511:504] - SRC2[511:504])
+	DEST[271:256] := SUM(TEMP0:TEMP7)
+	DEST[319:272] := 000000000000H
+	DEST[335:320] := SUM(TEMP8:TEMP15)
+	DEST[383:336] := 00000000000H
+	DEST[399:384] := SUM(TEMP16:TEMP23)
+	DEST[447:400] := 000000000000H
+	DEST[463:448] := SUM(TEMP24:TEMP31)
+	DEST[511:464] := 00000000000H
+FI;
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091693">VPSADBW (VEX.256 Encoded Version)</title>
+   <programlisting>TEMP0 := ABS(SRC1[7:0] - SRC2[7:0])
+(* Repeat operation for bytes 2 through 30*)
+TEMP31 := ABS(SRC1[255:248] - SRC2[255:248])
+DEST[15:0] := SUM(TEMP0:TEMP7)
+DEST[63:16] := 000000000000H
+DEST[79:64] := SUM(TEMP8:TEMP15)
+DEST[127:80] := 00000000000H
+DEST[143:128] := SUM(TEMP16:TEMP23)
+DEST[191:144] := 000000000000H
+DEST[207:192] := SUM(TEMP24:TEMP31)
+DEST[223:208] := 00000000000H
+DEST[MAXVL-1:256] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091707">VPSADBW (VEX.128 Encoded Version)</title>
+   <programlisting>TEMP0 := ABS(SRC1[7:0] - SRC2[7:0])
+(* Repeat operation for bytes 2 through 14 *)
+TEMP15 := ABS(SRC1[127:120] - SRC2[127:120])
+DEST[15:0] := SUM(TEMP0:TEMP7)
+DEST[63:16] := 000000000000H
+DEST[79:64] := SUM(TEMP8:TEMP15)
+DEST[127:80] := 00000000000H
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091717">PSADBW (128-bit Legacy SSE Version)</title>
+   <programlisting>TEMP0 := ABS(DEST[7:0] - SRC[7:0])
+(* Repeat operation for bytes 2 through 14 *)
+TEMP15 := ABS(DEST[127:120] - SRC[127:120])
+DEST[15:0] := SUM(TEMP0:TEMP7)
+DEST[63:16] := 000000000000H
+DEST[79:64] := SUM(TEMP8:TEMP15)
+DEST[127:80] := 00000000000
+DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091727">PSADBW (64-bit Operand)</title>
+   <programlisting>TEMP0 := ABS(DEST[7:0] - SRC[7:0])
+(* Repeat operation for bytes 2 through 6 *)
+TEMP7 := ABS(DEST[63:56] - SRC[63:56])
+DEST[15:0] := SUM(TEMP0:TEMP7)
+DEST[63:16] := 000000000000H</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VPSADBW __m512i _mm512_sad_epu8( __m512i a, __m512i b)</string><string>
-</string><string>PSADBW 	__m64 _mm_sad_pu8(__m64 a,__m64 b)</string><string>
-</string><string>(V)PSADBW 	__m128i _mm_sad_epu8(__m128i a, __m128i b)</string><string>
-</string><string>VPSADBW 	__m256i _mm256_sad_epu8( __m256i a, __m256i b)</string><string>
-</string></programlisting>
+  <programlisting>VPSADBW __m512i _mm512_sad_epu8( __m512i a, __m512i b)
+PSADBW 	__m64 _mm_sad_pu8(__m64 a,__m64 b)
+(V)PSADBW 	__m128i _mm_sad_epu8(__m128i a, __m128i b)
+VPSADBW 	__m256i _mm256_sad_epu8( __m256i a, __m256i b)</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1091739">
-   <string>None.</string></para>
+  <para unique="1091739">None.</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091741">
-   <string>None.</string></para>
+  <para unique="1091741">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091746" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091750" format="xIndent1">
-   <string>EVEX-encoded instruction, see Exceptions Type E4NF.nb in </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091746" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1091744" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091750" format="xIndent1">EVEX-encoded instruction, see Exceptions Type E4NF.nb in <link unique="1091748" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

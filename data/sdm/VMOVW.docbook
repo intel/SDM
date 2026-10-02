@@ -1,21 +1,134 @@
 <instruction name="VMOVW">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Move Word</shortdesc>
- <longdesc><para unique="1046156">
-   <string>This instruction either (a) copies one word element from an XMM register to a general-purpose register or memory location or (b) copies one word element from a general-purpose register or memory location to an XMM register. When writing a general-purpose register, the lower 16-bits of the register will contain the word value. The upper bits of the general-purpose register are written with zeros.</string></para>
+ <encoding_table><table unique="1046081">
+   <col width="153.5976pt"/>
+   <col width="29.2752pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="200.02464pt"/>
+   <thead><tr>
+     <th><para unique="1046083">Opcode/</para>
+      <para unique="1046084">Instruction</para>
+      </th>
+     <th><para unique="1046086">Op/</para>
+      <para unique="1046087">En</para>
+      </th>
+     <th><para unique="1046089">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1046091">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1046093">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1046494">EVEX.128.66.MAP5.WIG 6E /r</para>
+      <para unique="1046495">VMOVW xmm1, reg/m16</para>
+      </td>
+     <td><para unique="1046497">A</para>
+      </td>
+     <td><para unique="1046499">V/V</para>
+      </td>
+     <td><para unique="1046501">AVX512_FP16 </para>
+      <para unique="1046505">OR AVX10.1<anchor id="+527199"/></para>
+      </td>
+     <td><para unique="1046507">Copy word from reg/m16 to xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046482">EVEX.128.66.MAP5.WIG 7E /r</para>
+      <para unique="1046483">VMOVW reg/m16, xmm1</para>
+      </td>
+     <td><para unique="1046485">B</para>
+      </td>
+     <td><para unique="1046487">V/V</para>
+      </td>
+     <td><para unique="1046489">AVX512_FP16 </para>
+      <para unique="1046490">OR AVX10.1<anchor id="+747298"/></para>
+      </td>
+     <td><para unique="1046492">Copy word from xmm1 to reg/m16.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1046117">
+   <col width="43.01352pt"/>
+   <col width="61.01352pt"/>
+   <col width="95.65272pt"/>
+   <col width="104.62608pt"/>
+   <col width="103.85784pt"/>
+   <col width="102.5676pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1046119">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1046121">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1046123">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1046125">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1046127">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1046129">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1046131">A</para>
+      </td>
+     <td valign="middle"><para unique="1046133">Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1046135">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046137">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046139">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1046141">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1046143">B</para>
+      </td>
+     <td valign="middle"><para unique="1046145">Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1046147">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046149">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046151">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1046153">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046154">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046156">This instruction either (a) copies one word element from an XMM register to a general-purpose register or memory location or (b) copies one word element from a general-purpose register or memory location to an XMM register. When writing a general-purpose register, the lower 16-bits of the register will contain the word value. The upper bits of the general-purpose register are written with zeros.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1046158">VMOVW dest, src (two operand load)</title>
+   <programlisting>DEST.word[0] := SRC.word[0]
+DEST[MAXVL:16] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046162">VMOVW dest, src (two operand store)</title>
+   <programlisting>DEST.word[0] := SRC.word[0]
+// upper bits of GPR DEST are zeroed</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <para unique="1046166">
-   <string>VMOVW short _mm_cvtsi128_si16 (__m128i a);</string></para>
-  <para unique="1046167">
-   <string>VMOVW __m128i _mm_cvtsi16_si128 (short a);</string></para>
+  <para unique="1046166">VMOVW short _mm_cvtsi128_si16 (__m128i a);</para>
+  <para unique="1046167">VMOVW __m128i _mm_cvtsi16_si128 (short a);</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046169">
-   <string>None</string></para>
+  <para unique="1046169">None</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046174" format="xIndent1">
-   <string>EVEX-encoded instructions, see </string><link linkend="32485: 06_Table: Table 2-57. Type E9NF Class Exception Conditions"><string>Table&#160;2&#8209;59, &#8220;Type E9NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046174" format="xIndent1">EVEX-encoded instructions, see <link unique="1046172" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#32485: 06_Table: Table 2-57. Type E9NF Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;59, &#8220;Type E9NF Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

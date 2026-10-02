@@ -1,22 +1,131 @@
 <instruction name="CBW/CWDE/CDQE">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Convert Byte to Word/Convert Word to Doubleword/Convert Doubleword to Quadword</shortdesc>
- <longdesc><para unique="1261265">
-   <string>Double the size of the source operand by means of sign extension. The CBW (convert byte to word) instruction copies the sign (bit 7) in the source operand into every bit in the AH register. The CWDE (convert word to double&#173;word) instruction copies the sign (bit 15) of the word in the AX register into the high 16 bits of the EAX register. </string></para>
-  <para unique="1261266">
-   <string>CBW and CWDE reference the same opcode. The CBW instruction is intended for use when the operand-size attri&#173;bute is 16; CWDE is intended for use when the operand-size attribute is 32. Some assemblers may force the operand size. Others may treat these two mnemonics as synonyms (CBW/CWDE) and use the setting of the operand-size attribute to determine the size of values to be converted.</string></para>
-  <para unique="1261267">
-   <string>In 64-bit mode, the default operation size is the size of the destination register. Use of the REX.W prefix promotes this instruction (CDQE when promoted) to operate on 64-bit operands. In which case, CDQE copies the sign (bit 31) of the doubleword in the EAX register into the high 32 bits of RAX.</string></para>
+ <encoding_table><table unique="1261193">
+   <thead><tr>
+     <th><para unique="1261195">Opcode</para>
+      </th>
+     <th><para unique="1261197">Instruction</para>
+      </th>
+     <th><para unique="1261199">Op/ En</para>
+      </th>
+     <th><para unique="1261201">64-bit Mode</para>
+      </th>
+     <th><para unique="1261203">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261205">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.6112pt"/>
+   <col width="111.86352000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="47.999520000000004pt"/>
+   <col width="46.728pt"/>
+   <col width="182.90448pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261207">98</para>
+      </td>
+     <td><para unique="1261209">CBW</para>
+      </td>
+     <td><para unique="1261211">ZO</para>
+      </td>
+     <td><para unique="1261213">Valid</para>
+      </td>
+     <td><para unique="1261215">Valid</para>
+      </td>
+     <td><para unique="1261217">AX := sign-extend of AL.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261219">98</para>
+      </td>
+     <td><para unique="1261221">CWDE</para>
+      </td>
+     <td><para unique="1261223">ZO</para>
+      </td>
+     <td><para unique="1261225">Valid</para>
+      </td>
+     <td><para unique="1261227">Valid</para>
+      </td>
+     <td><para unique="1261229">EAX := sign-extend of AX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261231">REX.W + 98</para>
+      </td>
+     <td><para unique="1261233">CDQE</para>
+      </td>
+     <td><para unique="1261235">ZO</para>
+      </td>
+     <td><para unique="1261237">Valid</para>
+      </td>
+     <td><para unique="1261239">N.E.</para>
+      </td>
+     <td><para unique="1261241">RAX := sign-extend of EAX.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261242">
+   <col width="43.0668pt"/>
+   <col width="112.08744pt"/>
+   <col width="116.53056pt"/>
+   <col width="116.89631999999999pt"/>
+   <col width="121.8888pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261244">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261246">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261248">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261250">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261252">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261254">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1261256">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261258">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261260">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261262">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261263">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261265">Double the size of the source operand by means of sign extension. The CBW (convert byte to word) instruction copies the sign (bit 7) in the source operand into every bit in the AH register. The CWDE (convert word to double&#173;word) instruction copies the sign (bit 15) of the word in the AX register into the high 16 bits of the EAX register. </para>
+  <para unique="1261266">CBW and CWDE reference the same opcode. The CBW instruction is intended for use when the operand-size attri&#173;bute is 16; CWDE is intended for use when the operand-size attribute is 32. Some assemblers may force the operand size. Others may treat these two mnemonics as synonyms (CBW/CWDE) and use the setting of the operand-size attribute to determine the size of values to be converted.</para>
+  <para unique="1261267">In 64-bit mode, the default operation size is the size of the destination register. Use of the REX.W prefix promotes this instruction (CDQE when promoted) to operate on 64-bit operands. In which case, CDQE copies the sign (bit 31) of the doubleword in the EAX register into the high 32 bits of RAX.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF OperandSize = 16 (* Instruction = CBW *)
+	THEN
+		AX := SignExtend(AL);
+	ELSE IF (OperandSize = 32, Instruction = CWDE)
+		EAX := SignExtend(AX); FI;
+	ELSE (* 64-Bit Mode, OperandSize = 64, Instruction = CDQE*)
+		RAX := SignExtend(EAX);
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261278">
-   <string>None.</string></para>
+  <para unique="1261278">None.</para>
   </subsection>
  <subsection title="Exceptions (All Operating Modes)">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261280">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

@@ -1,57 +1,315 @@
 <instruction name="POR">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Bitwise Logical OR</shortdesc>
- <longdesc><para unique="1091617">
-   <string>Performs a bitwise logical OR operation on the source operand (second operand) and the destination operand (first operand) and stores the result in the destination operand. Each bit of the result is set to 1 if either or both of the corresponding bits of the first and second operands are 1; otherwise, it is set to 0.</string></para>
-  <para unique="1091618">
-   <string>In 64-bit mode and not encoded with VEX/EVEX, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).</string></para>
-  <para unique="1091619">
-   <string>Legacy SSE version: The source operand can be an MMX technology register or a 64-bit memory location. The destination operand is an MMX technology register.</string></para>
-  <para unique="1091620">
-   <string>128-bit Legacy SSE version: The second source operand is an XMM register or a 128-bit memory location. The first source and destination operands can be XMM registers. Bits (MAXVL-1:128) of the corresponding YMM destination register remain unchanged.</string></para>
-  <para unique="1091621">
-   <string>VEX.128 encoded version: The second source operand is an XMM register or a 128-bit memory location. The first source and destination operands can be XMM registers. Bits (MAXVL-1:128) of the destination YMM register are zeroed. </string></para>
-  <para unique="1091622">
-   <string>VEX.256 encoded version: The second source operand is an YMM register or a 256-bit memory location. The first source and destination operands can be YMM registers.</string></para>
-  <para unique="1091623">
-   <string>EVEX encoded version: The first source operand is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 32/64-bit memory location. The destination operand is a ZMM/YMM/XMM register conditionally updated with write&#173;mask k1 at 32/64-bit granularity.</string></para>
+ <encoding_table><table unique="1091390">
+   <thead><tr>
+     <th colspan="2"><para unique="1091392">Opcode/</para>
+      <para unique="1091393">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op/ En</para>
+      </th>
+     <th><para unique="1091399">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091401">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><col width="84.90744000000001pt"/>
+   <col width="96.31728pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="76.72752pt"/>
+   <col width="180.65448pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1091414">NP 0F EB /r<superscript><footnote><para unique="1091410" format="TableFootnote">See note in <link unique="1091408" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#27214: 02_Level: 2.4 Instruction Exception Specification" xrefstyle="SectionNum&amp;Title(,)">Section 2.5, &#8220;Intel&#174; AVX and Intel&#174; SSE Instruction Exception Classification,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Soft&#173;ware Developer&#8217;s Manual, Volume 2A, and <link unique="1092545" linkend="&lt;c&gt;__sdm_vol3B_ch25.fm#65163: 03_Level: 19.25.3 Exception Conditions of Legacy SIMD Instruction Operating" xrefstyle="SectionNum&amp;Title(,)">Section 25.25.3, &#8220;Exception Conditions of Legacy SIMD Instructions Operating on MMX Registers,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B.</para>
+         </footnote></superscript></para>
+      <para unique="1091415">POR mm, mm/m64</para>
+      </td>
+     <td><para unique="1091419">A</para>
+      </td>
+     <td><para unique="1091421">V/V </para>
+      </td>
+     <td><para unique="1091423">MMX</para>
+      </td>
+     <td><para unique="1091425">Bitwise OR of mm/m64 and mm.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091427">66 0F EB /r</para>
+      <para unique="1091428">POR xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091432">A</para>
+      </td>
+     <td><para unique="1091434">V/V</para>
+      </td>
+     <td><para unique="1091436">SSE2</para>
+      </td>
+     <td><para unique="1091438">Bitwise OR of xmm2/m128 and xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091440">VEX.128.66.0F.WIG EB /r</para>
+      <para unique="1091441">VPOR xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1091445">B</para>
+      </td>
+     <td><para unique="1091447">V/V</para>
+      </td>
+     <td><para unique="1091449">AVX</para>
+      </td>
+     <td><para unique="1091451">Bitwise OR of xmm2/m128 and xmm3.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091453">VEX.256.66.0F.WIG EB /r</para>
+      <para unique="1091454">VPOR ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1091458">B</para>
+      </td>
+     <td><para unique="1091460">V/V</para>
+      </td>
+     <td><para unique="1091462">AVX2</para>
+      </td>
+     <td><para unique="1091464">Bitwise OR of ymm2/m256 and ymm3.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092108">EVEX.128.66.0F.W0 EB /r</para>
+      <para unique="1092109">VPORD xmm1 {k1}{z}, xmm2, xmm3/m128/m32bcst </para>
+      </td>
+     <td><para unique="1092113">C</para>
+      </td>
+     <td><para unique="1092115">V/V</para>
+      </td>
+     <td><para unique="1092117">(AVX512VL AND</para>
+      <para unique="1092121">AVX512F) OR AVX10.1<anchor id="+601471"/></para>
+      </td>
+     <td><para unique="1092126">Bitwise OR of packed doubleword integers in xmm2 and xmm3/m128/m32bcst using writemask k1. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092091">EVEX.256.66.0F.W0 EB /r</para>
+      <para unique="1092092">VPORD ymm1 {k1}{z}, ymm2, ymm3/m256/m32bcst </para>
+      </td>
+     <td><para unique="1092096">C</para>
+      </td>
+     <td><para unique="1092098">V/V</para>
+      </td>
+     <td><para unique="1092100">(AVX512VL AND</para>
+      <para unique="1092104">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092106">Bitwise OR of packed doubleword integers in ymm2 and ymm3/m256/m32bcst using writemask k1. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092074">EVEX.512.66.0F.W0 EB /r</para>
+      <para unique="1092075">VPORD zmm1 {k1}{z}, zmm2, zmm3/m512/m32bcst </para>
+      </td>
+     <td><para unique="1092079">C</para>
+      </td>
+     <td><para unique="1092081">V/V</para>
+      </td>
+     <td><para unique="1092086">AVX512F </para>
+      <para unique="1092087">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092089">Bitwise OR of packed doubleword integers in zmm2 and zmm3/m512/m32bcst using writemask k1. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092057">EVEX.128.66.0F.W1 EB /r</para>
+      <para unique="1092058">VPORQ xmm1 {k1}{z}, xmm2, xmm3/m128/m64bcst</para>
+      </td>
+     <td><para unique="1092062">C</para>
+      </td>
+     <td><para unique="1092064">V/V</para>
+      </td>
+     <td><para unique="1092066">(AVX512VL AND</para>
+      <para unique="1092070">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092072">Bitwise OR of packed quadword integers in xmm2 and xmm3/m128/m64bcst using writemask k1. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092040">EVEX.256.66.0F.W1 EB /r</para>
+      <para unique="1092041">VPORQ ymm1 {k1}{z}, ymm2, ymm3/m256/m64bcst</para>
+      </td>
+     <td><para unique="1092045">C</para>
+      </td>
+     <td><para unique="1092047">V/V</para>
+      </td>
+     <td><para unique="1092049">(AVX512VL AND</para>
+      <para unique="1092053">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092055">Bitwise OR of packed quadword integers in ymm2 and ymm3/m256/m64bcst using writemask k1. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092023">EVEX.512.66.0F.W1 EB /r</para>
+      <para unique="1092024">VPORQ zmm1 {k1}{z}, zmm2, zmm3/m512/m64bcst</para>
+      </td>
+     <td><para unique="1092028">C</para>
+      </td>
+     <td><para unique="1092030">V/V</para>
+      </td>
+     <td><para unique="1092035">AVX512F </para>
+      <para unique="1092036">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092038">Bitwise OR of packed quadword integers in zmm2 and zmm3/m512/m64bcst using writemask k1. </para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091566">
+   <col width="46.18728pt"/>
+   <col width="64.78703999999999pt"/>
+   <col width="95.82048pt"/>
+   <col width="100.35144pt"/>
+   <col width="102.67848000000001pt"/>
+   <col width="98.08344000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091568">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091570">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091572">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091574">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091576">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091578">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091580">A</para>
+      </td>
+     <td valign="middle"><para unique="1091582">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091584">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091586">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091588">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091590">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091592">B</para>
+      </td>
+     <td valign="middle"><para unique="1091594">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091596">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091598">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091600">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091602">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091604">C</para>
+      </td>
+     <td valign="middle"><para unique="1091606">Full</para>
+      </td>
+     <td valign="middle"><para unique="1091608">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091610">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091612">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091614">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091615">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091617">Performs a bitwise logical OR operation on the source operand (second operand) and the destination operand (first operand) and stores the result in the destination operand. Each bit of the result is set to 1 if either or both of the corresponding bits of the first and second operands are 1; otherwise, it is set to 0.</para>
+  <para unique="1091618">In 64-bit mode and not encoded with VEX/EVEX, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).</para>
+  <para unique="1091619">Legacy SSE version: The source operand can be an MMX technology register or a 64-bit memory location. The destination operand is an MMX technology register.</para>
+  <para unique="1091620">128-bit Legacy SSE version: The second source operand is an XMM register or a 128-bit memory location. The first source and destination operands can be XMM registers. Bits (MAXVL-1:128) of the corresponding YMM destination register remain unchanged.</para>
+  <para unique="1091621">VEX.128 encoded version: The second source operand is an XMM register or a 128-bit memory location. The first source and destination operands can be XMM registers. Bits (MAXVL-1:128) of the destination YMM register are zeroed. </para>
+  <para unique="1091622">VEX.256 encoded version: The second source operand is an YMM register or a 256-bit memory location. The first source and destination operands can be YMM registers.</para>
+  <para unique="1091623">EVEX encoded version: The first source operand is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 32/64-bit memory location. The destination operand is a ZMM/YMM/XMM register conditionally updated with write&#173;mask k1 at 32/64-bit granularity.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091625">POR (64-bit Operand)</title>
+   <programlisting>DEST := DEST OR SRC</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091628">POR (128-bit Legacy SSE Version)</title>
+   <programlisting>DEST := DEST OR SRC
+DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091632">VPOR (VEX.128 Encoded Version)</title>
+   <programlisting>DEST := SRC1 OR SRC2
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091635">VPOR (VEX.256 Encoded Version)</title>
+   <programlisting>DEST := SRC1 OR SRC2
+DEST[MAXVL-1:256] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091639">VPORD (EVEX Encoded Versions) </title>
+   <programlisting>(KL, VL) = (4, 128), (8, 256), (16, 512)
+FOR j := 0 TO KL-1
+	i := j * 32
+	IF k1[j] OR *no writemask* THEN
+			IF (EVEX.b = 1) AND (SRC2 *is memory*)
+				THEN DEST[i+31:i] := SRC1[i+31:i] BITWISE OR SRC2[31:0]
+				ELSE DEST[i+31:i] := SRC1[i+31:i] BITWISE OR SRC2[i+31:i]
+			FI;
+		ELSE
+			IF *merging-masking*								; merging-masking
+				*DEST[i+31:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+31:i] := 0
+			FI;
+	FI;
+ENDFOR;
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VPORD __m512i _mm512_or_epi32(__m512i a, __m512i b);</string><string>
-</string><string>VPORD __m512i _mm512_mask_or_epi32(__m512i s, __mmask16 k, __m512i a, __m512i b);</string><string>
-</string><string>VPORD __m512i _mm512_maskz_or_epi32( __mmask16 k, __m512i a, __m512i b);</string><string>
-</string><string>VPORD __m256i _mm256_or_epi32(__m256i a, __m256i b);</string><string>
-</string><string>VPORD __m256i _mm256_mask_or_epi32(__m256i s, __mmask8 k, __m256i a, __m256i b,);</string><string>
-</string><string>VPORD __m256i _mm256_maskz_or_epi32( __mmask8 k, __m256i a, __m256i b);</string><string>
-</string><string>VPORD __m128i _mm_or_epi32(__m128i a, __m128i b);</string><string>
-</string><string>VPORD __m128i _mm_mask_or_epi32(__m128i s, __mmask8 k, __m128i a, __m128i b);</string><string>
-</string><string>VPORD __m128i _mm_maskz_or_epi32( __mmask8 k, __m128i a, __m128i b);</string><string>
-</string><string>VPORQ __m512i _mm512_or_epi64(__m512i a, __m512i b);</string><string>
-</string><string>VPORQ __m512i _mm512_mask_or_epi64(__m512i s, __mmask8 k, __m512i a, __m512i b);</string><string>
-</string><string>VPORQ __m512i _mm512_maskz_or_epi64(__mmask8 k, __m512i a, __m512i b);</string><string>
-</string><string>VPORQ __m256i _mm256_or_epi64(__m256i a, int imm);</string><string>
-</string><string>VPORQ __m256i _mm256_mask_or_epi64(__m256i s, __mmask8 k, __m256i a, __m256i b);</string><string>
-</string><string>VPORQ __m256i _mm256_maskz_or_epi64( __mmask8 k, __m256i a, __m256i b);</string><string>
-</string><string>VPORQ __m128i _mm_or_epi64(__m128i a, __m128i b);</string><string>
-</string><string>VPORQ __m128i _mm_mask_or_epi64(__m128i s, __mmask8 k, __m128i a, __m128i b);</string><string>
-</string><string>VPORQ __m128i _mm_maskz_or_epi64( __mmask8 k, __m128i a, __m128i b);</string><string>
-</string><string>POR __m64 _mm_or_si64(__m64 m1, __m64 m2)</string><string>
-</string><string>(V)POR 	__m128i _mm_or_si128(__m128i m1, __m128i m2)</string><string>
-</string><string>VPOR 	__m256i _mm256_or_si256 ( __m256i a, __m256i b)</string><string>
-</string></programlisting>
+  <programlisting>VPORD __m512i _mm512_or_epi32(__m512i a, __m512i b);
+VPORD __m512i _mm512_mask_or_epi32(__m512i s, __mmask16 k, __m512i a, __m512i b);
+VPORD __m512i _mm512_maskz_or_epi32( __mmask16 k, __m512i a, __m512i b);
+VPORD __m256i _mm256_or_epi32(__m256i a, __m256i b);
+VPORD __m256i _mm256_mask_or_epi32(__m256i s, __mmask8 k, __m256i a, __m256i b,);
+VPORD __m256i _mm256_maskz_or_epi32( __mmask8 k, __m256i a, __m256i b);
+VPORD __m128i _mm_or_epi32(__m128i a, __m128i b);
+VPORD __m128i _mm_mask_or_epi32(__m128i s, __mmask8 k, __m128i a, __m128i b);
+VPORD __m128i _mm_maskz_or_epi32( __mmask8 k, __m128i a, __m128i b);
+VPORQ __m512i _mm512_or_epi64(__m512i a, __m512i b);
+VPORQ __m512i _mm512_mask_or_epi64(__m512i s, __mmask8 k, __m512i a, __m512i b);
+VPORQ __m512i _mm512_maskz_or_epi64(__mmask8 k, __m512i a, __m512i b);
+VPORQ __m256i _mm256_or_epi64(__m256i a, int imm);
+VPORQ __m256i _mm256_mask_or_epi64(__m256i s, __mmask8 k, __m256i a, __m256i b);
+VPORQ __m256i _mm256_maskz_or_epi64( __mmask8 k, __m256i a, __m256i b);
+VPORQ __m128i _mm_or_epi64(__m128i a, __m128i b);
+VPORQ __m128i _mm_mask_or_epi64(__m128i s, __mmask8 k, __m128i a, __m128i b);
+VPORQ __m128i _mm_maskz_or_epi64( __mmask8 k, __m128i a, __m128i b);
+POR __m64 _mm_or_si64(__m64 m1, __m64 m2)
+(V)POR 	__m128i _mm_or_si128(__m128i m1, __m128i m2)
+VPOR 	__m256i _mm256_or_si256 ( __m256i a, __m256i b)</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1091680">
-   <string>None.</string></para>
+  <para unique="1091680">None.</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091682">
-   <string>None.</string></para>
+  <para unique="1091682">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091687" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091691" format="xIndent1">
-   <string>EVEX-encoded instruction, see </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091687" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1091685" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091691" format="xIndent1">EVEX-encoded instruction, see <link unique="1091689" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

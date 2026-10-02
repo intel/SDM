@@ -1,70 +1,156 @@
 <instruction name="XSETBV">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Set Extended Control Register</shortdesc>
- <longdesc><para unique="1012593">
-   <string>Writes the contents of registers EDX:EAX into the 64-bit extended control register (XCR) specified in the ECX register. (On processors that support the Intel&#160;64 architecture, the high-order 32 bits of RCX are ignored.) The contents of the EDX register are copied to high-order 32 bits of the selected XCR and the contents of the EAX register are copied to low-order 32 bits of the XCR. (On processors that support the Intel&#160;64 architecture, the high-order 32 bits of each of RAX and RDX are ignored.) Undefined or reserved bits in an XCR should be set to values previously read.</string></para>
-  <para unique="1012594">
-   <string>This instruction must be executed at privilege level 0 or in real-address mode; otherwise, a general protection exception #GP(0) is generated. Specifying a reserved or unimplemented XCR in ECX will also cause a general protection exception. The processor will also generate a general protection exception if software attempts to write to reserved bits in an XCR.</string></para>
-  <para unique="1012595">
-   <string>Currently, only XCR0 is supported. Thus, all other values of ECX are reserved and will cause a #GP(0). Note that bit&#160;0 of XCR0 (corresponding to x87 state) must be set to 1; the instruction will cause a #GP(0) if an attempt is made to clear this bit. In addition, the instruction causes a #GP(0) if an attempt is made to set XCR0[2] (AVX state) while clearing XCR0[1] (SSE state); it is necessary to set both bits to use AVX instructions; Section 13.3, &#8220;Enabling the XSAVE Feature Set and XSAVE-Enabled Features,&#8221; of Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1.</string></para>
+ <encoding_table><table unique="1012543">
+   <thead><tr>
+     <th><para unique="1012545">Opcode</para>
+      </th>
+     <th><para unique="1012547">Instruction</para>
+      </th>
+     <th><para unique="1012549">Op/ En</para>
+      </th>
+     <th><para unique="1012551">64-Bit Mode</para>
+      </th>
+     <th><para unique="1012553">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1012555">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.6112pt"/>
+   <col width="111.86352000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="181.404pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1012557">NP 0F 01 D1</para>
+      </td>
+     <td><para unique="1012560"><indexterm><primary>XSETBV</primary></indexterm>XSETBV</para>
+      </td>
+     <td><para unique="1012562">ZO</para>
+      </td>
+     <td><para unique="1012564">Valid</para>
+      </td>
+     <td><para unique="1012566">Valid</para>
+      </td>
+     <td><para unique="1012568">Write the value in EDX:EAX to the XCR specified by ECX.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1012570">
+   <col width="46.12032pt"/>
+   <col width="115.81128pt"/>
+   <col width="112.58136pt"/>
+   <col width="113.68727999999999pt"/>
+   <col width="121.51944pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1012572">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1012574">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1012576">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1012578">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1012580">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1012582">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1012584">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012586">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012588">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012590">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1012591">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1012593">Writes the contents of registers EDX:EAX into the 64-bit extended control register (XCR) specified in the ECX register. (On processors that support the Intel&#160;64 architecture, the high-order 32 bits of RCX are ignored.) The contents of the EDX register are copied to high-order 32 bits of the selected XCR and the contents of the EAX register are copied to low-order 32 bits of the XCR. (On processors that support the Intel&#160;64 architecture, the high-order 32 bits of each of RAX and RDX are ignored.) Undefined or reserved bits in an XCR should be set to values previously read.</para>
+  <para unique="1012594">This instruction must be executed at privilege level 0 or in real-address mode; otherwise, a general protection exception #GP(0) is generated. Specifying a reserved or unimplemented XCR in ECX will also cause a general protection exception. The processor will also generate a general protection exception if software attempts to write to reserved bits in an XCR.</para>
+  <para unique="1012595">Currently, only XCR0 is supported. Thus, all other values of ECX are reserved and will cause a #GP(0). Note that bit&#160;0 of XCR0 (corresponding to x87 state) must be set to 1; the instruction will cause a #GP(0) if an attempt is made to clear this bit. In addition, the instruction causes a #GP(0) if an attempt is made to set XCR0[2] (AVX state) while clearing XCR0[1] (SSE state); it is necessary to set both bits to use AVX instructions; Section 13.3, &#8220;Enabling the XSAVE Feature Set and XSAVE-Enabled Features,&#8221; of Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1.</para>
   </longdesc>
+ <operation>
+  <programlisting>XCR[ECX] := EDX:EAX;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1012599">
-   <string>None.</string></para>
+  <para unique="1012599">None.</para>
   </subsection>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>XSETBV 	void _xsetbv( unsigned int, unsigned __int64);</string><string>
-</string></programlisting>
+  <programlisting>XSETBV 	void _xsetbv( unsigned int, unsigned __int64);</programlisting>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the current privilege level is not 0.</string></listitem>
-    <listitem><string>If an invalid XCR is specified in ECX.</string></listitem>
-    <listitem><string>If the value in EDX:EAX sets bits that are reserved in the XCR specified by ECX.</string></listitem>
-    <listitem><string>If an attempt is made to clear bit 0 of </string><indexterm><primary>XCR0</primary></indexterm><string>XCR0.</string></listitem>
-    <listitem><string>If an attempt is made to set XCR0[2:1] to 10b.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1012603">If the current privilege level is not 0.</para>
+     </listitem>
+    <listitem><para unique="1012604">If an invalid XCR is specified in ECX.</para>
+     </listitem>
+    <listitem><para unique="1012605">If the value in EDX:EAX sets bits that are reserved in the XCR specified by ECX.</para>
+     </listitem>
+    <listitem><para unique="1012607">If an attempt is made to clear bit 0 of <indexterm><primary>XCR0</primary></indexterm>XCR0.</para>
+     </listitem>
+    <listitem><para unique="1012608">If an attempt is made to set XCR0[2:1] to 10b.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.01H:ECX.XSAVE[26] = 0.</string></listitem>
-    <listitem><string>If CR4.OSXSAVE[bit 18] = 0.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1012610">If CPUID.01H:ECX.XSAVE[26] = 0.</para>
+     </listitem>
+    <listitem><para unique="1012611">If CR4.OSXSAVE[bit 18] = 0.</para>
+     </listitem>
+    <listitem><para unique="1012612">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If an invalid XCR is specified in ECX.</string></listitem>
-    <listitem><string>If the value in EDX:EAX sets bits that are reserved in the XCR specified by ECX.</string></listitem>
-    <listitem><string>If an attempt is made to clear bit 0 of </string><indexterm><primary>XCR0</primary></indexterm><string>XCR0.</string></listitem>
-    <listitem><string>If an attempt is made to set XCR0[2:1] to 10b.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1012614">If an invalid XCR is specified in ECX.</para>
+     </listitem>
+    <listitem><para unique="1012615">If the value in EDX:EAX sets bits that are reserved in the XCR specified by ECX.</para>
+     </listitem>
+    <listitem><para unique="1012617">If an attempt is made to clear bit 0 of <indexterm><primary>XCR0</primary></indexterm>XCR0.</para>
+     </listitem>
+    <listitem><para unique="1012618">If an attempt is made to set XCR0[2:1] to 10b.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.01H:ECX.XSAVE[26] = 0.</string></listitem>
-    <listitem><string>If CR4.OSXSAVE[bit 18] = 0.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1012620">If CPUID.01H:ECX.XSAVE[26] = 0.</para>
+     </listitem>
+    <listitem><para unique="1012621">If CR4.OSXSAVE[bit 18] = 0.</para>
+     </listitem>
+    <listitem><para unique="1012622">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>The XSETBV instruction is not recognized in virtual-8086 mode.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1012624">The XSETBV instruction is not recognized in virtual-8086 mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1012626" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1012626" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
-  <para unique="1012628" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1012628" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  </instruction>

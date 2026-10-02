@@ -1,32 +1,123 @@
 <instruction name="AESIMC">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Perform the AES InvMixColumn Transformation</shortdesc>
- <longdesc><para unique="1261256">
-   <string>Perform the InvMixColumns transformation on the source operand and store the result in the destination operand. The destination operand is an XMM register. The source operand can be an XMM register or a 128-bit memory loca&#173;tion. </string></para>
-  <para unique="1261315">
-   <string>Note: the AESIMC instruction should be applied to the expanded AES round keys (except for the first and last round key) in order to prepare them for decryption using the &#8220;Equivalent Inverse Cipher&#8221; (defined in FIPS 197). </string></para>
-  <para unique="1261259">
-   <string>128-bit Legacy SSE version: Bits (MAXVL-1:128) of the corresponding YMM destination register remain unchanged.</string></para>
-  <para unique="1261260">
-   <string>VEX.128 encoded version: Bits (MAXVL-1:128) of the destination YMM register are zeroed.</string></para>
-  <para unique="1261261">
-   <string>Note: In VEX-encoded versions, VEX.vvvv is reserved and must be 1111b, otherwise instructions will #UD.</string></para>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th colspan="2"><para unique="1261193">Opcode/</para>
+      <para unique="1261194">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64/32-bit Mode</para>
+      </th>
+     <th><para unique="1261202">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.96256pt"/>
+   <col width="112.26168000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="47.999520000000004pt"/>
+   <col width="46.728pt"/>
+   <col width="182.15424000000002pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1261206">66 0F 38 DB /r</para>
+      <para unique="1261207"><sans>AESIMC xmm1, xmm2/m128</sans></para>
+      </td>
+     <td><para unique="1261211">RM</para>
+      </td>
+     <td><para unique="1261213">V/V</para>
+      </td>
+     <td><para unique="1261215">AES</para>
+      </td>
+     <td><para unique="1261217">Perform the InvMixColumn transformation on a 128-bit round key from xmm2/m128 and store the result in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261219">VEX.128.66.0F38.WIG DB /r</para>
+      <para unique="1261220"><sans>VAESIMC xmm1, xmm2/m128</sans></para>
+      </td>
+     <td><para unique="1261224">RM</para>
+      </td>
+     <td><para unique="1261226">V/V</para>
+      </td>
+     <td><para unique="1261228">Both AES and</para>
+      <para unique="1261229">AVX flags</para>
+      </td>
+     <td><para unique="1261231">Perform the InvMixColumn transformation on a 128-bit round key from xmm2/m128 and store the result in xmm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261233">
+   <col width="44.860319999999994pt"/>
+   <col width="116.27352pt"/>
+   <col width="119.22624pt"/>
+   <col width="116.41391999999999pt"/>
+   <col width="115.94592pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261235">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261237">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261239">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261241">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261243">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261245">RM</para>
+      </td>
+     <td valign="middle"><para unique="1261247">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261249">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261251">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261253">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261254">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261256">Perform the InvMixColumns transformation on the source operand and store the result in the destination operand. The destination operand is an XMM register. The source operand can be an XMM register or a 128-bit memory loca&#173;tion. </para>
+  <para unique="1261315">Note: the AESIMC instruction should be applied to the expanded AES round keys (except for the first and last round key) in order to prepare them for decryption using the &#8220;Equivalent Inverse Cipher&#8221; (defined in FIPS 197). </para>
+  <para unique="1261259">128-bit Legacy SSE version: Bits (MAXVL-1:128) of the corresponding YMM destination register remain unchanged.</para>
+  <para unique="1261260">VEX.128 encoded version: Bits (MAXVL-1:128) of the destination YMM register are zeroed.</para>
+  <para unique="1261261">Note: In VEX-encoded versions, VEX.vvvv is reserved and must be 1111b, otherwise instructions will #UD.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1261263">AESIMC</title>
+   <programlisting>DEST[127:0] := InvMixColumns( SRC );
+DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261267">VAESIMC </title>
+   <programlisting>DEST[127:0] := InvMixColumns( SRC );
+DEST[MAXVL-1:128] := 0;</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>(V)AESIMC 		__m128i _mm_aesimc (__m128i)</string><string>
-</string></programlisting>
+  <programlisting>(V)AESIMC 		__m128i _mm_aesimc (__m128i)</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1261273">
-   <string>None.</string></para>
+  <para unique="1261273">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1261278" format="xIndent1">
-   <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions,&#8221;</string></link><string> additionally:</string></para>
+  <para unique="1261278" format="xIndent1">See <link unique="1261276" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-comma">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions,&#8221;</link> additionally:</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If VEX.vvvv &#8800; 1111B.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1261279">If VEX.vvvv &#8800; 1111B.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

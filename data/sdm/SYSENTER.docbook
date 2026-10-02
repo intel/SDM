@@ -1,0 +1,248 @@
+<instruction name="SYSENTER">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Fast System Call</shortdesc>
+ <encoding_table><table unique="1091391">
+   <thead><tr>
+     <th><para unique="1091393">Opcode</para>
+      </th>
+     <th><para unique="1091395">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op/ En</para>
+      </th>
+     <th><para unique="1091399">64-Bit Mode</para>
+      </th>
+     <th><para unique="1091401">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><col width="86.42952pt"/>
+   <col width="98.04456pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="207.90432pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1091405">0F 34</para>
+      </td>
+     <td><para unique="1091407">SYSENTER</para>
+      </td>
+     <td><para unique="1091409">ZO</para>
+      </td>
+     <td><para unique="1091411">Valid</para>
+      </td>
+     <td><para unique="1091413">Valid</para>
+      </td>
+     <td><para unique="1091415">Fast call to privilege level 0 system procedures.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091417">
+   <col width="44.063280000000006pt"/>
+   <col width="113.08752pt"/>
+   <col width="119.22624pt"/>
+   <col width="115.6176pt"/>
+   <col width="120.72528pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091419">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091421">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091423">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091425">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091427">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091429">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1091431">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091433">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091435">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091437">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091438">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1092311">SYSENTER invokes an OS system-call handler at privilege level 0. Its operation depends on whether FRED transi&#173;tions are enabled.</para>
+  </longdesc>
+ <operation title="When FRED Transitions Are Not Enabled">
+  <para unique="1091440">When FRED transitions are not enabled, SYSENTER is a companion instruction to SYSEXIT. SYSENTER is optimized to provide the maximum performance for system calls from user code running at privilege level 3 to operating system or executive procedures running at privilege level 0.</para>
+  <para unique="1091441">When executed in IA&#8209;32e mode, the SYSENTER instruction transitions the logical processor to 64-bit mode; other&#173;wise, the logical processor remains in protected mode.</para>
+  <para unique="1091442">Prior to executing the SYSENTER instruction, software must specify the privilege level 0 code segment and code entry point, and the privilege level 0 stack segment and stack pointer by writing values to the following MSRs:</para>
+  <itemizedlist>
+   <listitem><para unique="1091443"><bold>IA32_SYSENTER_CS</bold> (MSR address 174H) &#8212; The lower 16 bits of this MSR are the segment selector for the privilege level 0 code segment. This value is also used to determine the segment selector of the privilege level 0 stack segment (see the Operation section). This value cannot indicate a null selector.</para>
+    </listitem>
+   <listitem><para unique="1091444"><bold>IA32_SYSENTER_EIP</bold> (MSR address 176H) &#8212; The value of this MSR is loaded into RIP (thus, this value references the first instruction of the selected operating procedure or routine). In protected mode, only bits&#160;31:0 are loaded.</para>
+    </listitem>
+   <listitem><para unique="1091445"><bold>IA32_SYSENTER_ESP</bold> (MSR address 175H) &#8212; The value of this MSR is loaded into RSP (thus, this value contains the stack pointer for the privilege level 0 stack). This value cannot represent a non-canonical address. In protected mode, only bits&#160;31:0 are loaded.</para>
+    </listitem>
+   </itemizedlist>
+  <para unique="1092335">MSR writes ensure that the IA32_SYSENTER_EIP and IA32_SYSENTER_ESP MSRs always contain canonical addresses.</para>
+  <para unique="1091447">While SYSENTER loads the CS and SS selectors with values derived from the IA32_SYSENTER_CS MSR, the CS and SS descriptor caches are <bold>not</bold> loaded from the descriptors (in GDT or LDT) referenced by those selectors. Instead, the descriptor caches are loaded with fixed values. See the Operation section for details. It is the responsibility of OS software to ensure that the descriptors (in GDT or LDT) referenced by those selector values correspond to the fixed values loaded into the descriptor caches; the SYSENTER instruction does not ensure this correspondence.</para>
+  <para unique="1092351">The SYSENTER instruction cannot be invoked from real-address mode. </para>
+  <para unique="1091449">The SYSENTER and SYSEXIT instructions are companion instructions, but they do not constitute a call/return pair. When executing a SYSENTER instruction, the processor does not save state information for the user code (e.g., the instruction pointer), and neither the SYSENTER nor the SYSEXIT instruction supports passing parameters on the stack.</para>
+  <para unique="1091450">To use the SYSENTER and SYSEXIT instructions as companion instructions for transitions between privilege level 3 code and privilege level 0 operating system procedures, the following conventions must be followed:</para>
+  <itemizedlist>
+   <listitem><para unique="1091451">The segment descriptors for the privilege level 0 code and stack segments and for the privilege level 3 code and stack segments must be contiguous in a descriptor table. This convention allows the processor to compute the segment selectors from the value entered in the SYSENTER_CS_MSR MSR.</para>
+    </listitem>
+   <listitem><para unique="1091452">The fast system call &#8220;stub&#8221; routines executed by user code (typically in shared libraries or DLLs) must save the required return IP and processor state information if a return to the calling procedure is required. Likewise, the operating system or executive procedures called with SYSENTER instructions must have access to and use this saved return and state information when returning to the user code.</para>
+    </listitem>
+   </itemizedlist>
+  <para unique="1091453">The SYSENTER and SYSEXIT instructions were introduced into the IA-32 architecture in the Pentium II processor. The availability of these instructions on a processor is indicated with the SYSENTER/SYSEXIT present (SEP) feature flag returned to the EDX register by the CPUID instruction. An operating system that qualifies the SEP flag must also qualify the processor family and model to ensure that the SYSENTER/SYSEXIT instructions are actually present. For example:</para>
+  <programlisting>IF CPUID SEP bit is set
+	THEN IF (Family = 6) and (Model &lt; 3) and (Stepping &lt; 3)
+		THEN
+			SYSENTER/SYSEXIT_Not_Supported; FI;
+		ELSE
+			SYSENTER/SYSEXIT_Supported; FI;
+FI;
+When the CPUID instruction is executed on the Pentium Pro processor (model 1), the processor returns a the SEP flag as set, but does not support the SYSENTER/SYSEXIT instructions.
+When shadow stacks are enabled at privilege level where SYSENTER instruction is invoked, the SSP is saved to the IA32_PL3_SSP MSR. If shadow stacks are enabled at privilege level 0, the SSP is loaded with 0. Refer to Chapter 6, &#8220;Procedure Calls, Interrupts, and Exceptions&#8218;&#8221; and Chapter 18, &#8220;Control-flow Enforcement Technology (CET)&#8218;&#8221; in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for additional CET details.</programlisting>
+  </operation>
+ <subsection title="When FRED Transitions are Enabled">
+  <para unique="1092364">When FRED transitions are enabled, SYSENTER invokes the OS handler by performing FRED event delivery. See <link unique="1092366" linkend="&lt;c&gt;__sdm_vol3A_ch08-fred.fm#83159: 02_Level: 7.4 FRED Event Delivery" xrefstyle="SectionNum&amp;Title(,)_CR">Section 8.3, &#8220;FRED Event Delivery,&#8221;</link> in Intel&#174; 64 and IA-32 Architectures Software Developer&#8217;s Manual, Volume 3. The event is delivered using event type 7 and vector 2. With FRED transitions, the OS handler uses the ERETU instruction to return to calling code operating at CPL 3.</para>
+  <para unique="1091469">Instruction ordering. Instructions following a SYSENTER may be fetched from memory before earlier instructions complete execution, but they will not execute (even speculatively) until all instructions prior to the SYSENTER have completed execution (the later instructions may execute before data stored by the earlier instructions have become globally visible).</para>
+  </subsection>
+ <subsection title="Operation">
+  <programlisting>IF CR0.PE = 0 OR (CR4.FRED = 0 AND IA32_SYSENTER_CS[15:2] = 0)
+	THEN #GP(0); FI;
+IF CR4.FRED = 0
+	THEN
+		RFLAGS.VM := 0;										(* Ensures protected mode execution *)
+		RFLAGS.IF := 0;										(* Mask interrupts *)
+		IF in IA&#8209;32e mode
+			THEN
+				RSP := IA32_SYSENTER_ESP;
+				RIP := IA32_SYSENTER_EIP;
+		ELSE
+				ESP := IA32_SYSENTER_ESP[31:0];
+				EIP := IA32_SYSENTER_EIP[31:0];
+		FI;
+		CS.Selector := IA32_SYSENTER_CS[15:0] AND FFFCH;
+										(* Operating system provides CS; RPL forced to 0 *)
+		(* Set rest of CS to a fixed value *)
+		CS.Base := 0;										(* Flat segment *)
+		CS.Limit := FFFFFH;										(* With 4-KByte granularity, implies a 4-GByte limit *)
+		CS.Type := 11;										(* Execute/read code, accessed *)
+		CS.S := 1;
+		CS.DPL := 0;
+		CS.P := 1;
+		IF in IA&#8209;32e mode
+			THEN
+				CS.L := 1;								(* Entry is to 64-bit mode *)
+				CS.D := 0;								(* Required if CS.L = 1 *)
+			ELSE
+				CS.L := 0;
+				CS.D := 1;								(* 32-bit code segment*)
+		FI;
+		CS.G := 1;										(* 4-KByte granularity *)
+		IF ShadowStackEnabled(CPL)
+			THEN
+				IF IA32_EFER.LMA = 0
+					THEN IA32_PL3_SSP := SSP;
+					ELSE (* adjust so bits 63:N get the value of bit N&#8211;1, where N is the CPU&#8217;s maximum linear-address width *)
+						IA32_PL3_SSP := LA_adjust(SSP);
+				FI;
+		FI;
+		CPL := 0;
+		IF ShadowStackEnabled(CPL)
+			SSP := 0;
+		FI;
+		IF EndbranchEnabled(CPL)
+			IA32_S_CET.TRACKER = WAIT_FOR_ENDBRANCH
+			IA32_S_CET.SUPPRESS = 0
+		FI;
+		SS.Selector := CS.Selector + 8;										(* SS just above CS *)
+		(* Set rest of SS to a fixed value *)
+		SS.Base := 0;										(* Flat segment *)
+		SS.Limit := FFFFFH;										(* With 4-KByte granularity, implies a 4-GByte limit *)
+		SS.Type := 3;										(* Read/write data, accessed *)
+		SS.S := 1;
+		SS.DPL := 0;
+		SS.P := 1;
+		SS.B := 1;										(* 32-bit stack segment*)
+		SS.G := 1;										(* 4-KByte granularity *)
+	ELSE (* CR4.FRED = 1 *)
+		FRED event delivery of SYSENTER;										(* save instruction length on stack *)
+FI;</programlisting>
+  </subsection>
+ <subsection title="Flags Affected">
+  <para unique="1091530">VM, IF (see Operation above).</para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091532">If IA32_SYSENTER_CS[15:2] = 0.</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#UD </term>
+    <listitem><para unique="1091533">If the LOCK prefix is used.</para>
+     </listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term>#GP</term>
+    <listitem><para unique="1091535">The SYSENTER instruction is not recognized in real-address mode.</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#UD </term>
+    <listitem><para unique="1091536">If the LOCK prefix is used.</para>
+     </listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <para unique="1091538" format="xIndent1">Same exceptions as in protected mode.</para>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term>#UD </term>
+    <listitem><para unique="1092479">If the LOCK prefix is used.</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#GP(0)</term>
+    <listitem><para unique="1092480">If CR4.FRED = 0 and IA32_SYSENTER_CS[15:2] = 0.</para>
+     </listitem>
+    <listitem><para unique="1092481">If FRED event delivery of SYSENTER would load RIP with a non-canonical address.</para>
+     </listitem>
+    <listitem><para unique="1092482">If FRED event delivery of SYSENTER would load SSP with an address that is not 8-byte aligned.</para>
+     </listitem>
+    <listitem><para unique="1092483">If a shadow-stack access performed by FRED event delivery of SYSENTER uses a non-canon&#173;ical address or causes a LASS violation.</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#SS(0)</term>
+    <listitem><para unique="1092484">If an ordinary stack access performed by FRED event delivery of SYSENTER uses a non-canon&#173;ical address or causes a LASS violation.</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#PF</term>
+    <listitem><para unique="1092485">If a memory access performed by FRED event delivery of SYSENTER causes a page fault.</para>
+     </listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <para unique="1092487" format="xIndent1">Same exceptions as in compatibility mode.</para>
+  </subsection>
+ </instruction>

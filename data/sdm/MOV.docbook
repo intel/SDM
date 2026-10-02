@@ -1,153 +1,777 @@
 <instruction name="MOV">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Move</shortdesc>
- <longdesc><para unique="1091907">
-   <string>Copies the second operand (source operand) to the first operand (destination operand). The source operand can be an immediate value, </string><indexterm><primary>General-purpose registers:moving value to and from</primary></indexterm><string>general-purpose register, </string><indexterm><primary>Segment:registers, moving values to and from</primary></indexterm><string>segment register, or memory location; the destination register can be a general-purpose register, segment register, or memory location. Both operands must be the same size, which can be a byte, a word, a doubleword, or a quadword.</string></para>
-  <para unique="1091911">
-   <string>The MOV instruction cannot be used to load the </string><indexterm><primary>CS register</primary></indexterm><string>CS register. Attempting to do so results in an invalid opcode excep&#173;tion (#UD). To load the CS register, use the far JMP, CALL, or RET instruction.</string></para>
-  <para unique="1091912">
-   <string>If the destination operand is a segment register (DS, ES, FS, GS, or SS), the source operand must be a valid segment selector. In protected mode, moving a segment selector into a segment register automatically causes the segment descriptor information associated with that segment selector to be loaded into the hidden (shadow) part of the segment register. While loading this information, the segment selector and segment descriptor information is validated (see the &#8220;Operation&#8221; algorithm below). The segment descriptor data is obtained from the GDT or LDT entry for the specified segment selector. </string></para>
-  <para unique="1091913">
-   <string>A NULL segment selector (values 0000-0003) can be loaded into the DS, ES, FS, and GS registers without causing a protection exception. However, any subsequent attempt to reference a segment whose corresponding segment register is loaded with a NULL value causes a general protection exception (#GP) and no memory reference occurs.</string></para>
-  <para unique="1091915">
-   <string>Loading the </string><indexterm><primary>SS register</primary></indexterm><string>SS register with a MOV instruction suppresses or inhibits some debug exceptions and inhibits inter&#173;rupts on the following instruction boundary. (The inhibition ends after delivery of an exception or the execution of the next instruction.) This behavior allows a stack pointer to be loaded into the ESP register with the next instruc&#173;tion (MOV ESP, </string><bold><string>stack-pointer value</string></bold><string>) before an event can be delivered. See </string><link linkend="94408: 03_Level: 5.8.3 Masking Exceptions and Interrupts When Switching Stacks"><string>Section 7.8.3, &#8220;Masking Exceptions and Interrupts When Switching Stacks,&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A. Intel recommends that software use the LSS instruction to load the SS register and ESP together.</string></para>
-  <para unique="1091919">
-   <string>When executing MOV Reg, Sreg, the processor copies the content of Sreg to the 16 least significant bits of the general-purpose register. The upper bits of the destination register are zero for most IA-32 processors (Pentium Pro processors and later) and all Intel 64 processors, with the exception that bits 31:16 are undefined for Intel Quark X1000 processors, Pentium, and earlier processors.</string></para>
-  <para unique="1091920">
-   <string>In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</string></para>
+ <encoding_table><table unique="1091391">
+   <thead><tr>
+     <th><para unique="1091393">Opcode</para>
+      </th>
+     <th><para unique="1091395">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op/ En</para>
+      </th>
+     <th><para unique="1091399">64-Bit Mode</para>
+      </th>
+     <th><para unique="1091401">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><col width="97.55712pt"/>
+   <col width="110.66760000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="181.404pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1091405">88 /r</para>
+      </td>
+     <td><para unique="1091407">MOV r/m8<footnote><para unique="1092377" format="TableFootnote"><anchor id="70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce"/>With a REX prefix in 64-bit mode, attempts to access AH, BH, CH, or DH will instead access SPL, DIL, BPL, or SIL, respectively.</para>
+        </footnote>, r8<link unique="1092469" linkend="#70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link></para>
+      </td>
+     <td><para unique="1091409">MR</para>
+      </td>
+     <td><para unique="1091411">Valid</para>
+      </td>
+     <td><para unique="1091413">Valid</para>
+      </td>
+     <td><para unique="1091415">Move r8 to r/m8.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091432">89 /r</para>
+      </td>
+     <td><para unique="1091434">MOV r/m16, r16</para>
+      </td>
+     <td><para unique="1091436">MR</para>
+      </td>
+     <td><para unique="1091438">Valid</para>
+      </td>
+     <td><para unique="1091440">Valid</para>
+      </td>
+     <td><para unique="1091442">Move r16 to r/m16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091444">89 /r</para>
+      </td>
+     <td><para unique="1091446">MOV r/m32, r32</para>
+      </td>
+     <td><para unique="1091448">MR</para>
+      </td>
+     <td><para unique="1091450">Valid</para>
+      </td>
+     <td><para unique="1091452">Valid</para>
+      </td>
+     <td><para unique="1091454">Move r32 to r/m32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091456">REX.W + 89 /r</para>
+      </td>
+     <td><para unique="1091458">MOV r/m64, r64</para>
+      </td>
+     <td><para unique="1091460">MR</para>
+      </td>
+     <td><para unique="1091462">Valid</para>
+      </td>
+     <td><para unique="1091464">N.E.</para>
+      </td>
+     <td><para unique="1091466">Move r64 to r/m64.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091468">8A /r</para>
+      </td>
+     <td><para unique="1091470">MOV r8<link unique="1092436" linkend="#70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link>, r/m8<link unique="1092389" linkend="#70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link></para>
+      </td>
+     <td><para unique="1091472">RM</para>
+      </td>
+     <td><para unique="1091474">Valid</para>
+      </td>
+     <td><para unique="1091476">Valid</para>
+      </td>
+     <td><para unique="1091478">Move r/m8 to r8.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091492">8B /r</para>
+      </td>
+     <td><para unique="1091494">MOV r16, r/m16</para>
+      </td>
+     <td><para unique="1091496">RM</para>
+      </td>
+     <td><para unique="1091498">Valid</para>
+      </td>
+     <td><para unique="1091500">Valid</para>
+      </td>
+     <td><para unique="1091502">Move r/m16 to r16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091504">8B /r</para>
+      </td>
+     <td><para unique="1091506">MOV r32, r/m32</para>
+      </td>
+     <td><para unique="1091508">RM</para>
+      </td>
+     <td><para unique="1091510">Valid</para>
+      </td>
+     <td><para unique="1091512">Valid</para>
+      </td>
+     <td><para unique="1091514">Move r/m32 to r32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091516">REX.W + 8B /r</para>
+      </td>
+     <td><para unique="1091518">MOV r64, r/m64</para>
+      </td>
+     <td><para unique="1091520">RM</para>
+      </td>
+     <td><para unique="1091522">Valid</para>
+      </td>
+     <td><para unique="1091524">N.E.</para>
+      </td>
+     <td><para unique="1091526">Move r/m64 to r64.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091528">8C /r</para>
+      </td>
+     <td><para unique="1091533">MOV r/m16, Sreg<footnote><para unique="1091532" format="TableFootnote">In 32-bit mode, the assembler may insert the 16-bit operand-size prefix with this instruction (see the following &#8220;Description&#8221; section for further information).</para>
+        </footnote></para>
+      </td>
+     <td><para unique="1091535">MR</para>
+      </td>
+     <td><para unique="1091537">Valid</para>
+      </td>
+     <td><para unique="1091539">Valid</para>
+      </td>
+     <td><para unique="1091541">Move segment register to r/m16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091543">8C /r</para>
+      </td>
+     <td><para unique="1091545">MOV r16/r32/m16, Sreg<superscript>2</superscript></para>
+      </td>
+     <td><para unique="1091547">MR</para>
+      </td>
+     <td><para unique="1091549">Valid</para>
+      </td>
+     <td><para unique="1091551">Valid</para>
+      </td>
+     <td><para unique="1091553">Move zero extended 16-bit segment register to r16/r32/m16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091555">REX.W + 8C /r</para>
+      </td>
+     <td><para unique="1091557">MOV r64/m16, Sreg<superscript>2</superscript></para>
+      </td>
+     <td><para unique="1091559">MR</para>
+      </td>
+     <td><para unique="1091561">Valid</para>
+      </td>
+     <td><para unique="1091563">Valid</para>
+      </td>
+     <td><para unique="1091565">Move zero extended 16-bit segment register to r64/m16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091567">8E /r</para>
+      </td>
+     <td><para unique="1091569">MOV Sreg, r/m16<superscript>2</superscript></para>
+      </td>
+     <td><para unique="1091571">RM</para>
+      </td>
+     <td><para unique="1091573">Valid</para>
+      </td>
+     <td><para unique="1091575">Valid</para>
+      </td>
+     <td><para unique="1091577">Move r/m16 to segment register.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091579">REX.W + 8E /r</para>
+      </td>
+     <td><para unique="1091581">MOV Sreg, r/m64<superscript>2</superscript></para>
+      </td>
+     <td><para unique="1091583">RM</para>
+      </td>
+     <td><para unique="1091585">Valid</para>
+      </td>
+     <td><para unique="1091587">Valid</para>
+      </td>
+     <td><para unique="1091589">Move lower 16 bits of r/m64 to segment register.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091591">A0</para>
+      </td>
+     <td><para unique="1091596">MOV AL, moffs8<footnote><para unique="1091595" format="TableFootnote">The moffs8, moffs16, moffs32, and moffs64 operands specify a simple offset relative to the segment base, where 8, 16, 32, and 64 refer to the size of the data. The address-size attribute of the instruction determines the size of the offset, either 16, 32, or 64 bits.</para>
+        </footnote></para>
+      </td>
+     <td><para unique="1091598">FD</para>
+      </td>
+     <td><para unique="1091600">Valid</para>
+      </td>
+     <td><para unique="1091602">Valid</para>
+      </td>
+     <td><para unique="1091604">Move byte at (seg:offset) to AL.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091606">REX.W + A0</para>
+      </td>
+     <td><para unique="1091608">MOV AL, moffs8<superscript>3</superscript></para>
+      </td>
+     <td><para unique="1091610">FD</para>
+      </td>
+     <td><para unique="1091612"> Valid</para>
+      </td>
+     <td><para unique="1091614">N.E.</para>
+      </td>
+     <td><para unique="1091616">Move byte at (offset) to AL.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091618">A1</para>
+      </td>
+     <td><para unique="1091620">MOV AX, moffs16<superscript>3</superscript></para>
+      </td>
+     <td><para unique="1091622">FD</para>
+      </td>
+     <td><para unique="1091624">Valid</para>
+      </td>
+     <td><para unique="1091626">Valid</para>
+      </td>
+     <td><para unique="1091628">Move word at (seg:offset) to AX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091630">A1</para>
+      </td>
+     <td><para unique="1091632">MOV EAX, moffs32<superscript>3</superscript></para>
+      </td>
+     <td><para unique="1091634">FD</para>
+      </td>
+     <td><para unique="1091636">Valid</para>
+      </td>
+     <td><para unique="1091638">Valid</para>
+      </td>
+     <td><para unique="1091640">Move doubleword at (seg:offset) to EAX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091642">REX.W + A1</para>
+      </td>
+     <td><para unique="1091644">MOV RAX, moffs64<superscript>3</superscript></para>
+      </td>
+     <td><para unique="1091646">FD</para>
+      </td>
+     <td><para unique="1091648">Valid</para>
+      </td>
+     <td><para unique="1091650">N.E.</para>
+      </td>
+     <td><para unique="1091652">Move quadword at (offset) to RAX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091654">A2</para>
+      </td>
+     <td><para unique="1091656">MOV moffs8, AL</para>
+      </td>
+     <td><para unique="1091658">TD</para>
+      </td>
+     <td><para unique="1091660"> Valid</para>
+      </td>
+     <td><para unique="1091662">Valid</para>
+      </td>
+     <td><para unique="1091664">Move AL to (seg:offset).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091666">REX.W + A2</para>
+      </td>
+     <td><para unique="1091668">MOV moffs8<sans>1</sans>, AL</para>
+      </td>
+     <td><para unique="1091670">TD</para>
+      </td>
+     <td><para unique="1091672">Valid</para>
+      </td>
+     <td><para unique="1091674">N.E.</para>
+      </td>
+     <td><para unique="1091676">Move AL to (offset).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091678">A3</para>
+      </td>
+     <td><para unique="1091680">MOV moffs16<superscript>3</superscript>, AX</para>
+      </td>
+     <td><para unique="1091682">TD</para>
+      </td>
+     <td><para unique="1091684">Valid</para>
+      </td>
+     <td><para unique="1091686">Valid</para>
+      </td>
+     <td><para unique="1091688">Move AX to (seg:offset).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091690">A3</para>
+      </td>
+     <td><para unique="1091692">MOV moffs32<superscript>3</superscript>, EAX</para>
+      </td>
+     <td><para unique="1091694">TD</para>
+      </td>
+     <td><para unique="1091696">Valid</para>
+      </td>
+     <td><para unique="1091698">Valid</para>
+      </td>
+     <td><para unique="1091700">Move EAX to (seg:offset).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091702">REX.W + A3</para>
+      </td>
+     <td><para unique="1091704">MOV moffs64<superscript>3</superscript>, RAX</para>
+      </td>
+     <td><para unique="1091706">TD</para>
+      </td>
+     <td><para unique="1091708">Valid</para>
+      </td>
+     <td><para unique="1091710">N.E.</para>
+      </td>
+     <td><para unique="1091712">Move RAX to (offset).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091714">B0+ rb ib</para>
+      </td>
+     <td><para unique="1091716">MOV r8<link unique="1092484" linkend="#70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link>, imm8</para>
+      </td>
+     <td><para unique="1091718">OI</para>
+      </td>
+     <td><para unique="1091720">Valid</para>
+      </td>
+     <td><para unique="1091722">Valid</para>
+      </td>
+     <td><para unique="1091724">Move imm8 to r8.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091738">B8+ rw iw</para>
+      </td>
+     <td><para unique="1091740">MOV r16, imm16</para>
+      </td>
+     <td><para unique="1091742">OI</para>
+      </td>
+     <td><para unique="1091744">Valid</para>
+      </td>
+     <td><para unique="1091746">Valid</para>
+      </td>
+     <td><para unique="1091748">Move imm16 to r16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091750">B8+ rd id</para>
+      </td>
+     <td><para unique="1091752">MOV r32, imm32</para>
+      </td>
+     <td><para unique="1091754">OI</para>
+      </td>
+     <td><para unique="1091756">Valid</para>
+      </td>
+     <td><para unique="1091758">Valid</para>
+      </td>
+     <td><para unique="1091760">Move imm32 to r32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091762">REX.W + B8+ rd io</para>
+      </td>
+     <td><para unique="1091764">MOV r64, imm64</para>
+      </td>
+     <td><para unique="1091766">OI</para>
+      </td>
+     <td><para unique="1091768">Valid</para>
+      </td>
+     <td><para unique="1091770">N.E.</para>
+      </td>
+     <td><para unique="1091772">Move imm64 to r64.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091774">C6 /0 ib</para>
+      </td>
+     <td><para unique="1091776">MOV r/m8<link unique="1092501" linkend="#70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link>, imm8</para>
+      </td>
+     <td><para unique="1091778">MI</para>
+      </td>
+     <td><para unique="1091780">Valid</para>
+      </td>
+     <td><para unique="1091782">Valid</para>
+      </td>
+     <td><para unique="1091784">Move imm8 to r/m8.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091798">C7 /0 iw</para>
+      </td>
+     <td><para unique="1091800">MOV r/m16, imm16</para>
+      </td>
+     <td><para unique="1091802">MI</para>
+      </td>
+     <td><para unique="1091804">Valid</para>
+      </td>
+     <td><para unique="1091806">Valid</para>
+      </td>
+     <td><para unique="1091808">Move imm16 to r/m16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091810">C7 /0 id</para>
+      </td>
+     <td><para unique="1091812">MOV r/m32, imm32</para>
+      </td>
+     <td><para unique="1091814">MI</para>
+      </td>
+     <td><para unique="1091816">Valid</para>
+      </td>
+     <td><para unique="1091818">Valid</para>
+      </td>
+     <td><para unique="1091820">Move imm32 to r/m32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091822">REX.W + C7 /0 id</para>
+      </td>
+     <td><para unique="1091824">MOV r/m64, imm32</para>
+      </td>
+     <td><para unique="1091826">MI</para>
+      </td>
+     <td><para unique="1091828">Valid </para>
+      </td>
+     <td><para unique="1091830">N.E.</para>
+      </td>
+     <td><para unique="1091832">Move imm32 sign extended to 64-bits to r/m64.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091834">
+   <col width="44.98344pt"/>
+   <col width="113.82048pt"/>
+   <col width="121.71383999999999pt"/>
+   <col width="116.40384pt"/>
+   <col width="114.29856pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091836">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091838">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091840">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091842">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091844">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091846">MR</para>
+      </td>
+     <td valign="middle"><para unique="1091848">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091850">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091852">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091854">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091856">RM</para>
+      </td>
+     <td valign="middle"><para unique="1091858">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091860">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091862">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091864">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091866">FD</para>
+      </td>
+     <td valign="middle"><para unique="1091868">AL/AX/EAX/RAX</para>
+      </td>
+     <td valign="middle"><para unique="1091870">Moffs</para>
+      </td>
+     <td valign="middle"><para unique="1091872">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091874">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091876">TD</para>
+      </td>
+     <td valign="middle"><para unique="1091878">Moffs (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091880">AL/AX/EAX/RAX</para>
+      </td>
+     <td valign="middle"><para unique="1091882">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091884">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091886">OI</para>
+      </td>
+     <td valign="middle"><para unique="1091888">opcode + rd (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091890">imm8/16/32/64</para>
+      </td>
+     <td valign="middle"><para unique="1091892">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091894">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091896">MI</para>
+      </td>
+     <td valign="middle"><para unique="1091898">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091900">imm8/16/32/64</para>
+      </td>
+     <td valign="middle"><para unique="1091902">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091904">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091905">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091907">Copies the second operand (source operand) to the first operand (destination operand). The source operand can be an immediate value, <indexterm><primary>General-purpose registers:moving value to and from</primary></indexterm>general-purpose register, <indexterm><primary>Segment:registers, moving values to and from</primary></indexterm>segment register, or memory location; the destination register can be a general-purpose register, segment register, or memory location. Both operands must be the same size, which can be a byte, a word, a doubleword, or a quadword.</para>
+  <para unique="1091911">The MOV instruction cannot be used to load the <indexterm><primary>CS register</primary></indexterm>CS register. Attempting to do so results in an invalid opcode excep&#173;tion (#UD). To load the CS register, use the far JMP, CALL, or RET instruction.</para>
+  <para unique="1091912">If the destination operand is a segment register (DS, ES, FS, GS, or SS), the source operand must be a valid segment selector. In protected mode, moving a segment selector into a segment register automatically causes the segment descriptor information associated with that segment selector to be loaded into the hidden (shadow) part of the segment register. While loading this information, the segment selector and segment descriptor information is validated (see the &#8220;Operation&#8221; algorithm below). The segment descriptor data is obtained from the GDT or LDT entry for the specified segment selector. </para>
+  <para unique="1091913">A NULL segment selector (values 0000-0003) can be loaded into the DS, ES, FS, and GS registers without causing a protection exception. However, any subsequent attempt to reference a segment whose corresponding segment register is loaded with a NULL value causes a general protection exception (#GP) and no memory reference occurs.</para>
+  <para unique="1091915">Loading the <indexterm><primary>SS register</primary></indexterm>SS register with a MOV instruction suppresses or inhibits some debug exceptions and inhibits inter&#173;rupts on the following instruction boundary. (The inhibition ends after delivery of an exception or the execution of the next instruction.) This behavior allows a stack pointer to be loaded into the ESP register with the next instruc&#173;tion (MOV ESP, <bold>stack-pointer value</bold>) before an event can be delivered. See <link unique="1091917" linkend="&lt;c&gt;__sdm_vol3A_ch07.fm#94408: 03_Level: 5.8.3 Masking Exceptions and Interrupts When Switching Stacks" xrefstyle="SectionNum&amp;Title(,)">Section 7.8.3, &#8220;Masking Exceptions and Interrupts When Switching Stacks,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A. Intel recommends that software use the LSS instruction to load the SS register and ESP together.</para>
+  <para unique="1091919">When executing MOV Reg, Sreg, the processor copies the content of Sreg to the 16 least significant bits of the general-purpose register. The upper bits of the destination register are zero for most IA-32 processors (Pentium Pro processors and later) and all Intel 64 processors, with the exception that bits 31:16 are undefined for Intel Quark X1000 processors, Pentium, and earlier processors.</para>
+  <para unique="1091920">In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</para>
   </longdesc>
+ <operation>
+  <programlisting>DEST := SRC;
+Loading a segment register while in protected mode results in special checks and actions, as described in the following listing. These checks are performed on the segment selector and the segment descriptor to which it points.
+IF SS is loaded
+	THEN
+		IF segment selector is NULL
+			THEN #GP(0); FI;
+		IF segment selector index is outside descriptor table limits
+		OR segment selector\qs RPL &#185; CPL
+		OR segment is not a writable data segment
+		OR DPL &#185; CPL
+			THEN #GP(selector); FI;
+		IF segment not marked present
+			THEN #SS(selector);
+			ELSE
+				SS := segment selector;
+				SS := segment descriptor; FI;
+FI;
+IF DS, ES, FS, or GS is loaded with non-NULL selector
+THEN
+	IF segment selector index is outside descriptor table limits
+	OR segment is not a data or readable code segment
+	OR ((segment is a data or nonconforming code segment) AND ((RPL &gt; DPL) or (CPL &gt; DPL)))
+		THEN #GP(selector); FI;
+	IF segment not marked present
+		THEN #NP(selector);
+		ELSE
+			SegmentRegister := segment selector;
+			SegmentRegister := segment descriptor; FI;
+FI;
+IF DS, ES, FS, or GS is loaded with NULL selector
+	THEN
+		SegmentRegister := segment selector;
+		SegmentRegister := segment descriptor;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1091956">
-   <string>None.</string></para>
+  <para unique="1091956">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If attempt is made to load SS register with NULL segment selector.</string></listitem>
-    <listitem><string>If the destination operand is in a non-writable segment.</string></listitem>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091958">If attempt is made to load SS register with NULL segment selector.</para>
+     </listitem>
+    <listitem><para unique="1091959">If the destination operand is in a non-writable segment.</para>
+     </listitem>
+    <listitem><para unique="1091960">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1091961">If the DS, ES, FS, or GS register contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(selector)</string></term>
-    <listitem><string>If segment selector index is outside descriptor table limits. </string></listitem>
-    <listitem><string>If the SS register is being loaded and the segment selector's RPL and the segment descriptor&#8217;s DPL are not equal to the CPL. </string></listitem>
-    <listitem><string>If the SS register is being loaded and the segment pointed to is a 
-non-writable data segment.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register is being loaded and the segment pointed to is not a data or readable code segment.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register is being loaded and the segment pointed to is a data or nonconforming code segment, and either the RPL or the CPL is greater than the DPL.</string></listitem>
+    <term>#GP(selector)</term>
+    <listitem><para unique="1091962">If segment selector index is outside descriptor table limits. </para>
+     </listitem>
+    <listitem><para unique="1091963">If the SS register is being loaded and the segment selector\qs RPL and the segment descriptor&#8217;s DPL are not equal to the CPL. </para>
+     </listitem>
+    <listitem><para unique="1091964">If the SS register is being loaded and the segment pointed to is a &#8232;non-writable data segment.</para>
+     </listitem>
+    <listitem><para unique="1091965">If the DS, ES, FS, or GS register is being loaded and the segment pointed to is not a data or readable code segment.</para>
+     </listitem>
+    <listitem><para unique="1091966">If the DS, ES, FS, or GS register is being loaded and the segment pointed to is a data or nonconforming code segment, and either the RPL or the CPL is greater than the DPL.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091967">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(selector)</string></term>
-    <listitem><string>If the SS register is being loaded and the segment pointed to is marked not present.</string></listitem>
+    <term>#SS(selector)</term>
+    <listitem><para unique="1091968">If the SS register is being loaded and the segment pointed to is marked not present.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#NP</string></term>
-    <listitem><string>If the DS, ES, FS, or GS register is being loaded and the segment pointed to is marked not present.</string></listitem>
+    <term>#NP</term>
+    <listitem><para unique="1091969">If the DS, ES, FS, or GS register is being loaded and the segment pointed to is marked not present.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091970">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091971">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If attempt is made to load the CS register.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091972">If attempt is made to load the CS register.</para>
+     </listitem>
+    <listitem><para unique="1091973">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1091975">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS</term>
+    <listitem><para unique="1091976">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If attempt is made to load the CS register.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091977">If attempt is made to load the CS register.</para>
+     </listitem>
+    <listitem><para unique="1091978">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091980">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091981">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091982">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091983">If alignment checking is enabled and an unaligned memory reference is made.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If attempt is made to load the CS register.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091984">If attempt is made to load the CS register.</para>
+     </listitem>
+    <listitem><para unique="1091985">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091987" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1091987" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
-    <listitem><string>If an attempt is made to load SS register with NULL segment selector when CPL = 3.</string></listitem>
-    <listitem><string>If an attempt is made to load SS register with NULL segment selector when CPL &lt; 3 and CPL </string><string>&#8800; RPL.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091989">If the memory address is in a non-canonical form.</para>
+     </listitem>
+    <listitem><para unique="1091990">If an attempt is made to load SS register with NULL segment selector when CPL = 3.</para>
+     </listitem>
+    <listitem><para unique="1091991">If an attempt is made to load SS register with NULL segment selector when CPL &lt; 3 and CPL &#8800; RPL.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(selector)</string></term>
-    <listitem><string>If segment selector index is outside descriptor table limits. </string></listitem>
-    <listitem><string>If the memory access to the descriptor table is non-canonical.</string></listitem>
-    <listitem><string>If the SS register is being loaded and the segment selector's RPL and the segment descriptor&#8217;s DPL are not equal to the CPL.</string></listitem>
-    <listitem><string>If the SS register is being loaded and the segment pointed to is a nonwritable data segment.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register is being loaded and the segment pointed to is not a data or readable code segment.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register is being loaded and the segment pointed to is a data or nonconforming code segment, but both the RPL and the CPL are greater than the DPL.</string></listitem>
+    <term>#GP(selector)</term>
+    <listitem><para unique="1091992">If segment selector index is outside descriptor table limits. </para>
+     </listitem>
+    <listitem><para unique="1091993">If the memory access to the descriptor table is non-canonical.</para>
+     </listitem>
+    <listitem><para unique="1091994">If the SS register is being loaded and the segment selector\qs RPL and the segment descriptor&#8217;s DPL are not equal to the CPL.</para>
+     </listitem>
+    <listitem><para unique="1091995">If the SS register is being loaded and the segment pointed to is a nonwritable data segment.</para>
+     </listitem>
+    <listitem><para unique="1091996">If the DS, ES, FS, or GS register is being loaded and the segment pointed to is not a data or readable code segment.</para>
+     </listitem>
+    <listitem><para unique="1091997">If the DS, ES, FS, or GS register is being loaded and the segment pointed to is a data or nonconforming code segment, but both the RPL and the CPL are greater than the DPL.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If the stack address is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091998">If the stack address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(selector)</string></term>
-    <listitem><string>If the SS register is being loaded and the segment pointed to is marked not present.</string></listitem>
+    <term>#SS(selector)</term>
+    <listitem><para unique="1091999">If the SS register is being loaded and the segment pointed to is marked not present.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1092000">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1092001">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If attempt is made to load the CS register.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1092002">If attempt is made to load the CS register.</para>
+     </listitem>
+    <listitem><para unique="1092003">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

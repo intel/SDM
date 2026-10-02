@@ -1,40 +1,126 @@
 <instruction name="VGETMANTSS">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Extract Float32 Vector of Normalized Mantissa From Float32 Scalar</shortdesc>
- <longdesc><para unique="1045943">
-   <string>Convert the single precision floating values in the low doubleword element of the second source operand (the third operand) to single precision floating-point value with the mantissa normalization and sign control specified by the imm8 byte, see </string><link linkend="55949: 05_FigureFrame: Figure 5-25. Imm8 Controls for VGETMANTPD/SD/PS/SS"><string>Figure&#160;5&#8209;15</string></link><string>. The converted result is written to the low doubleword element of the destination operand (the first operand) using writemask k1. Bits (127:32) of the XMM register destination are copied from corresponding bits in the first source operand. The normalized mantissa is specified by interv (imm8[1:0]) and the sign control (sc) is specified by bits 3:2 of the immediate byte. </string></para>
-  <para unique="1045947">
-   <string>The conversion operation is:</string></para>
-  <para unique="1045948">
-   <string>	GetMant(x) = &#177;2</string><superscript><string>k</string></superscript><string>|x.significand|</string></para>
-  <para unique="1045949">
-   <string>where:</string></para>
-  <para unique="1045950">
-   <string>	1 &lt;= |x.significand| &lt; 2</string></para>
-  <para unique="1045952">
-   <string>Unbiased exponent k can be either 0 or -1, depending on the interval range defined by interv, the range of the significand and whether the exponent of the source is even or odd. The sign of the final result is determined by sc and the source sign. The encoded value of imm8[1:0] and sign control are shown in </string><link linkend="55949: 05_FigureFrame: Figure 5-25. Imm8 Controls for VGETMANTPD/SD/PS/SS"><string>Figure&#160;5&#8209;15</string></link><string>.</string></para>
-  <para unique="1045956">
-   <string>The converted single precision floating-point result is encoded according to the sign control, the unbiased exponent k (adding bias) and a mantissa normalized to the range specified by interv.</string></para>
-  <para unique="1045959">
-   <string>The GetMant() function follows </string><link linkend="81073: 06_Table: Table 5-16. GetMant() Special Float Values Behavior"><string>Table 5&#8209;16</string></link><string> when dealing with floating-point special numbers.</string></para>
-  <para unique="1045961">
-   <string>If writemasking is used, the low doubleword element of the destination operand is conditionally updated depending on the value of writemask register k1. If writemasking is not used, the low doubleword element of the destination operand is unconditionally updated.</string></para>
+ <encoding_table><table unique="1045885">
+   <thead><tr>
+     <th colspan="2"><para unique="1045887">Opcode/</para>
+      <para unique="1045888">Instruction</para>
+      </th>
+     <th><para unique="1045892">Op/En</para>
+      </th>
+     <th><para unique="1045894">64/32 Bit Mode Support</para>
+      </th>
+     <th><para unique="1045896">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1045898">Description</para>
+      </th>
+     </tr>
+    </thead><col width="68.21784pt"/>
+   <col width="85.4496pt"/>
+   <col width="29.400479999999998pt"/>
+   <col width="48.00024pt"/>
+   <col width="63.83304pt"/>
+   <col width="216.69984000000002pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1046326">EVEX.LLIG.66.0F3A.W0 27 /r ib</para>
+      <para unique="1046327">VGETMANTSS xmm1 {k1}{z}, xmm2, xmm3/m32{sae}, imm8</para>
+      </td>
+     <td><para unique="1046331">A</para>
+      </td>
+     <td><para unique="1046333">V/V</para>
+      </td>
+     <td><para unique="1046338">AVX512F</para>
+      <para unique="1046342">OR AVX10.1<anchor id="+819756"/></para>
+      </td>
+     <td><para unique="1046344">Extract the normalized mantissa from the low float32 element of xmm3/m32 using imm8 for sign control and mantissa interval normalization, store the mantissa to xmm1 under the writemask k1 and merge with the other elements of xmm2.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1045916">
+   <col width="42.28056pt"/>
+   <col width="66.88007999999999pt"/>
+   <col width="99.5508pt"/>
+   <col width="101.35584pt"/>
+   <col width="101.37456pt"/>
+   <col width="98.08632pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1045918">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1045920">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1045922">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1045924">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1045926">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1045928">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1045930">A</para>
+      </td>
+     <td valign="middle"><para unique="1045932">Tuple1 Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1045934">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1045936">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045938">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045940">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1045941">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1045943">Convert the single precision floating values in the low doubleword element of the second source operand (the third operand) to single precision floating-point value with the mantissa normalization and sign control specified by the imm8 byte, see <link unique="1045945" linkend="&lt;c&gt;VGETMANTPD-Extract-Float64-Vector-of-Normalized-Mantissas-From-Float64-Vector.fm#55949: 05_FigureFrame: Figure 5-25. Imm8 Controls for VGETMANTPD/SD/PS/SS" xrefstyle="FigureNum">Figure&#160;5&#8209;15</link>. The converted result is written to the low doubleword element of the destination operand (the first operand) using writemask k1. Bits (127:32) of the XMM register destination are copied from corresponding bits in the first source operand. The normalized mantissa is specified by interv (imm8[1:0]) and the sign control (sc) is specified by bits 3:2 of the immediate byte. </para>
+  <para unique="1045947">The conversion operation is:</para>
+  <para unique="1045948">	GetMant(x) = &#177;2<superscript>k</superscript>|x.significand|</para>
+  <para unique="1045949">where:</para>
+  <para unique="1045950">	1 &lt;= |x.significand| &lt; 2</para>
+  <para unique="1045952">Unbiased exponent k can be either 0 or -1, depending on the interval range defined by interv, the range of the significand and whether the exponent of the source is even or odd. The sign of the final result is determined by sc and the source sign. The encoded value of imm8[1:0] and sign control are shown in <link unique="1045954" linkend="&lt;c&gt;VGETMANTPD-Extract-Float64-Vector-of-Normalized-Mantissas-From-Float64-Vector.fm#55949: 05_FigureFrame: Figure 5-25. Imm8 Controls for VGETMANTPD/SD/PS/SS" xrefstyle="FigureNum">Figure&#160;5&#8209;15</link>.</para>
+  <para unique="1045956">The converted single precision floating-point result is encoded according to the sign control, the unbiased exponent k (adding bias) and a mantissa normalized to the range specified by interv.</para>
+  <para unique="1045959">The GetMant() function follows <link unique="1045958" linkend="&lt;c&gt;VGETMANTPD-Extract-Float64-Vector-of-Normalized-Mantissas-From-Float64-Vector.fm#81073: 06_Table: Table 5-16. GetMant() Special Float Values Behavior" xrefstyle="TableNum">Table 5&#8209;16</link> when dealing with floating-point special numbers.</para>
+  <para unique="1045961">If writemasking is used, the low doubleword element of the destination operand is conditionally updated depending on the value of writemask register k1. If writemasking is not used, the low doubleword element of the destination operand is unconditionally updated.</para>
   </longdesc>
+ <operation>
+  <programlisting>// getmant_fp32(src, sign_control, normalization_interval) is defined in the operation section of VGETMANTPS</programlisting>
+  <section level="7">
+   <title unique="1045965">VGETMANTSS (EVEX encoded version) </title>
+   <programlisting>SignCtrl[1:0] := IMM8[3:2];
+Interv[1:0] := IMM8[1:0];
+IF k1[0] OR *no writemask*
+	THEN DEST[31:0] :=
+			getmant_fp32(src, sign_control, normalization_interval)
+	ELSE
+		IF *merging-masking*								; merging-masking
+			THEN *DEST[31:0] remains unchanged*
+			ELSE 							; zeroing-masking
+				DEST[31:0] := 0
+		FI
+FI;
+DEST[127:32] := SRC1[127:32]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VGETMANTSS __m128 _mm_getmant_ss( __m128 a, __m128 b, enum intv, enum sgn);</string><string>
-</string><string>VGETMANTSS __m128 _mm_mask_getmant_ss(__m128 s, __mmask8 k, __m128 a, __m128 b, enum intv, enum sgn);</string><string>
-</string><string>VGETMANTSS __m128 _mm_maskz_getmant_ss( __mmask8 k, __m128 a, __m128 b, enum intv, enum sgn);</string><string>
-</string><string>VGETMANTSS __m128 _mm_getmant_round_ss( __m128 a, __m128 b, enum intv, enum sgn, int r);</string><string>
-</string><string>VGETMANTSS __m128 _mm_mask_getmant_round_ss(__m128 s, __mmask8 k, __m128 a, __m128 b, enum intv, enum sgn, int r);</string><string>
-</string><string>VGETMANTSS __m128 _mm_maskz_getmant_round_ss( __mmask8 k, __m128 a, __m128 b, enum intv, enum sgn, int r);</string><string>
-</string></programlisting>
+  <programlisting>VGETMANTSS __m128 _mm_getmant_ss( __m128 a, __m128 b, enum intv, enum sgn);
+VGETMANTSS __m128 _mm_mask_getmant_ss(__m128 s, __mmask8 k, __m128 a, __m128 b, enum intv, enum sgn);
+VGETMANTSS __m128 _mm_maskz_getmant_ss( __mmask8 k, __m128 a, __m128 b, enum intv, enum sgn);
+VGETMANTSS __m128 _mm_getmant_round_ss( __m128 a, __m128 b, enum intv, enum sgn, int r);
+VGETMANTSS __m128 _mm_mask_getmant_round_ss(__m128 s, __mmask8 k, __m128 a, __m128 b, enum intv, enum sgn, int r);
+VGETMANTSS __m128 _mm_maskz_getmant_round_ss( __mmask8 k, __m128 a, __m128 b, enum intv, enum sgn, int r);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1045988">
-   <string>Denormal, Invalid</string></para>
+  <para unique="1045988">Denormal, Invalid</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1045993" format="xIndent1">
-   <string>See </string><link linkend="63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions"><string>Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1045993" format="xIndent1">See <link unique="1045991" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

@@ -1,29 +1,100 @@
 <instruction name="CVTPI2PD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Convert Packed Dword Integers to Packed Double Precision Floating-Point Values</shortdesc>
- <longdesc><para unique="1261245">
-   <string>Converts two packed signed doubleword integers in the source operand (second operand) to two packed double precision floating-point values in the destination operand (first operand). </string></para>
-  <para unique="1261246">
-   <string>The source operand can be an MMX technology register or a 64-bit memory location. The destination operand is an XMM register. In addition, depending on the operand configuration:</string></para>
-  <itemizedlist><listitem><para unique="1261247">
-     <bold><string>For operands </string><italic><string>xmm</string></italic><string>,</string><italic><string> mm</string></italic><string>:</string></bold><string> the instruction causes a transition from x87 FPU to MMX technology operation (that is, the x87 FPU top-of-stack pointer is set to 0 and the x87 FPU tag word is set to all 0s [valid]). If this instruction is executed while an x87 FPU floating-point exception is pending, the exception is handled before the CVTPI2PD instruction is executed.</string></para>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th colspan="2"><para unique="1261193">Opcode/</para>
+      <para unique="1261194">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261202">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.25984pt"/>
+   <col width="111.46464pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="182.15424000000002pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1261206">66 0F 2A /r</para>
+      <para unique="1261210">CVTPI2PD xmm, mm/m64<footnote><para unique="1261209" format="TableFootnote">Operation is different for different operand sets; see the Description section.</para>
+        </footnote></para>
+      </td>
+     <td><para unique="1261214">RM</para>
+      </td>
+     <td><para unique="1261216">Valid</para>
+      </td>
+     <td><para unique="1261218">Valid</para>
+      </td>
+     <td><para unique="1261220">Convert two packed signed doubleword integers from mm/mem64 to two packed double precision floating-point values in xmm.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261222">
+   <col width="43.83144pt"/>
+   <col width="115.36848pt"/>
+   <col width="120.78pt"/>
+   <col width="112.28256pt"/>
+   <col width="117.4572pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261224">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261226">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261228">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261230">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261232">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261234">RM</para>
+      </td>
+     <td valign="middle"><para unique="1261236">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261238">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261240">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261242">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261243">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261245">Converts two packed signed doubleword integers in the source operand (second operand) to two packed double precision floating-point values in the destination operand (first operand). </para>
+  <para unique="1261246">The source operand can be an MMX technology register or a 64-bit memory location. The destination operand is an XMM register. In addition, depending on the operand configuration:</para>
+  <itemizedlist>
+   <listitem><para unique="1261247"><bold>For operands <italic>xmm</italic>,<italic> mm</italic>:</bold> the instruction causes a transition from x87 FPU to MMX technology operation (that is, the x87 FPU top-of-stack pointer is set to 0 and the x87 FPU tag word is set to all 0s [valid]). If this instruction is executed while an x87 FPU floating-point exception is pending, the exception is handled before the CVTPI2PD instruction is executed.</para>
     </listitem>
-   <listitem><para unique="1261248">
-     <bold><string>For operands </string><italic><string>xmm</string></italic><string>,</string><italic><string> m64</string></italic><string>:</string></bold><string> the instruction does not cause a transition to MMX technology and does not take x87 FPU exceptions.</string></para>
+   <listitem><para unique="1261248"><bold>For operands <italic>xmm</italic>,<italic> m64</italic>:</bold> the instruction does not cause a transition to MMX technology and does not take x87 FPU exceptions.</para>
     </listitem>
-   </itemizedlist><para unique="1261249">
-   <string>In 64-bit mode, use of the REX.R prefix permits this instruction to access additional registers (XMM8-XMM15).</string></para>
+   </itemizedlist>
+  <para unique="1261249">In 64-bit mode, use of the REX.R prefix permits this instruction to access additional registers (XMM8-XMM15).</para>
   </longdesc>
+ <operation>
+  <programlisting>DEST[63:0] := Convert_Integer_To_Double_Precision_Floating_Point(SRC[31:0]);
+DEST[127:64] := Convert_Integer_To_Double_Precision_Floating_Point(SRC[63:32]);</programlisting>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>CVTPI2PD __m128d _mm_cvtpi32_pd(__m64 a)</string><string>
-</string></programlisting>
+  <programlisting>CVTPI2PD __m128d _mm_cvtpi32_pd(__m64 a)</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1261256">
-   <string>None.</string></para>
+  <para unique="1261256">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1261261" format="xIndent1">
-   <string>See </string><link linkend="65163: 03_Level: 19.25.3 Exception Conditions of Legacy SIMD Instruction Operating"><string>Section 25.25.3, &#8220;Exception Conditions of Legacy SIMD Instructions Operating on MMX Registers&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B.</string></para>
+  <para unique="1261261" format="xIndent1">See <link unique="1261259" linkend="&lt;c&gt;__sdm_vol3B_ch25.fm#65163: 03_Level: 19.25.3 Exception Conditions of Legacy SIMD Instruction Operating" xrefstyle="SectionNum&amp;Title">Section 25.25.3, &#8220;Exception Conditions of Legacy SIMD Instructions Operating on MMX Registers&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B.</para>
   </subsection>
  </instruction>

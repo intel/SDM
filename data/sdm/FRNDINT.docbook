@@ -1,76 +1,116 @@
 <instruction name="FRNDINT">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Round to Integer</shortdesc>
- <longdesc><para unique="1261215">
-   <string>Rounds the source value in the ST(0) register to the nearest integral value, depending on the current rounding mode (setting of the RC field of the FPU control word), and stores the result in ST(0).</string></para>
-  <para unique="1261216">
-   <string>If the source value is </string><string>&#8734;, the value is not changed. If the source value is not an integral value, the floating-point inexact-result exception (#P) is generated.</string></para>
-  <para unique="1261217">
-   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+ <encoding_table><table unique="1261192">
+   <thead><tr>
+     <th><para unique="1261194">Opcode</para>
+      </th>
+     <th><para unique="1261196">Instruction</para>
+      </th>
+     <th><para unique="1261198">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261200">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261202">Description</para>
+      </th>
+     </tr>
+    </thead><col width="91.98216000000001pt"/>
+   <col width="89.56223999999999pt"/>
+   <col width="50.687999999999995pt"/>
+   <col width="58.55328pt"/>
+   <col width="221.96448pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261204">D9 FC</para>
+      </td>
+     <td><para unique="1261206">FRNDINT</para>
+      </td>
+     <td><para unique="1261208">Valid</para>
+      </td>
+     <td><para unique="1261210">Valid</para>
+      </td>
+     <td><para unique="1261212">Round ST(0) to an integer.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <longdesc><para unique="1261215">Rounds the source value in the ST(0) register to the nearest integral value, depending on the current rounding mode (setting of the RC field of the FPU control word), and stores the result in ST(0).</para>
+  <para unique="1261216">If the source value is &#8734;, the value is not changed. If the source value is not an integral value, the floating-point inexact-result exception (#P) is generated.</para>
+  <para unique="1261217">This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</para>
   </longdesc>
+ <operation>
+  <programlisting>ST(0) := RoundToIntegralValue(ST(0));</programlisting>
+  </operation>
  <subsection title="FPU Flags Affected">
   <variablelist>
    <variablelistentry>
-    <term><string>C1</string></term>
-    <listitem><string>Set to 0 if stack underflow occurred.</string></listitem>
-    <listitem><string>Set if result was rounded up; cleared otherwise.</string></listitem>
+    <term>C1</term>
+    <listitem><para unique="1261221">Set to 0 if stack underflow occurred.</para>
+     </listitem>
+    <listitem><para unique="1261222">Set if result was rounded up; cleared otherwise.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>C0, C2, C3 </string></term>
-    <listitem><string>Undefined.</string></listitem>
+    <term>C0, C2, C3 </term>
+    <listitem><para unique="1261223">Undefined.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Floating-Point Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#IS</string></term>
-    <listitem><string>Stack underflow occurred.</string></listitem>
+    <term>#IS</term>
+    <listitem><para unique="1261225">Stack underflow occurred.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#IA</string></term>
-    <listitem><string>Source operand is an SNaN value or unsupported format.</string></listitem>
+    <term>#IA</term>
+    <listitem><para unique="1261226">Source operand is an SNaN value or unsupported format.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#D</string></term>
-    <listitem><string>Source operand is a denormal value.</string></listitem>
+    <term>#D</term>
+    <listitem><para unique="1261227">Source operand is a denormal value.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#P</string></term>
-    <listitem><string>Source operand is not an integral value.</string></listitem>
+    <term>#P</term>
+    <listitem><para unique="1261228">Source operand is not an integral value.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#NM</string></term>
-    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    <term>#NM</term>
+    <listitem><para unique="1261230">CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#MF </string></term>
-    <listitem><string>If there is a pending x87 FPU exception.</string></listitem>
+    <term>#MF </term>
+    <listitem><para unique="1261231">If there is a pending x87 FPU exception.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261232">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
-  <para unique="1261234" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261234" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1261236" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261236" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261238" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261238" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
-  <para unique="1261240" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261240" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  </instruction>

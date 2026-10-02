@@ -1,28 +1,147 @@
 <instruction name="VSM4RNDS4">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Performs Four Rounds of SM4 Encryption</shortdesc>
- <longdesc><para unique="1048730">
-   <string>The SM4RNDS4 instruction performs four rounds of SM4 encryption. The instruction operates on independent 128-bit lanes.</string></para>
-  <para unique="1048732">
-   <string>Additional details can be found at: </string><anchor id="message URL https://tools.ietf.org/html/draft-ribose-cfrg-sm4-10"/><underline><string>https://tools.ietf.org/html/draft-ribose-cfrg-sm4-10</string></underline><string>.</string></para>
-  <para unique="1048736">
-   <string>See </string><link linkend="86321: 05_Level: VSM4KEY4&#8212;Perform Four Rounds of SM4 Key Expansion"><string>&#8220;VSM4KEY4&#8212;Perform Four Rounds of SM4 Key Expansion&#8221;</string></link><string> for the sbox table.</string></para>
+ <encoding_table><table unique="1047410">
+   <col width="62.346959999999996pt"/>
+   <col width="88.704pt"/>
+   <col width="39.900240000000004pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="190.64952pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1047052">Opcode/</para>
+      <para unique="1047053">Instruction</para>
+      </th>
+     <th><para unique="1047057">Op/</para>
+      <para unique="1047058">En</para>
+      </th>
+     <th><para unique="1047060">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1047062">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1047064">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1048698">VEX.128.F2.0F38.W0 DA /r</para>
+      <para unique="1048699">VSM4RNDS4 xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1048381">A</para>
+      </td>
+     <td><para unique="1048383">V/V</para>
+      </td>
+     <td><para unique="1048385">AVX</para>
+      <para unique="1048386">SM4</para>
+      </td>
+     <td><para unique="1048712">Performs four rounds of SM4 encryption.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1048703">VEX.256.F2.0F38.W0 DA /r</para>
+      <para unique="1048704">VSM4RNDS4 ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1048395">A</para>
+      </td>
+     <td><para unique="1048397">V/V</para>
+      </td>
+     <td><para unique="1048399">AVX</para>
+      <para unique="1048400">SM4</para>
+      </td>
+     <td><para unique="1048714">Performs four rounds of SM4 encryption.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1047440">
+   <col width="39.114000000000004pt"/>
+   <col width="52.614000000000004pt"/>
+   <col width="99.25704pt"/>
+   <col width="111.48624pt"/>
+   <col width="105.63624pt"/>
+   <col width="104.32368pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1047081">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1047083">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1047085">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1047087">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1047089">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1047091">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1048433">A</para>
+      </td>
+     <td valign="middle"><para unique="1048435">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1048437">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1048439">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1048441">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1048443">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1047104">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1048730">The SM4RNDS4 instruction performs four rounds of SM4 encryption. The instruction operates on independent 128-bit lanes.</para>
+  <para unique="1048732">Additional details can be found at: <anchor id="message URL https://tools.ietf.org/html/draft-ribose-cfrg-sm4-10"/><underline>https://tools.ietf.org/html/draft-ribose-cfrg-sm4-10</underline>.</para>
+  <para unique="1048736">See <link unique="1048734" linkend="&lt;c&gt;VSM4KEY4-Perform-Four-Rounds-of-SM4-Key-Expansion.fm#86321: 05_Level: VSM4KEY4&#8212;Perform Four Rounds of SM4 Key Expansion" xrefstyle="TitleOnly(05Level)">&#8220;VSM4KEY4&#8212;Perform Four Rounds of SM4 Key Expansion&#8221;</link> for the sbox table.</para>
   </longdesc>
+ <operation>
+  <programlisting>// see the VSM4KEY4 instruction for the definition of ROL32, lower_t
+define L_RND(dword):
+	tmp := dword
+	tmp := tmp ^ ROL32(dword, 2)
+	tmp := tmp ^ ROL32(dword, 10)
+	tmp := tmp ^ ROL32(dword, 18)
+	tmp := tmp ^ ROL32(dword, 24)
+	return tmp
+define T_RND(dword):
+	return L_RND(lower_t(dword))
+define F_RND(X0, X1, X2, X3, round_key):
+	return X0 ^ T_RND(X1 ^ X2 ^ X3 ^ round_key)</programlisting>
+  <section level="7">
+   <title unique="1048754">VSM4RNDS4 DEST, SRC1, SRC2</title>
+   <programlisting>VL = (128, 256) // VEX versions
+KL := VL/128
+for i in 0..KL-1:
+	P[0] := SRC1.xmm[i].dword[0]
+	P[1] := SRC1.xmm[i].dword[1]
+	P[2] := SRC1.xmm[i].dword[2]
+	P[3] := SRC1.xmm[i].dword[3]
+	C[0] := F_RND(P[0], P[1], P[2], P[3], SRC2.xmm[i].dword[0])
+	C[1] := F_RND(P[1], P[2], P[3], C[0], SRC2.xmm[i].dword[1])
+	C[2] := F_RND(P[2], P[3], C[0], C[1], SRC2.xmm[i].dword[2])
+	C[3] := F_RND(P[3], C[0], C[1], C[2], SRC2.xmm[i].dword[3])
+	DEST.xmm[i].dword[0] := C[0]
+	DEST.xmm[i].dword[1] := C[1]
+	DEST.xmm[i].dword[2] := C[2]
+	DEST.xmm[i].dword[3] := C[3]
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1048329">
-   <string>None.</string></para>
+  <para unique="1048329">None.</para>
   </subsection>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VSM4RNDS4 __m128i _mm_sm4rnds4_epi32 (__m128i __A, __m128i __B);</string><string>
-</string><string>VSM4RNDS4 __m256i _mm256_sm4rnds4_epi32 (__m256i __A, __m256i __B);</string><string>
-</string></programlisting>
+  <programlisting>VSM4RNDS4 __m128i _mm_sm4rnds4_epi32 (__m128i __A, __m128i __B);
+VSM4RNDS4 __m256i _mm256_sm4rnds4_epi32 (__m256i __A, __m256i __B);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1047135">
-   <string>None.</string></para>
+  <para unique="1047135">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046793">
-   <string>See </string><link linkend="57777: 06_Table: Table 2-23. Type 6 Class Exception Conditions"><string>Table&#160;2&#8209;23, &#8220;Type 6 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046793">See <link unique="1047157" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#57777: 06_Table: Table 2-23. Type 6 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;23, &#8220;Type 6 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

@@ -1,25 +1,108 @@
 <instruction name="ANDN">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Logical AND NOT</shortdesc>
- <longdesc><para unique="1261255">
-   <string>Performs a bitwise logical AND of inverted second operand (the first source operand) with the third operand (the second source operand). The result is stored in the first operand (destination operand).</string></para>
-  <para unique="1261256">
-   <string>This instruction is not supported in real mode and virtual-8086 mode. The operand size is always 32 bits if not in 64-bit mode. In 64-bit mode operand size 64 requires VEX.W1. VEX.W1 is ignored in non-64-bit modes. An attempt to execute this instruction with VEX.L not equal to 0 will cause #UD.</string></para>
+ <encoding_table><table unique="1261191">
+   <col width="51.1812pt"/>
+   <col width="72.81864pt"/>
+   <col width="30.47472pt"/>
+   <col width="39.74976pt"/>
+   <col width="44.24976pt"/>
+   <col width="278.25048000000004pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1261335">Opcode/&#8232;Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64/32-bit Mode</para>
+      </th>
+     <th><para unique="1261202">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1261206">VEX.LZ.0F38.W0 F2 /r</para>
+      <para unique="1261207">ANDN r32a, r32b, r/m32</para>
+      </td>
+     <td><para unique="1261211">RVM</para>
+      </td>
+     <td><para unique="1261213">V/V</para>
+      </td>
+     <td><para unique="1261215">BMI1</para>
+      </td>
+     <td><para unique="1261217">Bitwise AND of inverted r32b with r/m32, store result in r32a.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261219">VEX.LZ. 0F38.W1 F2 /r</para>
+      <para unique="1261220">ANDN r64a, r64b, r/m64</para>
+      </td>
+     <td><para unique="1261224">RVM</para>
+      </td>
+     <td><para unique="1261226">V/N.E.</para>
+      </td>
+     <td><para unique="1261228">BMI1</para>
+      </td>
+     <td><para unique="1261230">Bitwise AND of inverted r64b with r/m64, store result in r64a.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261232">
+   <col width="43.128pt"/>
+   <col width="111.46608pt"/>
+   <col width="116.69472pt"/>
+   <col width="117.84096pt"/>
+   <col width="122.83992pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261234">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261236">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261238">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261240">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261242">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261244">RVM</para>
+      </td>
+     <td valign="middle"><para unique="1261246">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261248">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261250">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261252">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261253">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261255">Performs a bitwise logical AND of inverted second operand (the first source operand) with the third operand (the second source operand). The result is stored in the first operand (destination operand).</para>
+  <para unique="1261256">This instruction is not supported in real mode and virtual-8086 mode. The operand size is always 32 bits if not in 64-bit mode. In 64-bit mode operand size 64 requires VEX.W1. VEX.W1 is ignored in non-64-bit modes. An attempt to execute this instruction with VEX.L not equal to 0 will cause #UD.</para>
   </longdesc>
+ <operation>
+  <programlisting>DEST := (NOT SRC1) bitwiseAND SRC2;
+SF := DEST[OperandSize -1];
+ZF := (DEST = 0);</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261262">
-   <string>SF and ZF are updated based on result. OF and CF flags are cleared. AF and PF flags are undefined.</string></para>
+  <para unique="1261262">SF and ZF are updated based on result. OF and CF flags are cleared. AF and PF flags are undefined.</para>
   </subsection>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>Auto-generated from high-level language.</string><string>
-</string></programlisting>
+  <programlisting>Auto-generated from high-level language.</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1261266">
-   <string>None.</string></para>
+  <para unique="1261266">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1261271" format="xIndent1">
-   <string>See </string><link linkend="59669: 06_Table: Table 2-30. Exception Definition (VEX-Encoded GPR Instructions)"><string>Table&#160;2&#8209;29, &#8220;Type 13 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1261271" format="xIndent1">See <link unique="1261269" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#59669: 06_Table: Table 2-30. Exception Definition (VEX-Encoded GPR Instructions)" xrefstyle="Table All - no page-period">Table&#160;2&#8209;29, &#8220;Type 13 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

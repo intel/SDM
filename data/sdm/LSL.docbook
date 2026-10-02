@@ -1,420 +1,452 @@
 <instruction name="LSL">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Load Segment Limit</shortdesc>
- <longdesc><para unique="1261269">
-   <string>Loads the </string><indexterm><primary>Segment:limit</primary></indexterm><string>segment limit from the </string><indexterm><primary>Segment:descriptor, segment limit</primary></indexterm><string>segment descriptor (see below) specified with the second operand (source operand) into the first operand (destination operand) and sets the </string><indexterm><primary>ZF (zero) flag, EFLAGS register</primary></indexterm><string>ZF flag in the EFLAGS register. The source operand (which can be a register or a memory location) contains the segment selector for the segment descriptor being accessed. If the source operand is a memory address, only 16 bits of data are accessed. The destination operand is a general-purpose register.</string></para>
-  <para unique="1261271">
-   <string>The processor performs access checks as part of the loading process. Once loaded in the destination register, soft&#173;ware can compare the segment limit with the offset of a pointer. </string></para>
-  <para unique="1261272">
-   <string>The segment limit is a 20-bit value contained in bytes 0 and 1 and in the first 4 bits of byte 6 of the segment descriptor. If the descriptor has a byte granular segment limit (the granularity flag is set to 0), the destination operand is loaded with a byte granular value (byte limit) as read from the descriptor. If the descriptor has a page granular segment limit (the granularity flag is set to 1), the LSL instruction will translate the page granular limit (page limit) into a byte limit before loading it into the destination operand. The translation is performed by shifting the 20-bit &#8220;raw&#8221; limit left 12 bits and filling the low-order 12 bits with 1s.</string></para>
-  <para unique="1261273">
-   <string>When the operand size is 16 bits, a valid 32-bit byte limit is computed; however, the upper 16 bits are truncated and only the low-order 16 bits are loaded into the destination operand; the upper bits of the destination are unmodified. When the operand size is 32 bits, the 32-bit byte limit is loaded into the destination operand; the upper bits of the destination are cleared. When the operand is 64 bits, the 32-bit byte limit is zero-extended to 64 bits and loaded into the destination operand. (The behavior with 32-bit and 64-bit operand sizes is identical.) </string></para>
-  <para unique="1261274">
-   <string>This instruction performs the following checks before it loads the segment limit into the destination register: </string></para>
-  <itemizedlist><listitem><para unique="1261275">
-     <string>Checks that the segment selector is not NULL.</string></para>
-    </listitem>
-   <listitem><para unique="1261276">
-     <string>Checks that the segment selector points to a descriptor that is within the limits of the GDT or LDT being accessed</string></para>
-    </listitem>
-   <listitem><para unique="1261277">
-     <string>Checks that the descriptor type is valid for this instruction. All code and data segment descriptors are valid for (can be accessed with) the LSL instruction. The valid special segment and gate descriptor types are given in the </string><link linkend="76732: 06_Table: Table 3-66. Segment and Gate Descriptor Types"><string>Table 3&#8209;59</string></link><string>. </string></para>
-    </listitem>
-   <listitem><para unique="1261278">
-     <string>If the segment is not a conforming code segment, the instruction checks that the specified segment descriptor is visible at the CPL (that is, if the CPL and the RPL of the segment selector are less than or equal to the DPL of the segment selector).</string></para>
-    </listitem>
-   </itemizedlist><para unique="1261279">
-   <string>If the segment descriptor cannot be accessed or is an invalid type for the instruction, the ZF flag is cleared and no value is loaded in the destination operand.</string></para>
-  <table>
-   <caption>Table 3-59.  Segment and Gate Descriptor Types</caption>
-   <colgroup><col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    </colgroup>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th><para unique="1261193">Opcode</para>
+      </th>
+     <th><para unique="1261195">Instruction</para>
+      </th>
+     <th><para unique="1261197">Op/ En</para>
+      </th>
+     <th><para unique="1261199">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261201">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261203">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.6112pt"/>
+   <col width="111.86352000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="182.15424000000002pt"/>
    <tbody>
     <tr>
-     <th><para unique="1261292" format="CellColHead">
-       <string>Type</string></para>
-      </th>
-     <th colspan="2"><para unique="1261294" format="CellColHead">
-       <string>Protected Mode</string></para>
-      </th>
-     <th colspan="2"><para unique="1261298" format="CellColHead">
-       <string>IA-32e Mode</string></para>
-      </th>
-     </tr>
-    <tr>
-     <th><para unique="1261302" format="CellColHead">
-       </para>
-      </th>
-     <th><para unique="1261304" format="CellColHead">
-       <string>Name</string></para>
-      </th>
-     <th><para unique="1261306" format="CellColHead">
-       <string>Valid</string></para>
-      </th>
-     <th><para unique="1261308" format="CellColHead">
-       <string>Name</string></para>
-      </th>
-     <th><para unique="1261310" format="CellColHead">
-       <string>Valid</string></para>
-      </th>
-     </tr>
-    <tr>
-     <td><para unique="1261312" format="CellBodyC">
-       <string>0</string></para>
+     <td><para unique="1261205">0F 03 /r</para>
       </td>
-     <td><para unique="1261314" format="CellBodyL">
-       <string>Reserved</string></para>
+     <td><para unique="1261207">LSL r16, r16/m16</para>
       </td>
-     <td><para unique="1261316" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261209">RM</para>
       </td>
-     <td><para unique="1261318" format="CellBodyL">
-       <string>Reserved</string></para>
+     <td><para unique="1261211">Valid</para>
       </td>
-     <td><para unique="1261320" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261213">Valid</para>
+      </td>
+     <td><para unique="1261215">Load segment limit from specified descriptor.</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261322" format="CellBodyC">
-       <string>1</string></para>
+     <td><para unique="1261217">0F 03 /r</para>
       </td>
-     <td><para unique="1261324" format="CellBodyL">
-       <string>Available 16-bit TSS</string></para>
-      </td>
-     <td><para unique="1261326" format="CellBodyC">
-       <string>Yes</string></para>
-      </td>
-     <td><para unique="1261328" format="CellBodyL">
-       <string>Reserved</string></para>
-      </td>
-     <td><para unique="1261330" format="CellBodyC">
-       <string>No</string></para>
-      </td>
-     </tr>
-    <tr>
-     <td><para unique="1261332" format="CellBodyC">
-       <string>2</string></para>
-      </td>
-     <td><para unique="1261334" format="CellBodyL">
-       <string>LDT</string></para>
-      </td>
-     <td><para unique="1261336" format="CellBodyC">
-       <string>Yes</string></para>
-      </td>
-     <td><para unique="1261341" format="CellBodyL">
-       <string>LDT</string><footnote><para unique="1261340" format="TableFootnote">
-         <string>In this case, the descriptor comprises 16 bytes; bits 12:8 of the upper 4 bytes must be 0.</string></para>
+     <td><para unique="1261222">LSL r32, r32/m16<footnote><para unique="1261221" format="TableFootnote">Regardless of operand size, only bits 15:0 of a register operand are used. Other bits are ignored.</para>
         </footnote></para>
       </td>
-     <td><para unique="1261343" format="CellBodyC">
-       <string>Yes</string></para>
+     <td><para unique="1261224">RM</para>
+      </td>
+     <td><para unique="1261226">Valid</para>
+      </td>
+     <td><para unique="1261228">Valid</para>
+      </td>
+     <td><para unique="1262039">Load segment limit from specified descriptor.</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261345" format="CellBodyC">
-       <string>3</string></para>
+     <td><para unique="1261232">REX.W + 0F 03 /r</para>
       </td>
-     <td><para unique="1261347" format="CellBodyL">
-       <string>Busy 16-bit TSS</string></para>
+     <td><para unique="1261234">LSL r64, r32/m161</para>
       </td>
-     <td><para unique="1261349" format="CellBodyC">
-       <string>Yes</string></para>
+     <td><para unique="1261236">RM</para>
       </td>
-     <td><para unique="1261351" format="CellBodyL">
-       <string>Reserved</string></para>
+     <td><para unique="1261238">Valid</para>
       </td>
-     <td><para unique="1261353" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261240">Valid</para>
+      </td>
+     <td><para unique="1262053">Load segment limit from specified descriptor.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261244">
+   <col width="47.79pt"/>
+   <col width="116.3412pt"/>
+   <col width="122.65632pt"/>
+   <col width="111.56832pt"/>
+   <col width="114.36408pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261246">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261248">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261250">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261252">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261254">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261256">RM</para>
+      </td>
+     <td valign="middle"><para unique="1261258">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261260">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261262">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261264">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261265">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261269">Loads the <indexterm><primary>Segment:limit</primary></indexterm>segment limit from the <indexterm><primary>Segment:descriptor, segment limit</primary></indexterm>segment descriptor (see below) specified with the second operand (source operand) into the first operand (destination operand) and sets the <indexterm><primary>ZF (zero) flag, EFLAGS register</primary></indexterm>ZF flag in the EFLAGS register. The source operand (which can be a register or a memory location) contains the segment selector for the segment descriptor being accessed. If the source operand is a memory address, only 16 bits of data are accessed. The destination operand is a general-purpose register.</para>
+  <para unique="1261271">The processor performs access checks as part of the loading process. Once loaded in the destination register, soft&#173;ware can compare the segment limit with the offset of a pointer. </para>
+  <para unique="1261272">The segment limit is a 20-bit value contained in bytes 0 and 1 and in the first 4 bits of byte 6 of the segment descriptor. If the descriptor has a byte granular segment limit (the granularity flag is set to 0), the destination operand is loaded with a byte granular value (byte limit) as read from the descriptor. If the descriptor has a page granular segment limit (the granularity flag is set to 1), the LSL instruction will translate the page granular limit (page limit) into a byte limit before loading it into the destination operand. The translation is performed by shifting the 20-bit &#8220;raw&#8221; limit left 12 bits and filling the low-order 12 bits with 1s.</para>
+  <para unique="1261273">When the operand size is 16 bits, a valid 32-bit byte limit is computed; however, the upper 16 bits are truncated and only the low-order 16 bits are loaded into the destination operand; the upper bits of the destination are unmodified. When the operand size is 32 bits, the 32-bit byte limit is loaded into the destination operand; the upper bits of the destination are cleared. When the operand is 64 bits, the 32-bit byte limit is zero-extended to 64 bits and loaded into the destination operand. (The behavior with 32-bit and 64-bit operand sizes is identical.) </para>
+  <para unique="1261274">This instruction performs the following checks before it loads the segment limit into the destination register: </para>
+  <itemizedlist>
+   <listitem><para unique="1261275">Checks that the segment selector is not NULL.</para>
+    </listitem>
+   <listitem><para unique="1261276">Checks that the segment selector points to a descriptor that is within the limits of the GDT or LDT being accessed</para>
+    </listitem>
+   <listitem><para unique="1261277">Checks that the descriptor type is valid for this instruction. All code and data segment descriptors are valid for (can be accessed with) the LSL instruction. The valid special segment and gate descriptor types are given in the <link unique="1261846" linkend="#76732: 06_Table: Table 3-66. Segment and Gate Descriptor Types" xrefstyle="TableNum">Table 3&#8209;59</link>. </para>
+    </listitem>
+   <listitem><para unique="1261278">If the segment is not a conforming code segment, the instruction checks that the specified segment descriptor is visible at the CPL (that is, if the CPL and the RPL of the segment selector are less than or equal to the DPL of the segment selector).</para>
+    </listitem>
+   </itemizedlist>
+  <para unique="1261279">If the segment descriptor cannot be accessed or is an invalid type for the instruction, the ZF flag is cleared and no value is loaded in the destination operand.</para>
+  <table id="76732: 06_Table: Table 3-66. Segment and Gate Descriptor Types" unique="1261280">
+   <caption><anchor id="76732: 06_Table: Table 3-66. Segment and Gate Descriptor Types"/>Segment and Gate Descriptor Types</caption>
+   <col width="73.17287999999999pt"/>
+   <col width="124.30152pt"/>
+   <col width="87.012pt"/>
+   <col width="124.30152pt"/>
+   <col width="99.44208pt"/>
+   <tbody>
+    <tr>
+     <th rowspan="2"><para unique="1261292">Type</para>
+      </th>
+     <th colspan="2"><para unique="1261294">Protected Mode</para>
+      </th>
+     <th colspan="2"><para unique="1261298">IA-32e Mode</para>
+      </th>
+     </tr>
+    <tr>
+     <th><para unique="1261302"/>
+      </th>
+     <th><para unique="1261304">Name</para>
+      </th>
+     <th><para unique="1261306">Valid</para>
+      </th>
+     <th><para unique="1261308">Name</para>
+      </th>
+     <th><para unique="1261310">Valid</para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1261312">0</para>
+      </td>
+     <td><para unique="1261314">Reserved</para>
+      </td>
+     <td><para unique="1261316">No</para>
+      </td>
+     <td><para unique="1261318">Reserved</para>
+      </td>
+     <td><para unique="1261320">No</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261355" format="CellBodyC">
-       <string>4</string></para>
+     <td><para unique="1261322">1</para>
       </td>
-     <td><para unique="1261357" format="CellBodyL">
-       <string>16-bit call gate</string></para>
+     <td><para unique="1261324">Available 16-bit TSS</para>
       </td>
-     <td><para unique="1261359" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261326">Yes</para>
       </td>
-     <td><para unique="1261361" format="CellBodyL">
-       <string>Reserved</string></para>
+     <td><para unique="1261328">Reserved</para>
       </td>
-     <td><para unique="1261363" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261330">No</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261365" format="CellBodyC">
-       <string>5</string></para>
+     <td><para unique="1261332">2</para>
       </td>
-     <td><para unique="1261367" format="CellBodyL">
-       <string>16-bit/32-bit task gate</string></para>
+     <td><para unique="1261334">LDT</para>
       </td>
-     <td><para unique="1261369" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261336">Yes</para>
       </td>
-     <td><para unique="1261371" format="CellBodyL">
-       <string>Reserved</string></para>
+     <td><para unique="1261341">LDT<footnote><para unique="1261340" format="TableFootnote">In this case, the descriptor comprises 16 bytes; bits 12:8 of the upper 4 bytes must be 0.</para>
+        </footnote></para>
       </td>
-     <td><para unique="1261373" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261343">Yes</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261375" format="CellBodyC">
-       <string>6</string></para>
+     <td><para unique="1261345">3</para>
       </td>
-     <td><para unique="1261377" format="CellBodyL">
-       <string>16-bit interrupt gate</string></para>
+     <td><para unique="1261347">Busy 16-bit TSS</para>
       </td>
-     <td><para unique="1261379" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261349">Yes</para>
       </td>
-     <td><para unique="1261381" format="CellBodyL">
-       <string>Reserved</string></para>
+     <td><para unique="1261351">Reserved</para>
       </td>
-     <td><para unique="1261383" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261353">No</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261385" format="CellBodyC">
-       <string>7</string></para>
+     <td><para unique="1261355">4</para>
       </td>
-     <td><para unique="1261387" format="CellBodyL">
-       <string>16-bit trap gate</string></para>
+     <td><para unique="1261357">16-bit call gate</para>
       </td>
-     <td><para unique="1261389" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261359">No</para>
       </td>
-     <td><para unique="1261391" format="CellBodyL">
-       <string>Reserved</string></para>
+     <td><para unique="1261361">Reserved</para>
       </td>
-     <td><para unique="1261393" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261363">No</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261395" format="CellBodyC">
-       <string>8</string></para>
+     <td><para unique="1261365">5</para>
       </td>
-     <td><para unique="1261397" format="CellBodyL">
-       <string>Reserved</string></para>
+     <td><para unique="1261367">16-bit/32-bit task gate</para>
       </td>
-     <td><para unique="1261399" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261369">No</para>
       </td>
-     <td><para unique="1261401" format="CellBodyL">
-       <string>Reserved</string></para>
+     <td><para unique="1261371">Reserved</para>
       </td>
-     <td><para unique="1261403" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261373">No</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261405" format="CellBodyC">
-       <string>9</string></para>
+     <td><para unique="1261375">6</para>
       </td>
-     <td><para unique="1261407" format="CellBodyL">
-       <string>Available 32-bit TSS</string></para>
+     <td><para unique="1261377">16-bit interrupt gate</para>
       </td>
-     <td><para unique="1261409" format="CellBodyC">
-       <string>Yes</string></para>
+     <td><para unique="1261379">No</para>
       </td>
-     <td><para unique="1261411" format="CellBodyL">
-       <string>64-bit TSS</string><superscript><string>1</string></superscript></para>
+     <td><para unique="1261381">Reserved</para>
       </td>
-     <td><para unique="1261413" format="CellBodyC">
-       <string>Yes</string></para>
+     <td><para unique="1261383">No</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261415" format="CellBodyC">
-       <string>A</string></para>
+     <td><para unique="1261385">7</para>
       </td>
-     <td><para unique="1261417" format="CellBodyL">
-       <string>Reserved</string></para>
+     <td><para unique="1261387">16-bit trap gate</para>
       </td>
-     <td><para unique="1261419" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261389">No</para>
       </td>
-     <td><para unique="1261421" format="CellBodyL">
-       <string>Reserved</string></para>
+     <td><para unique="1261391">Reserved</para>
       </td>
-     <td><para unique="1261423" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261393">No</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261425" format="CellBodyC">
-       <string>B</string></para>
+     <td><para unique="1261395">8</para>
       </td>
-     <td><para unique="1261427" format="CellBodyL">
-       <string>Busy 32-bit TSS</string></para>
+     <td><para unique="1261397">Reserved</para>
       </td>
-     <td><para unique="1261429" format="CellBodyC">
-       <string>Yes</string></para>
+     <td><para unique="1261399">No</para>
       </td>
-     <td><para unique="1261431" format="CellBodyL">
-       <string>Busy 64-bit TSS</string><superscript><string>1</string></superscript></para>
+     <td><para unique="1261401">Reserved</para>
       </td>
-     <td><para unique="1261433" format="CellBodyC">
-       <string>Yes</string></para>
+     <td><para unique="1261403">No</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261435" format="CellBodyC">
-       <string>C</string></para>
+     <td><para unique="1261405">9</para>
       </td>
-     <td><para unique="1261437" format="CellBodyL">
-       <string>32-bit call gate</string></para>
+     <td><para unique="1261407">Available 32-bit TSS</para>
       </td>
-     <td><para unique="1261439" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261409">Yes</para>
       </td>
-     <td><para unique="1261441" format="CellBodyL">
-       <string>64-bit call gate</string></para>
+     <td><para unique="1261411">64-bit TSS<superscript>1</superscript></para>
       </td>
-     <td><para unique="1261443" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261413">Yes</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261445" format="CellBodyC">
-       <string>D</string></para>
+     <td><para unique="1261415">A</para>
       </td>
-     <td><para unique="1261447" format="CellBodyL">
-       <string>Reserved</string></para>
+     <td><para unique="1261417">Reserved</para>
       </td>
-     <td><para unique="1261449" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261419">No</para>
       </td>
-     <td><para unique="1261451" format="CellBodyL">
-       <string>Reserved</string></para>
+     <td><para unique="1261421">Reserved</para>
       </td>
-     <td><para unique="1261453" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261423">No</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261455" format="CellBodyC">
-       <string>E</string></para>
+     <td><para unique="1261425">B</para>
       </td>
-     <td><para unique="1261457" format="CellBodyL">
-       <string>32-bit interrupt gate</string></para>
+     <td><para unique="1261427">Busy 32-bit TSS</para>
       </td>
-     <td><para unique="1261459" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261429">Yes</para>
       </td>
-     <td><para unique="1261461" format="CellBodyL">
-       <string>64-bit interrupt gate</string></para>
+     <td><para unique="1261431">Busy 64-bit TSS<superscript>1</superscript></para>
       </td>
-     <td><para unique="1261463" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261433">Yes</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261465" format="CellBodyC">
-       <string>F</string></para>
+     <td><para unique="1261435">C</para>
       </td>
-     <td><para unique="1261467" format="CellBodyL">
-       <string>32-bit trap gate</string></para>
+     <td><para unique="1261437">32-bit call gate</para>
       </td>
-     <td><para unique="1261469" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261439">No</para>
       </td>
-     <td><para unique="1261471" format="CellBodyL">
-       <string>64-bit trap gate</string></para>
+     <td><para unique="1261441">64-bit call gate</para>
       </td>
-     <td><para unique="1261473" format="CellBodyC">
-       <string>No</string></para>
+     <td><para unique="1261443">No</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261445">D</para>
+      </td>
+     <td><para unique="1261447">Reserved</para>
+      </td>
+     <td><para unique="1261449">No</para>
+      </td>
+     <td><para unique="1261451">Reserved</para>
+      </td>
+     <td><para unique="1261453">No</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261455">E</para>
+      </td>
+     <td><para unique="1261457">32-bit interrupt gate</para>
+      </td>
+     <td><para unique="1261459">No</para>
+      </td>
+     <td><para unique="1261461">64-bit interrupt gate</para>
+      </td>
+     <td><para unique="1261463">No</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261465">F</para>
+      </td>
+     <td><para unique="1261467">32-bit trap gate</para>
+      </td>
+     <td><para unique="1261469">No</para>
+      </td>
+     <td><para unique="1261471">64-bit trap gate</para>
+      </td>
+     <td><para unique="1261473">No</para>
       </td>
      </tr>
     </tbody>
    </table>
   </longdesc>
+ <operation>
+  <programlisting>IF SRC(Offset) &gt; descriptor table limit
+	THEN ZF := 0; FI;
+Read segment descriptor;
+IF SegmentDescriptor(Type) &#8800; conforming code segment
+and (CPL &gt; DPL) OR (RPL &gt; DPL)
+or Segment type is not valid for instruction
+		THEN
+			ZF := 0;
+		ELSE
+			temp := SegmentLimit([SRC]);
+			IF (SegmentDescriptor(G) = 1)
+				THEN temp := (temp &lt;&lt; 12) OR 00000FFFH;
+			ELSE IF OperandSize = 32
+				THEN DEST := temp; FI;
+			ELSE IF OperandSize = 64 (* REX.W used *)
+				THEN DEST := temp(* Zero-extended *); FI;
+			ELSE (* OperandSize = 16 *)
+				DEST := temp AND FFFFH;
+			FI;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261497">
-   <string>The ZF flag is set to 1 if the segment limit is loaded successfully; otherwise, it is set to 0. The CF, OF, SF, AF, and PF flags are not modified.</string></para>
+  <para unique="1261497">The ZF flag is set to 1 if the segment limit is loaded successfully; otherwise, it is set to 0. The CF, OF, SF, AF, and PF flags are not modified.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261499">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1261500">If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261501">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261502">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and the memory operand effective address is unaligned while the current privilege level is 3. </string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261503">If alignment checking is enabled and the memory operand effective address is unaligned while the current privilege level is 3. </para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261504">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The LSL instruction cannot be executed in real-address mode.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1261506">The LSL instruction cannot be executed in real-address mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The LSL instruction cannot be executed in virtual-8086 mode.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1261508">The LSL instruction cannot be executed in virtual-8086 mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261510" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261510" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If the memory operand effective address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261512">If the memory operand effective address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory operand effective address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261513">If the memory operand effective address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261514">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and the memory operand effective address is unaligned while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261515">If alignment checking is enabled and the memory operand effective address is unaligned while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261516">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

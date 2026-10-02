@@ -1,33 +1,141 @@
 <instruction name="XEND">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Transactional End</shortdesc>
- <longdesc><para unique="1012592">
-   <string>The instruction marks the end of an RTM code region. If this corresponds to the outermost scope (that is, including this XEND instruction, the number of XBEGIN instructions is the same as number of XEND instructions), the logical processor will attempt to commit the logical processor state atomically. If the commit fails, the logical processor will rollback all architectural register and memory updates performed during the RTM execution. The logical processor will resume execution at the fallback address computed from the outermost XBEGIN instruction. The EAX register is updated to reflect RTM abort information.</string></para>
-  <para unique="1012593">
-   <string>Execution of XEND outside a transactional region causes a general-protection exception (#GP). Execution of XEND while in a suspend read address tracking region causes a transactional abort.</string></para>
+ <encoding_table><table unique="1012542">
+   <col width="51.955200000000005pt"/>
+   <col width="73.91951999999999pt"/>
+   <col width="27.49968pt"/>
+   <col width="48.74976pt"/>
+   <col width="44.24976pt"/>
+   <col width="266.25023999999996pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1012544">Opcode/Instruction</para>
+      </th>
+     <th><para unique="1012548">Op/ En</para>
+      </th>
+     <th><para unique="1012550">64/32bit Mode Support</para>
+      </th>
+     <th><para unique="1012552">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1012554">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1012556">NP 0F 01 D5</para>
+      <para unique="1012557">XEND</para>
+      </td>
+     <td><para unique="1012561">A</para>
+      </td>
+     <td><para unique="1012563">V/V</para>
+      </td>
+     <td><para unique="1012565">RTM</para>
+      </td>
+     <td><para unique="1012567">Specifies the end of an RTM code region.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1012569">
+   <col width="44.590320000000006pt"/>
+   <col width="113.99112pt"/>
+   <col width="118.50912000000001pt"/>
+   <col width="114.92208pt"/>
+   <col width="119.20751999999999pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1012571">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1012573">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1012575">Operand2</para>
+      </th>
+     <th valign="middle"><para unique="1012577">Operand3</para>
+      </th>
+     <th valign="middle"><para unique="1012579">Operand4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1012581">A</para>
+      </td>
+     <td valign="middle"><para unique="1012583">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012585">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012587">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012589">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1012590">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1012592">The instruction marks the end of an RTM code region. If this corresponds to the outermost scope (that is, including this XEND instruction, the number of XBEGIN instructions is the same as number of XEND instructions), the logical processor will attempt to commit the logical processor state atomically. If the commit fails, the logical processor will rollback all architectural register and memory updates performed during the RTM execution. The logical processor will resume execution at the fallback address computed from the outermost XBEGIN instruction. The EAX register is updated to reflect RTM abort information.</para>
+  <para unique="1012593">Execution of XEND outside a transactional region causes a general-protection exception (#GP). Execution of XEND while in a suspend read address tracking region causes a transactional abort.</para>
   </longdesc>
- <subsection title="Flags Affected">
-  <programlisting><string>None.</string><string>
-</string></programlisting>
-  </subsection>
+ <operation>
+  <section level="7">
+   <title unique="1012595">XEND</title>
+   <programlisting>IF (RTM_ACTIVE = 0) THEN
+	SIGNAL #GP
+ELSE
+	IF SUSLDTRK_ACTIVE = 1
+		THEN GOTO RTM_ABORT_PROCESSING;
+	FI;
+	RTM_NEST_COUNT--
+	IF (RTM_NEST_COUNT = 0) THEN
+		Try to commit transaction
+		IF fail to commit transactional execution
+			THEN
+				GOTO RTM_ABORT_PROCESSING;
+			ELSE (* commit success *)
+				RTM_ACTIVE := 0
+		FI;
+	FI;
+FI;
+
+(* For any RTM abort condition encountered during RTM execution *)
+RTM_ABORT_PROCESSING:
+	Restore architectural register state
+	Discard memory updates performed in transaction
+	Update EAX with status
+	RTM_NEST_COUNT := 0
+	RTM_ACTIVE := 0
+	SUSLDTRK_ACTIVE := 0
+	IF 64-bit Mode
+		THEN
+			RIP := fallbackRIP
+		ELSE
+			EIP := fallbackEIP
+	FI;
+END</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1012630">Flags Affected</title>
+   <programlisting>None.</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>XEND void _xend( void );</string><string>
-</string></programlisting>
+  <programlisting>XEND void _xend( void );</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1012635">
-   <string>None.</string></para>
+  <para unique="1012635">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CPUID.07H.00H:EBX.RTM[11] = 0.</string></listitem>
-    <listitem><string>If LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1012637">If CPUID.07H.00H:EBX.RTM[11] = 0.</para>
+     </listitem>
+    <listitem><para unique="1012638">If LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If RTM_ACTIVE = 0.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1012639">If RTM_ACTIVE = 0.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

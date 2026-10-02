@@ -60,7 +60,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let result_element_size := 64;</code>
      </decode_args>
     <read_instr><code>let disp8n := 1;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
      </read_instr><decode_checks>
      <code>if not ((not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
@@ -84,7 +84,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i?(element_size, register_size, result_size, result_element_size, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i?(element_size, register_size, result_element_size, result_size, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -97,8 +97,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX_SUPP"><cpuid-flag>AVX_SUPP</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="64"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -160,7 +160,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i?(element_size, register_size, result_size, result_element_size, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i?(element_size, register_size, result_element_size, result_size, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -173,8 +173,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX_SUPP"><cpuid-flag>AVX_SUPP</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -228,8 +228,8 @@ If you give Intel any comments or suggestions related to this document or the in
   <other-copy>VCVTPH2W</other-copy>
   <input name="element_size" type="Integer"/>
   <input name="register_size" type="Integer"/>
-  <input name="result_size" type="Integer"/>
   <input name="result_element_size" type="Integer"/>
+  <input name="result_size" type="Integer"/>
   <input name="src" type="Bits(register_size)"/>
   <input name="context" type="Instruction_Context"/>
   <input name="mod" type="Bits(2)"/>
@@ -269,7 +269,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let result_element_size := 64;</code>
      </decode_args>
     <read_instr><code>let disp8n := 1;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
      </read_instr><decode_checks>
      <code>if not ((not context.vvvv[3] == 0b1) and (not context.vvvv[2:0] == 0b111)) then Report_Invalid_Opcode!(); endif;</code>
@@ -293,7 +293,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i?(element_size, register_size, result_size, result_element_size, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i?(element_size, register_size, result_element_size, result_size, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_YMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
@@ -306,8 +306,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX_SUPP"><cpuid-flag>AVX_SUPP</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="256"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="256"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -369,7 +369,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i?(element_size, register_size, result_size, result_element_size, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i?(element_size, register_size, result_element_size, result_size, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_YMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
@@ -382,8 +382,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX_SUPP"><cpuid-flag>AVX_SUPP</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="256"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="256"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -432,7 +432,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let result_element_size := 64;</code>
      </decode_args>
     <read_instr><code>let disp8n := if context.evex_b == 0b1 then element_size / 8 else 8;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let old := Read_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, 128);</code>
      <code>let k := Read_Mask(context.evex_aaa);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
@@ -458,7 +458,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i_m?(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i_m?(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -473,8 +473,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512DQ_128_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="64"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -539,7 +539,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i_m?(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i_m?(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -554,8 +554,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512DQ_128_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -601,7 +601,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let result_element_size := 64;</code>
      </decode_args>
     <read_instr><code>let disp8n := if context.evex_b == 0b1 then element_size / 8 else 8;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let k := Read_Mask(context.evex_aaa);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
      </read_instr><decode_checks>
@@ -626,7 +626,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i_z?(element_size, register_size, result_size, result_element_size, k, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i_z?(element_size, register_size, result_element_size, result_size, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -641,8 +641,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512DQ_128_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="64"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -706,7 +706,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i_z?(element_size, register_size, result_size, result_element_size, k, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i_z?(element_size, register_size, result_element_size, result_size, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_XMM(context.rex_r4 ++ context.rex_r3 ++ reg, result, (context.vex_prefix_present or context.evex_prefix_present));</code>
@@ -721,8 +721,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512DQ_128_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="128"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="128"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -779,8 +779,8 @@ If you give Intel any comments or suggestions related to this document or the in
   <other-copy>VCVTPH2W</other-copy>
   <input name="element_size" type="Integer"/>
   <input name="register_size" type="Integer"/>
-  <input name="result_size" type="Integer"/>
   <input name="result_element_size" type="Integer"/>
+  <input name="result_size" type="Integer"/>
   <input name="old" type="Bits(result_size)"/>
   <input name="k" type="Bits(64)"/>
   <input name="src" type="Bits(register_size)"/>
@@ -832,8 +832,8 @@ If you give Intel any comments or suggestions related to this document or the in
   <other-copy>VCVTPH2W</other-copy>
   <input name="element_size" type="Integer"/>
   <input name="register_size" type="Integer"/>
-  <input name="result_size" type="Integer"/>
   <input name="result_element_size" type="Integer"/>
+  <input name="result_size" type="Integer"/>
   <input name="k" type="Bits(64)"/>
   <input name="src" type="Bits(register_size)"/>
   <input name="context" type="Instruction_Context"/>
@@ -895,7 +895,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i_m?(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i_m?(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
@@ -911,8 +911,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512DQ_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="256"/>
-   <encoding-size name="result_size" size="512"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="512"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -976,7 +976,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i_z?(element_size, register_size, result_size, result_element_size, k, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i_z?(element_size, register_size, result_element_size, result_size, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
@@ -992,8 +992,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512DQ_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="256"/>
-   <encoding-size name="result_size" size="512"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="512"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -1042,7 +1042,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let result_element_size := 64;</code>
      </decode_args>
     <read_instr><code>let disp8n := if context.evex_b == 0b1 then element_size / 8 else 16;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let old := Read_YMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
      <code>let k := Read_Mask(context.evex_aaa);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
@@ -1068,7 +1068,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i_m?(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i_m?(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_YMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
@@ -1083,8 +1083,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512DQ_256_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="256"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="256"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -1150,7 +1150,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i_m?(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i_m?(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_YMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
@@ -1165,8 +1165,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512DQ_256_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="256"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="256"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -1212,7 +1212,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let result_element_size := 64;</code>
      </decode_args>
     <read_instr><code>let disp8n := if context.evex_b == 0b1 then element_size / 8 else 16;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let k := Read_Mask(context.evex_aaa);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
      </read_instr><decode_checks>
@@ -1237,7 +1237,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i_z?(element_size, register_size, result_size, result_element_size, k, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i_z?(element_size, register_size, result_element_size, result_size, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_YMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
@@ -1252,8 +1252,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512DQ_256_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="256"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="256"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -1317,7 +1317,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i_z?(element_size, register_size, result_size, result_element_size, k, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i_z?(element_size, register_size, result_element_size, result_size, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_YMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
@@ -1332,8 +1332,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512DQ_256_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="128"/>
-   <encoding-size name="result_size" size="256"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="256"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -1382,7 +1382,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let result_element_size := 64;</code>
      </decode_args>
     <read_instr><code>let disp8n := if context.evex_b == 0b1 then element_size / 8 else 32;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let old := Read_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg);</code>
      <code>let k := Read_Mask(context.evex_aaa);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
@@ -1408,7 +1408,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i_m?(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i_m?(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
@@ -1423,8 +1423,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512DQ_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="256"/>
-   <encoding-size name="result_size" size="512"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="512"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -1490,7 +1490,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i_m?(element_size, register_size, result_size, result_element_size, old, k, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i_m?(element_size, register_size, result_element_size, result_size, old, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
@@ -1505,8 +1505,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512DQ_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="256"/>
-   <encoding-size name="result_size" size="512"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="512"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -1552,7 +1552,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>let result_element_size := 64;</code>
      </decode_args>
     <read_instr><code>let disp8n := if context.evex_b == 0b1 then element_size / 8 else 32;</code>
-     <code>let (ea_offset, segment, next_ip0, is_rip_relative) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
+     <code>let (ea_offset, segment, next_ip0, is_rip_relative, base_uses_rsp) := Effective_Address?(address_size, context, mod, rm, disp8n, ip);</code>
      <code>let k := Read_Mask(context.evex_aaa);</code>
      <code>let effective_address := Handle_RIP_Relative_Address(address_size, is_rip_relative, ea_offset, next_ip0);</code>
      </read_instr><decode_checks>
@@ -1577,7 +1577,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := next_ip0;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i_z?(element_size, register_size, result_size, result_element_size, k, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i_z?(element_size, register_size, result_element_size, result_size, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
@@ -1592,8 +1592,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512DQ_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="256"/>
-   <encoding-size name="result_size" size="512"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="512"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -1657,7 +1657,7 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>Next_IP := ip;</code>
      </pre_execute>
     <execute>
-     <code>let result := Instr_CVTPf2i_z?(element_size, register_size, result_size, result_element_size, k, src, context, mod);</code>
+     <code>let result := Instr_CVTPf2i_z?(element_size, register_size, result_element_size, result_size, k, src, context, mod);</code>
      </execute>
     <post_execute>
      <code>Write_ZMM(context.rex_r4 ++ context.rex_r3 ++ reg, result);</code>
@@ -1672,8 +1672,8 @@ If you give Intel any comments or suggestions related to this document or the in
    <cpuid-group name="AVX512DQ_512_AVX10"><cpuid-flag>AVX10.1</cpuid-flag></cpuid-group>
    <encoding-size name="element_size" size="32"/>
    <encoding-size name="register_size" size="256"/>
-   <encoding-size name="result_size" size="512"/>
    <encoding-size name="result_element_size" size="64"/>
+   <encoding-size name="result_size" size="512"/>
    <operand is_read="False">
     <name>result</name>
     <encoding>ModRM:reg</encoding>
@@ -1691,8 +1691,8 @@ If you give Intel any comments or suggestions related to this document or the in
  <category>integer/conversion</category>
  <size name="element_size"/>
  <size name="register_size"/>
- <size name="result_size"/>
  <size name="result_element_size"/>
+ <size name="result_size"/>
  <input name="src"/>
  <output name="result"/>
  <footnote id="b"><para>If EVEX.b == 0b1, a single element is read from memory and broadcast across the vector.</para>

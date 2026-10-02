@@ -103,7 +103,9 @@ If you give Intel any comments or suggestions related to this document or the in
   <code>    var rounded_up : Boolean;</code>
   <code>    var out_of_range : Boolean;</code>
   <code>    (result, rounded_up, out_of_range, exceptions) := FP87::Sin(src);</code>
-  <code>    FP87_Status.C1 := Bit(rounded_up);</code>
+  <code>    if not (exceptions.DE == 0b1 and FP87_Control.DM == 0b0) then</code>
+  <code>        FP87_Status.C1 := Bit(rounded_up);</code>
+  <code>    endif;</code>
   <code>    FP87_Status.C2 := Bit(out_of_range);</code>
   <code>endif;</code>
   <code></code>
@@ -121,6 +123,7 @@ If you give Intel any comments or suggestions related to this document or the in
   <callee>FP87::Process_Exceptions</callee>
   <callee>FP87::QNaN_Indefinite</callee>
   <callee>FP87::Sin</callee>
+  <var-used>FP87_Control</var-used>
   <var-used>FP87_Status</var-used>
   <input name="src" type="Bits(80)"/>
   <output name="result" type="Bits(80)"/>

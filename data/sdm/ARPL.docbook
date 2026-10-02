@@ -1,69 +1,161 @@
 <instruction name="ARPL">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Adjust RPL Field of Segment Selector</shortdesc>
- <longdesc><para unique="1261240">
-   <string>Compares the RPL fields of two segment selectors. The first operand (the destination operand) contains one segment selector and the second operand (source operand) contains the other. (The RPL field is located in bits 0 and 1 of each operand.) If the RPL field of the destination operand is less than the RPL field of the source operand, the ZF flag is set and the RPL field of the destination operand is increased to match that of the source operand. Otherwise, the ZF flag is cleared and no change is made to the destination operand. (The destination operand can be a word register or a memory location; the source operand must be a word register.)</string></para>
-  <para unique="1261241">
-   <string>The ARPL instruction is provided for use by operating-system procedures (however, it can also be used by applica&#173;tions). It is generally used to adjust the RPL of a segment selector that has been passed to the operating system by an application program to match the privilege level of the application program. Here the segment selector passed to the operating system is placed in the destination operand and segment selector for the application program&#8217;s code segment is placed in the source operand. (The RPL field in the source operand represents the priv&#173;ilege level of the application program.) Execution of the ARPL instruction then ensures that the RPL of the segment selector received by the operating system is no lower (does not have a higher privilege) than the privilege level of the application program (the segment selector for the application program&#8217;s code segment can be read from the stack following a procedure call).</string></para>
-  <para unique="1261242">
-   <string>This instruction executes as described in compatibility mode and legacy mode. It is not encodable in 64-bit mode. </string></para>
-  <para unique="1261249">
-   <string>See </string><string>&#8220;Checking Caller Access Privileges&#8221;</string><string> in </string><link linkend="13742: H1Heading: Chapter 3 Protected-Mode Memory Management"><string>Chapter 3, &#8220;Protected-Mode Memory Management,&#8221;</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A, for more information about the use of this instruc&#173;tion.</string></para>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th><para unique="1261193">Opcode</para>
+      </th>
+     <th><para unique="1261195">Instruction</para>
+      </th>
+     <th><para unique="1261197">Op/ En</para>
+      </th>
+     <th><para unique="1261199">64-bit Mode</para>
+      </th>
+     <th><para unique="1261201">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261203">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.6112pt"/>
+   <col width="111.86352000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="47.999520000000004pt"/>
+   <col width="46.728pt"/>
+   <col width="181.404pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261205">63 /r</para>
+      </td>
+     <td><para unique="1261207">ARPL r/m16, r16</para>
+      </td>
+     <td><para unique="1261209">MR</para>
+      </td>
+     <td><para unique="1261211">N. E.</para>
+      </td>
+     <td><para unique="1261213">Valid</para>
+      </td>
+     <td><para unique="1261215">Adjust RPL of r/m16 to not less than RPL of r16.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261217">
+   <col width="43.14096000000001pt"/>
+   <col width="111.168pt"/>
+   <col width="118.87704000000001pt"/>
+   <col width="117.6624pt"/>
+   <col width="120.37176pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261219">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261221">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261223">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261225">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261227">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261229">MR</para>
+      </td>
+     <td valign="middle"><para unique="1261231">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261233">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261235">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261237">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261238">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261240">Compares the RPL fields of two segment selectors. The first operand (the destination operand) contains one segment selector and the second operand (source operand) contains the other. (The RPL field is located in bits 0 and 1 of each operand.) If the RPL field of the destination operand is less than the RPL field of the source operand, the ZF flag is set and the RPL field of the destination operand is increased to match that of the source operand. Otherwise, the ZF flag is cleared and no change is made to the destination operand. (The destination operand can be a word register or a memory location; the source operand must be a word register.)</para>
+  <para unique="1261241">The ARPL instruction is provided for use by operating-system procedures (however, it can also be used by applica&#173;tions). It is generally used to adjust the RPL of a segment selector that has been passed to the operating system by an application program to match the privilege level of the application program. Here the segment selector passed to the operating system is placed in the destination operand and segment selector for the application program&#8217;s code segment is placed in the source operand. (The RPL field in the source operand represents the priv&#173;ilege level of the application program.) Execution of the ARPL instruction then ensures that the RPL of the segment selector received by the operating system is no lower (does not have a higher privilege) than the privilege level of the application program (the segment selector for the application program&#8217;s code segment can be read from the stack following a procedure call).</para>
+  <para unique="1261242">This instruction executes as described in compatibility mode and legacy mode. It is not encodable in 64-bit mode. </para>
+  <para unique="1261249">See &#8220;Checking Caller Access Privileges&#8221; in <link unique="1261247" linkend="&lt;c&gt;__sdm_vol3A_ch03.fm#13742: H1Heading: Chapter 3 Protected-Mode Memory Management" xrefstyle="ChapterNum&amp;Title(,)_CR">Chapter 3, &#8220;Protected-Mode Memory Management,&#8221;</link> of the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A, for more information about the use of this instruc&#173;tion.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF 64-BIT MODE
+	THEN
+		See MOVSXD;
+	ELSE
+		IF DEST[RPL] &lt; SRC[RPL]
+			THEN
+				ZF := 1;
+				DEST[RPL] := SRC[RPL];
+			ELSE
+				ZF := 0;
+		FI;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261260">
-   <string>The ZF flag is set to 1 if the RPL field of the destination operand is less than that of the source operand; otherwise, it is set to 0.</string></para>
+  <para unique="1261260">The ZF flag is set to 1 if the RPL field of the destination operand is less than that of the source operand; otherwise, it is set to 0.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the destination is located in a non-writable segment.</string></listitem>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261262">If the destination is located in a non-writable segment.</para>
+     </listitem>
+    <listitem><para unique="1261263">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1261264">If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261265">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261266">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261267">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261268">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The ARPL instruction is not recognized in real-address mode.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1261270">The ARPL instruction is not recognized in real-address mode.</para>
+     </listitem>
+    <listitem><para unique="1261271">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The ARPL instruction is not recognized in virtual-8086 mode.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1261273">The ARPL instruction is not recognized in virtual-8086 mode.</para>
+     </listitem>
+    <listitem><para unique="1261274">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261276" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261276" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
-  <para unique="1261278" format="xIndent1">
-   <string>Not applicable.</string></para>
+  <para unique="1261278" format="xIndent1">Not applicable.</para>
   </subsection>
  </instruction>

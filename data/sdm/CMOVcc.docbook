@@ -1,115 +1,1481 @@
 <instruction name="CMOVcc">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Conditional Move</shortdesc>
- <longdesc><para unique="1262335">
-   <string>Each of the CMOVcc instructions performs a move operation if the </string><indexterm><primary>Status flags, EFLAGS register;EFLAGS register:condition codes</primary></indexterm><string>status flags in the EFLAGS register (CF, OF, PF, SF, and ZF) are in a specified state (or condition). A condition code (</string><italic><string>cc</string></italic><string>) is associated with each instruction to indi&#173;cate the condition being tested for. If the condition is not satisfied, a move is not performed and execution continues with the instruction following the CMOV</string><italic><string>cc</string></italic><string> instruction.</string></para>
-  <para unique="1262336">
-   <string>Specifically, CMOVcc loads data from its source operand into a temporary register unconditionally (regardless of the condition code and the status flags in the EFLAGS register). If the condition code associated with the instruction (cc) is satisfied, the data in the temporary register is then copied into the instruction's destination operand.</string></para>
-  <para unique="1262337">
-   <string>These instructions can move 16-bit, 32-bit or 64-bit values from memory to a general-purpose register or from one general-purpose register to another. Conditional moves of 8-bit register operands are not supported.</string></para>
-  <para unique="1262338">
-   <string>The condition for each CMOV</string><italic><string>cc</string></italic><string> mnemonic is given in the description column of the above table. The terms &#8220;less&#8221; and &#8220;greater&#8221; are used for comparisons of signed integers and the terms &#8220;above&#8221; and &#8220;below&#8221; are used for unsigned integers.</string></para>
-  <para unique="1262339">
-   <string>Because a particular state of the status flags can sometimes be interpreted in two ways, two mnemonics are defined for some opcodes. For example, the CMOVA (conditional move if above) instruction and the CMOVNBE (conditional move if not below or equal) instruction are alternate mnemonics for the opcode 0F 47H. </string></para>
-  <para unique="1262340">
-   <string>The CMOV</string><italic><string>cc</string></italic><string> instructions were introduced in P6 family processors; however, these instructions may not be supported by all IA-32 processors. Software can determine if the CMOV</string><italic><string>cc</string></italic><string> instructions are supported by checking the processor&#8217;s feature information with the CPUID instruction (see </string><link linkend="42531: 05_Level: CPUID&#8212;CPU Identification"><string>&#8220;CPUID&#8212;CPU Identification&#8221;</string></link><string> in this chapter).</string></para>
-  <para unique="1262344">
-   <string>In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</string></para>
+ <encoding_table><table unique="1261193">
+   <thead><tr>
+     <th><para unique="1261195">Opcode</para>
+      </th>
+     <th><para unique="1261197">Instruction</para>
+      </th>
+     <th><para unique="1261199">Op/ En</para>
+      </th>
+     <th><para unique="1261201">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261203">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261205">Description</para>
+      </th>
+     </tr>
+    </thead><col width="96.03072pt"/>
+   <col width="120.11328pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="42.290639999999996pt"/>
+   <col width="46.728pt"/>
+   <col width="180.65448pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261207">0F 47 /r</para>
+      </td>
+     <td><para unique="1261209">CMOVA r16, r/m16</para>
+      </td>
+     <td><para unique="1261211">RM</para>
+      </td>
+     <td><para unique="1261213">Valid</para>
+      </td>
+     <td><para unique="1261215">Valid</para>
+      </td>
+     <td><para unique="1261217">Move if above (CF=0 and ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261219">0F 47 /r</para>
+      </td>
+     <td><para unique="1261221">CMOVA r32, r/m32</para>
+      </td>
+     <td><para unique="1261223">RM</para>
+      </td>
+     <td><para unique="1261225">Valid</para>
+      </td>
+     <td><para unique="1261227">Valid</para>
+      </td>
+     <td><para unique="1261229">Move if above (CF=0 and ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261231">REX.W + 0F 47 /r</para>
+      </td>
+     <td><para unique="1261233">CMOVA r64, r/m64</para>
+      </td>
+     <td><para unique="1261235">RM</para>
+      </td>
+     <td><para unique="1261237">Valid</para>
+      </td>
+     <td><para unique="1261239">N.E.</para>
+      </td>
+     <td><para unique="1261241">Move if above (CF=0 and ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261243">0F 43 /r</para>
+      </td>
+     <td><para unique="1261245">CMOVAE r16, r/m16</para>
+      </td>
+     <td><para unique="1261247">RM</para>
+      </td>
+     <td><para unique="1261249">Valid</para>
+      </td>
+     <td><para unique="1261251">Valid</para>
+      </td>
+     <td><para unique="1261253">Move if above or equal (CF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261255">0F 43 /r</para>
+      </td>
+     <td><para unique="1261257">CMOVAE r32, r/m32</para>
+      </td>
+     <td><para unique="1261259">RM</para>
+      </td>
+     <td><para unique="1261261">Valid</para>
+      </td>
+     <td><para unique="1261263">Valid</para>
+      </td>
+     <td><para unique="1261265">Move if above or equal (CF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261267">REX.W + 0F 43 /r</para>
+      </td>
+     <td><para unique="1261269">CMOVAE r64, r/m64</para>
+      </td>
+     <td><para unique="1261271">RM</para>
+      </td>
+     <td><para unique="1261273">Valid</para>
+      </td>
+     <td><para unique="1261275">N.E.</para>
+      </td>
+     <td><para unique="1261277">Move if above or equal (CF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261279">0F 42 /r</para>
+      </td>
+     <td><para unique="1261281">CMOVB r16, r/m16</para>
+      </td>
+     <td><para unique="1261283">RM</para>
+      </td>
+     <td><para unique="1261285">Valid</para>
+      </td>
+     <td><para unique="1261287">Valid</para>
+      </td>
+     <td><para unique="1261289">Move if below (CF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261291">0F 42 /r</para>
+      </td>
+     <td><para unique="1261293">CMOVB r32, r/m32</para>
+      </td>
+     <td><para unique="1261295">RM</para>
+      </td>
+     <td><para unique="1261297">Valid</para>
+      </td>
+     <td><para unique="1261299">Valid</para>
+      </td>
+     <td><para unique="1261301">Move if below (CF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261303">REX.W + 0F 42 /r</para>
+      </td>
+     <td><para unique="1261305">CMOVB r64, r/m64</para>
+      </td>
+     <td><para unique="1261307">RM</para>
+      </td>
+     <td><para unique="1261309">Valid</para>
+      </td>
+     <td><para unique="1261311">N.E.</para>
+      </td>
+     <td><para unique="1261313">Move if below (CF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261315">0F 46 /r</para>
+      </td>
+     <td><para unique="1261317">CMOVBE r16, r/m16</para>
+      </td>
+     <td><para unique="1261319">RM</para>
+      </td>
+     <td><para unique="1261321">Valid</para>
+      </td>
+     <td><para unique="1261323">Valid</para>
+      </td>
+     <td><para unique="1261325">Move if below or equal (CF=1 or ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261327">0F 46 /r</para>
+      </td>
+     <td><para unique="1261329">CMOVBE r32, r/m32</para>
+      </td>
+     <td><para unique="1261331">RM</para>
+      </td>
+     <td><para unique="1261333">Valid</para>
+      </td>
+     <td><para unique="1261335">Valid</para>
+      </td>
+     <td><para unique="1261337">Move if below or equal (CF=1 or ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261339">REX.W + 0F 46 /r</para>
+      </td>
+     <td><para unique="1261341">CMOVBE r64, r/m64</para>
+      </td>
+     <td><para unique="1261343">RM</para>
+      </td>
+     <td><para unique="1261345">Valid</para>
+      </td>
+     <td><para unique="1261347">N.E.</para>
+      </td>
+     <td><para unique="1261349">Move if below or equal (CF=1 or ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261351">0F 42 /r</para>
+      </td>
+     <td><para unique="1261353">CMOVC r16, r/m16</para>
+      </td>
+     <td><para unique="1261355">RM</para>
+      </td>
+     <td><para unique="1261357">Valid</para>
+      </td>
+     <td><para unique="1261359">Valid</para>
+      </td>
+     <td><para unique="1261361">Move if carry (CF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261363">0F 42 /r</para>
+      </td>
+     <td><para unique="1261365">CMOVC r32, r/m32</para>
+      </td>
+     <td><para unique="1261367">RM</para>
+      </td>
+     <td><para unique="1261369">Valid</para>
+      </td>
+     <td><para unique="1261371">Valid</para>
+      </td>
+     <td><para unique="1261373">Move if carry (CF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261375">REX.W + 0F 42 /r</para>
+      </td>
+     <td><para unique="1261377">CMOVC r64, r/m64</para>
+      </td>
+     <td><para unique="1261379">RM</para>
+      </td>
+     <td><para unique="1261381">Valid</para>
+      </td>
+     <td><para unique="1261383">N.E.</para>
+      </td>
+     <td><para unique="1261385">Move if carry (CF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261387">0F 44 /r</para>
+      </td>
+     <td><para unique="1261389">CMOVE r16, r/m16</para>
+      </td>
+     <td><para unique="1261391">RM</para>
+      </td>
+     <td><para unique="1261393">Valid</para>
+      </td>
+     <td><para unique="1261395">Valid</para>
+      </td>
+     <td><para unique="1261397">Move if equal (ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261399">0F 44 /r</para>
+      </td>
+     <td><para unique="1261401">CMOVE r32, r/m32</para>
+      </td>
+     <td><para unique="1261403">RM</para>
+      </td>
+     <td><para unique="1261405">Valid</para>
+      </td>
+     <td><para unique="1261407">Valid</para>
+      </td>
+     <td><para unique="1261409">Move if equal (ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261411">REX.W + 0F 44 /r</para>
+      </td>
+     <td><para unique="1261413">CMOVE r64, r/m64</para>
+      </td>
+     <td><para unique="1261415">RM</para>
+      </td>
+     <td><para unique="1261417">Valid</para>
+      </td>
+     <td><para unique="1261419">N.E.</para>
+      </td>
+     <td><para unique="1261421">Move if equal (ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261423">0F 4F /r</para>
+      </td>
+     <td><para unique="1261425">CMOVG r16, r/m16</para>
+      </td>
+     <td><para unique="1261427">RM</para>
+      </td>
+     <td><para unique="1261429">Valid</para>
+      </td>
+     <td><para unique="1261431">Valid</para>
+      </td>
+     <td><para unique="1261433">Move if greater (ZF=0 and SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261435">0F 4F /r</para>
+      </td>
+     <td><para unique="1261437">CMOVG r32, r/m32</para>
+      </td>
+     <td><para unique="1261439">RM</para>
+      </td>
+     <td><para unique="1261441">Valid</para>
+      </td>
+     <td><para unique="1261443">Valid</para>
+      </td>
+     <td><para unique="1261445">Move if greater (ZF=0 and SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261447">REX.W + 0F 4F /r</para>
+      </td>
+     <td><para unique="1261449">CMOVG r64, r/m64</para>
+      </td>
+     <td><para unique="1261451">RM</para>
+      </td>
+     <td><para unique="1261453">V/N.E.</para>
+      </td>
+     <td><para unique="1261455">N/A</para>
+      </td>
+     <td><para unique="1261457">Move if greater (ZF=0 and SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261459">0F 4D /r</para>
+      </td>
+     <td><para unique="1261461">CMOVGE r16, r/m16</para>
+      </td>
+     <td><para unique="1261463">RM</para>
+      </td>
+     <td><para unique="1261465">Valid</para>
+      </td>
+     <td><para unique="1261467">Valid</para>
+      </td>
+     <td><para unique="1261469">Move if greater or equal (SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261471">0F 4D /r</para>
+      </td>
+     <td><para unique="1261473">CMOVGE r32, r/m32</para>
+      </td>
+     <td><para unique="1261475">RM</para>
+      </td>
+     <td><para unique="1261477">Valid</para>
+      </td>
+     <td><para unique="1261479">Valid</para>
+      </td>
+     <td><para unique="1261481">Move if greater or equal (SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261483">REX.W + 0F 4D /r</para>
+      </td>
+     <td><para unique="1261485">CMOVGE r64, r/m64</para>
+      </td>
+     <td><para unique="1261487">RM</para>
+      </td>
+     <td><para unique="1261489">Valid</para>
+      </td>
+     <td><para unique="1261491">N.E.</para>
+      </td>
+     <td><para unique="1261493">Move if greater or equal (SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261495">0F 4C /r</para>
+      </td>
+     <td><para unique="1261497">CMOVL r16, r/m16</para>
+      </td>
+     <td><para unique="1261499">RM</para>
+      </td>
+     <td><para unique="1261501">Valid</para>
+      </td>
+     <td><para unique="1261503">Valid</para>
+      </td>
+     <td><para unique="1261505">Move if less (SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261507">0F 4C /r</para>
+      </td>
+     <td><para unique="1261509">CMOVL r32, r/m32</para>
+      </td>
+     <td><para unique="1261511">RM</para>
+      </td>
+     <td><para unique="1261513">Valid</para>
+      </td>
+     <td><para unique="1261515">Valid</para>
+      </td>
+     <td><para unique="1261517">Move if less (SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261519">REX.W + 0F 4C /r</para>
+      </td>
+     <td><para unique="1261521">CMOVL r64, r/m64</para>
+      </td>
+     <td><para unique="1261523">RM</para>
+      </td>
+     <td><para unique="1261525">Valid</para>
+      </td>
+     <td><para unique="1261527">N.E.</para>
+      </td>
+     <td><para unique="1261529">Move if less (SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261531">0F 4E /r</para>
+      </td>
+     <td><para unique="1261533">CMOVLE r16, r/m16</para>
+      </td>
+     <td><para unique="1261535">RM</para>
+      </td>
+     <td><para unique="1261537">Valid</para>
+      </td>
+     <td><para unique="1261539">Valid</para>
+      </td>
+     <td><para unique="1261541">Move if less or equal (ZF=1 or SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261543">0F 4E /r</para>
+      </td>
+     <td><para unique="1261545">CMOVLE r32, r/m32</para>
+      </td>
+     <td><para unique="1261547">RM</para>
+      </td>
+     <td><para unique="1261549">Valid</para>
+      </td>
+     <td><para unique="1261551">Valid</para>
+      </td>
+     <td><para unique="1261553">Move if less or equal (ZF=1 or SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261555">REX.W + 0F 4E /r</para>
+      </td>
+     <td><para unique="1261557">CMOVLE r64, r/m64</para>
+      </td>
+     <td><para unique="1261559">RM</para>
+      </td>
+     <td><para unique="1261561">Valid</para>
+      </td>
+     <td><para unique="1261563">N.E.</para>
+      </td>
+     <td><para unique="1261565">Move if less or equal (ZF=1 or SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261567">0F 46 /r</para>
+      </td>
+     <td><para unique="1261569">CMOVNA r16, r/m16</para>
+      </td>
+     <td><para unique="1261571">RM</para>
+      </td>
+     <td><para unique="1261573">Valid</para>
+      </td>
+     <td><para unique="1261575">Valid</para>
+      </td>
+     <td><para unique="1261577">Move if not above (CF=1 or ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261579">0F 46 /r</para>
+      </td>
+     <td><para unique="1261581">CMOVNA r32, r/m32</para>
+      </td>
+     <td><para unique="1261583">RM</para>
+      </td>
+     <td><para unique="1261585">Valid</para>
+      </td>
+     <td><para unique="1261587">Valid</para>
+      </td>
+     <td><para unique="1261589">Move if not above (CF=1 or ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261591">REX.W + 0F 46 /r</para>
+      </td>
+     <td><para unique="1261593">CMOVNA r64, r/m64</para>
+      </td>
+     <td><para unique="1261595">RM</para>
+      </td>
+     <td><para unique="1261597">Valid</para>
+      </td>
+     <td><para unique="1261599">N.E.</para>
+      </td>
+     <td><para unique="1261601">Move if not above (CF=1 or ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261603">0F 42 /r</para>
+      </td>
+     <td><para unique="1261605">CMOVNAE r16, r/m16</para>
+      </td>
+     <td><para unique="1261607">RM</para>
+      </td>
+     <td><para unique="1261609">Valid</para>
+      </td>
+     <td><para unique="1261611">Valid</para>
+      </td>
+     <td><para unique="1261613">Move if not above or equal (CF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261615">0F 42 /r</para>
+      </td>
+     <td><para unique="1261617">CMOVNAE r32, r/m32</para>
+      </td>
+     <td><para unique="1261619">RM</para>
+      </td>
+     <td><para unique="1261621">Valid</para>
+      </td>
+     <td><para unique="1261623">Valid</para>
+      </td>
+     <td><para unique="1261625">Move if not above or equal (CF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261627">REX.W + 0F 42 /r</para>
+      </td>
+     <td><para unique="1261629">CMOVNAE r64, r/m64</para>
+      </td>
+     <td><para unique="1261631">RM</para>
+      </td>
+     <td><para unique="1261633">Valid</para>
+      </td>
+     <td><para unique="1261635">N.E.</para>
+      </td>
+     <td><para unique="1261637">Move if not above or equal (CF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261639">0F 43 /r</para>
+      </td>
+     <td><para unique="1261641">CMOVNB r16, r/m16</para>
+      </td>
+     <td><para unique="1261643">RM</para>
+      </td>
+     <td><para unique="1261645">Valid</para>
+      </td>
+     <td><para unique="1261647">Valid</para>
+      </td>
+     <td><para unique="1261649">Move if not below (CF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261651">0F 43 /r</para>
+      </td>
+     <td><para unique="1261653">CMOVNB r32, r/m32</para>
+      </td>
+     <td><para unique="1261655">RM</para>
+      </td>
+     <td><para unique="1261657">Valid</para>
+      </td>
+     <td><para unique="1261659">Valid</para>
+      </td>
+     <td><para unique="1261661">Move if not below (CF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261663">REX.W + 0F 43 /r</para>
+      </td>
+     <td><para unique="1261665">CMOVNB r64, r/m64</para>
+      </td>
+     <td><para unique="1261667">RM</para>
+      </td>
+     <td><para unique="1261669">Valid</para>
+      </td>
+     <td><para unique="1261671">N.E.</para>
+      </td>
+     <td><para unique="1261673">Move if not below (CF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261675">0F 47 /r</para>
+      </td>
+     <td><para unique="1261677">CMOVNBE r16, r/m16</para>
+      </td>
+     <td><para unique="1261679">RM</para>
+      </td>
+     <td><para unique="1261681">Valid</para>
+      </td>
+     <td><para unique="1261683">Valid</para>
+      </td>
+     <td><para unique="1261685">Move if not below or equal (CF=0 and ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <th><para unique="1261687">Opcode</para>
+      </th>
+     <th><para unique="1261689">Instruction</para>
+      </th>
+     <th><para unique="1261691">Op/ En</para>
+      </th>
+     <th><para unique="1261693">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261695">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261697">Description</para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1261699">0F 47 /r</para>
+      </td>
+     <td><para unique="1261701">CMOVNBE r32, r/m32</para>
+      </td>
+     <td><para unique="1261703">RM</para>
+      </td>
+     <td><para unique="1261705">Valid</para>
+      </td>
+     <td><para unique="1261707">Valid</para>
+      </td>
+     <td><para unique="1261709">Move if not below or equal (CF=0 and ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261711">REX.W + 0F 47 /r</para>
+      </td>
+     <td><para unique="1261713">CMOVNBE r64, r/m64</para>
+      </td>
+     <td><para unique="1261715">RM</para>
+      </td>
+     <td><para unique="1261717">Valid</para>
+      </td>
+     <td><para unique="1261719">N.E.</para>
+      </td>
+     <td><para unique="1261721">Move if not below or equal (CF=0 and ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261723">0F 43 /r</para>
+      </td>
+     <td><para unique="1261725">CMOVNC r16, r/m16</para>
+      </td>
+     <td><para unique="1261727">RM</para>
+      </td>
+     <td><para unique="1261729">Valid</para>
+      </td>
+     <td><para unique="1261731">Valid</para>
+      </td>
+     <td><para unique="1261733">Move if not carry (CF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261735">0F 43 /r</para>
+      </td>
+     <td><para unique="1261737">CMOVNC r32, r/m32</para>
+      </td>
+     <td><para unique="1261739">RM</para>
+      </td>
+     <td><para unique="1261741">Valid</para>
+      </td>
+     <td><para unique="1261743">Valid</para>
+      </td>
+     <td><para unique="1261745">Move if not carry (CF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261747">REX.W + 0F 43 /r</para>
+      </td>
+     <td><para unique="1261749">CMOVNC r64, r/m64</para>
+      </td>
+     <td><para unique="1261751">RM</para>
+      </td>
+     <td><para unique="1261753">Valid</para>
+      </td>
+     <td><para unique="1261755">N.E.</para>
+      </td>
+     <td><para unique="1261757">Move if not carry (CF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261759">0F 45 /r</para>
+      </td>
+     <td><para unique="1261761">CMOVNE r16, r/m16</para>
+      </td>
+     <td><para unique="1261763">RM</para>
+      </td>
+     <td><para unique="1261765">Valid</para>
+      </td>
+     <td><para unique="1261767">Valid</para>
+      </td>
+     <td><para unique="1261769">Move if not equal (ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261771">0F 45 /r</para>
+      </td>
+     <td><para unique="1261773">CMOVNE r32, r/m32</para>
+      </td>
+     <td><para unique="1261775">RM</para>
+      </td>
+     <td><para unique="1261777">Valid</para>
+      </td>
+     <td><para unique="1261779">Valid</para>
+      </td>
+     <td><para unique="1261781">Move if not equal (ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261783">REX.W + 0F 45 /r</para>
+      </td>
+     <td><para unique="1261785">CMOVNE r64, r/m64</para>
+      </td>
+     <td><para unique="1261787">RM</para>
+      </td>
+     <td><para unique="1261789">Valid</para>
+      </td>
+     <td><para unique="1261791">N.E.</para>
+      </td>
+     <td><para unique="1261793">Move if not equal (ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261795">0F 4E /r</para>
+      </td>
+     <td><para unique="1261797">CMOVNG r16, r/m16</para>
+      </td>
+     <td><para unique="1261799">RM</para>
+      </td>
+     <td><para unique="1261801">Valid</para>
+      </td>
+     <td><para unique="1261803">Valid</para>
+      </td>
+     <td><para unique="1261805">Move if not greater (ZF=1 or SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261807">0F 4E /r</para>
+      </td>
+     <td><para unique="1261809">CMOVNG r32, r/m32</para>
+      </td>
+     <td><para unique="1261811">RM</para>
+      </td>
+     <td><para unique="1261813">Valid</para>
+      </td>
+     <td><para unique="1261815">Valid</para>
+      </td>
+     <td><para unique="1261817">Move if not greater (ZF=1 or SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261819">REX.W + 0F 4E /r</para>
+      </td>
+     <td><para unique="1261821">CMOVNG r64, r/m64</para>
+      </td>
+     <td><para unique="1261823">RM</para>
+      </td>
+     <td><para unique="1261825">Valid</para>
+      </td>
+     <td><para unique="1261827">N.E.</para>
+      </td>
+     <td><para unique="1261829">Move if not greater (ZF=1 or SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261831">0F 4C /r</para>
+      </td>
+     <td><para unique="1261833">CMOVNGE r16, r/m16</para>
+      </td>
+     <td><para unique="1261835">RM</para>
+      </td>
+     <td><para unique="1261837">Valid</para>
+      </td>
+     <td><para unique="1261839">Valid</para>
+      </td>
+     <td><para unique="1261841">Move if not greater or equal (SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261843">0F 4C /r</para>
+      </td>
+     <td><para unique="1261845">CMOVNGE r32, r/m32</para>
+      </td>
+     <td><para unique="1261847">RM</para>
+      </td>
+     <td><para unique="1261849">Valid</para>
+      </td>
+     <td><para unique="1261851">Valid</para>
+      </td>
+     <td><para unique="1261853">Move if not greater or equal (SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261855">REX.W + 0F 4C /r</para>
+      </td>
+     <td><para unique="1261857">CMOVNGE r64, r/m64</para>
+      </td>
+     <td><para unique="1261859">RM</para>
+      </td>
+     <td><para unique="1261861">Valid</para>
+      </td>
+     <td><para unique="1261863">N.E.</para>
+      </td>
+     <td><para unique="1261865">Move if not greater or equal (SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261867">0F 4D /r</para>
+      </td>
+     <td><para unique="1261869">CMOVNL r16, r/m16</para>
+      </td>
+     <td><para unique="1261871">RM</para>
+      </td>
+     <td><para unique="1261873">Valid</para>
+      </td>
+     <td><para unique="1261875">Valid</para>
+      </td>
+     <td><para unique="1261877">Move if not less (SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261879">0F 4D /r</para>
+      </td>
+     <td><para unique="1261881">CMOVNL r32, r/m32</para>
+      </td>
+     <td><para unique="1261883">RM</para>
+      </td>
+     <td><para unique="1261885">Valid</para>
+      </td>
+     <td><para unique="1261887">Valid</para>
+      </td>
+     <td><para unique="1261889">Move if not less (SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261891">REX.W + 0F 4D /r</para>
+      </td>
+     <td><para unique="1261893">CMOVNL r64, r/m64</para>
+      </td>
+     <td><para unique="1261895">RM</para>
+      </td>
+     <td><para unique="1261897">Valid</para>
+      </td>
+     <td><para unique="1261899">N.E.</para>
+      </td>
+     <td><para unique="1261901">Move if not less (SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261903">0F 4F /r</para>
+      </td>
+     <td><para unique="1261905">CMOVNLE r16, r/m16</para>
+      </td>
+     <td><para unique="1261907">RM</para>
+      </td>
+     <td><para unique="1261909">Valid</para>
+      </td>
+     <td><para unique="1261911">Valid</para>
+      </td>
+     <td><para unique="1261913">Move if not less or equal (ZF=0 and SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261915">0F 4F /r</para>
+      </td>
+     <td><para unique="1261917">CMOVNLE r32, r/m32</para>
+      </td>
+     <td><para unique="1261919">RM</para>
+      </td>
+     <td><para unique="1261921">Valid</para>
+      </td>
+     <td><para unique="1261923">Valid</para>
+      </td>
+     <td><para unique="1261925">Move if not less or equal (ZF=0 and SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261927">REX.W + 0F 4F /r</para>
+      </td>
+     <td><para unique="1261929">CMOVNLE r64, r/m64</para>
+      </td>
+     <td><para unique="1261931">RM</para>
+      </td>
+     <td><para unique="1261933">Valid</para>
+      </td>
+     <td><para unique="1261935">N.E.</para>
+      </td>
+     <td><para unique="1261937">Move if not less or equal (ZF=0 and SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261939">0F 41 /r</para>
+      </td>
+     <td><para unique="1261941">CMOVNO r16, r/m16</para>
+      </td>
+     <td><para unique="1261943">RM</para>
+      </td>
+     <td><para unique="1261945">Valid</para>
+      </td>
+     <td><para unique="1261947">Valid</para>
+      </td>
+     <td><para unique="1261949">Move if not overflow (OF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261951">0F 41 /r</para>
+      </td>
+     <td><para unique="1261953">CMOVNO r32, r/m32</para>
+      </td>
+     <td><para unique="1261955">RM</para>
+      </td>
+     <td><para unique="1261957">Valid</para>
+      </td>
+     <td><para unique="1261959">Valid</para>
+      </td>
+     <td><para unique="1261961">Move if not overflow (OF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261963">REX.W + 0F 41 /r</para>
+      </td>
+     <td><para unique="1261965">CMOVNO r64, r/m64</para>
+      </td>
+     <td><para unique="1261967">RM</para>
+      </td>
+     <td><para unique="1261969">Valid</para>
+      </td>
+     <td><para unique="1261971">N.E.</para>
+      </td>
+     <td><para unique="1261973">Move if not overflow (OF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261975">0F 4B /r</para>
+      </td>
+     <td><para unique="1261977">CMOVNP r16, r/m16</para>
+      </td>
+     <td><para unique="1261979">RM</para>
+      </td>
+     <td><para unique="1261981">Valid</para>
+      </td>
+     <td><para unique="1261983">Valid</para>
+      </td>
+     <td><para unique="1261985">Move if not parity (PF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261987">0F 4B /r</para>
+      </td>
+     <td><para unique="1261989">CMOVNP r32, r/m32</para>
+      </td>
+     <td><para unique="1261991">RM</para>
+      </td>
+     <td><para unique="1261993">Valid</para>
+      </td>
+     <td><para unique="1261995">Valid</para>
+      </td>
+     <td><para unique="1261997">Move if not parity (PF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261999">REX.W + 0F 4B /r</para>
+      </td>
+     <td><para unique="1262001">CMOVNP r64, r/m64</para>
+      </td>
+     <td><para unique="1262003">RM</para>
+      </td>
+     <td><para unique="1262005">Valid</para>
+      </td>
+     <td><para unique="1262007">N.E.</para>
+      </td>
+     <td><para unique="1262009">Move if not parity (PF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262011">0F 49 /r</para>
+      </td>
+     <td><para unique="1262013">CMOVNS r16, r/m16</para>
+      </td>
+     <td><para unique="1262015">RM</para>
+      </td>
+     <td><para unique="1262017">Valid</para>
+      </td>
+     <td><para unique="1262019">Valid</para>
+      </td>
+     <td><para unique="1262021">Move if not sign (SF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262023">0F 49 /r</para>
+      </td>
+     <td><para unique="1262025">CMOVNS r32, r/m32</para>
+      </td>
+     <td><para unique="1262027">RM</para>
+      </td>
+     <td><para unique="1262029">Valid</para>
+      </td>
+     <td><para unique="1262031">Valid</para>
+      </td>
+     <td><para unique="1262033">Move if not sign (SF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262035">REX.W + 0F 49 /r</para>
+      </td>
+     <td><para unique="1262037">CMOVNS r64, r/m64</para>
+      </td>
+     <td><para unique="1262039">RM</para>
+      </td>
+     <td><para unique="1262041">Valid</para>
+      </td>
+     <td><para unique="1262043">N.E.</para>
+      </td>
+     <td><para unique="1262045">Move if not sign (SF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262047">0F 45 /r</para>
+      </td>
+     <td><para unique="1262049">CMOVNZ r16, r/m16</para>
+      </td>
+     <td><para unique="1262051">RM</para>
+      </td>
+     <td><para unique="1262053">Valid</para>
+      </td>
+     <td><para unique="1262055">Valid</para>
+      </td>
+     <td><para unique="1262057">Move if not zero (ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262059">0F 45 /r</para>
+      </td>
+     <td><para unique="1262061">CMOVNZ r32, r/m32</para>
+      </td>
+     <td><para unique="1262063">RM</para>
+      </td>
+     <td><para unique="1262065">Valid</para>
+      </td>
+     <td><para unique="1262067">Valid</para>
+      </td>
+     <td><para unique="1262069">Move if not zero (ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262071">REX.W + 0F 45 /r</para>
+      </td>
+     <td><para unique="1262073">CMOVNZ r64, r/m64</para>
+      </td>
+     <td><para unique="1262075">RM</para>
+      </td>
+     <td><para unique="1262077">Valid</para>
+      </td>
+     <td><para unique="1262079">N.E.</para>
+      </td>
+     <td><para unique="1262081">Move if not zero (ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262083">0F 40 /r</para>
+      </td>
+     <td><para unique="1262085">CMOVO r16, r/m16</para>
+      </td>
+     <td><para unique="1262087">RM</para>
+      </td>
+     <td><para unique="1262089">Valid</para>
+      </td>
+     <td><para unique="1262091">Valid</para>
+      </td>
+     <td><para unique="1262093">Move if overflow (OF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262095">0F 40 /r</para>
+      </td>
+     <td><para unique="1262097">CMOVO r32, r/m32</para>
+      </td>
+     <td><para unique="1262099">RM</para>
+      </td>
+     <td><para unique="1262101">Valid</para>
+      </td>
+     <td><para unique="1262103">Valid</para>
+      </td>
+     <td><para unique="1262105">Move if overflow (OF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262107">REX.W + 0F 40 /r</para>
+      </td>
+     <td><para unique="1262109">CMOVO r64, r/m64</para>
+      </td>
+     <td><para unique="1262111">RM</para>
+      </td>
+     <td><para unique="1262113">Valid</para>
+      </td>
+     <td><para unique="1262115">N.E.</para>
+      </td>
+     <td><para unique="1262117">Move if overflow (OF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262119">0F 4A /r</para>
+      </td>
+     <td><para unique="1262121">CMOVP r16, r/m16</para>
+      </td>
+     <td><para unique="1262123">RM</para>
+      </td>
+     <td><para unique="1262125">Valid</para>
+      </td>
+     <td><para unique="1262127">Valid</para>
+      </td>
+     <td><para unique="1262129">Move if parity (PF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262131">0F 4A /r</para>
+      </td>
+     <td><para unique="1262133">CMOVP r32, r/m32</para>
+      </td>
+     <td><para unique="1262135">RM</para>
+      </td>
+     <td><para unique="1262137">Valid</para>
+      </td>
+     <td><para unique="1262139">Valid</para>
+      </td>
+     <td><para unique="1262141">Move if parity (PF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262143">REX.W + 0F 4A /r</para>
+      </td>
+     <td><para unique="1262145">CMOVP r64, r/m64</para>
+      </td>
+     <td><para unique="1262147">RM</para>
+      </td>
+     <td><para unique="1262149">Valid</para>
+      </td>
+     <td><para unique="1262151">N.E.</para>
+      </td>
+     <td><para unique="1262153">Move if parity (PF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262155">0F 4A /r</para>
+      </td>
+     <td><para unique="1262157">CMOVPE r16, r/m16</para>
+      </td>
+     <td><para unique="1262159">RM</para>
+      </td>
+     <td><para unique="1262161">Valid</para>
+      </td>
+     <td><para unique="1262163">Valid</para>
+      </td>
+     <td><para unique="1262165">Move if parity even (PF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262167">0F 4A /r</para>
+      </td>
+     <td><para unique="1262169">CMOVPE r32, r/m32</para>
+      </td>
+     <td><para unique="1262171">RM</para>
+      </td>
+     <td><para unique="1262173">Valid</para>
+      </td>
+     <td><para unique="1262175">Valid</para>
+      </td>
+     <td><para unique="1262177">Move if parity even (PF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262179">REX.W + 0F 4A /r</para>
+      </td>
+     <td><para unique="1262181">CMOVPE r64, r/m64</para>
+      </td>
+     <td><para unique="1262183">RM</para>
+      </td>
+     <td><para unique="1262185">Valid</para>
+      </td>
+     <td><para unique="1262187">N.E.</para>
+      </td>
+     <td><para unique="1262189">Move if parity even (PF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <th><para unique="1262191">Opcode</para>
+      </th>
+     <th><para unique="1262193">Instruction</para>
+      </th>
+     <th><para unique="1262195">Op/ En</para>
+      </th>
+     <th><para unique="1262197">64-Bit Mode</para>
+      </th>
+     <th><para unique="1262199">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1262201">Description</para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1262203">0F 4B /r</para>
+      </td>
+     <td><para unique="1262205">CMOVPO r16, r/m16</para>
+      </td>
+     <td><para unique="1262207">RM</para>
+      </td>
+     <td><para unique="1262209">Valid</para>
+      </td>
+     <td><para unique="1262211">Valid</para>
+      </td>
+     <td><para unique="1262213">Move if parity odd (PF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262215">0F 4B /r</para>
+      </td>
+     <td><para unique="1262217">CMOVPO r32, r/m32</para>
+      </td>
+     <td><para unique="1262219">RM</para>
+      </td>
+     <td><para unique="1262221">Valid</para>
+      </td>
+     <td><para unique="1262223">Valid</para>
+      </td>
+     <td><para unique="1262225">Move if parity odd (PF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262227">REX.W + 0F 4B /r</para>
+      </td>
+     <td><para unique="1262229">CMOVPO r64, r/m64</para>
+      </td>
+     <td><para unique="1262231">RM</para>
+      </td>
+     <td><para unique="1262233">Valid</para>
+      </td>
+     <td><para unique="1262235">N.E.</para>
+      </td>
+     <td><para unique="1262237">Move if parity odd (PF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262239">0F 48 /r</para>
+      </td>
+     <td><para unique="1262241">CMOVS r16, r/m16</para>
+      </td>
+     <td><para unique="1262243">RM</para>
+      </td>
+     <td><para unique="1262245">Valid</para>
+      </td>
+     <td><para unique="1262247">Valid</para>
+      </td>
+     <td><para unique="1262249">Move if sign (SF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262251">0F 48 /r</para>
+      </td>
+     <td><para unique="1262253">CMOVS r32, r/m32</para>
+      </td>
+     <td><para unique="1262255">RM</para>
+      </td>
+     <td><para unique="1262257">Valid</para>
+      </td>
+     <td><para unique="1262259">Valid</para>
+      </td>
+     <td><para unique="1262261">Move if sign (SF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262263">REX.W + 0F 48 /r</para>
+      </td>
+     <td><para unique="1262265">CMOVS r64, r/m64</para>
+      </td>
+     <td><para unique="1262267">RM</para>
+      </td>
+     <td><para unique="1262269">Valid</para>
+      </td>
+     <td><para unique="1262271">N.E.</para>
+      </td>
+     <td><para unique="1262273">Move if sign (SF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262275">0F 44 /r</para>
+      </td>
+     <td><para unique="1262277">CMOVZ r16, r/m16</para>
+      </td>
+     <td><para unique="1262279">RM</para>
+      </td>
+     <td><para unique="1262281">Valid</para>
+      </td>
+     <td><para unique="1262283">Valid</para>
+      </td>
+     <td><para unique="1262285">Move if zero (ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262287">0F 44 /r</para>
+      </td>
+     <td><para unique="1262289">CMOVZ r32, r/m32</para>
+      </td>
+     <td><para unique="1262291">RM</para>
+      </td>
+     <td><para unique="1262293">Valid</para>
+      </td>
+     <td><para unique="1262295">Valid</para>
+      </td>
+     <td><para unique="1262297">Move if zero (ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262299">REX.W + 0F 44 /r</para>
+      </td>
+     <td><para unique="1262301">CMOVZ r64, r/m64</para>
+      </td>
+     <td><para unique="1262303">RM</para>
+      </td>
+     <td><para unique="1262305">Valid</para>
+      </td>
+     <td><para unique="1262307">N.E.</para>
+      </td>
+     <td><para unique="1262309">Move if zero (ZF=1).</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1262311">
+   <col width="43.5384pt"/>
+   <col width="115.39728000000001pt"/>
+   <col width="119.97144pt"/>
+   <col width="112.33224pt"/>
+   <col width="121.47984pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1262313">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1262315">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1262317">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1262319">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1262321">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1262323">RM</para>
+      </td>
+     <td valign="middle"><para unique="1262325">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1262327">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1262329">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1262331">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1262332">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1262335">Each of the CMOVcc instructions performs a move operation if the <indexterm><primary>Status flags, EFLAGS register;EFLAGS register:condition codes</primary></indexterm>status flags in the EFLAGS register (CF, OF, PF, SF, and ZF) are in a specified state (or condition). A condition code (<italic>cc</italic>) is associated with each instruction to indi&#173;cate the condition being tested for. If the condition is not satisfied, a move is not performed and execution continues with the instruction following the CMOV<italic>cc</italic> instruction.</para>
+  <para unique="1262336">Specifically, CMOVcc loads data from its source operand into a temporary register unconditionally (regardless of the condition code and the status flags in the EFLAGS register). If the condition code associated with the instruction (cc) is satisfied, the data in the temporary register is then copied into the instruction\qs destination operand.</para>
+  <para unique="1262337">These instructions can move 16-bit, 32-bit or 64-bit values from memory to a general-purpose register or from one general-purpose register to another. Conditional moves of 8-bit register operands are not supported.</para>
+  <para unique="1262338">The condition for each CMOV<italic>cc</italic> mnemonic is given in the description column of the above table. The terms &#8220;less&#8221; and &#8220;greater&#8221; are used for comparisons of signed integers and the terms &#8220;above&#8221; and &#8220;below&#8221; are used for unsigned integers.</para>
+  <para unique="1262339">Because a particular state of the status flags can sometimes be interpreted in two ways, two mnemonics are defined for some opcodes. For example, the CMOVA (conditional move if above) instruction and the CMOVNBE (conditional move if not below or equal) instruction are alternate mnemonics for the opcode 0F 47H. </para>
+  <para unique="1262340">The CMOV<italic>cc</italic> instructions were introduced in P6 family processors; however, these instructions may not be supported by all IA-32 processors. Software can determine if the CMOV<italic>cc</italic> instructions are supported by checking the processor&#8217;s feature information with the CPUID instruction (see <link unique="1262342" linkend="&lt;c&gt;CPUID-CPU-Identification.fm#42531: 05_Level: CPUID&#8212;CPU Identification" xrefstyle="SectionTitle">&#8220;CPUID&#8212;CPU Identification&#8221;</link> in this chapter).</para>
+  <para unique="1262344">In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</para>
   </longdesc>
+ <operation>
+  <programlisting>temp := SRC
+IF condition TRUE
+	THEN 	DEST := temp;
+ELSE IF (OperandSize = 32 and IA-32e mode active)
+	THEN 	DEST[63:32] := 0;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1262353">
-   <string>None.</string></para>
+  <para unique="1262353">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1262355">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1262356">If the DS, ES, FS, or GS register contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1262357">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1262358">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1262359">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1262360">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1262362">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS</term>
+    <listitem><para unique="1262363">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1262364">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1262366">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1262367">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1262368">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1262369">If alignment checking is enabled and an unaligned memory reference is made.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1262370">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1262372" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1262372" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1262374">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1262375">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1262376">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1262377">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1262378">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

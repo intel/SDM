@@ -705,7 +705,7 @@ function render_diagram(config, g) {
     marker.setAttribute('markerWidth', config.arrow_length);
     marker.setAttribute('markerHeight', config.arrow_width);
     marker.setAttribute('style', `fill: ${config.connect_stroke};`);
-    marker.setAttribute('orient', 'auto-start-reverse');
+    marker.setAttribute('orient', 'auto');
     const path = document.createElementNS(svg_namespace, 'path');
     path.setAttribute('d', `M 0 0 L ${config.arrow_length} ${config.arrow_width/2} L 0 ${config.arrow_width} L ${config.arrow_length * 0.2} ${config.arrow_width/2} z`);
     marker.appendChild(path);

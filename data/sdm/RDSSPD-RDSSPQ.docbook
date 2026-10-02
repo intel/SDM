@@ -1,23 +1,127 @@
 <instruction name="RDSSPD/RDSSPQ">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Read Shadow Stack Pointer</shortdesc>
- <longdesc><para unique="1091456">
-   <string>Copies the current shadow stack pointer (SSP) register to the register destination. This opcode is a NOP when CET shadow stacks are not enabled and on processors that do not support CET.</string></para>
+ <encoding_table><table unique="1091392">
+   <col width="61.66512pt"/>
+   <col width="61.66512pt"/>
+   <col width="26.994239999999998pt"/>
+   <col width="48.04992pt"/>
+   <col width="57.6756pt"/>
+   <col width="256.37687999999997pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091394">Opcode/</para>
+      <para unique="1091395">Instruction</para>
+      </th>
+     <th><para unique="1091399">Op/ En</para>
+      </th>
+     <th><para unique="1091401">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091403">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091405">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1091407">F3 0F 1E /1 (mod=11)</para>
+      <para unique="1091408">RDSSPD r32</para>
+      </td>
+     <td><para unique="1091412">R</para>
+      </td>
+     <td><para unique="1091414">V/V</para>
+      </td>
+     <td><para unique="1091416">CET_SS</para>
+      </td>
+     <td><para unique="1091418">Copy low 32 bits of shadow stack pointer (SSP) to r32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091420">F3 REX.W 0F 1E /1 (mod=11)</para>
+      <para unique="1091421">RDSSPQ r64</para>
+      </td>
+     <td><para unique="1091425">R</para>
+      </td>
+     <td><para unique="1091427">V/N.E.</para>
+      </td>
+     <td><para unique="1091429">CET_SS</para>
+      </td>
+     <td><para unique="1091431">Copies shadow stack pointer (SSP) to r64.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091433">
+   <col width="69.28056000000001pt"/>
+   <col width="109.74600000000001pt"/>
+   <col width="108.08927999999999pt"/>
+   <col width="110.59488pt"/>
+   <col width="113.05944000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091435">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091437">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091439">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091441">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091443">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091445">R</para>
+      </td>
+     <td valign="middle"><para unique="1091447">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091449">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091451">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091453">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091454">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091456">Copies the current shadow stack pointer (SSP) register to the register destination. This opcode is a NOP when CET shadow stacks are not enabled and on processors that do not support CET.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF CPL = 3
+	IF CR4.CET &amp; IA32_U_CET.SH_STK_EN
+		IF (operand size is 64 bit)
+			THEN
+				Dest := SSP;
+			ELSE
+				Dest := SSP[31:0];
+		FI;
+	FI;
+ELSE
+	IF CR4.CET &amp; IA32_S_CET.SH_STK_EN
+		IF (operand size is 64 bit)
+			THEN
+				Dest := SSP;
+			ELSE
+				Dest := SSP[31:0];
+		FI;
+	FI;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1091478">
-   <string>None.</string></para>
+  <para unique="1091478">None.</para>
   </subsection>
  <subsection title="C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>RDSSPD	__int32 _rdsspd_i32(void);</string><string>
-</string><string>RDSSPQ	__int64 _rdsspq_i64(void);</string><string>
-</string></programlisting>
+  <programlisting>RDSSPD	__int32 _rdsspd_i32(void);
+RDSSPQ	__int64 _rdsspq_i64(void);</programlisting>
   </subsection>
  <subsection title="Exceptions (All Operating Modes)">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091483">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

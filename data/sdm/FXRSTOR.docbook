@@ -1,132 +1,246 @@
 <instruction name="FXRSTOR">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Restore x87 FPU, MMX, XMM, and MXCSR State</shortdesc>
- <longdesc><para unique="1261255">
-   <string>Reloads the x87 FPU, MMX technology, XMM, and MXCSR registers from the 512-byte memory image specified in the source operand. This data should have been written to memory previously using the FXSAVE instruction, and in the same format as required by the operating modes. The first byte of the data should be located on a 16-byte boundary. There are three distinct layouts of the FXSAVE state map: one for legacy and compatibility mode, a second format for 64-bit mode FXSAVE/FXRSTOR with REX.W=0, and the third format is for 64-bit mode with FXSAVE64/FXRSTOR64. </string><link linkend="34456: 06_Table: Table 3-13. Layout of FXSAVE and FXRSTOR Memory Region"><string>Table 3&#8209;45</string></link><string> shows the layout of the legacy/compatibility mode state information in memory and describes the fields in the memory image for the FXRSTOR and FXSAVE instructions. </string><link linkend="50794: 06_Table: Table 2-13. Table Needs Title \x11 "><string>Table 3&#8209;48</string></link><string> shows the layout of the 64-bit mode state information when REX.W is set (FXSAVE64/FXRSTOR64). </string><link linkend="54347: 06_Table: Table 2-14. Table Needs Title\x11 "><string>Table 3&#8209;49</string></link><string> shows the layout of the 64-bit mode state information when REX.W is clear (FXSAVE/FXRSTOR).</string></para>
-  <para unique="1261265">
-   <string>The state image referenced with an FXRSTOR instruction must have been saved using an FXSAVE instruction or be in the same format as required by </string><link linkend="34456: 06_Table: Table 3-13. Layout of FXSAVE and FXRSTOR Memory Region"><string>Table 3&#8209;45</string></link><string>, </string><link linkend="50794: 06_Table: Table 2-13. Table Needs Title \x11 "><string>Table 3&#8209;48</string></link><string>, or </string><link linkend="54347: 06_Table: Table 2-14. Table Needs Title\x11 "><string>Table 3&#8209;49</string></link><string>. Referencing a state image saved with an FSAVE, FNSAVE instruction or incompatible field layout will result in an incorrect state restoration.</string></para>
-  <para unique="1261275">
-   <string>The FXRSTOR instruction does not flush pending x87 FPU exceptions. To check and raise exceptions when loading x87 FPU state information with the FXRSTOR instruction, use an FWAIT instruction after the FXRSTOR instruction.</string></para>
-  <para unique="1261276">
-   <string>If the OSFXSR bit in control register CR4 is not set, the FXRSTOR instruction may not restore the states of the XMM and MXCSR registers. This behavior is implementation dependent.</string></para>
-  <para unique="1261277">
-   <string>If the MXCSR state contains an unmasked exception with a corresponding status flag also set, loading the register with the FXRSTOR instruction will not result in a SIMD floating-point error condition being generated. Only the next occurrence of this unmasked exception will result in the exception being generated.</string></para>
-  <para unique="1261278">
-   <string>Bits 16 through 32 of the MXCSR register are defined as reserved and should be set to 0. Attempting to write a 1 in any of these bits from the saved state image will result in a general protection exception (#GP) being generated.</string></para>
-  <para unique="1261279">
-   <string>Bytes 464:511 of an FXSAVE image are available for software use. FXRSTOR ignores the content of bytes 464:511 in an FXSAVE state image.</string></para>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th colspan="2"><para unique="1261193">Opcode/</para>
+      <para unique="1261194">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261202">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.25984pt"/>
+   <col width="111.46464pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="181.404pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1261206">NP 0F AE /1</para>
+      <para unique="1261207">FXRSTOR m512byte</para>
+      </td>
+     <td><para unique="1261211">M</para>
+      </td>
+     <td><para unique="1261213">Valid</para>
+      </td>
+     <td><para unique="1261215">Valid</para>
+      </td>
+     <td><para unique="1261217">Restore the x87 FPU, MMX, XMM, and MXCSR register state from m512byte.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261219">NP REX.W + 0F AE /1</para>
+      <para unique="1261220">FXRSTOR64 m512byte</para>
+      </td>
+     <td><para unique="1261224">M</para>
+      </td>
+     <td><para unique="1261226">Valid</para>
+      </td>
+     <td><para unique="1261228">N.E.</para>
+      </td>
+     <td><para unique="1261230">Restore the x87 FPU, MMX, XMM, and MXCSR register state from m512byte.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261232">
+   <col width="47.17728pt"/>
+   <col width="110.52576pt"/>
+   <col width="119.0412pt"/>
+   <col width="118.62pt"/>
+   <col width="117.35640000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261234">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261236">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261238">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261240">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261242">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261244">M</para>
+      </td>
+     <td valign="middle"><para unique="1261246">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261248">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261250">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261252">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261253">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261255">Reloads the x87 FPU, MMX technology, XMM, and MXCSR registers from the 512-byte memory image specified in the source operand. This data should have been written to memory previously using the FXSAVE instruction, and in the same format as required by the operating modes. The first byte of the data should be located on a 16-byte boundary. There are three distinct layouts of the FXSAVE state map: one for legacy and compatibility mode, a second format for 64-bit mode FXSAVE/FXRSTOR with REX.W=0, and the third format is for 64-bit mode with FXSAVE64/FXRSTOR64. <link unique="1261257" linkend="&lt;c&gt;FXSAVE-Save-x87-FPU-MMX-Technology-and-SSE-State.fm#34456: 06_Table: Table 3-13. Layout of FXSAVE and FXRSTOR Memory Region" xrefstyle="TableNum">Table 3&#8209;45</link> shows the layout of the legacy/compatibility mode state information in memory and describes the fields in the memory image for the FXRSTOR and FXSAVE instructions. <link unique="1261260" linkend="&lt;c&gt;FXSAVE-Save-x87-FPU-MMX-Technology-and-SSE-State.fm#50794: 06_Table: Table 2-13. Table Needs Title \x11 " xrefstyle="TableNum">Table 3&#8209;48</link> shows the layout of the 64-bit mode state information when REX.W is set (FXSAVE64/FXRSTOR64). <link unique="1261263" linkend="&lt;c&gt;FXSAVE-Save-x87-FPU-MMX-Technology-and-SSE-State.fm#54347: 06_Table: Table 2-14. Table Needs Title\x11 " xrefstyle="TableNum">Table 3&#8209;49</link> shows the layout of the 64-bit mode state information when REX.W is clear (FXSAVE/FXRSTOR).</para>
+  <para unique="1261265">The state image referenced with an FXRSTOR instruction must have been saved using an FXSAVE instruction or be in the same format as required by <link unique="1261267" linkend="&lt;c&gt;FXSAVE-Save-x87-FPU-MMX-Technology-and-SSE-State.fm#34456: 06_Table: Table 3-13. Layout of FXSAVE and FXRSTOR Memory Region" xrefstyle="TableNum">Table 3&#8209;45</link>, <link unique="1261270" linkend="&lt;c&gt;FXSAVE-Save-x87-FPU-MMX-Technology-and-SSE-State.fm#50794: 06_Table: Table 2-13. Table Needs Title \x11 " xrefstyle="TableNum">Table 3&#8209;48</link>, or <link unique="1261273" linkend="&lt;c&gt;FXSAVE-Save-x87-FPU-MMX-Technology-and-SSE-State.fm#54347: 06_Table: Table 2-14. Table Needs Title\x11 " xrefstyle="TableNum">Table 3&#8209;49</link>. Referencing a state image saved with an FSAVE, FNSAVE instruction or incompatible field layout will result in an incorrect state restoration.</para>
+  <para unique="1261275">The FXRSTOR instruction does not flush pending x87 FPU exceptions. To check and raise exceptions when loading x87 FPU state information with the FXRSTOR instruction, use an FWAIT instruction after the FXRSTOR instruction.</para>
+  <para unique="1261276">If the OSFXSR bit in control register CR4 is not set, the FXRSTOR instruction may not restore the states of the XMM and MXCSR registers. This behavior is implementation dependent.</para>
+  <para unique="1261277">If the MXCSR state contains an unmasked exception with a corresponding status flag also set, loading the register with the FXRSTOR instruction will not result in a SIMD floating-point error condition being generated. Only the next occurrence of this unmasked exception will result in the exception being generated.</para>
+  <para unique="1261278">Bits 16 through 32 of the MXCSR register are defined as reserved and should be set to 0. Attempting to write a 1 in any of these bits from the saved state image will result in a general protection exception (#GP) being generated.</para>
+  <para unique="1261279">Bytes 464:511 of an FXSAVE image are available for software use. FXRSTOR ignores the content of bytes 464:511 in an FXSAVE state image.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF 64-Bit Mode
+      THEN
+             (x87 FPU, MMX, XMM15-XMM0, MXCSR)     Load(SRC);
+      ELSE
+		(x87 FPU, MMX, XMM7-XMM0, MXCSR) := Load(SRC);
+FI;</programlisting>
+  </operation>
  <subsection title="x87 FPU and SIMD Floating-Point Exceptions">
-  <para unique="1261288">
-   <string>None.</string></para>
+  <para unique="1261288">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>For an illegal memory operand effective address in the CS, DS, ES, FS or GS segments.</string></listitem>
-    <listitem><string>If a memory operand is not aligned on a 16-byte boundary, regardless of segment. (See align&#173;ment check exception [#AC] below.)</string></listitem>
-    <listitem><string>For an attempt to set reserved bits in MXCSR.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261290">For an illegal memory operand effective address in the CS, DS, ES, FS or GS segments.</para>
+     </listitem>
+    <listitem><para unique="1261291">If a memory operand is not aligned on a 16-byte boundary, regardless of segment. (See align&#173;ment check exception [#AC] below.)</para>
+     </listitem>
+    <listitem><para unique="1261292">For an attempt to set reserved bits in MXCSR.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0) </string></term>
-    <listitem><string>For an illegal address in the SS segment. </string></listitem>
+    <term>#SS(0) </term>
+    <listitem><para unique="1261293">For an illegal address in the SS segment. </para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code) </string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF(fault-code) </term>
+    <listitem><para unique="1261294">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#NM</string></term>
-    <listitem><string>If CR0.TS[bit 3] = 1. </string></listitem>
-    <listitem><string>If CR0.EM[bit 2] = 1.</string></listitem>
+    <term>#NM</term>
+    <listitem><para unique="1261295">If CR0.TS[bit 3] = 1. </para>
+     </listitem>
+    <listitem><para unique="1261296">If CR0.EM[bit 2] = 1.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.01H:EDX.FXSR[24] = 0.</string></listitem>
-    <listitem><string>If instruction is preceded by a LOCK prefix.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261297">If CPUID.01H:EDX.FXSR[24] = 0.</para>
+     </listitem>
+    <listitem><para unique="1261298">If instruction is preceded by a LOCK prefix.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC </string></term>
-    <listitem><string>If this exception is disabled a general protection exception (#GP) is signaled if the memory operand is not aligned on a 16-byte boundary, as described above. If the alignment check exception (#AC) is enabled (and the CPL is 3), signaling of #AC is not guaranteed and may vary with implementation, as follows. In all implementations where #AC is not signaled, a general protection exception is signaled in its place. In addition, the width of the alignment check may also vary with implementation. For instance, for a given implementation, an align&#173;ment check exception might be signaled for a 2-byte misalignment, whereas a general protec&#173;tion exception might be signaled for all other misalignments (4-, 8-, or 16-byte misalignments).</string></listitem>
+    <term>#AC </term>
+    <listitem><para unique="1261299">If this exception is disabled a general protection exception (#GP) is signaled if the memory operand is not aligned on a 16-byte boundary, as described above. If the alignment check exception (#AC) is enabled (and the CPL is 3), signaling of #AC is not guaranteed and may vary with implementation, as follows. In all implementations where #AC is not signaled, a general protection exception is signaled in its place. In addition, the width of the alignment check may also vary with implementation. For instance, for a given implementation, an align&#173;ment check exception might be signaled for a 2-byte misalignment, whereas a general protec&#173;tion exception might be signaled for all other misalignments (4-, 8-, or 16-byte misalignments).</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261300">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand is not aligned on a 16-byte boundary, regardless of segment.</string></listitem>
-    <listitem><string>If any part of the operand lies outside the effective address space from 0 to FFFFH.</string></listitem>
-    <listitem><string>For an attempt to set reserved bits in MXCSR.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1261302">If a memory operand is not aligned on a 16-byte boundary, regardless of segment.</para>
+     </listitem>
+    <listitem><para unique="1261303">If any part of the operand lies outside the effective address space from 0 to FFFFH.</para>
+     </listitem>
+    <listitem><para unique="1261304">For an attempt to set reserved bits in MXCSR.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#NM </string></term>
-    <listitem><string>If CR0.TS[bit 3] = 1. </string></listitem>
-    <listitem><string>If CR0.EM[bit 2] = 1.</string></listitem>
+    <term>#NM </term>
+    <listitem><para unique="1261305">If CR0.TS[bit 3] = 1. </para>
+     </listitem>
+    <listitem><para unique="1261306">If CR0.EM[bit 2] = 1.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.01H:EDX.FXSR[24] = 0.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261307">If CPUID.01H:EDX.FXSR[24] = 0.</para>
+     </listitem>
+    <listitem><para unique="1261308">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1261310">
-   <string>Same exceptions as in real address mode.</string></para>
+  <para unique="1261310">Same exceptions as in real address mode.</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#PF(fault-code) </string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF(fault-code) </term>
+    <listitem><para unique="1261311">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC </string></term>
-    <listitem><string>For unaligned memory reference.</string></listitem>
+    <term>#AC </term>
+    <listitem><para unique="1261312">For unaligned memory reference.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261313">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261315" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261315" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261317">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
-    <listitem><string>If memory operand is not aligned on a 16-byte boundary, regardless of segment.</string></listitem>
-    <listitem><string>For an attempt to set reserved bits in MXCSR.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261318">If the memory address is in a non-canonical form.</para>
+     </listitem>
+    <listitem><para unique="1261319">If memory operand is not aligned on a 16-byte boundary, regardless of segment.</para>
+     </listitem>
+    <listitem><para unique="1261320">For an attempt to set reserved bits in MXCSR.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code) </string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF(fault-code) </term>
+    <listitem><para unique="1261321">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#NM</string></term>
-    <listitem><string>If CR0.TS[bit 3] = 1. </string></listitem>
-    <listitem><string>If CR0.EM[bit 2] = 1.</string></listitem>
+    <term>#NM</term>
+    <listitem><para unique="1261322">If CR0.TS[bit 3] = 1. </para>
+     </listitem>
+    <listitem><para unique="1261323">If CR0.EM[bit 2] = 1.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.01H:EDX.FXSR[24] = 0.</string></listitem>
-    <listitem><string>If instruction is preceded by a LOCK prefix.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261324">If CPUID.01H:EDX.FXSR[24] = 0.</para>
+     </listitem>
+    <listitem><para unique="1261325">If instruction is preceded by a LOCK prefix.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC </string></term>
-    <listitem><string>If this exception is disabled a general protection exception (#GP) is signaled if the memory operand is not aligned on a 16&#8209;byte boundary, as described above. If the alignment check exception (#AC) is enabled (and the CPL is 3), signaling of #AC is not guaranteed and may vary with implementation, as follows. In all implementations where #AC is not signaled, a general protection exception is signaled in its place. In addition, the width of the alignment check may also vary with implementation. For instance, for a given implementation, an align&#173;ment check exception might be signaled for a 2-byte misalignment, whereas a general protec&#173;tion exception might be signaled for all other misalignments (4-, 8-, or 16-byte misalignments).</string></listitem>
+    <term>#AC </term>
+    <listitem><para unique="1261326">If this exception is disabled a general protection exception (#GP) is signaled if the memory operand is not aligned on a 16&#8209;byte boundary, as described above. If the alignment check exception (#AC) is enabled (and the CPL is 3), signaling of #AC is not guaranteed and may vary with implementation, as follows. In all implementations where #AC is not signaled, a general protection exception is signaled in its place. In addition, the width of the alignment check may also vary with implementation. For instance, for a given implementation, an align&#173;ment check exception might be signaled for a 2-byte misalignment, whereas a general protec&#173;tion exception might be signaled for all other misalignments (4-, 8-, or 16-byte misalignments).</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

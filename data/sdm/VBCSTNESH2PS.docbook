@@ -1,28 +1,124 @@
 <instruction name="VBCSTNESH2PS">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Load FP16 Element and Convert to FP32 Element with Broadcast</shortdesc>
- <longdesc><para unique="1048995">
-   <string>This instruction loads one FP16 element from memory, converts it to FP32, and broadcasts it to a SIMD register.</string></para>
-  <para unique="1048996">
-   <string>This instruction does not generate floating-point exceptions and does not consult or update MXCSR. </string></para>
-  <para unique="1048997">
-   <string>Input FP16 denormals are converted to normal FP32 numbers and not treated as zero. Since any FP16 number can be represented in FP32, the conversion result is exact and no rounding is needed.</string></para>
+ <encoding_table><table unique="1047410">
+   <col width="65.23631999999999pt"/>
+   <col width="92.81448pt"/>
+   <col width="39.900240000000004pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="184.14936pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1047052">Opcode/</para>
+      <para unique="1047053">Instruction</para>
+      </th>
+     <th><para unique="1047057">Op/</para>
+      <para unique="1047058">En</para>
+      </th>
+     <th><para unique="1047060">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1047062">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1047064">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1048958">VEX.128.66.0F38.W0 B1 !(11):rrr:bbb</para>
+      <para unique="1048959">VBCSTNESH2PS xmm1, m16</para>
+      </td>
+     <td><para unique="1048638">A</para>
+      </td>
+     <td><para unique="1048640">V/V</para>
+      </td>
+     <td><para unique="1048642">AVX_NE_&#8232;CONVERT</para>
+      </td>
+     <td><para unique="1048974">Load one FP16 element from m16, convert to FP32, and store result in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1048963">VEX.256.66.0F38.W0 B1 !(11):rrr:bbb</para>
+      <para unique="1048964">VBCSTNESH2PS ymm1, m16</para>
+      </td>
+     <td><para unique="1048651">A</para>
+      </td>
+     <td><para unique="1048653">V/V</para>
+      </td>
+     <td><para unique="1048655">AVX_NE_&#8232;CONVERT</para>
+      </td>
+     <td><para unique="1048976">Load one FP16 element from m16, convert to FP32, and store result in ymm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1047440">
+   <col width="39.114000000000004pt"/>
+   <col width="52.614000000000004pt"/>
+   <col width="99.25704pt"/>
+   <col width="111.48624pt"/>
+   <col width="105.63624pt"/>
+   <col width="104.32368pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1047081">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1047083">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1047085">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1047087">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1047089">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1047091">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1048663">A</para>
+      </td>
+     <td valign="middle"><para unique="1048982">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1048984">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1048986">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1048988">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1048990">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1047104">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1048995">This instruction loads one FP16 element from memory, converts it to FP32, and broadcasts it to a SIMD register.</para>
+  <para unique="1048996">This instruction does not generate floating-point exceptions and does not consult or update MXCSR. </para>
+  <para unique="1048997">Input FP16 denormals are converted to normal FP32 numbers and not treated as zero. Since any FP16 number can be represented in FP32, the conversion result is exact and no rounding is needed.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1048999">VBCSTNESH2PS dest, src (VEX encoded version)</title>
+   <programlisting>VL = (128, 256)
+KL = VL/32
+FOR i in range(0, KL):
+	tmp.dword[i].word[0] = src.word[0] // read 16b from memory
+FOR i in range(0, KL):
+	dest.dword[i] = convert_fp16_to_fp32(tmp.dword[i].word[0]) 																		//SAE
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1048329">
-   <string>None.</string></para>
+  <para unique="1048329">None.</para>
   </subsection>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VBCSTNESH2PS __m128 _mm_bcstnesh_ps (const _Float16* __A);</string><string>
-</string><string>VBCSTNESH2PS __m256 _mm256_bcstnesh_ps (const _Float16* __A);</string><string>
-</string></programlisting>
+  <programlisting>VBCSTNESH2PS __m128 _mm_bcstnesh_ps (const _Float16* __A);
+VBCSTNESH2PS __m256 _mm256_bcstnesh_ps (const _Float16* __A);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1047135">
-   <string>None.</string></para>
+  <para unique="1047135">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046793">
-   <string>See </string><link linkend="48385: 06_Table: Table 2-22. Type 5 Class Exception Conditions"><string>Table&#160;2&#8209;22, &#8220;Type 5 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046793">See <link unique="1047157" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#48385: 06_Table: Table 2-22. Type 5 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;22, &#8220;Type 5 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

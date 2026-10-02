@@ -1,249 +1,399 @@
 <instruction name="IDIV">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Signed Divide</shortdesc>
- <longdesc><para unique="1261293">
-   <string>Divides the (signed) value in the AX, DX:AX, or EDX:EAX (dividend) by the source operand (divisor) and stores the result in the AX (AH:AL), DX:AX, or EDX:EAX registers. The source operand can be a general-purpose register or a memory location. The action of this instruction depends on the operand size (dividend/divisor).</string></para>
-  <para unique="1261294">
-   <string>Non-integral results are truncated (chopped) towards 0. The remainder is always less than the divisor in magni&#173;tude. Overflow is indicated with the #DE (divide error) exception rather than with the CF flag.</string></para>
-  <para unique="1261295">
-   <string>In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. In 64-bit mode when REX.W is applied, the instruction divides the signed value in RDX:RAX by the source operand. RAX contains a 64-bit quotient; RDX contains a 64-bit remainder. </string></para>
-  <para unique="1261298">
-   <string>See the summary chart at the beginning of this section for encoding data and limits. See </string><link linkend="75938: 06_Table: Table 3-56. IDIV Results"><string>Table 3&#8209;53</string></link><string>.</string></para>
-  <table>
-   <caption>Table 3-53.  IDIV Results</caption>
-   <colgroup><col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    </colgroup>
+ <encoding_table><table unique="1261193">
+   <thead><tr>
+     <th><para unique="1261195">Opcode</para>
+      </th>
+     <th><para unique="1261197">Instruction</para>
+      </th>
+     <th><para unique="1261199">Op/ En</para>
+      </th>
+     <th><para unique="1261201">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261203">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261205">Description</para>
+      </th>
+     </tr>
+    </thead><col width="96.85368000000001pt"/>
+   <col width="109.87056pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="184.40424000000002pt"/>
    <tbody>
     <tr>
-     <th><para unique="1261315" format="CellColHead">
-       <string>Operand Size</string></para>
-      </th>
-     <th><para unique="1261317" format="CellColHead">
-       <string>Dividend</string></para>
-      </th>
-     <th><para unique="1261319" format="CellColHead">
-       <string>Divisor</string></para>
-      </th>
-     <th><para unique="1261321" format="CellColHead">
-       <string>Quotient</string></para>
-      </th>
-     <th><para unique="1261323" format="CellColHead">
-       <string>Remainder</string></para>
-      </th>
-     <th><para unique="1261325" format="CellColHead">
-       <string>Quotient Range</string></para>
-      </th>
-     </tr>
-    <tr>
-     <td><para unique="1261327" format="CellBodyL">
-       <string>Word/byte</string></para>
+     <td><para unique="1261207">F6 /7</para>
       </td>
-     <td><para unique="1261329" format="CellBodyL">
-       <string>AX</string></para>
+     <td><para unique="1261209">IDIV r/m8<footnote><para unique="1261944" format="TableFootnote"><anchor id="70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce"/>With a REX prefix in 64-bit mode, attempts to access AH, BH, CH, or DH will instead access SPL, DIL, BPL, or SIL, respectively.</para>
+        </footnote></para>
       </td>
-     <td><para unique="1261331" format="CellBodyL">
-       <string>r/m8</string></para>
+     <td><para unique="1261211">M</para>
       </td>
-     <td><para unique="1261333" format="CellBodyL">
-       <string>AL</string></para>
+     <td><para unique="1261213">Valid</para>
       </td>
-     <td><para unique="1261335" format="CellBodyL">
-       <string>AH</string></para>
+     <td><para unique="1261215">Valid</para>
       </td>
-     <td><para unique="1261337" format="CellBodyL">
-       <string>&#8722;128 to </string><string>+127</string></para>
+     <td><para unique="1261217">Signed divide AX by r/m8, with result stored in: AL := Quotient, AH := Remainder.</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261339" format="CellBodyL">
-       <string>Doubleword/word</string></para>
+     <td><para unique="1261234">F7 /7</para>
       </td>
-     <td><para unique="1261341" format="CellBodyL">
-       <string>DX:AX</string></para>
+     <td><para unique="1261236">IDIV r/m16</para>
       </td>
-     <td><para unique="1261343" format="CellBodyL">
-       <string>r/m16</string></para>
+     <td><para unique="1261238">M</para>
       </td>
-     <td><para unique="1261345" format="CellBodyL">
-       <string>AX</string></para>
+     <td><para unique="1261240">Valid</para>
       </td>
-     <td><para unique="1261347" format="CellBodyL">
-       <string>DX</string></para>
+     <td><para unique="1261242">Valid</para>
       </td>
-     <td><para unique="1261349" format="CellBodyL">
-       <string>&#8722;32,768 to </string><string>+32,767</string></para>
+     <td><para unique="1261244">Signed divide DX:AX by r/m16, with result stored in AX := Quotient, DX := Remainder.</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261351" format="CellBodyL">
-       <string>Quadword/doubleword</string></para>
+     <td><para unique="1261246">F7 /7</para>
       </td>
-     <td><para unique="1261353" format="CellBodyL">
-       <string>EDX:EAX</string></para>
+     <td><para unique="1261248">IDIV r/m32</para>
       </td>
-     <td><para unique="1261355" format="CellBodyL">
-       <string>r/m32</string></para>
+     <td><para unique="1261250">M</para>
       </td>
-     <td><para unique="1261357" format="CellBodyL">
-       <string>EAX</string></para>
+     <td><para unique="1261252">Valid</para>
       </td>
-     <td><para unique="1261359" format="CellBodyL">
-       <string>EDX</string></para>
+     <td><para unique="1261254">Valid</para>
       </td>
-     <td><para unique="1261361" format="CellBodyL">
-       <string>&#8722;2</string><superscript><string>31</string></superscript><string> to 2</string><superscript><string>31</string></superscript><string> &#8722; 1</string></para>
+     <td><para unique="1261256">Signed divide EDX:EAX by r/m32, with result stored in EAX := Quotient, EDX := Remainder.</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261363" format="CellBodyL">
-       <string>Doublequadword/ quadword</string></para>
+     <td><para unique="1261258">REX.W + F7 /7</para>
       </td>
-     <td><para unique="1261365" format="CellBodyL">
-       <string>RDX:RAX</string></para>
+     <td><para unique="1261260">IDIV r/m64</para>
       </td>
-     <td><para unique="1261367" format="CellBodyL">
-       <string>r/m64</string></para>
+     <td><para unique="1261262">M</para>
       </td>
-     <td><para unique="1261369" format="CellBodyL">
-       <string>RAX</string></para>
+     <td><para unique="1261264">Valid</para>
       </td>
-     <td><para unique="1261371" format="CellBodyL">
-       <string>RDX</string></para>
+     <td><para unique="1261266">N.E.</para>
       </td>
-     <td><para unique="1261373" format="CellBodyL">
-       <string>&#8722;2</string><superscript><string>63</string></superscript><string> to 2</string><superscript><string>63</string></superscript><string> &#8722; 1</string></para>
+     <td><para unique="1261268">Signed divide RDX:RAX by r/m64, with result stored in RAX := Quotient, RDX := Remainder.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261270">
+   <col width="49.29048pt"/>
+   <col width="109.73952pt"/>
+   <col width="116.5176pt"/>
+   <col width="118.44pt"/>
+   <col width="117.98208000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261272">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261274">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261276">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261278">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261280">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261282">M</para>
+      </td>
+     <td valign="middle"><para unique="1261284">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261286">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261288">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261290">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261291">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261293">Divides the (signed) value in the AX, DX:AX, or EDX:EAX (dividend) by the source operand (divisor) and stores the result in the AX (AH:AL), DX:AX, or EDX:EAX registers. The source operand can be a general-purpose register or a memory location. The action of this instruction depends on the operand size (dividend/divisor).</para>
+  <para unique="1261294">Non-integral results are truncated (chopped) towards 0. The remainder is always less than the divisor in magni&#173;tude. Overflow is indicated with the #DE (divide error) exception rather than with the CF flag.</para>
+  <para unique="1261295">In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. In 64-bit mode when REX.W is applied, the instruction divides the signed value in RDX:RAX by the source operand. RAX contains a 64-bit quotient; RDX contains a 64-bit remainder. </para>
+  <para unique="1261298">See the summary chart at the beginning of this section for encoding data and limits. See <link unique="1261297" linkend="#75938: 06_Table: Table 3-56. IDIV Results" xrefstyle="TableNum">Table 3&#8209;53</link>.</para>
+  <table id="75938: 06_Table: Table 3-56. IDIV Results" unique="1261300">
+   <caption><anchor id="75938: 06_Table: Table 3-56. IDIV Results"/>IDIV Results</caption>
+   <col width="131.62896pt"/>
+   <col width="65.49264pt"/>
+   <col width="60.4548pt"/>
+   <col width="66.50064pt"/>
+   <col width="72.34488pt"/>
+   <col width="114.05808pt"/>
+   <tbody>
+    <tr>
+     <th><para unique="1261315">Operand Size</para>
+      </th>
+     <th><para unique="1261317">Dividend</para>
+      </th>
+     <th><para unique="1261319">Divisor</para>
+      </th>
+     <th><para unique="1261321">Quotient</para>
+      </th>
+     <th><para unique="1261323">Remainder</para>
+      </th>
+     <th><para unique="1261325">Quotient Range</para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1261327">Word/byte</para>
+      </td>
+     <td><para unique="1261329">AX</para>
+      </td>
+     <td><para unique="1261331">r/m8</para>
+      </td>
+     <td><para unique="1261333">AL</para>
+      </td>
+     <td><para unique="1261335">AH</para>
+      </td>
+     <td><para unique="1261337">&#8722;128 to +127</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261339">Doubleword/word</para>
+      </td>
+     <td><para unique="1261341">DX:AX</para>
+      </td>
+     <td><para unique="1261343">r/m16</para>
+      </td>
+     <td><para unique="1261345">AX</para>
+      </td>
+     <td><para unique="1261347">DX</para>
+      </td>
+     <td><para unique="1261349">&#8722;32,768 to +32,767</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261351">Quadword/doubleword</para>
+      </td>
+     <td><para unique="1261353">EDX:EAX</para>
+      </td>
+     <td><para unique="1261355">r/m32</para>
+      </td>
+     <td><para unique="1261357">EAX</para>
+      </td>
+     <td><para unique="1261359">EDX</para>
+      </td>
+     <td><para unique="1261361">&#8722;2<superscript>31</superscript> to 2<superscript>31</superscript> &#8722; 1</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261363">Doublequadword/ quadword</para>
+      </td>
+     <td><para unique="1261365">RDX:RAX</para>
+      </td>
+     <td><para unique="1261367">r/m64</para>
+      </td>
+     <td><para unique="1261369">RAX</para>
+      </td>
+     <td><para unique="1261371">RDX</para>
+      </td>
+     <td><para unique="1261373">&#8722;2<superscript>63</superscript> to 2<superscript>63</superscript> &#8722; 1</para>
       </td>
      </tr>
     </tbody>
    </table>
   </longdesc>
+ <operation>
+  <programlisting>IF SRC = 0
+	THEN #DE; (* Divide error *)
+FI;
+IF OperandSize = 8 (* Word/byte operation *)
+	THEN
+		temp := AX / SRC; (* Signed division *)
+		IF (temp &gt; 7FH) or (temp &lt; 80H)
+		(* If a positive result is greater than 7FH or a negative result is less than 80H *)
+			THEN #DE; (* Divide error *)
+			ELSE
+				AL := temp;
+				AH := AX SignedModulus SRC;
+		FI;
+	ELSE IF OperandSize = 16 (* Doubleword/word operation *)
+		THEN
+			temp := DX:AX / SRC; (* Signed division *)
+			IF (temp &gt; 7FFFH) or (temp &lt; 8000H)
+			(* If a positive result is greater than 7FFFH
+			or a negative result is less than 8000H *)
+				THEN
+					#DE; (* Divide error *)
+				ELSE
+					AX := temp;
+					DX := DX:AX SignedModulus SRC;
+			FI;
+		FI;
+	ELSE IF OperandSize = 32 (* Quadword/doubleword operation *)
+		THEN
+			temp := EDX:EAX / SRC; (* Signed division *)
+			IF (temp &gt; 7FFFFFFFH) or (temp &lt; 80000000H)
+			(* If a positive result is greater than 7FFFFFFFH
+			or a negative result is less than 80000000H *)
+				THEN
+					#DE; (* Divide error *)
+				ELSE
+					EAX := temp;
+					EDX := EDX:EAX SignedModulus SRC;
+			FI;
+		FI;
+	ELSE IF OperandSize = 64 (* Doublequadword/quadword operation *)
+		THEN
+			temp := RDX:RAX / SRC; (* Signed division *)
+			IF (temp &gt; 7FFFFFFFFFFFFFFFH) or (temp &lt; 8000000000000000H)
+			(* If a positive result is greater than 7FFFFFFFFFFFFFFFH
+			or a negative result is less than 8000000000000000H *)
+				THEN
+					#DE; (* Divide error *)
+				ELSE
+					RAX := temp;
+					RDX := RDX:RAX SignedModulus SRC;
+			FI;
+		FI;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261428">
-   <string>The CF, OF, SF, ZF, AF, and PF flags are undefined.</string></para>
+  <para unique="1261428">The CF, OF, SF, ZF, AF, and PF flags are undefined.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#DE</string></term>
-    <listitem><string>If the source operand (divisor) is 0.</string></listitem>
-    <listitem><string>The signed result (quotient) is too large for the destination.</string></listitem>
+    <term>#DE</term>
+    <listitem><para unique="1261430">If the source operand (divisor) is 0.</para>
+     </listitem>
+    <listitem><para unique="1261431">The signed result (quotient) is too large for the destination.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261432">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1261433">If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261434">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261435">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261436">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261437">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#DE</string></term>
-    <listitem><string>If the source operand (divisor) is 0.
-
-The signed result (quotient) is too large for the destination.</string></listitem>
+    <term>#DE</term>
+    <listitem><para unique="1261439">If the source operand (divisor) is 0.&#8232;&#8232;The signed result (quotient) is too large for the destination.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1261440">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS</term>
+    <listitem><para unique="1261441">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261442">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#DE</string></term>
-    <listitem><string>If the source operand (divisor) is 0.
-
-The signed result (quotient) is too large for the destination.</string></listitem>
+    <term>#DE</term>
+    <listitem><para unique="1261444">If the source operand (divisor) is 0.&#8232;&#8232;The signed result (quotient) is too large for the destination.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261445">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261446">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261447">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261448">If alignment checking is enabled and an unaligned memory reference is made.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261449">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261451" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261451" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261453">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261454">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#DE</string></term>
-    <listitem><string>If the source operand (divisor) is 0</string></listitem>
-    <listitem><string>If the quotient is too large for the designated register.</string></listitem>
+    <term>#DE</term>
+    <listitem><para unique="1261455">If the source operand (divisor) is 0</para>
+     </listitem>
+    <listitem><para unique="1261456">If the quotient is too large for the designated register.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261457">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261458">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261459">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

@@ -1,25 +1,94 @@
 <instruction name="CVTTPS2PI">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Convert With Truncation Packed Single Precision Floating-Point Values to Packed Dword Integers</shortdesc>
- <longdesc><para unique="1261242">
-   <string>Converts two packed single precision floating-point values in the source operand (second operand) to two packed signed doubleword integers in the destination operand (first operand). The source operand can be an XMM register or a 64-bit memory location. The destination operand is an MMX technology register. When the source operand is an XMM register, the two single precision floating-point values are contained in the low quadword of the register.</string></para>
-  <para unique="1261243">
-   <string>When a conversion is inexact, a truncated (round toward zero) result is returned. If a converted result is larger than the maximum signed doubleword integer, the floating-point invalid exception is raised, and if this exception is masked, the indefinite integer value 80000000H is returned.</string></para>
-  <para unique="1261244">
-   <string>This instruction causes a transition from x87 FPU to MMX technology operation (that is, the x87 FPU top-of-stack pointer is set to 0 and the x87 FPU tag word is set to all 0s [valid]). If this instruction is executed while an x87 FPU floating-point exception is pending, the exception is handled before the CVTTPS2PI instruction is executed.</string></para>
-  <para unique="1261245">
-   <string>In 64-bit mode, use of the REX.R prefix permits this instruction to access additional registers (XMM8-XMM15).</string></para>
+ <encoding_table><table unique="1261192">
+   <thead><tr>
+     <th colspan="2"><para unique="1261194">Opcode/</para>
+      <para unique="1261195">Instruction</para>
+      </th>
+     <th><para unique="1261199">Op/ En</para>
+      </th>
+     <th><para unique="1261201">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261203">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261205">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.6112pt"/>
+   <col width="111.8628pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="182.15424000000002pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1261207">NP 0F 2C /r</para>
+      <para unique="1261208">CVTTPS2PI mm, xmm/m64</para>
+      </td>
+     <td><para unique="1261212">RM</para>
+      </td>
+     <td><para unique="1261214">Valid</para>
+      </td>
+     <td><para unique="1261216">Valid</para>
+      </td>
+     <td><para unique="1261218">Convert two single precision floating-point values from xmm/m64 to two signed doubleword signed integers in mm using truncation.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261219">
+   <col width="42.883919999999996pt"/>
+   <col width="113.38344000000001pt"/>
+   <col width="120.38615999999999pt"/>
+   <col width="118.35144pt"/>
+   <col width="115.46496pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261221">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261223">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261225">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261227">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261229">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261231">RM</para>
+      </td>
+     <td valign="middle"><para unique="1261233">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261235">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261237">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261239">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261240">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261242">Converts two packed single precision floating-point values in the source operand (second operand) to two packed signed doubleword integers in the destination operand (first operand). The source operand can be an XMM register or a 64-bit memory location. The destination operand is an MMX technology register. When the source operand is an XMM register, the two single precision floating-point values are contained in the low quadword of the register.</para>
+  <para unique="1261243">When a conversion is inexact, a truncated (round toward zero) result is returned. If a converted result is larger than the maximum signed doubleword integer, the floating-point invalid exception is raised, and if this exception is masked, the indefinite integer value 80000000H is returned.</para>
+  <para unique="1261244">This instruction causes a transition from x87 FPU to MMX technology operation (that is, the x87 FPU top-of-stack pointer is set to 0 and the x87 FPU tag word is set to all 0s [valid]). If this instruction is executed while an x87 FPU floating-point exception is pending, the exception is handled before the CVTTPS2PI instruction is executed.</para>
+  <para unique="1261245">In 64-bit mode, use of the REX.R prefix permits this instruction to access additional registers (XMM8-XMM15).</para>
   </longdesc>
+ <operation>
+  <programlisting>DEST[31:0] := Convert_Single_Precision_Floating_Point_To_Integer_Truncate(SRC[31:0]);
+DEST[63:32] := Convert_Single_Precision_Floating_Point_To_Integer_Truncate(SRC[63:32]);</programlisting>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>CVTTPS2PI 	__m64 _mm_cvttps_pi32(__m128 a)</string><string>
-</string></programlisting>
+  <programlisting>CVTTPS2PI 	__m64 _mm_cvttps_pi32(__m128 a)</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1261252">
-   <string>Invalid, Precision.</string></para>
+  <para unique="1261252">Invalid, Precision.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1261257" format="xIndent1">
-   <string>See </string><link linkend="65163: 03_Level: 19.25.3 Exception Conditions of Legacy SIMD Instruction Operating"><string>Section 25.25.3, &#8220;Exception Conditions of Legacy SIMD Instructions Operating on MMX Registers&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B.</string></para>
+  <para unique="1261257" format="xIndent1">See <link unique="1262058" linkend="&lt;c&gt;__sdm_vol3B_ch25.fm#65163: 03_Level: 19.25.3 Exception Conditions of Legacy SIMD Instruction Operating" xrefstyle="SectionNum&amp;Title">Section 25.25.3, &#8220;Exception Conditions of Legacy SIMD Instructions Operating on MMX Registers&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B.</para>
   </subsection>
  </instruction>

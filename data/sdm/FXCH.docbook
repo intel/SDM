@@ -1,67 +1,123 @@
 <instruction name="FXCH">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Exchange Register Contents</shortdesc>
- <longdesc><para unique="1261226">
-   <string>Exchanges the contents of registers ST(0) and ST(i). If no source operand is specified, the contents of ST(0) and ST(1) are exchanged.</string></para>
-  <para unique="1261227">
-   <string>This instruction provides a simple means of moving values in the FPU register stack to the top of the stack [ST(0)], so that they can be operated on by those floating-point instructions that can only operate on values in ST(0). For example, the following instruction sequence takes the square root of the third register from the top of the register stack:</string></para>
-  <programlisting><string>	FXCH ST(3);</string><string>
-</string><string>	FSQRT;</string><string>
-</string><string>	FXCH ST(3);</string><string>
-</string></programlisting>
-  <para unique="1261231">
-   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+ <encoding_table><table unique="1261193">
+   <thead><tr>
+     <th><para unique="1261195">Opcode</para>
+      </th>
+     <th><para unique="1261197">Instruction</para>
+      </th>
+     <th><para unique="1261199">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261201">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261203">Description</para>
+      </th>
+     </tr>
+    </thead><col width="91.63368000000001pt"/>
+   <col width="89.22240000000001pt"/>
+   <col width="51.782399999999996pt"/>
+   <col width="66.09960000000001pt"/>
+   <col width="213.59592pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261205">D9 C8+i</para>
+      </td>
+     <td><para unique="1261207">FXCH ST(i)</para>
+      </td>
+     <td><para unique="1261209">Valid</para>
+      </td>
+     <td><para unique="1261211">Valid</para>
+      </td>
+     <td><para unique="1261213">Exchange the contents of ST(0) and ST(i).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261215">D9 C9</para>
+      </td>
+     <td><para unique="1261217">FXCH</para>
+      </td>
+     <td><para unique="1261219">Valid</para>
+      </td>
+     <td><para unique="1261221">Valid</para>
+      </td>
+     <td><para unique="1261223">Exchange the contents of ST(0) and ST(1).</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <longdesc><para unique="1261226">Exchanges the contents of registers ST(0) and ST(i). If no source operand is specified, the contents of ST(0) and ST(1) are exchanged.</para>
+  <para unique="1261227">This instruction provides a simple means of moving values in the FPU register stack to the top of the stack [ST(0)], so that they can be operated on by those floating-point instructions that can only operate on values in ST(0). For example, the following instruction sequence takes the square root of the third register from the top of the register stack:</para>
+  <programlisting>FXCH ST(3);
+	FSQRT;
+	FXCH ST(3);
+This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</programlisting>
   </longdesc>
+ <operation>
+  <programlisting>IF (Number-of-operands) is 1
+	THEN
+		temp := ST(0);
+		ST(0) := SRC;
+		SRC := temp;
+	ELSE
+		temp := ST(0);
+		ST(0) := ST(1);
+		ST(1) := temp;
+FI;</programlisting>
+  </operation>
  <subsection title="FPU Flags Affected">
   <variablelist>
    <variablelistentry>
-    <term><string>C1</string></term>
-    <listitem><string>Set to 0.</string></listitem>
+    <term>C1</term>
+    <listitem><para unique="1261244">Set to 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>C0, C2, C3 </string></term>
-    <listitem><string>Undefined.</string></listitem>
+    <term>C0, C2, C3 </term>
+    <listitem><para unique="1261245">Undefined.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Floating-Point Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#IS</string></term>
-    <listitem><string>Stack underflow occurred.</string></listitem>
+    <term>#IS</term>
+    <listitem><para unique="1261247">Stack underflow occurred.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#NM</string></term>
-    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    <term>#NM</term>
+    <listitem><para unique="1261249">CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#MF </string></term>
-    <listitem><string>If there is a pending x87 FPU exception.</string></listitem>
+    <term>#MF </term>
+    <listitem><para unique="1261250">If there is a pending x87 FPU exception.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261251">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
-  <para unique="1261253" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261253" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1261255" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261255" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261257" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261257" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
-  <para unique="1261259" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261259" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  </instruction>

@@ -1,25 +1,99 @@
 <instruction name="SFENCE">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Store Fence</shortdesc>
- <longdesc><para unique="1091439">
-   <string>Orders processor execution relative to all memory stores prior to the SFENCE instruction. The processor ensures that every store prior to SFENCE is globally visible before any store after SFENCE becomes globally visible. The SFENCE instruction is ordered with respect to memory stores, other SFENCE instructions, MFENCE instructions, and any serializing instructions (such as the CPUID instruction). It is not ordered with respect to memory loads or the LFENCE instruction. </string></para>
-  <para unique="1091440">
-   <string>Weakly ordered memory types can be used to achieve higher processor performance through such techniques as out-of-order issue, write-combining, and write-collapsing. The degree to which a consumer of data recognizes or knows that the data is weakly ordered varies among applications and may be unknown to the producer of this data. The SFENCE instruction provides a performance-efficient way of ensuring store ordering between routines that produce weakly-ordered results and routines that consume this data.</string></para>
-  <para unique="1091441">
-   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
-  <para unique="1091442">
-   <string>Specification of the instruction's opcode above indicates a ModR/M byte of F8. For this instruction, the processor ignores the r/m field of the ModR/M byte. Thus, SFENCE is encoded by any opcode of the form 0F AE Fx, where x is in the range 8-F.</string></para>
+ <encoding_table><table unique="1091390">
+   <thead><tr>
+     <th><para unique="1091392">Opcode*</para>
+      </th>
+     <th><para unique="1091394">Instruction</para>
+      </th>
+     <th><para unique="1091396">Op/ En</para>
+      </th>
+     <th><para unique="1091398">64-Bit Mode</para>
+      </th>
+     <th><para unique="1091400">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1091402">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.6112pt"/>
+   <col width="111.8628pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="181.404pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1091404">NP 0F AE F8</para>
+      </td>
+     <td><para unique="1091406">SFENCE</para>
+      </td>
+     <td><para unique="1091408">ZO</para>
+      </td>
+     <td><para unique="1091410">Valid</para>
+      </td>
+     <td><para unique="1091412">Valid</para>
+      </td>
+     <td><para unique="1091414">Serializes store operations.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091416">
+   <col width="44.18928pt"/>
+   <col width="120.4596pt"/>
+   <col width="113.41655999999999pt"/>
+   <col width="114.53112pt"/>
+   <col width="117.87408pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091418">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091420">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091422">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091424">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091426">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091428">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1091430">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091432">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091434">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091436">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091437">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091439">Orders processor execution relative to all memory stores prior to the SFENCE instruction. The processor ensures that every store prior to SFENCE is globally visible before any store after SFENCE becomes globally visible. The SFENCE instruction is ordered with respect to memory stores, other SFENCE instructions, MFENCE instructions, and any serializing instructions (such as the CPUID instruction). It is not ordered with respect to memory loads or the LFENCE instruction. </para>
+  <para unique="1091440">Weakly ordered memory types can be used to achieve higher processor performance through such techniques as out-of-order issue, write-combining, and write-collapsing. The degree to which a consumer of data recognizes or knows that the data is weakly ordered varies among applications and may be unknown to the producer of this data. The SFENCE instruction provides a performance-efficient way of ensuring store ordering between routines that produce weakly-ordered results and routines that consume this data.</para>
+  <para unique="1091441">This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</para>
+  <para unique="1091442">Specification of the instruction\qs opcode above indicates a ModR/M byte of F8. For this instruction, the processor ignores the r/m field of the ModR/M byte. Thus, SFENCE is encoded by any opcode of the form 0F AE Fx, where x is in the range 8-F.</para>
   </longdesc>
+ <operation>
+  <programlisting>Wait_On_Following_Stores_Until(preceding_stores_globally_visible);</programlisting>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>void _mm_sfence(void)</string><string>
-</string></programlisting>
+  <programlisting>void _mm_sfence(void)</programlisting>
   </subsection>
  <subsection title="Exceptions (All Operating Modes)">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.01H:EDX.SSE[25] = 0.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091448">If CPUID.01H:EDX.SSE[25] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091449">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

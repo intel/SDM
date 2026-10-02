@@ -1,25 +1,135 @@
 <instruction name="KUNPCKBW/KUNPCKWD/KUNPCKDQ">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Unpack for Mask Registers</shortdesc>
- <longdesc><para unique="1261265">
-   <string>Unpacks the lower 8/16/32 bits of the second and third operands (source operands) into the low part of the first operand (destination operand), starting from the low bytes. The result is zero-extended in the destination.</string></para>
+ <encoding_table><table unique="1261190">
+   <col width="50.35608pt"/>
+   <col width="71.64359999999999pt"/>
+   <col width="36.749520000000004pt"/>
+   <col width="48.74976pt"/>
+   <col width="58.24944pt"/>
+   <col width="247.29263999999998pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1261192">Opcode/&#8232;Instruction</para>
+      </th>
+     <th><para unique="1261196">Op/En</para>
+      </th>
+     <th><para unique="1261198">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1261200">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261202">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1261204">VEX.L1.66.0F.W0 4B /r</para>
+      <para unique="1261205">KUNPCKBW k1, k2, k3</para>
+      </td>
+     <td><para unique="1261209">RVR</para>
+      </td>
+     <td><para unique="1261211">V/V</para>
+      </td>
+     <td><para unique="1261318">AVX512F</para>
+      <para unique="1261319">OR AVX10.1</para>
+      </td>
+     <td><para unique="1261218">Unpack 8-bit masks in k2 and k3 and write word result in k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261220">VEX.L1.0F.W0 4B /r </para>
+      <para unique="1261221">KUNPCKWD k1, k2, k3</para>
+      </td>
+     <td><para unique="1261225">RVR</para>
+      </td>
+     <td><para unique="1261227">V/V</para>
+      </td>
+     <td><para unique="1261321">AVX512BW</para>
+      <para unique="1261322">OR AVX10.1</para>
+      </td>
+     <td><para unique="1261231">Unpack 16-bit masks in k2 and k3 and write doubleword result in k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261233">VEX.L1.0F.W1 4B /r </para>
+      <para unique="1261234">KUNPCKDQ k1, k2, k3</para>
+      </td>
+     <td><para unique="1261238">RVR</para>
+      </td>
+     <td><para unique="1261240">V/V</para>
+      </td>
+     <td><para unique="1261324">AVX512BW</para>
+      <para unique="1261325">OR AVX10.1</para>
+      </td>
+     <td><para unique="1261244">Unpack 32-bit masks in k2 and k3 and write quadword result in k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261246">
+   <col width="56.29248pt"/>
+   <col width="145.5804pt"/>
+   <col width="140.18904pt"/>
+   <col width="169.90416000000002pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261248">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261250">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261252">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261254">Operand 3</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261256">RVR</para>
+      </td>
+     <td valign="middle"><para unique="1261258">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261260">VEX.1vvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261262">ModRM:r/m (r, ModRM:[7:6] must be 11b)</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261263">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261265">Unpacks the lower 8/16/32 bits of the second and third operands (source operands) into the low part of the first operand (destination operand), starting from the low bytes. The result is zero-extended in the destination.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1261267">KUNPCKBW</title>
+   <programlisting>DEST[7:0] := SRC2[7:0]
+DEST[15:8] := SRC1[7:0]
+DEST[MAX_KL-1:16] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261272">KUNPCKWD</title>
+   <programlisting>DEST[15:0] := SRC2[15:0]
+DEST[31:16] := SRC1[15:0]
+DEST[MAX_KL-1:32] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261277">KUNPCKDQ</title>
+   <programlisting>DEST[31:0] := SRC2[31:0]
+DEST[63:32] := SRC1[31:0]
+DEST[MAX_KL-1:64] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>KUNPCKBW __mmask16 _mm512_kunpackb(__mmask16 a, __mmask16 b);</string><string>
-</string><string>KUNPCKDQ __mmask64 _mm512_kunpackd(__mmask64 a, __mmask64 b);</string><string>
-</string><string>KUNPCKWD __mmask32 _mm512_kunpackw(__mmask32 a, __mmask32 b);</string><string>
-</string></programlisting>
+  <programlisting>KUNPCKBW __mmask16 _mm512_kunpackb(__mmask16 a, __mmask16 b);
+KUNPCKDQ __mmask64 _mm512_kunpackd(__mmask64 a, __mmask64 b);
+KUNPCKWD __mmask32 _mm512_kunpackw(__mmask32 a, __mmask32 b);</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1261287">
-   <string>None.</string></para>
+  <para unique="1261287">None.</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1261289">
-   <string>None.</string></para>
+  <para unique="1261289">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1261294" format="xIndent1">
-   <string>See </string><link linkend="42536: 06_Table: Table 2-63. TYPE K20 Exception Definition (VEX-Encoded OpMask"><string>Table&#160;2&#8209;65, &#8220;TYPE K20 Exception Definition (VEX-Encoded OpMask Instructions w/o Memory Arg).&#8221;</string></link></para>
+  <para unique="1261294" format="xIndent1">See <link unique="1261292" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#42536: 06_Table: Table 2-63. TYPE K20 Exception Definition (VEX-Encoded OpMask" xrefstyle="Table All - no page-period">Table&#160;2&#8209;65, &#8220;TYPE K20 Exception Definition (VEX-Encoded OpMask Instructions w/o Memory Arg).&#8221;</link></para>
   </subsection>
  </instruction>

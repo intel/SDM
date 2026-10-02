@@ -1,101 +1,229 @@
 <instruction name="WRUSSD/WRUSSQ">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Write to User Shadow Stack</shortdesc>
- <longdesc><para unique="1012607">
-   <string>Writes bytes in register source to a user shadow stack pag</string><anchor id="+737118"/><string>.</string></para>
+ <encoding_table><table unique="1012543">
+   <col width="70.1028pt"/>
+   <col width="70.1028pt"/>
+   <col width="26.994239999999998pt"/>
+   <col width="48.04992pt"/>
+   <col width="57.6756pt"/>
+   <col width="238.25232pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1012545">Opcode/</para>
+      <para unique="1012546">Instruction</para>
+      </th>
+     <th><para unique="1012550">Op/ En</para>
+      </th>
+     <th><para unique="1012552">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1012554">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1012556">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1012558">66 0F 38 F5 !(11):rrr:bbb</para>
+      <para unique="1012559">WRUSSD m32, r32</para>
+      </td>
+     <td><para unique="1012563">MR</para>
+      </td>
+     <td><para unique="1012565">V/V</para>
+      </td>
+     <td><para unique="1012567">CET_SS</para>
+      </td>
+     <td><para unique="1012569">Write 4 bytes to shadow stack.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1012571">66 REX.W 0F 38 F5 !(11):rrr:bbb</para>
+      <para unique="1012572">WRUSSQ m64, r64</para>
+      </td>
+     <td><para unique="1012576">MR</para>
+      </td>
+     <td><para unique="1012578">V/N.E.</para>
+      </td>
+     <td><para unique="1012580">CET_SS</para>
+      </td>
+     <td><para unique="1012582">Write 8 bytes to shadow stack.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1012584">
+   <col width="69.28056000000001pt"/>
+   <col width="109.74600000000001pt"/>
+   <col width="108.08927999999999pt"/>
+   <col width="110.59488pt"/>
+   <col width="113.05944000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1012586">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1012588">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1012590">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1012592">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1012594">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1012596">MR</para>
+      </td>
+     <td valign="middle"><para unique="1012598">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1012600">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1012602">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012604">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1012605">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1012607">Writes bytes in register source to a user shadow stack pag<anchor id="+737118"/>.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF CR4.CET = 0
+	THEN #UD; FI;
+IF CPL &gt; 0
+	THEN #GP(0); FI;
+DEST_LA = Linear_Address(mem operand)
+IF (operand size is 64 bit)
+	THEN
+		(* Destination not 8B aligned *)
+		IF DEST_LA[2:0]
+			THEN GP(0); FI;
+		Shadow_stack_store 8 bytes of SRC to DEST_LA as user-mode access;
+	ELSE
+		(* Destination not 4B aligned *)
+		IF DEST_LA[1:0]
+			THEN GP(0); FI;
+		Shadow_stack_store 4 bytes of SRC[31:0] to DEST_LA as user-mode access;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <programlisting><string>None.</string><string>
-</string></programlisting>
+  <programlisting>None.</programlisting>
   </subsection>
  <subsection title="C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>WRUSSD 	void _wrussd(__int32, void *);</string><string>
-</string><string>WRUSSQ void _wrussq(__int64, void *);</string><string>
-</string></programlisting>
+  <programlisting>WRUSSD 	void _wrussd(__int32, void *);
+WRUSSQ void _wrussq(__int64, void *);</programlisting>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If CR4.CET = 0.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1012632">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1012633">If CR4.CET = 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If destination is located in a non-writeable segment.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</string></listitem>
-    <listitem><string>If linear address of destination is not 4 byte aligned.</string></listitem>
-    <listitem><string>If CPL is not 0.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1012634">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1012635">If destination is located in a non-writeable segment.</para>
+     </listitem>
+    <listitem><para unique="1012636">If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</para>
+     </listitem>
+    <listitem><para unique="1012637">If linear address of destination is not 4 byte aligned.</para>
+     </listitem>
+    <listitem><para unique="1012638">If CPL is not 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1012639">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If destination is not a user shadow stack.</string></listitem>
-    <listitem><string>Other terminal and non-terminal faults.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1012640">If destination is not a user shadow stack.</para>
+     </listitem>
+    <listitem><para unique="1012641">Other terminal and non-terminal faults.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The WRUSS instruction is not recognized in real-address mode. </string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1012643">The WRUSS instruction is not recognized in real-address mode. </para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The WRUSS instruction is not recognized in virtual-8086 mode. </string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1012645">The WRUSS instruction is not recognized in virtual-8086 mode. </para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If CR4.CET = 0.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1012647">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1012648">If CR4.CET = 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory address is in a non-canonical form.</string></listitem>
-    <listitem><string>If linear address of destination is not 4 byte aligned.</string></listitem>
-    <listitem><string>If CPL is not 0.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1012649">If a memory address is in a non-canonical form.</para>
+     </listitem>
+    <listitem><para unique="1012650">If linear address of destination is not 4 byte aligned.</para>
+     </listitem>
+    <listitem><para unique="1012651">If CPL is not 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1012652">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If destination is not a user shadow stack.</string></listitem>
-    <listitem><string>Other terminal and non-terminal faults.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1012653">If destination is not a user shadow stack.</para>
+     </listitem>
+    <listitem><para unique="1012654">Other terminal and non-terminal faults.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If CR4.CET = 0.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1012656">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1012657">If CR4.CET = 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory address is in a non-canonical form.</string></listitem>
-    <listitem><string>If linear address of destination is not 4 byte aligned.</string></listitem>
-    <listitem><string>If CPL is not 0.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1012658">If a memory address is in a non-canonical form.</para>
+     </listitem>
+    <listitem><para unique="1012659">If linear address of destination is not 4 byte aligned.</para>
+     </listitem>
+    <listitem><para unique="1012660">If CPL is not 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If destination is not a user shadow stack.</string></listitem>
-    <listitem><string>Other terminal and non-terminal faults.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1012661">If destination is not a user shadow stack.</para>
+     </listitem>
+    <listitem><para unique="1012662">Other terminal and non-terminal faults.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

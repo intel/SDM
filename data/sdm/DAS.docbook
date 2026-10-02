@@ -1,59 +1,157 @@
 <instruction name="DAS">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Decimal Adjust AL After Subtraction</shortdesc>
- <longdesc><para unique="1261240">
-   <string>Adjusts the result of the subtraction of two packed BCD values to create a packed BCD result. The AL register is the implied source and destination operand. The DAS instruction is only useful when it follows a SUB instruction that subtracts (binary subtraction) one 2-digit, packed BCD value from another and stores a byte result in the AL register. The DAS instruction then adjusts the contents of the AL register to contain the correct 2-digit, packed BCD result. If a decimal borrow is detected, the CF and AF flags are set accordingly.</string></para>
-  <para unique="1261241">
-   <string>This instruction executes as described above in compatibility mode and legacy mode. It is not valid in 64-bit mode.</string></para>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th><para unique="1261193">Opcode</para>
+      </th>
+     <th><para unique="1261195">Instruction</para>
+      </th>
+     <th><para unique="1261197">Op/ En</para>
+      </th>
+     <th><para unique="1261199">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261201">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261203">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.96256pt"/>
+   <col width="112.26168000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="181.404pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261205">2F</para>
+      </td>
+     <td><para unique="1261207">DAS</para>
+      </td>
+     <td><para unique="1261209">ZO</para>
+      </td>
+     <td><para unique="1261211">Invalid</para>
+      </td>
+     <td><para unique="1261213">Valid</para>
+      </td>
+     <td><para unique="1261215">Decimal adjust AL after subtraction.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261217">
+   <col width="53.62776pt"/>
+   <col width="109.91088pt"/>
+   <col width="119.23704pt"/>
+   <col width="113.238pt"/>
+   <col width="115.956pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261219">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261221">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261223">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261225">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261227">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261229">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1261231">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261233">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261235">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261237">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261238">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261240">Adjusts the result of the subtraction of two packed BCD values to create a packed BCD result. The AL register is the implied source and destination operand. The DAS instruction is only useful when it follows a SUB instruction that subtracts (binary subtraction) one 2-digit, packed BCD value from another and stores a byte result in the AL register. The DAS instruction then adjusts the contents of the AL register to contain the correct 2-digit, packed BCD result. If a decimal borrow is detected, the CF and AF flags are set accordingly.</para>
+  <para unique="1261241">This instruction executes as described above in compatibility mode and legacy mode. It is not valid in 64-bit mode.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF 64-Bit Mode
+	THEN
+		#UD;
+	ELSE
+		old_AL := AL;
+		old_CF := CF;
+		CF := 0;
+		IF (((AL AND 0FH) &gt; 9) or AF = 1)
+		 	THEN
+		 		AL := AL - 6;
+				CF := old_CF or (Borrow from AL := AL &#8722; 6);
+				AF := 1;
+			ELSE
+				AF := 0;
+		FI;
+		IF ((old_AL &gt; 99H) or (old_CF = 1))
+			 THEN
+				AL := AL &#8722; 60H;
+				CF := 1;
+		FI;
+FI;</programlisting>
+  </operation>
  <subsection title="Example">
-  <programlisting><string>SUB	 	AL, BL	 	Before: AL </string><string>= 35H, BL </string><string>= 47H, EFLAGS(OSZAPC) </string><string>= XXXXXX</string><string>
-</string><string>				After: AL </string><string>= EEH, BL </string><string>= 47H, EFLAGS(0SZAPC) </string><string>= 010111</string><string>
-</string><string>DAA				Before: AL </string><string>= EEH, BL </string><string>= 47H, EFLAGS(OSZAPC) </string><string>= 010111</string><string>
-</string><string>				After: AL </string><string>= 88H, BL </string><string>= 47H, EFLAGS(0SZAPC) </string><string>= X10111</string><string>
-</string></programlisting>
+  <programlisting>SUB	 	AL, BL	 	Before: AL = 35H, BL = 47H, EFLAGS(OSZAPC) = XXXXXX
+				After: AL = EEH, BL = 47H, EFLAGS(0SZAPC) = 010111
+DAA				Before: AL = EEH, BL = 47H, EFLAGS(OSZAPC) = 010111
+				After: AL = 88H, BL = 47H, EFLAGS(0SZAPC) = X10111</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1261270">
-   <string>The CF and AF flags are set if the adjustment of the value results in a decimal borrow in either digit of the result (see the &#8220;Operation&#8221; section above). The SF, ZF, and PF flags are set according to the result. The OF flag is unde&#173;fined.</string></para>
+  <para unique="1261270">The CF and AF flags are set if the adjustment of the value results in a decimal borrow in either digit of the result (see the &#8220;Operation&#8221; section above). The SF, ZF, and PF flags are set according to the result. The OF flag is unde&#173;fined.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261272">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261274">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261276">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261278">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If in 64-bit mode.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1261280">If in 64-bit mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

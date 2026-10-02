@@ -1,410 +1,468 @@
 <instruction name="VRANGEPD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Range Restriction Calculation for Packed Pairs of Float64 Values</shortdesc>
- <longdesc><para unique="1046164">
-   <string>This instruction calculates 2/4/8 range operation outputs from two sets of packed input double precision floating-point values in the first source operand (the second operand) and the second source operand (the third operand). The range outputs are written to the destination operand (the first operand) under the writemask k1. </string></para>
-  <para unique="1046165">
-   <string>Bits7:4 of imm8 byte must be zero. The range operation output is performed in two parts, each configured by a two-bit control field within imm8[3:0]:</string></para>
-  <itemizedlist><listitem><para unique="1046166">
-     <string>Imm8[1:0] specifies the initial comparison operation to be one of max, min, max absolute value or min absolute value of the input value pair. Each comparison of two input values produces an intermediate result that combines with the sign selection control (imm8[3:2]) to determine the final range operation output.</string></para>
+ <encoding_table><table unique="1046081">
+   <col width="73.66536pt"/>
+   <col width="73.66536pt"/>
+   <col width="29.244239999999998pt"/>
+   <col width="48.74976pt"/>
+   <col width="78.49944pt"/>
+   <col width="209.75039999999998pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1046083">Opcode/</para>
+      <para unique="1046084">Instruction</para>
+      </th>
+     <th><para unique="1046088">Op / En</para>
+      </th>
+     <th><para unique="1046090">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1046092">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1046094">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1046951">EVEX.128.66.0F3A.W1 50 /r ib</para>
+      <para unique="1046952">VRANGEPD xmm1 {k1}{z}, xmm2, xmm3/m128/m64bcst, imm8</para>
+      </td>
+     <td><para unique="1046956">A</para>
+      </td>
+     <td><para unique="1046958">V/V</para>
+      </td>
+     <td><para unique="1046960">(AVX512VL</para>
+      <para unique="1046961">AND AVX512DQ) OR AVX10.1<anchor id="+556025"/></para>
+      </td>
+     <td><para unique="1046966">Calculate two RANGE operation output value from 2 pairs of double precision floating-point values in xmm2 and xmm3/m128/m32bcst, store the results to xmm1 under the writemask k1. Imm8 specifies the comparison and sign of the range operation.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046937">EVEX.256.66.0F3A.W1 50 /r ib</para>
+      <para unique="1046938">VRANGEPD ymm1 {k1}{z}, ymm2, ymm3/m256/m64bcst, imm8</para>
+      </td>
+     <td><para unique="1046942">A</para>
+      </td>
+     <td><para unique="1046944">V/V</para>
+      </td>
+     <td><para unique="1046946">(AVX512VL</para>
+      <para unique="1046947">AND AVX512DQ) OR AVX10.1<anchor id="+785448"/></para>
+      </td>
+     <td><para unique="1046949">Calculate four RANGE operation output value from 4pairs of double precision floating-point values in ymm2 and ymm3/m256/m32bcst, store the results to ymm1 under the writemask k1. Imm8 specifies the comparison and sign of the range operation.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046923">EVEX.512.66.0F3A.W1 50 /r ib</para>
+      <para unique="1046924">VRANGEPD zmm1 {k1}{z}, zmm2, zmm3/m512/m64bcst{sae}, imm8</para>
+      </td>
+     <td><para unique="1046928">A</para>
+      </td>
+     <td><para unique="1046930">V/V</para>
+      </td>
+     <td><para unique="1046932">AVX512DQ </para>
+      <para unique="1046933">OR AVX10.1<anchor id="+471496"/></para>
+      </td>
+     <td><para unique="1046935">Calculate eight RANGE operation output value from 8 pairs of double precision floating-point values in zmm2 and zmm3/m512/m32bcst, store the results to zmm1 under the writemask k1. Imm8 specifies the comparison and sign of the range operation.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1046137">
+   <col width="48.83472pt"/>
+   <col width="75.23424pt"/>
+   <col width="93.36384000000001pt"/>
+   <col width="103.62744pt"/>
+   <col width="94.41pt"/>
+   <col width="95.98392pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1046139">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1046141">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1046143">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1046145">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1046147">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1046149">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1046151">A</para>
+      </td>
+     <td valign="middle"><para unique="1046153">Full</para>
+      </td>
+     <td valign="middle"><para unique="1046155">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046157">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046159">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046161">imm8</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046162">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046164">This instruction calculates 2/4/8 range operation outputs from two sets of packed input double precision floating-point values in the first source operand (the second operand) and the second source operand (the third operand). The range outputs are written to the destination operand (the first operand) under the writemask k1. </para>
+  <para unique="1046165">Bits7:4 of imm8 byte must be zero. The range operation output is performed in two parts, each configured by a two-bit control field within imm8[3:0]:</para>
+  <itemizedlist>
+   <listitem><para unique="1046166">Imm8[1:0] specifies the initial comparison operation to be one of max, min, max absolute value or min absolute value of the input value pair. Each comparison of two input values produces an intermediate result that combines with the sign selection control (imm8[3:2]) to determine the final range operation output.</para>
     </listitem>
-   <listitem><para unique="1046167">
-     <string>Imm8[3:2] specifies the sign of the range operation output to be one of the following: from the first input value, from the comparison result, set or clear.</string></para>
+   <listitem><para unique="1046167">Imm8[3:2] specifies the sign of the range operation output to be one of the following: from the first input value, from the comparison result, set or clear.</para>
     </listitem>
-   </itemizedlist><para unique="1046170">
-   <string>The encodings of imm8[1:0] and imm8[3:2] are shown in </string><link linkend="90161: 05_FigureFrame: Figure 5-40. Imm8 Controls for VRANGEPD/SD/PS/SS"><string>Figure&#160;5&#8209;27</string></link><string>.</string></para>
-  <table>
-   <caption>Figure 5-27.  Imm8 Controls for VRANGEPD/SD/PS/SS</caption>
-   <colgroup><col/>
-    <col/>
-    </colgroup>
+   </itemizedlist>
+  <para unique="1046170">The encodings of imm8[1:0] and imm8[3:2] are shown in <link unique="1046169" linkend="#90161: 05_FigureFrame: Figure 5-40. Imm8 Controls for VRANGEPD/SD/PS/SS" xrefstyle="FigureNum">Figure&#160;5&#8209;27</link>.</para>
+  <figure id="90161: 05_FigureFrame: Figure 5-40. Imm8 Controls for VRANGEPD/SD/PS/SS"><title>Imm8 Controls for VRANGEPD/SD/PS/SS</title>
+   <mediaobject><imageobject><svg width="1166.84987449646" height="128.9" viewBox="0 0 1166.84987449646 128.9" name="imm8" shortdesc="Imm8 Controls for VRANGEPD/SD/PS/SS">
+      <defs><marker id="arrow" viewBox="0 0 10 6" refX="7" refY="3" markerWidth="10" markerHeight="6" style="fill: dimgray;" orient="auto"><path d="M 0 0 L 10 3 L 0 6 L 2 3 z"/></marker></defs>
+      <rect x="298.7916774749756" y="8.25" width="320" height="15" fill="lightgray" stroke="dimgray"/>
+      <text x="458.7916774749756" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle"/>
+      <line x1="298.7916774749756" y1="8.25" x2="298.7916774749756" y2="0" stroke="gray"/><line x1="618.7916774749756" y1="8.25" x2="618.7916774749756" y2="0" stroke="gray"/><text x="300.7916774749756" y="6.25" font-family="Verdana" font-size="7.5" fill="gray">7</text>
+      <text x="616.7916774749756" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="end">4</text>
+      <rect x="618.7916774749756" y="8.25" width="160" height="15" fill="whitesmoke" stroke="dimgray"/>
+      <text x="698.7916774749756" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">SC</text>
+      <line x1="618.7916774749756" y1="8.25" x2="618.7916774749756" y2="0" stroke="gray"/><line x1="778.7916774749756" y1="8.25" x2="778.7916774749756" y2="0" stroke="gray"/><text x="620.7916774749756" y="6.25" font-family="Verdana" font-size="7.5" fill="gray">3</text>
+      <text x="776.7916774749756" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="end">2</text>
+      <rect x="778.7916774749756" y="8.25" width="160" height="15" fill="whitesmoke" stroke="dimgray"/>
+      <text x="858.7916774749756" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">Compare Operation Select</text>
+      <line x1="778.7916774749756" y1="8.25" x2="778.7916774749756" y2="0" stroke="gray"/><line x1="938.7916774749756" y1="8.25" x2="938.7916774749756" y2="0" stroke="gray"/><text x="780.7916774749756" y="6.25" font-family="Verdana" font-size="7.5" fill="gray">1</text>
+      <text x="936.7916774749756" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="end">0</text>
+      <text x="265.5208435058594" y="8.25" font-family="Verdana" font-size="9.9" fill="black"><tspan x="265.5208435058594" dy="11.88" font-family="Verdana" text-anchor="start">imm8</tspan></text>
+      <text x="3" y="38.25" font-family="Verdana" font-size="9.9" fill="black"><tspan x="3" dy="11.88" font-family="Verdana" text-anchor="start">Sign Control (SC)</tspan><tspan x="3" dy="11.88" font-family="Verdana" text-anchor="start">imm8[3:2] = 0b00 : Select sign(src1)</tspan><tspan x="3" dy="11.88" font-family="Verdana" text-anchor="start">imm8[3:2] = 0b01 : Select sign(compare_result)</tspan><tspan x="3" dy="11.88" font-family="Verdana" text-anchor="start">imm8[3:2] = 0b10 : Set sign to 0</tspan><tspan x="3" dy="11.88" font-family="Verdana" text-anchor="start">imm8[3:2] = 0b11 : Set sign to 1</tspan></text>
+      <text x="951.7916774749756" y="38.25" font-family="Verdana" font-size="9.9" fill="black"><tspan x="951.7916774749756" dy="11.88" font-family="Verdana" text-anchor="start">Compare Operation Select</tspan><tspan x="951.7916774749756" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b00 : Select Min value</tspan><tspan x="951.7916774749756" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b01 : Select Max value</tspan><tspan x="951.7916774749756" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b10 : Select Min-Abs value</tspan><tspan x="951.7916774749756" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b11 : Select Max-Abs value</tspan></text>
+      <path d="M 698.7916774749756 23.25 v 44.7 h -449.2708339691162" stroke="white" stroke-width="2.7" fill="transparent" opacity="70%"/><path d="M 698.7916774749756 23.25 v 44.7 h -449.2708339691162" stroke="dimgray" stroke-width="0.7" fill="transparent"/><path d="M 858.7916774749756 23.25 v 44.7 h 93" stroke="white" stroke-width="2.7" fill="transparent" opacity="70%"/><path d="M 858.7916774749756 23.25 v 44.7 h 93" stroke="dimgray" stroke-width="0.7" fill="transparent"/></svg></imageobject></mediaobject></figure><para unique="1046211">When one or more of the input value is a NAN, the comparison operation may signal invalid exception (IE). Details with one of more input value is NAN is listed in <link unique="1046213" linkend="#36925: 06_Table: Table 5-19. Range Comparison Output with Input Values of NaN Specia" xrefstyle="TableNum">Table 5&#8209;21</link>. If the comparison raises an IE, the sign select control (imm8[3:2]) has no effect to the range operation output; this is indicated also in <link unique="1046216" linkend="#36925: 06_Table: Table 5-19. Range Comparison Output with Input Values of NaN Specia" xrefstyle="TableNum">Table 5&#8209;21</link>.</para>
+  <para unique="1046218">When both input values are zeros of opposite signs, the comparison operation of MIN/MAX in the range compare operation is slightly different from the conceptually similar floating-point MIN/MAX operation that are found in the instructions VMAXPD/VMINPD. The details of MIN/MAX/MIN_ABS/MAX_ABS operation for VRANGEPD/PS/SD/SS for magnitude-0, opposite-signed input cases are listed in <link unique="1046220" linkend="#78612: 06_Table: Table 5-20. Input Zero Special Cases for MIN, MIN_ABS and MAX, MAX_ABS" xrefstyle="TableNum">Table 5&#8209;22</link>.</para>
+  <para unique="1046222">Additionally, non-zero, equal-magnitude with opposite-sign input values perform MIN_ABS or MAX_ABS compar&#173;ison operation with result listed in <link unique="1046224" linkend="#94826: 06_Table: Table 5-21. Additional Input Special Cases for MIN_ABS and MAX_ABS, (|a|" xrefstyle="TableNum">Table 5&#8209;23</link>.</para>
+  <table id="36925: 06_Table: Table 5-19. Range Comparison Output with Input Values of NaN Specia" unique="1046226">
+   <caption><anchor id="36925: 06_Table: Table 5-19. Range Comparison Output with Input Values of NaN Specia"/>Signaling of Comparison Operation of One or More NaN Input Values and Effect of Imm8[3:2]</caption>
+   <col width="57.004560000000005pt"/>
+   <col width="55.71576pt"/>
+   <col width="86.34888pt"/>
+   <col width="144.82872pt"/>
+   <col width="160.26912000000002pt"/>
    <tbody>
     <tr>
-     <td><svg width="676.3723239898682" height="143.65" viewBox="0 0 676.3723239898682 143.65" name="imm8" shortdesc="Imm8 Controls for VRANGEPD/SD/PS/SS">
-       <defs><marker id="arrow" viewBox="0 0 10 6" refX="7" refY="3" markerWidth="10" markerHeight="6" style="fill: dimgray;" orient="auto-start-reverse"><path d="M 0 0 L 10 3 L 0 6 L 2 3 z"/></marker></defs>
-       <rect x="36.372323989868164" y="8.25" width="320" height="15" fill="lightgray" stroke="dimgray"/>
-       <text x="196.37232398986816" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">Reserved</text>
-       <line x1="36.372323989868164" y1="8.25" x2="36.372323989868164" y2="0" stroke="gray"/><line x1="356.37232398986816" y1="8.25" x2="356.37232398986816" y2="0" stroke="gray"/><text x="38.372323989868164" y="6.25" font-family="Verdana" font-size="7.5" fill="gray">7</text>
-       <text x="354.37232398986816" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="end">4</text>
-       <rect x="356.37232398986816" y="8.25" width="160" height="15" fill="whitesmoke" stroke="dimgray"/>
-       <text x="436.37232398986816" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">SC</text>
-       <line x1="356.37232398986816" y1="8.25" x2="356.37232398986816" y2="0" stroke="gray"/><line x1="516.3723239898682" y1="8.25" x2="516.3723239898682" y2="0" stroke="gray"/><text x="358.37232398986816" y="6.25" font-family="Verdana" font-size="7.5" fill="gray">3</text>
-       <text x="514.3723239898682" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="end">2</text>
-       <rect x="516.3723239898682" y="8.25" width="160" height="15" fill="whitesmoke" stroke="dimgray"/>
-       <text x="596.3723239898682" y="18.72" font-family="Verdana" font-size="9.9" fill="black" text-anchor="middle">Compare Operation Select</text>
-       <line x1="516.3723239898682" y1="8.25" x2="516.3723239898682" y2="0" stroke="gray"/><line x1="676.3723239898682" y1="8.25" x2="676.3723239898682" y2="0" stroke="gray"/><text x="518.3723239898682" y="6.25" font-family="Verdana" font-size="7.5" fill="gray">1</text>
-       <text x="674.3723239898682" y="6.25" font-family="Verdana" font-size="7.5" fill="gray" text-anchor="end">0</text>
-       <text x="3" y="8.25" font-family="Verdana" font-size="9.9" fill="black"><tspan x="3" dy="11.88" font-family="Verdana" text-anchor="start">imm8</tspan></text>
-       <text x="137.34596920013428" y="53" font-family="Verdana" font-size="9.9" fill="black"><tspan x="137.34596920013428" dy="11.88" font-family="Verdana" text-anchor="start">Sign Control (SC)</tspan><tspan x="137.34596920013428" dy="11.88" font-family="Verdana" text-anchor="start">imm8[3:2] = 0b00 : Select sign(src1)</tspan><tspan x="137.34596920013428" dy="11.88" font-family="Verdana" text-anchor="start">imm8[3:2] = 0b01 : Select sign(compare_result)</tspan><tspan x="137.34596920013428" dy="11.88" font-family="Verdana" text-anchor="start">imm8[3:2] = 0b10 : Set sign to 0</tspan><tspan x="137.34596920013428" dy="11.88" font-family="Verdana" text-anchor="start">imm8[3:2] = 0b11 : Set sign to 1</tspan></text>
-       <text x="399.8376531600952" y="53" font-family="Verdana" font-size="9.9" fill="black"><tspan x="399.8376531600952" dy="11.88" font-family="Verdana" text-anchor="start">Compare Operation Select</tspan><tspan x="399.8376531600952" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b00 : Select Min value</tspan><tspan x="399.8376531600952" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b01 : Select Max value</tspan><tspan x="399.8376531600952" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b10 : Select Min-Abs value</tspan><tspan x="399.8376531600952" dy="11.88" font-family="Verdana" text-anchor="start">imm8[1:0] = 0b11 : Select Max-Abs value</tspan></text>
-       <line x1="436.37232398986816" y1="23.25" x2="161.99513759613038" y2="53" stroke="white" stroke-width="2.7" opacity="70%"/><line x1="436.37232398986816" y1="23.25" x2="161.99513759613038" y2="53" stroke="dimgray" stroke-width="0.7" fill="transparent"/><line x1="596.3723239898682" y1="23.25" x2="421.0309881210327" y2="53" stroke="white" stroke-width="2.7" opacity="70%"/><line x1="596.3723239898682" y1="23.25" x2="421.0309881210327" y2="53" stroke="dimgray" stroke-width="0.7" fill="transparent"/></svg></td>
-     </tr>
-    </tbody>
-   </table>
-  <para unique="1046211">
-   <string>When one or more of the input value is a NAN, the comparison operation may signal invalid exception (IE). Details with one of more input value is NAN is listed in </string><link linkend="36925: 06_Table: Table 5-19. Range Comparison Output with Input Values of NaN Specia"><string>Table 5&#8209;21</string></link><string>. If the comparison raises an IE, the sign select control (imm8[3:2]) has no effect to the range operation output; this is indicated also in </string><link linkend="36925: 06_Table: Table 5-19. Range Comparison Output with Input Values of NaN Specia"><string>Table 5&#8209;21</string></link><string>.</string></para>
-  <para unique="1046218">
-   <string>When both input values are zeros of opposite signs, the comparison operation of MIN/MAX in the range compare operation is slightly different from the conceptually similar floating-point MIN/MAX operation that are found in the instructions VMAXPD/VMINPD. The details of MIN/MAX/MIN_ABS/MAX_ABS operation for VRANGEPD/PS/SD/SS for magnitude-0, opposite-signed input cases are listed in </string><link linkend="78612: 06_Table: Table 5-20. Input Zero Special Cases for MIN, MIN_ABS and MAX, MAX_ABS"><string>Table 5&#8209;22</string></link><string>.</string></para>
-  <para unique="1046222">
-   <string>Additionally, non-zero, equal-magnitude with opposite-sign input values perform MIN_ABS or MAX_ABS compar&#173;ison operation with result listed in </string><link linkend="94826: 06_Table: Table 5-21. Additional Input Special Cases for MIN_ABS and MAX_ABS, (|a|"><string>Table 5&#8209;23</string></link><string>.</string></para>
-  <table>
-   <caption>Table 5-21.  Signaling of Comparison Operation of One or More NaN Input Values and Effect of Imm8[3:2]</caption>
-   <colgroup><col align="leftright"/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    </colgroup>
-   <tbody>
-    <tr>
-     <th><para unique="1046239" format="CellRowHeadL">
-       <string>Src1</string></para>
+     <th><para unique="1046239">Src1</para>
       </th>
-     <th><para unique="1046241" format="CellRowHeadL">
-       <string>Src2</string></para>
+     <th><para unique="1046241">Src2</para>
       </th>
-     <th><para unique="1046243" format="CellRowHeadL">
-       <string>Result</string></para>
+     <th><para unique="1046243">Result</para>
       </th>
-     <th><para unique="1046245" format="CellRowHeadL">
-       <string>IE Signaling Due to Comparison</string></para>
+     <th><para unique="1046245">IE Signaling Due to Comparison</para>
       </th>
-     <th><para unique="1046247" format="CellRowHeadL">
-       <string>Imm8[3:2] Effect to Range Output</string></para>
+     <th><para unique="1046247">Imm8[3:2] Effect to Range Output</para>
       </th>
      </tr>
     <tr>
-     <td><para unique="1046249" format="CellBodyL">
-       <string>sNaN1</string></para>
+     <td><para unique="1046249">sNaN1</para>
       </td>
-     <td><para unique="1046251" format="CellBodyL">
-       <string>sNaN2</string></para>
+     <td><para unique="1046251">sNaN2</para>
       </td>
-     <td><para unique="1046253" format="CellBodyL">
-       <string>Quiet(sNaN1)</string></para>
+     <td><para unique="1046253">Quiet(sNaN1)</para>
       </td>
-     <td><para unique="1046255" format="CellBodyL">
-       <string>Yes</string></para>
+     <td><para unique="1046255">Yes</para>
       </td>
-     <td><para unique="1046257" format="CellBodyL">
-       <string>Ignored</string></para>
+     <td><para unique="1046257">Ignored</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046259" format="CellBodyL">
-       <string>sNaN1</string></para>
+     <td><para unique="1046259">sNaN1</para>
       </td>
-     <td><para unique="1046261" format="CellBodyL">
-       <string>qNaN2</string></para>
+     <td><para unique="1046261">qNaN2</para>
       </td>
-     <td><para unique="1046263" format="CellBodyL">
-       <string>Quiet(sNaN1)</string></para>
+     <td><para unique="1046263">Quiet(sNaN1)</para>
       </td>
-     <td><para unique="1046265" format="CellBodyL">
-       <string>Yes</string></para>
+     <td><para unique="1046265">Yes</para>
       </td>
-     <td><para unique="1046267" format="CellBodyL">
-       <string>Ignored</string></para>
+     <td><para unique="1046267">Ignored</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046269" format="CellBodyL">
-       <string>sNaN1</string></para>
+     <td><para unique="1046269">sNaN1</para>
       </td>
-     <td><para unique="1046271" format="CellBodyL">
-       <string>Norm2</string></para>
+     <td><para unique="1046271">Norm2</para>
       </td>
-     <td><para unique="1046273" format="CellBodyL">
-       <string>Quiet(sNaN1)</string></para>
+     <td><para unique="1046273">Quiet(sNaN1)</para>
       </td>
-     <td><para unique="1046275" format="CellBodyL">
-       <string>Yes</string></para>
+     <td><para unique="1046275">Yes</para>
       </td>
-     <td><para unique="1046277" format="CellBodyL">
-       <string>Ignored</string></para>
+     <td><para unique="1046277">Ignored</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046279" format="CellBodyL">
-       <string>qNaN1</string></para>
+     <td><para unique="1046279">qNaN1</para>
       </td>
-     <td><para unique="1046281" format="CellBodyL">
-       <string>sNaN2</string></para>
+     <td><para unique="1046281">sNaN2</para>
       </td>
-     <td><para unique="1046283" format="CellBodyL">
-       <string>Quiet(sNaN2)</string></para>
+     <td><para unique="1046283">Quiet(sNaN2)</para>
       </td>
-     <td><para unique="1046285" format="CellBodyL">
-       <string>Yes</string></para>
+     <td><para unique="1046285">Yes</para>
       </td>
-     <td><para unique="1046287" format="CellBodyL">
-       <string>Ignored</string></para>
+     <td><para unique="1046287">Ignored</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046289" format="CellBodyL">
-       <string>qNaN1</string></para>
+     <td><para unique="1046289">qNaN1</para>
       </td>
-     <td><para unique="1046291" format="CellBodyL">
-       <string>qNaN2</string></para>
+     <td><para unique="1046291">qNaN2</para>
       </td>
-     <td><para unique="1046293" format="CellBodyL">
-       <string>qNaN1</string></para>
+     <td><para unique="1046293">qNaN1</para>
       </td>
-     <td><para unique="1046295" format="CellBodyL">
-       <string>No</string></para>
+     <td><para unique="1046295">No</para>
       </td>
-     <td><para unique="1046297" format="CellBodyL">
-       <string>Applicable</string></para>
+     <td><para unique="1046297">Applicable</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046299" format="CellBodyL">
-       <string>qNaN1</string></para>
+     <td><para unique="1046299">qNaN1</para>
       </td>
-     <td><para unique="1046301" format="CellBodyL">
-       <string>Norm2</string></para>
+     <td><para unique="1046301">Norm2</para>
       </td>
-     <td><para unique="1046303" format="CellBodyL">
-       <string>Norm2</string></para>
+     <td><para unique="1046303">Norm2</para>
       </td>
-     <td><para unique="1046305" format="CellBodyL">
-       <string>No</string></para>
+     <td><para unique="1046305">No</para>
       </td>
-     <td><para unique="1046307" format="CellBodyL">
-       <string>Applicable</string></para>
+     <td><para unique="1046307">Applicable</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046309" format="CellBodyL">
-       <string>Norm1</string></para>
+     <td><para unique="1046309">Norm1</para>
       </td>
-     <td><para unique="1046311" format="CellBodyL">
-       <string>sNaN2</string></para>
+     <td><para unique="1046311">sNaN2</para>
       </td>
-     <td><para unique="1046313" format="CellBodyL">
-       <string>Quiet(sNaN2)</string></para>
+     <td><para unique="1046313">Quiet(sNaN2)</para>
       </td>
-     <td><para unique="1046315" format="CellBodyL">
-       <string>Yes</string></para>
+     <td><para unique="1046315">Yes</para>
       </td>
-     <td><para unique="1046317" format="CellBodyL">
-       <string>Ignored</string></para>
+     <td><para unique="1046317">Ignored</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046319" format="CellBodyL">
-       <string>Norm1</string></para>
+     <td><para unique="1046319">Norm1</para>
       </td>
-     <td><para unique="1046321" format="CellBodyL">
-       <string>qNaN2</string></para>
+     <td><para unique="1046321">qNaN2</para>
       </td>
-     <td><para unique="1046323" format="CellBodyL">
-       <string>Norm1</string></para>
+     <td><para unique="1046323">Norm1</para>
       </td>
-     <td><para unique="1046325" format="CellBodyL">
-       <string>No</string></para>
+     <td><para unique="1046325">No</para>
       </td>
-     <td><para unique="1046327" format="CellBodyL">
-       <string>Applicable</string></para>
+     <td><para unique="1046327">Applicable</para>
       </td>
      </tr>
     </tbody>
    </table>
-  <table>
-   <caption>Table 5-22.  Comparison Result for Opposite-Signed Zero Cases for MIN, MIN_ABS, and MAX, MAX_ABS</caption>
-   <colgroup><col align="leftright"/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    </colgroup>
+  <table id="78612: 06_Table: Table 5-20. Input Zero Special Cases for MIN, MIN_ABS and MAX, MAX_ABS" unique="1046329">
+   <caption><anchor id="78612: 06_Table: Table 5-20. Input Zero Special Cases for MIN, MIN_ABS and MAX, MAX_ABS"/>Comparison Result for Opposite-Signed Zero Cases for MIN, MIN_ABS, and MAX, MAX_ABS</caption>
+   <col width="73.48751999999999pt"/>
+   <col width="80.65584pt"/>
+   <col width="99.92304pt"/>
+   <col width="73.48751999999999pt"/>
+   <col width="80.65584pt"/>
+   <col width="99.92304pt"/>
    <tbody>
     <tr>
-     <th colspan="3"><para unique="1046344" format="CellRowHeadC">
-       <string>MIN and MIN_ABS</string></para>
+     <th valign="middle" colspan="3"><para unique="1046344">MIN and MIN_ABS</para>
       </th>
-     <th colspan="3"><para unique="1046350" format="CellRowHeadC">
-       <string>MAX and MAX_ABS</string></para>
+     <th valign="middle" colspan="3"><para unique="1046350">MAX and MAX_ABS</para>
       </th>
      </tr>
     <tr>
-     <th><para unique="1046356" format="CellRowHeadL">
-       <string>Src1</string></para>
+     <th><para unique="1046356">Src1</para>
       </th>
-     <th><para unique="1046358" format="CellRowHeadL">
-       <string>Src2</string></para>
+     <th><para unique="1046358">Src2</para>
       </th>
-     <th><para unique="1046360" format="CellRowHeadL">
-       <string>Result</string></para>
+     <th><para unique="1046360">Result</para>
       </th>
-     <th><para unique="1046362" format="CellRowHeadL">
-       <string>Src1</string></para>
+     <th><para unique="1046362">Src1</para>
       </th>
-     <th><para unique="1046364" format="CellRowHeadL">
-       <string>Src2</string></para>
+     <th><para unique="1046364">Src2</para>
       </th>
-     <th><para unique="1046366" format="CellRowHeadL">
-       <string>Result</string></para>
+     <th><para unique="1046366">Result</para>
       </th>
      </tr>
     <tr>
-     <td><para unique="1046368" format="CellBodyL">
-       <string>+0</string></para>
+     <td><para unique="1046368">+0</para>
       </td>
-     <td><para unique="1046370" format="CellBodyL">
-       <string>-0</string></para>
+     <td><para unique="1046370">-0</para>
       </td>
-     <td><para unique="1046372" format="CellBodyL">
-       <string>-0</string></para>
+     <td><para unique="1046372">-0</para>
       </td>
-     <td><para unique="1046374" format="CellBodyL">
-       <string>+0</string></para>
+     <td><para unique="1046374">+0</para>
       </td>
-     <td><para unique="1046376" format="CellBodyL">
-       <string>-0</string></para>
+     <td><para unique="1046376">-0</para>
       </td>
-     <td><para unique="1046378" format="CellBodyL">
-       <string>+0</string></para>
+     <td><para unique="1046378">+0</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046380" format="CellBodyL">
-       <string>-0</string></para>
+     <td><para unique="1046380">-0</para>
       </td>
-     <td><para unique="1046382" format="CellBodyL">
-       <string>+0</string></para>
+     <td><para unique="1046382">+0</para>
       </td>
-     <td><para unique="1046384" format="CellBodyL">
-       <string>-0</string></para>
+     <td><para unique="1046384">-0</para>
       </td>
-     <td><para unique="1046386" format="CellBodyL">
-       <string>-0</string></para>
+     <td><para unique="1046386">-0</para>
       </td>
-     <td><para unique="1046388" format="CellBodyL">
-       <string>+0</string></para>
+     <td><para unique="1046388">+0</para>
       </td>
-     <td><para unique="1046390" format="CellBodyL">
-       <string>+0</string></para>
+     <td><para unique="1046390">+0</para>
       </td>
      </tr>
     </tbody>
    </table>
-  <table>
-   <caption>Table 5-23.  Comparison Result of Equal-Magnitude Input Cases for MIN_ABS and MAX_ABS, (|a| = |b|, a&gt;0, b&lt;0)</caption>
-   <colgroup><col align="leftright"/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    </colgroup>
+  <table id="94826: 06_Table: Table 5-21. Additional Input Special Cases for MIN_ABS and MAX_ABS, (|a|" unique="1046392">
+   <caption><anchor id="94826: 06_Table: Table 5-21. Additional Input Special Cases for MIN_ABS and MAX_ABS, (|a|"/>Comparison Result of Equal-Magnitude Input Cases for MIN_ABS and MAX_ABS, (|a| = |b|, a&gt;0, b&lt;0)</caption>
+   <col width="73.48751999999999pt"/>
+   <col width="80.65584pt"/>
+   <col width="99.92304pt"/>
+   <col width="73.48751999999999pt"/>
+   <col width="80.65584pt"/>
+   <col width="99.92304pt"/>
    <tbody>
     <tr>
-     <th colspan="3"><para unique="1046407" format="CellRowHeadC">
-       <string>MIN_ABS (|a| = |b|, a&gt;0, b&lt;0)</string></para>
+     <th valign="middle" colspan="3"><para unique="1046407">MIN_ABS (|a| = |b|, a&gt;0, b&lt;0)</para>
       </th>
-     <th colspan="3"><para unique="1046413" format="CellRowHeadC">
-       <string>MAX_ABS (|a| = |b|, a&gt;0, b&lt;0)</string></para>
+     <th valign="middle" colspan="3"><para unique="1046413">MAX_ABS (|a| = |b|, a&gt;0, b&lt;0)</para>
       </th>
      </tr>
     <tr>
-     <th><para unique="1046419" format="CellRowHeadL">
-       <string>Src1</string></para>
+     <th><para unique="1046419">Src1</para>
       </th>
-     <th><para unique="1046421" format="CellRowHeadL">
-       <string>Src2</string></para>
+     <th><para unique="1046421">Src2</para>
       </th>
-     <th><para unique="1046423" format="CellRowHeadL">
-       <string>Result</string></para>
+     <th><para unique="1046423">Result</para>
       </th>
-     <th><para unique="1046425" format="CellRowHeadL">
-       <string>Src1</string></para>
+     <th><para unique="1046425">Src1</para>
       </th>
-     <th><para unique="1046427" format="CellRowHeadL">
-       <string>Src2</string></para>
+     <th><para unique="1046427">Src2</para>
       </th>
-     <th><para unique="1046429" format="CellRowHeadL">
-       <string>Result</string></para>
+     <th><para unique="1046429">Result</para>
       </th>
      </tr>
     <tr>
-     <td><para unique="1046431" format="CellBodyL">
-       <string>a</string></para>
+     <td><para unique="1046431">a</para>
       </td>
-     <td><para unique="1046433" format="CellBodyL">
-       <string>b</string></para>
+     <td><para unique="1046433">b</para>
       </td>
-     <td><para unique="1046435" format="CellBodyL">
-       <string>b</string></para>
+     <td><para unique="1046435">b</para>
       </td>
-     <td><para unique="1046437" format="CellBodyL">
-       <string>a</string></para>
+     <td><para unique="1046437">a</para>
       </td>
-     <td><para unique="1046439" format="CellBodyL">
-       <string>b</string></para>
+     <td><para unique="1046439">b</para>
       </td>
-     <td><para unique="1046441" format="CellBodyL">
-       <string>a</string></para>
+     <td><para unique="1046441">a</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046443" format="CellBodyL">
-       <string>b</string></para>
+     <td><para unique="1046443">b</para>
       </td>
-     <td><para unique="1046445" format="CellBodyL">
-       <string>a</string></para>
+     <td><para unique="1046445">a</para>
       </td>
-     <td><para unique="1046447" format="CellBodyL">
-       <string>b</string></para>
+     <td><para unique="1046447">b</para>
       </td>
-     <td><para unique="1046449" format="CellBodyL">
-       <string>b</string></para>
+     <td><para unique="1046449">b</para>
       </td>
-     <td><para unique="1046451" format="CellBodyL">
-       <string>a</string></para>
+     <td><para unique="1046451">a</para>
       </td>
-     <td><para unique="1046453" format="CellBodyL">
-       <string>a</string></para>
+     <td><para unique="1046453">a</para>
       </td>
      </tr>
     </tbody>
    </table>
   </longdesc>
+ <operation>
+  <programlisting>RangeDP(SRC1[63:0], SRC2[63:0], CmpOpCtl[1:0], SignSelCtl[1:0])
+{
+	// Check if SNAN and report IE, see also Table 5&#8209;21
+	IF (SRC1 = SNAN) THEN RETURN (QNAN(SRC1), set IE);
+	IF (SRC2 = SNAN) THEN RETURN (QNAN(SRC2), set IE);
+	Src1.exp := SRC1[62:52];
+	Src1.fraction := SRC1[51:0];
+	IF ((Src1.exp = 0 ) and (Src1.fraction != 0)) THEN	// Src1 is a denormal number
+		IF DAZ THEN Src1.fraction := 0;
+		ELSE IF (SRC2 &lt;&gt; QNAN) Set DE; FI;
+	FI;
+	Src2.exp := SRC2[62:52];
+	Src2.fraction := SRC2[51:0];
+	IF ((Src2.exp = 0) and (Src2.fraction !=0 )) THEN	// Src2 is a denormal number
+		IF DAZ THEN Src2.fraction := 0;
+		ELSE IF (SRC1 &lt;&gt; QNAN) Set DE; FI;
+	FI;
+	IF 	(SRC2 = QNAN) THEN	{TMP[63:0] := SRC1[63:0]}
+	ELSE IF	(SRC1 = QNAN) THEN	{TMP[63:0] := SRC2[63:0]}
+	ELSE IF (Both SRC1, SRC2 are magnitude-0 and opposite-signed) TMP[63:0] := from Table 5&#8209;22
+	ELSE IF (Both SRC1, SRC2 are magnitude-equal and opposite-signed and CmpOpCtl[1:0] &gt; 01) TMP[63:0] := from Table 5&#8209;23
+	ELSE
+		Case(CmpOpCtl[1:0])
+		00: TMP[63:0] := (SRC1[63:0] &#8804; SRC2[63:0]) ? SRC1[63:0] : SRC2[63:0];
+		01: TMP[63:0] := (SRC1[63:0] &#8804; SRC2[63:0]) ? SRC2[63:0] : SRC1[63:0];
+		10: TMP[63:0] := (ABS(SRC1[63:0]) &#8804; ABS(SRC2[63:0])) ? SRC1[63:0] : SRC2[63:0];
+		11: TMP[63:0] := (ABS(SRC1[63:0]) &#8804; ABS(SRC2[63:0])) ? SRC2[63:0] : SRC1[63:0];
+		ESAC;
+	FI;
+	Case(SignSelCtl[1:0])
+	00: dest := (SRC1[63] &lt;&lt; 63) OR (TMP[62:0]);	// Preserve Src1 sign bit
+	01: dest := TMP[63:0];			// Preserve sign of compare result
+	10: dest := (0 &lt;&lt; 63) OR (TMP[62:0]);		// Zero out sign bit
+	11: dest := (1 &lt;&lt; 63) OR (TMP[62:0]);		// Set the sign bit
+	ESAC;
+	RETURN dest[63:0];
+}
+CmpOpCtl[1:0]= imm8[1:0];
+SignSelCtl[1:0]=imm8[3:2];</programlisting>
+  <section level="7">
+   <title unique="1046509">VRANGEPD (EVEX encoded versions) </title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask* THEN
+			IF (EVEX.b == 1) AND (SRC2 *is memory*)
+				THEN DEST[i+63:i] := RangeDP (SRC1[i+63:i], SRC2[63:0], CmpOpCtl[1:0], SignSelCtl[1:0]);
+				ELSE DEST[i+63:i] := RangeDP (SRC1[i+63:i], SRC2[i+63:i], CmpOpCtl[1:0], SignSelCtl[1:0]);
+			FI;
+	ELSE
+		IF *merging-masking*								; merging-masking
+			THEN	 *DEST[i+63:i] remains unchanged*
+			ELSE 							; zeroing-masking
+				DEST[i+63:i] = 0
+		FI;
+	FI;
+ENDFOR;
+DEST[MAXVL-1:VL] := 0
+The following example describes a common usage of this instruction for checking that the input operand is bounded between &#177;1023.
+VRANGEPD zmm_dst, zmm_src, zmm_1023, 02h;
+Where:
+	zmm_dst is the destination operand.
+	zmm_src is the input operand to compare against &#177;1023 (this is SRC1).
+	zmm_1023 is the reference operand, contains the value of 1023 (and this is SRC2).
+	IMM=02	(imm8[1:0]=\q10) selects the Min Absolute value operation with selection of SRC1.sign.
+In case |zmm_src| &lt; 1023 (i.e., SRC1 is smaller than 1023 in magnitude), then its value will be written into zmm_dst. Otherwise, the value stored in zmm_dst will get the value of 1023 (received on zmm_1023, which is SRC2).
+However, the sign control (imm8[3:2]=\q00) instructs to select the sign of SRC1 received from zmm_src. So, even in the case of |zmm_src| &#8805; 1023, the selected sign of SRC1 is kept.
+Thus, if zmm_src &lt; -1023, the result of VRANGEPD will be the minimal value of -1023 while if zmm_src &gt; +1023, the result of VRANGE will be the maximal value of +1023.</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VRANGEPD __m512d _mm512_range_pd ( __m512d a, __m512d b, int imm);</string><string>
-</string><string>VRANGEPD __m512d _mm512_range_round_pd ( __m512d a, __m512d b, int imm, int sae);</string><string>
-</string><string>VRANGEPD __m512d _mm512_mask_range_pd (__m512 ds, __mmask8 k, __m512d a, __m512d b, int imm);</string><string>
-</string><string>VRANGEPD __m512d _mm512_mask_range_round_pd (__m512d s, __mmask8 k, __m512d a, __m512d b, int imm, int sae);</string><string>
-</string><string>VRANGEPD __m512d _mm512_maskz_range_pd ( __mmask8 k, __m512d a, __m512d b, int imm);</string><string>
-</string><string>VRANGEPD __m512d _mm512_maskz_range_round_pd ( __mmask8 k, __m512d a, __m512d b, int imm, int sae);</string><string>
-</string><string>VRANGEPD __m256d _mm256_range_pd ( __m256d a, __m256d b, int imm);</string><string>
-</string><string>VRANGEPD __m256d _mm256_mask_range_pd (__m256d s, __mmask8 k, __m256d a, __m256d b, int imm);</string><string>
-</string><string>VRANGEPD __m256d _mm256_maskz_range_pd ( __mmask8 k, __m256d a, __m256d b, int imm);</string><string>
-</string><string>VRANGEPD __m128d _mm_range_pd ( __m128 a, __m128d b, int imm);</string><string>
-</string><string>VRANGEPD __m128d _mm_mask_range_pd (__m128 s, __mmask8 k, __m128d a, __m128d b, int imm);</string><string>
-</string><string>VRANGEPD __m128d _mm_maskz_range_pd ( __mmask8 k, __m128d a, __m128d b, int imm);</string><string>
-</string></programlisting>
+  <programlisting>VRANGEPD __m512d _mm512_range_pd ( __m512d a, __m512d b, int imm);
+VRANGEPD __m512d _mm512_range_round_pd ( __m512d a, __m512d b, int imm, int sae);
+VRANGEPD __m512d _mm512_mask_range_pd (__m512 ds, __mmask8 k, __m512d a, __m512d b, int imm);
+VRANGEPD __m512d _mm512_mask_range_round_pd (__m512d s, __mmask8 k, __m512d a, __m512d b, int imm, int sae);
+VRANGEPD __m512d _mm512_maskz_range_pd ( __mmask8 k, __m512d a, __m512d b, int imm);
+VRANGEPD __m512d _mm512_maskz_range_round_pd ( __mmask8 k, __m512d a, __m512d b, int imm, int sae);
+VRANGEPD __m256d _mm256_range_pd ( __m256d a, __m256d b, int imm);
+VRANGEPD __m256d _mm256_mask_range_pd (__m256d s, __mmask8 k, __m256d a, __m256d b, int imm);
+VRANGEPD __m256d _mm256_maskz_range_pd ( __mmask8 k, __m256d a, __m256d b, int imm);
+VRANGEPD __m128d _mm_range_pd ( __m128 a, __m128d b, int imm);
+VRANGEPD __m128d _mm_mask_range_pd (__m128 s, __mmask8 k, __m128d a, __m128d b, int imm);
+VRANGEPD __m128d _mm_maskz_range_pd ( __mmask8 k, __m128d a, __m128d b, int imm);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046554">
-   <string>Invalid, Denormal.</string></para>
+  <para unique="1046554">Invalid, Denormal.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046559">
-   <string>See </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046559">See <link unique="1046557" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

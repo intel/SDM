@@ -1,39 +1,123 @@
 <instruction name="LAHF">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Load Status Flags Into AH Register</shortdesc>
- <longdesc><para unique="1261243">
-   <string>This instruction executes as described above in compatibility mode and legacy mode. It is valid in 64-bit mode only if CPUID.80000001H:ECX.LAHF_SAHF_64[0] = 1. </string></para>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th><para unique="1261193">Opcode</para>
+      </th>
+     <th><para unique="1261195">Instruction</para>
+      </th>
+     <th><para unique="1261197">Op/ En</para>
+      </th>
+     <th><para unique="1261199">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261201">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261203">Description</para>
+      </th>
+     </tr>
+    </thead><col width="97.20576pt"/>
+   <col width="110.26872pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="42.02424pt"/>
+   <col width="46.728pt"/>
+   <col width="189.65448pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261205">9F </para>
+      </td>
+     <td><para unique="1261207">LAHF</para>
+      </td>
+     <td><para unique="1261209">ZO</para>
+      </td>
+     <td><para unique="1261214">Valid<anchor id="+718118"/><footnote><para unique="1261213" format="TableFootnote">Invalid if CPUID.80000001H:ECX.LAHF_SAHF_64 is enumerated as 0<anchor id="+933799"/>.</para>
+        </footnote></para>
+      </td>
+     <td><para unique="1261216">Valid</para>
+      </td>
+     <td><para unique="1261218">Load: AH := EFLAGS(SF:ZF:0:AF:0:PF:1:CF).</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261220">
+   <col width="48.294pt"/>
+   <col width="113.89680000000001pt"/>
+   <col width="115.99416pt"/>
+   <col width="114.80832pt"/>
+   <col width="118.2276pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261222">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261224">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261226">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261228">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261230">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261232">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1261234">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261236">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261238">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261240">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261241">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261243">This instruction executes as described above in compatibility mode and legacy mode. It is valid in 64-bit mode only if CPUID.80000001H:ECX.LAHF_SAHF_64[0] = 1. </para>
   </longdesc>
+ <operation>
+  <programlisting>IF 64-Bit Mode
+	THEN
+		IF CPUID.80000001H:ECX.LAHF_SAHF_64[0] = 1;
+			THEN AH := RFLAGS(SF:ZF:0:AF:0:PF:1:CF);
+			ELSE #UD;
+		FI;
+	ELSE
+		AH := EFLAGS(SF:ZF:0:AF:0:PF:1:CF);
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261247">
-   <string>None. The state of the flags in the EFLAGS register is not affected.</string></para>
+  <para unique="1261247">None. The state of the flags in the EFLAGS register is not affected.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261249">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
-  <para unique="1261251" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261251" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1261253" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261253" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261255" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261255" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CPUID.80000001H:ECX.LAHF_SAHF_64[0] = 0.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1261257">If CPUID.80000001H:ECX.LAHF_SAHF_64[0] = 0.</para>
+     </listitem>
+    <listitem><para unique="1261258">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

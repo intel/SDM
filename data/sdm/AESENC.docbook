@@ -1,29 +1,231 @@
 <instruction name="AESENC">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Perform One Round of an AES Encryption Flow</shortdesc>
- <longdesc><para unique="1261339">
-   <string>This instruction performs a single round of an AES encryption flow using one/two/four (depending on vector length) 128-bit data (state) from the first source operand with one/two/four (depending on vector length) round key(s) from the second source operand, and stores the result in the destination operand. </string></para>
-  <para unique="1261340">
-   <string>Use the AESENC instruction for all but the last encryption rounds. For the last encryption round, use the AESENC&#173;CLAST instruction.</string></para>
-  <para unique="1261341">
-   <string>VEX and EVEX encoded versions of the instruction allow 3-operand (non-destructive) operation. The legacy encoded versions of the instruction require that the first source operand and the destination operand are the same and must be an XMM register.</string></para>
-  <para unique="1261342">
-   <string>The EVEX encoded form of this instruction does not support memory fault suppression.</string></para>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th colspan="2"><para unique="1261193">Opcode/</para>
+      <para unique="1261194">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64/32-bit Mode</para>
+      </th>
+     <th><para unique="1261202">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><col width="72.6084pt"/>
+   <col width="82.36655999999999pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="47.999520000000004pt"/>
+   <col width="65.82816pt"/>
+   <col width="217.90368pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1261206">66 0F 38 DC /r </para>
+      <para unique="1261207"><sans>AESENC xmm1, xmm2/m128</sans></para>
+      </td>
+     <td><para unique="1261211">A</para>
+      </td>
+     <td><para unique="1261213">V/V</para>
+      </td>
+     <td><para unique="1261215">AES</para>
+      </td>
+     <td><para unique="1261217">Perform one round of an AES encryption flow, using one 128-bit data (state) from xmm1 with one 128-bit round key from xmm2/m128.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261219">VEX.128.66.0F38.WIG DC /r</para>
+      <para unique="1261220">VAESENC xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1261224">B</para>
+      </td>
+     <td><para unique="1261226">V/V</para>
+      </td>
+     <td><para unique="1261228">AES</para>
+      <para unique="1261229">AVX</para>
+      </td>
+     <td><para unique="1261231">Perform one round of an AES encryption flow, using one 128-bit data (state) from xmm2 with one 128-bit round key from the xmm3/m128; store the result in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261233">VEX.256.66.0F38.WIG DC /r </para>
+      <para unique="1261234">VAESENC ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1261238">B</para>
+      </td>
+     <td><para unique="1261240">V/V</para>
+      </td>
+     <td><para unique="1261242">VAES</para>
+      </td>
+     <td><para unique="1261244">Perform one round of an AES encryption flow, using two 128-bit data (state) from ymm2 with two 128-bit round keys from the ymm3/m256; store the result in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261746">EVEX.128.66.0F38.WIG DC /r</para>
+      <para unique="1261747">VAESENC xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1261751">C</para>
+      </td>
+     <td><para unique="1261753">V/V</para>
+      </td>
+     <td><para unique="1261755">VAES </para>
+      <para unique="1261756">(AVX512VL OR AVX10.1<anchor id="+801965"/>)</para>
+      </td>
+     <td><para unique="1261761">Perform one round of an AES encryption flow, using one 128-bit data (state) from xmm2 with one 128-bit round key from the xmm3/m128; store the result in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261732">EVEX.256.66.0F38.WIG DC /r</para>
+      <para unique="1261733">VAESENC ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1261737">C</para>
+      </td>
+     <td><para unique="1261739">V/V</para>
+      </td>
+     <td><para unique="1261741">VAES </para>
+      <para unique="1261742">(AVX512VL OR AVX10.1<anchor id="+647255"/>)</para>
+      </td>
+     <td><para unique="1261744">Perform one round of an AES encryption flow, using two 128-bit data (state) from ymm2 with two 128-bit round keys from the ymm3/m256; store the result in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261718">EVEX.512.66.0F38.WIG DC /r</para>
+      <para unique="1261719">VAESENC zmm1, zmm2, zmm3/m512</para>
+      </td>
+     <td><para unique="1261723">C</para>
+      </td>
+     <td><para unique="1261725">V/V</para>
+      </td>
+     <td><para unique="1261727">VAES </para>
+      <para unique="1261728">(AVX512F OR AVX10.1<anchor id="+640689"/>)</para>
+      </td>
+     <td><para unique="1261730">Perform one round of an AES encryption flow, using four 128-bit data (state) from zmm2 with four 128-bit round keys from the zmm3/m512; store the result in zmm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261288">
+   <col width="45.0972pt"/>
+   <col width="63.0972pt"/>
+   <col width="98.22384pt"/>
+   <col width="104.71896pt"/>
+   <col width="101.5488pt"/>
+   <col width="100.13112pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261290">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261292">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1261294">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261296">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261298">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261300">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261302">A</para>
+      </td>
+     <td valign="middle"><para unique="1261304">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261306">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1261308">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261310">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261312">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1261314">B</para>
+      </td>
+     <td valign="middle"><para unique="1261316">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261318">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261320">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261322">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261324">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1261326">C</para>
+      </td>
+     <td valign="middle"><para unique="1261328">Full Mem</para>
+      </td>
+     <td valign="middle"><para unique="1261330">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261332">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261334">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261336">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261337">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261339">This instruction performs a single round of an AES encryption flow using one/two/four (depending on vector length) 128-bit data (state) from the first source operand with one/two/four (depending on vector length) round key(s) from the second source operand, and stores the result in the destination operand. </para>
+  <para unique="1261340">Use the AESENC instruction for all but the last encryption rounds. For the last encryption round, use the AESENC&#173;CLAST instruction.</para>
+  <para unique="1261341">VEX and EVEX encoded versions of the instruction allow 3-operand (non-destructive) operation. The legacy encoded versions of the instruction require that the first source operand and the destination operand are the same and must be an XMM register.</para>
+  <para unique="1261342">The EVEX encoded form of this instruction does not support memory fault suppression.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1261344">AESENC </title>
+   <programlisting>STATE := SRC1;
+RoundKey := SRC2;
+STATE := ShiftRows( STATE );
+STATE := SubBytes( STATE );
+STATE := MixColumns( STATE );
+DEST[127:0] := STATE XOR RoundKey;
+DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261352">VAESENC (128b and 256b VEX Encoded Versions)</title>
+   <programlisting>(KL,VL) = (1,128), (2,256)
+FOR I := 0 to KL-1:
+	STATE := SRC1.xmm[i]
+	RoundKey := SRC2.xmm[i]
+	STATE := ShiftRows( STATE )
+	STATE := SubBytes( STATE )
+	STATE := MixColumns( STATE )
+	DEST.xmm[i] := STATE XOR RoundKey
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261363">VAESENC (EVEX Encoded Version)</title>
+   <programlisting>(KL,VL) = (1,128), (2,256), (4,512)
+FOR i := 0 to KL-1:
+	STATE := SRC1.xmm[i] // xmm[i] is the i&#8217;th xmm word in the SIMD register
+	RoundKey := SRC2.xmm[i]
+	STATE := ShiftRows( STATE )
+	STATE := SubBytes( STATE )
+	STATE := MixColumns( STATE )
+	DEST.xmm[i] := STATE XOR RoundKey
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>(V)AESENC 		__m128i _mm_aesenc (__m128i, __m128i)</string><string>
-</string><string>VAESENC __m256i _mm256_aesenc_epi128(__m256i, __m256i);</string><string>
-</string><string>VAESENC __m512i _mm512_aesenc_epi128(__m512i, __m512i);</string><string>
-</string></programlisting>
+  <programlisting>(V)AESENC 		__m128i _mm_aesenc (__m128i, __m128i)
+VAESENC __m256i _mm256_aesenc_epi128(__m256i, __m256i);
+VAESENC __m512i _mm512_aesenc_epi128(__m512i, __m512i);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1261378">
-   <string>None.</string></para>
+  <para unique="1261378">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1261383" format="xIndent1">
-   <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1261387" format="xIndent1">
-   <string>EVEX-encoded: See </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1261383" format="xIndent1">See <link unique="1261381" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1261387" format="xIndent1">EVEX-encoded: See <link unique="1261385" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

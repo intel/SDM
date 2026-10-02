@@ -1,58 +1,152 @@
 <instruction name="VRNDSCALESD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Round Scalar Float64 Value to Include a Given Number of Fraction Bits</shortdesc>
- <longdesc><para unique="1046141">
-   <string>Rounds a double precision floating-point value in the low quadword (see </string><link linkend="68758: 05_FigureFrame: Figure 5-42. Imm8 Controls for VRNDSCALEPD/SD/PS/SS"><string>Figure&#160;5&#8209;29</string></link><string>) element of the second source operand (the third operand) by the rounding mode specified in the immediate operand and places the result in the corresponding element of the destination operand (the first operand) according to the writemask. The quadword element at bits 127:64 of the destination is copied from the first source operand (the second operand).</string></para>
-  <para unique="1046143">
-   <string>The destination and first source operands are XMM registers, the 2nd source operand can be an XMM register or memory location. Bits MAXVL-1:128 of the destination register are cleared.</string></para>
-  <para unique="1046144">
-   <string>The rounding process rounds the input to an integral value, plus number bits of fraction that are specified by imm8[7:4] (to be included in the result) and returns the result as a double precision floating-point value.</string></para>
-  <para unique="1046145">
-   <string>It should be noticed that no overflow is induced while executing this instruction (although the source is scaled by the imm8[7:4] value).</string></para>
-  <para unique="1046146">
-   <string>The immediate operand also specifies control fields for the rounding operation, three bit fields are defined and shown in the &#8220;Immediate Control Description&#8221; figure below. Bit 3 of the immediate byte controls the processor behavior for a precision exception, bit 2 selects the source of rounding mode control. Bits 1:0 specify a non-sticky rounding-mode value (immediate control table below lists the encoded values for rounding-mode field).</string></para>
-  <para unique="1046147">
-   <string>The Precision Floating-Point Exception is signaled according to the immediate operand. If any source operand is an SNaN then it will be converted to a QNaN. If DAZ is set to &#8216;1 then denormals will be converted to zero before rounding.</string></para>
-  <para unique="1046148">
-   <string>The sign of the result of this instruction is preserved, including the sign of zero.</string></para>
-  <para unique="1046150">
-   <string>The formula of the operation for VRNDSCALESD is</string></para>
-  <para unique="1046151" format="ListBulletCONT">
-   <string>ROUND(x) = 2</string><superscript><string>-M</string></superscript><string>*Round_to_INT(x*2</string><superscript><string>M</string></superscript><string>, round_ctrl), </string></para>
-  <para unique="1046152" format="ListBulletCONT">
-   <string>round_ctrl = imm[3:0];</string></para>
-  <para unique="1046153" format="ListBulletCONT">
-   <string>M=imm[7:4];</string></para>
-  <para unique="1046154">
-   <string>The operation of x*2</string><superscript><string>M</string></superscript><string> is computed as if the exponent range is unlimited (i.e., no overflow ever occurs).</string></para>
-  <para unique="1046155">
-   <string>VRNDSCALESD is a more general form of the VEX-encoded VROUNDSD instruction. In VROUNDSD, the formula of the operation is</string></para>
-  <para unique="1046156" format="ListBulletCONT">
-   <string>ROUND(x) = Round_to_INT(x, round_ctrl), </string></para>
-  <para unique="1046157" format="ListBulletCONT">
-   <string>round_ctrl = imm[3:0];</string></para>
-  <para unique="1046159">
-   <string>EVEX encoded version: The source operand is a XMM register or a 64-bit memory location. The destination operand is a XMM register.</string></para>
-  <para unique="1046162">
-   <string>Handling of special case of input values are listed in </string><link linkend="54735: 06_Table: Table 5-25. VRNDSCALEPD/SD/PS/SS Special Cases"><string>Table 5&#8209;29</string></link><string>.</string></para>
+ <encoding_table><table unique="1046081">
+   <col width="79.04016pt"/>
+   <col width="79.04016pt"/>
+   <col width="29.244239999999998pt"/>
+   <col width="48.74976pt"/>
+   <col width="63.41616pt"/>
+   <col width="212.00039999999998pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1046083">Opcode/</para>
+      <para unique="1046084">Instruction</para>
+      </th>
+     <th><para unique="1046088">Op / En</para>
+      </th>
+     <th><para unique="1046090">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1046092">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1046094">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1046568">EVEX.LLIG.66.0F3A.W1 0B /r ib</para>
+      <para unique="1046569">VRNDSCALESD xmm1 {k1}{z}, xmm2, xmm3/m64{sae}, imm8</para>
+      </td>
+     <td><para unique="1046573">A</para>
+      </td>
+     <td><para unique="1046575">V/V</para>
+      </td>
+     <td><para unique="1046580">AVX512F</para>
+      <para unique="1046584">OR AVX10.1<anchor id="+223908"/></para>
+      </td>
+     <td><para unique="1046586">Rounds scalar double precision floating-point value in xmm3/m64 to a number of fraction bits specified by the imm8 field. Stores the result in xmm1 register.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1046112">
+   <thead><tr>
+     <th valign="middle"><para unique="1046114">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1046116">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1046118">Operand 1 </para>
+      </th>
+     <th valign="middle"><para unique="1046120">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1046122">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1046124">Operand 4</para>
+      </th>
+     </tr>
+    </thead><col width="39.649680000000004pt"/>
+   <col width="76.8492pt"/>
+   <col width="99.15624pt"/>
+   <col width="98.97192000000001pt"/>
+   <col width="98.23248000000001pt"/>
+   <col width="99.77328pt"/>
+   <tbody>
+    <tr>
+     <td valign="middle"><para unique="1046126">A</para>
+      </td>
+     <td valign="middle"><para unique="1046128">Tuple1 Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1046130">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046132">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046134">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046136">imm8</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046137">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046141">Rounds a double precision floating-point value in the low quadword (see <link unique="1046140" linkend="&lt;c&gt;VRNDSCALEPD-Round-Packed-Float64-Values-to-Include-a-Given-Number-of-Fraction-Bits.fm#68758: 05_FigureFrame: Figure 5-42. Imm8 Controls for VRNDSCALEPD/SD/PS/SS" xrefstyle="FigureNum">Figure&#160;5&#8209;29</link>) element of the second source operand (the third operand) by the rounding mode specified in the immediate operand and places the result in the corresponding element of the destination operand (the first operand) according to the writemask. The quadword element at bits 127:64 of the destination is copied from the first source operand (the second operand).</para>
+  <para unique="1046143">The destination and first source operands are XMM registers, the 2nd source operand can be an XMM register or memory location. Bits MAXVL-1:128 of the destination register are cleared.</para>
+  <para unique="1046144">The rounding process rounds the input to an integral value, plus number bits of fraction that are specified by imm8[7:4] (to be included in the result) and returns the result as a double precision floating-point value.</para>
+  <para unique="1046145">It should be noticed that no overflow is induced while executing this instruction (although the source is scaled by the imm8[7:4] value).</para>
+  <para unique="1046146">The immediate operand also specifies control fields for the rounding operation, three bit fields are defined and shown in the &#8220;Immediate Control Description&#8221; figure below. Bit 3 of the immediate byte controls the processor behavior for a precision exception, bit 2 selects the source of rounding mode control. Bits 1:0 specify a non-sticky rounding-mode value (immediate control table below lists the encoded values for rounding-mode field).</para>
+  <para unique="1046147">The Precision Floating-Point Exception is signaled according to the immediate operand. If any source operand is an SNaN then it will be converted to a QNaN. If DAZ is set to &#8216;1 then denormals will be converted to zero before rounding.</para>
+  <para unique="1046148">The sign of the result of this instruction is preserved, including the sign of zero.</para>
+  <para unique="1046150">The formula of the operation for VRNDSCALESD is</para>
+  <para unique="1046151" format="ListBulletCONT">ROUND(x) = 2<superscript>-M</superscript>*Round_to_INT(x*2<superscript>M</superscript>, round_ctrl), </para>
+  <para unique="1046152" format="ListBulletCONT">round_ctrl = imm[3:0];</para>
+  <para unique="1046153" format="ListBulletCONT">M=imm[7:4];</para>
+  <para unique="1046154">The operation of x*2<superscript>M</superscript> is computed as if the exponent range is unlimited (i.e., no overflow ever occurs).</para>
+  <para unique="1046155">VRNDSCALESD is a more general form of the VEX-encoded VROUNDSD instruction. In VROUNDSD, the formula of the operation is</para>
+  <para unique="1046156" format="ListBulletCONT">ROUND(x) = Round_to_INT(x, round_ctrl), </para>
+  <para unique="1046157" format="ListBulletCONT">round_ctrl = imm[3:0];</para>
+  <para unique="1046159">EVEX encoded version: The source operand is a XMM register or a 64-bit memory location. The destination operand is a XMM register.</para>
+  <para unique="1046162">Handling of special case of input values are listed in <link unique="1046161" linkend="&lt;c&gt;VRNDSCALEPD-Round-Packed-Float64-Values-to-Include-a-Given-Number-of-Fraction-Bits.fm#54735: 06_Table: Table 5-25. VRNDSCALEPD/SD/PS/SS Special Cases" xrefstyle="TableNum">Table 5&#8209;29</link>.</para>
   </longdesc>
+ <operation>
+  <programlisting>RoundToIntegerDP(SRC[63:0], imm8[7:0]) {
+	if (imm8[2] = 1)
+		rounding_direction := MXCSR:RC								; get round control from MXCSR
+	else
+		rounding_direction := imm8[1:0]								; get round control from imm8[1:0]
+	FI
+	M := imm8[7:4]					; get the scaling factor
+	case (rounding_direction)
+	00: TMP[63:0] := round_to_nearest_even_integer(2M*SRC[63:0])
+	01: TMP[63:0] := round_to_equal_or_smaller_integer(2M*SRC[63:0])
+	10: TMP[63:0] := round_to_equal_or_larger_integer(2M*SRC[63:0])
+	11: TMP[63:0] := round_to_nearest_smallest_magnitude_integer(2M*SRC[63:0])
+	ESAC
+	Dest[63:0] := 2-M* TMP[63:0] 								; scale down back to 2-M
+	if (imm8[3] = 0) Then					; check SPE
+		if (SRC[63:0] != Dest[63:0]) Then								; check precision lost
+			set_precision()						; set #PE
+		FI;
+	FI;
+	return(Dest[63:0])
+}</programlisting>
+  <section level="7">
+   <title unique="1046191">VRNDSCALESD (EVEX encoded version)</title>
+   <programlisting>IF k1[0] or *no writemask*
+	THEN		DEST[63:0] := RoundToIntegerDP(SRC2[63:0], Zero_upper_imm[7:0])
+	ELSE
+		IF *merging-masking*								; merging-masking
+			THEN *DEST[63:0] remains unchanged*
+			ELSE 							; zeroing-masking
+				THEN DEST[63:0] := 0
+		FI;
+FI;
+DEST[127:64] := SRC1[127:64]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VRNDSCALESD __m128d _mm_roundscale_sd ( __m128d a, __m128d b, int imm);</string><string>
-</string><string>VRNDSCALESD __m128d _mm_roundscale_round_sd ( __m128d a, __m128d b, int imm, int sae);</string><string>
-</string><string>VRNDSCALESD __m128d _mm_mask_roundscale_sd (__m128d s, __mmask8 k, __m128d a, __m128d b, int imm);</string><string>
-</string><string>VRNDSCALESD __m128d _mm_mask_roundscale_round_sd (__m128d s, __mmask8 k, __m128d a, __m128d b, int imm, int sae);</string><string>
-</string><string>VRNDSCALESD __m128d _mm_maskz_roundscale_sd ( __mmask8 k, __m128d a, __m128d b, int imm);</string><string>
-</string><string>VRNDSCALESD __m128d _mm_maskz_roundscale_round_sd ( __mmask8 k, __m128d a, __m128d b, int imm, int sae);</string><string>
-</string></programlisting>
+  <programlisting>VRNDSCALESD __m128d _mm_roundscale_sd ( __m128d a, __m128d b, int imm);
+VRNDSCALESD __m128d _mm_roundscale_round_sd ( __m128d a, __m128d b, int imm, int sae);
+VRNDSCALESD __m128d _mm_mask_roundscale_sd (__m128d s, __mmask8 k, __m128d a, __m128d b, int imm);
+VRNDSCALESD __m128d _mm_mask_roundscale_round_sd (__m128d s, __mmask8 k, __m128d a, __m128d b, int imm, int sae);
+VRNDSCALESD __m128d _mm_maskz_roundscale_sd ( __mmask8 k, __m128d a, __m128d b, int imm);
+VRNDSCALESD __m128d _mm_maskz_roundscale_round_sd ( __mmask8 k, __m128d a, __m128d b, int imm, int sae);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046211">
-   <string>Invalid, Precision.</string></para>
-  <para unique="1046212">
-   <string>If SPE is enabled, precision exception is not reported (regardless of MXCSR exception mask).</string></para>
+  <para unique="1046211">Invalid, Precision.</para>
+  <para unique="1046212">If SPE is enabled, precision exception is not reported (regardless of MXCSR exception mask).</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046217" format="xIndent1">
-   <string>See </string><link linkend="63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions"><string>Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046217" format="xIndent1">See <link unique="1046215" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

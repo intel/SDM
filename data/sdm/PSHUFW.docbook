@@ -1,27 +1,98 @@
 <instruction name="PSHUFW">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Shuffle Packed Words</shortdesc>
- <longdesc><para unique="1091441">
-   <string>Copies words from the source operand (second operand) and inserts them in the destination operand (first operand) at word locations selected with the order operand (third operand). This operation is similar to the opera&#173;tion used by the PSHUFD instruction, which is illustrated in </string><link linkend="39699: 05_FigureFrame: Figure 4-16. 256-bit VPSHUFD Instruction Operation"><string>Figure&#160;4&#8209;16</string></link><string>. For the PSHUFW instruction, each 2-bit field in the order operand selects the contents of one word location in the destination operand. The encodings of the order operand fields select words from the source operand to be copied to the destination operand.</string></para>
-  <para unique="1091445">
-   <string>The source operand can be an MMX technology register or a 64-bit memory location. The destination operand is an MMX technology register. The order operand is an 8-bit immediate. Note that this instruction permits a word in the source operand to be copied to more than one word location in the destination operand.</string></para>
-  <para unique="1091446">
-   <string>In 64-bit mode, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).</string></para>
+ <encoding_table><table unique="1091390">
+   <thead><tr>
+     <th colspan="2"><para unique="1091392">Opcode/</para>
+      <para unique="1091393">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op/ En</para>
+      </th>
+     <th><para unique="1091399">64-Bit Mode</para>
+      </th>
+     <th><para unique="1091401">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><col width="97.90848pt"/>
+   <col width="111.06576000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="182.90448pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1091405">NP 0F 70 /r ib</para>
+      <para unique="1091406">PSHUFW mm1, mm2/m64, imm8</para>
+      </td>
+     <td><para unique="1091410">RMI</para>
+      </td>
+     <td><para unique="1091412">Valid </para>
+      </td>
+     <td><para unique="1091414">Valid</para>
+      </td>
+     <td><para unique="1091416">Shuffle the words in mm2/m64 based on the encoding in imm8 and store the result in mm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091418">
+   <col width="44.215199999999996pt"/>
+   <col width="115.0704pt"/>
+   <col width="119.6316pt"/>
+   <col width="112.81392pt"/>
+   <col width="118.73808pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091420">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091422">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091424">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091426">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091428">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091430">RMI</para>
+      </td>
+     <td valign="middle"><para unique="1091432">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091434">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091436">imm8</para>
+      </td>
+     <td valign="middle"><para unique="1091438">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091439">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091441">Copies words from the source operand (second operand) and inserts them in the destination operand (first operand) at word locations selected with the order operand (third operand). This operation is similar to the opera&#173;tion used by the PSHUFD instruction, which is illustrated in <link unique="1091443" linkend="&lt;c&gt;PSHUFD-Shuffle-Packed-Doublewords.fm#39699: 05_FigureFrame: Figure 4-16. 256-bit VPSHUFD Instruction Operation" xrefstyle="FigureNum">Figure&#160;4&#8209;16</link>. For the PSHUFW instruction, each 2-bit field in the order operand selects the contents of one word location in the destination operand. The encodings of the order operand fields select words from the source operand to be copied to the destination operand.</para>
+  <para unique="1091445">The source operand can be an MMX technology register or a 64-bit memory location. The destination operand is an MMX technology register. The order operand is an 8-bit immediate. Note that this instruction permits a word in the source operand to be copied to more than one word location in the destination operand.</para>
+  <para unique="1091446">In 64-bit mode, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).</para>
   </longdesc>
+ <operation>
+  <programlisting>DEST[15:0] := (SRC &gt;&gt; (ORDER[1:0] * 16))[15:0];
+DEST[31:16] := (SRC &gt;&gt; (ORDER[3:2] * 16))[15:0];
+DEST[47:32] := (SRC &gt;&gt; (ORDER[5:4] * 16))[15:0];
+DEST[63:48] := (SRC &gt;&gt; (ORDER[7:6] * 16))[15:0];</programlisting>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>PSHUFW __m64 _mm_shuffle_pi16(__m64 a, int n)</string><string>
-</string></programlisting>
+  <programlisting>PSHUFW __m64 _mm_shuffle_pi16(__m64 a, int n)</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1091455">
-   <string>None.</string></para>
+  <para unique="1091455">None.</para>
   </subsection>
  <subsection title="Numeric Exceptions">
-  <para unique="1091457">
-   <string>None.</string></para>
+  <para unique="1091457">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091462" format="xIndent1">
-   <string>See </string><link linkend="65163: 03_Level: 19.25.3 Exception Conditions of Legacy SIMD Instruction Operating"><string>Section 25.25.3, &#8220;Exception Conditions of Legacy SIMD Instructions Operating on MMX Registers&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B.</string></para>
+  <para unique="1091462" format="xIndent1">See <link unique="1092418" linkend="&lt;c&gt;__sdm_vol3B_ch25.fm#65163: 03_Level: 19.25.3 Exception Conditions of Legacy SIMD Instruction Operating" xrefstyle="SectionNum&amp;Title">Section 25.25.3, &#8220;Exception Conditions of Legacy SIMD Instructions Operating on MMX Registers&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B.</para>
   </subsection>
  </instruction>

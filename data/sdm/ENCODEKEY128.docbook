@@ -1,43 +1,149 @@
 <instruction name="ENCODEKEY128">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Encode 128-Bit Key With Key Locker</shortdesc>
- <longdesc><para unique="1261255">
-   <string>The ENCODEKEY128</string><footnote><para unique="1261252">
-     <string>Further details on Key Locker and usage of this instruction can be found here:</string></para>
-    <para unique="1261254">
-     <string>	</string><anchor id="message URL https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html"/><underline><string>https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html</string></underline><string>.</string></para>
-    </footnote><string> instruction wraps a 128-bit AES key from the implicit operand XMM0 into a key handle that is then stored in the implicit destination operands XMM0-2.</string></para>
-  <para unique="1261256">
-   <string>The explicit source operand specifies handle restrictions, if any.</string></para>
-  <para unique="1261257">
-   <string>The explicit destination operand is populated with information on the source of the key and its attributes. XMM4 through XMM6 are reserved for future usages and software should not rely upon them being zeroed.</string></para>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th colspan="2"><para unique="1261193">Opcode/</para>
+      <para unique="1261194">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64/32-bit Mode</para>
+      </th>
+     <th><para unique="1261202">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><col width="84.96864000000001pt"/>
+   <col width="96.38712000000001pt"/>
+   <col width="24.69672pt"/>
+   <col width="47.85984pt"/>
+   <col width="48.39192pt"/>
+   <col width="208.76904000000002pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1261206">F3 0F 38 FA 11:rrr:bbb </para>
+      <para unique="1261207">ENCODEKEY128 r32, r32, &lt;XMM0-2&gt;, &lt;XMM4-6&gt;</para>
+      </td>
+     <td><para unique="1261211">A</para>
+      </td>
+     <td><para unique="1261213">V/V</para>
+      </td>
+     <td><para unique="1261215">AESKLE</para>
+      </td>
+     <td><para unique="1261217">Wrap a 128-bit AES key from XMM0 into a key handle and output handle in XMM0&#8212;2.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261219">
+   <col width="33.4548pt"/>
+   <col width="38.23056pt"/>
+   <col width="78.68664pt"/>
+   <col width="84.74832pt"/>
+   <col width="92.54304pt"/>
+   <col width="91.43784000000001pt"/>
+   <col width="91.43784000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261221">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261223">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1261225">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261227">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261229">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261231">Operands 4&#8212;5</para>
+      </th>
+     <th valign="middle"><para unique="1261233">Operands 6&#8212;7</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261235">A</para>
+      </td>
+     <td valign="middle"><para unique="1261237">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261239">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261241">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261243">Implicit XMM0 (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1261245">Implicit XMM1&#8212;2 (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261247">Implicit XMM4&#8212;6 (w)</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261248">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261255">The ENCODEKEY128<footnote><para unique="1261252">Further details on Key Locker and usage of this instruction can be found here:</para>
+    <para unique="1261254">	<anchor id="message URL https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html"/><underline>https://software.intel.com/content/www/us/en/develop/download/intel-key-locker-specification.html</underline>.</para>
+    </footnote> instruction wraps a 128-bit AES key from the implicit operand XMM0 into a key handle that is then stored in the implicit destination operands XMM0-2.</para>
+  <para unique="1261256">The explicit source operand specifies handle restrictions, if any.</para>
+  <para unique="1261257">The explicit destination operand is populated with information on the source of the key and its attributes. XMM4 through XMM6 are reserved for future usages and software should not rely upon them being zeroed.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1261259">ENCODEKEY128 </title>
+   <programlisting>#GP (0) if a reserved bitSRC[31:3] are currently reserved for future usages. SRC[2], which indicates a no-decrypt restriction, is reserved if CPUID.19H:EAX[2] is 0. SRC[1], which indicates a no-encrypt restriction, is reserved if CPUID.19H:EAX[1] is 0. SRC[0], which indicates a CPL0-only restriction, is reserved if CPUID.19H:EAX[0] is 0. in SRC[31:0] is set
+InputKey[127:0] := XMM0;
+KeyMetadata[2:0] = SRC[2:0];
+KeyMetadata[23:3] = 0; 							// Reserved for future usage
+KeyMetadata[27:24] = 0; 							// KeyType is AES-128 (value of 0)
+KeyMetadata[127:28] = 0; 							// Reserved for future usage
+// KeyMetadata is the AAD input and InputKey is the Plaintext input for WrapKey128
+Handle[383:0] := WrapKey128(InputKey[127:0], KeyMetadata[127:0], IWKey.Integrity Key[127:0], IWKey.Encryption Key[255:0]);
+DEST[0] := IWKey.NoBackup;
+DEST[4:1] := IWKey.KeySource[3:0];
+DEST[31:5] = 0;
+XMM0 := Handle[127:0]; 						 // AAD
+XMM1 := Handle[255:128]; // Integrity Tag
+XMM2 := Handle[383:256]; // CipherText
+XMM4 := 0; 			// Reserved for future usage
+XMM5 := 0; 			// Reserved for future usage
+XMM6 := 0; 			// Reserved for future usage
+RFLAGS.OF, SF, ZF, AF, PF, CF := 0;</programlisting>
+   </section>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261284">
-   <string>All arithmetic flags (OF, SF, ZF, AF, PF, CF) are cleared to 0. Although they are cleared for the currently defined oper&#173;ations, future extensions may report information in the flags.</string></para>
+  <para unique="1261284">All arithmetic flags (OF, SF, ZF, AF, PF, CF) are cleared to 0. Although they are cleared for the currently defined oper&#173;ations, future extensions may report information in the flags.</para>
   </subsection>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>ENCODEKEY128						unsigned int _mm_encodekey128_u32(unsigned int htype, __m128i key, void* h);</string><string>
-</string></programlisting>
+  <programlisting>ENCODEKEY128						unsigned int _mm_encodekey128_u32(unsigned int htype, __m128i key, void* h);</programlisting>
   </subsection>
  <subsection title="Exceptions (All Operating Modes)">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP </string></term>
-    <listitem><string>If reserved bit is set in source register value.</string></listitem>
+    <term>#GP </term>
+    <listitem><para unique="1261288">If reserved bit is set in source register value.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If CPUID.07H.00H:ECX.KEY_LOCKER[23] = 0.</string></listitem>
-    <listitem><string>If CR4.KL = 0.</string></listitem>
-    <listitem><string>If CPUID.19H:EBX.AESKLE[0] = 0.</string></listitem>
-    <listitem><string>If CR0.EM = 1.</string></listitem>
-    <listitem><string>If CR4.OSFXSR = 0.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261289">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1261290">If CPUID.07H.00H:ECX.KEY_LOCKER[23] = 0.</para>
+     </listitem>
+    <listitem><para unique="1261291">If CR4.KL = 0.</para>
+     </listitem>
+    <listitem><para unique="1261292">If CPUID.19H:EBX.AESKLE[0] = 0.</para>
+     </listitem>
+    <listitem><para unique="1261293">If CR0.EM = 1.</para>
+     </listitem>
+    <listitem><para unique="1261294">If CR4.OSFXSR = 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#NM </string></term>
-    <listitem><string>If CR0.TS = 1.</string></listitem>
+    <term>#NM </term>
+    <listitem><para unique="1261295">If CR0.TS = 1.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

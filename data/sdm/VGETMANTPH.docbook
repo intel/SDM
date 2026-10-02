@@ -1,223 +1,319 @@
 <instruction name="VGETMANTPH">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Extract FP16 Vector of Normalized Mantissas from FP16 Vector</shortdesc>
- <longdesc><para unique="1045959">
-   <string>This instruction converts the FP16 values in the source operand (the second operand) to FP16 values with the mantissa normalization and sign control specified by the imm8 byte, see </string><link linkend="70949: 06_Table: Table 2-2. imm8 Controls for VGETMANTPH"><string>Table 5&#8209;17</string></link><string>. The converted results are written to the destination operand (the first operand) using writemask k1. The normalized mantissa is specified by interv (imm8[1:0]) and the sign control (SC) is specified by bits 3:2 of the immediate byte.</string></para>
-  <para unique="1045963">
-   <string>The destination elements are updated according to the writemask.</string></para>
-  <table>
-   <caption>Table 5-17.  imm8 Controls for VGETMANTPH/VGETMANTSH</caption>
-   <colgroup><col align="leftright"/>
-    <col align="left"/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    </colgroup>
-   <tbody>
-    <tr>
-     <th><para unique="1045971" format="CellRowHeadL">
-       <string>imm8 Bits</string></para>
+ <encoding_table><table unique="1045885">
+   <col width="153.5976pt"/>
+   <col width="30.52512pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="197.5248pt"/>
+   <thead><tr>
+     <th><para unique="1045887">Opcode/</para>
+      <para unique="1045888">Instruction</para>
       </th>
-     <th><para unique="1045973" format="CellRowHeadL">
-       <string>Definition</string></para>
+     <th><para unique="1045890">Op/</para>
+      <para unique="1045891">En</para>
+      </th>
+     <th><para unique="1045893">64/32 Bit Mode Support</para>
+      </th>
+     <th><para unique="1045895">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1045897">Description</para>
       </th>
      </tr>
+    </thead><tbody>
     <tr>
-     <td><para unique="1045975" format="CellBodyL">
-       <string>imm8[7:4]</string></para>
+     <td><para unique="1046534">EVEX.128.NP.0F3A.W0 26 /r /ib</para>
+      <para unique="1046535">VGETMANTPH xmm1{k1}{z}, xmm2/m128/m16bcst, imm8</para>
       </td>
-     <td><para unique="1045977" format="CellBodyL">
-       <string>Must be zero.</string></para>
+     <td><para unique="1046537">A</para>
+      </td>
+     <td><para unique="1046539">V/V</para>
+      </td>
+     <td><para unique="1046541">(AVX512_FP16 AND AVX512VL) OR AVX10.1<anchor id="+795553"/></para>
+      </td>
+     <td><para unique="1046546">Get normalized mantissa from FP16 vector xmm2/m128/m16bcst and store the result in xmm1, using imm8 for sign control and mantissa interval normalization, subject to writemask k1.</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1045979" format="CellBodyL">
-       <string>imm8[3:2]</string></para>
+     <td><para unique="1046523">EVEX.256.NP.0F3A.W0 26 /r /ib</para>
+      <para unique="1046524">VGETMANTPH ymm1{k1}{z}, ymm2/m256/m16bcst, imm8</para>
       </td>
-     <td><para unique="1045981" format="CellBodyL">
-       <string>Sign Control (SC)</string></para>
-      <para unique="1045982" format="CellBodyL">
-       <string>0b00: Sign(SRC) </string></para>
-      <para unique="1045983" format="CellBodyL">
-       <string>0b01: 0</string></para>
-      <para unique="1045984" format="CellBodyL">
-       <string>0b1x: QNaN_Indefinite if sign(SRC)!=0</string></para>
+     <td><para unique="1046526">A</para>
+      </td>
+     <td><para unique="1046528">V/V</para>
+      </td>
+     <td><para unique="1046530">(AVX512_FP16 AND AVX512VL) OR AVX10.1<anchor id="+807922"/></para>
+      </td>
+     <td><para unique="1046532">Get normalized mantissa from FP16 vector ymm2/m256/m16bcst and store the result in ymm1, using imm8 for sign control and mantissa interval normalization, subject to writemask k1.</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1045986" format="CellBodyL">
-       <string>imm8[1:0]</string></para>
+     <td><para unique="1046511">EVEX.512.NP.0F3A.W0 26 /r /ib</para>
+      <para unique="1046512">VGETMANTPH zmm1{k1}{z}, zmm2/m512/m16bcst {sae}, imm8</para>
       </td>
-     <td><para unique="1045988" format="CellBodyL">
-       <string>Interv</string></para>
-      <para unique="1045989" format="CellBodyL">
-       <string>0b00: Interval is [1, 2) </string></para>
-      <para unique="1045990" format="CellBodyL">
-       <string>0b01: Interval is [1/2, 2) </string></para>
-      <para unique="1045991" format="CellBodyL">
-       <string>0b10: Interval is [1/2, 1)</string></para>
-      <para unique="1045992" format="CellBodyL">
-       <string>0b11: Interval is [3/4, 3/2)</string></para>
+     <td><para unique="1046514">A</para>
+      </td>
+     <td><para unique="1046516">V/V</para>
+      </td>
+     <td><para unique="1046518">AVX512_FP16</para>
+      <para unique="1046519">OR AVX10.1<anchor id="+218611"/></para>
+      </td>
+     <td><para unique="1046521">Get normalized mantissa from FP16 vector zmm2/m512/m16bcst and store the result in zmm1, using imm8 for sign control and mantissa interval normalization, subject to writemask k1.</para>
       </td>
      </tr>
     </tbody>
    </table>
-  <para unique="1045995">
-   <string>For each input FP16 value x, The conversion operation is:</string></para>
-  <para unique="1045996">
-   <string>	GetMant(x) = &#177;2</string><superscript><string>k</string></superscript><string>|x.significand|</string></para>
-  <para unique="1045997">
-   <string>where:</string></para>
-  <para unique="1045998">
-   <string>	1 </string><string>&#8804; |x.significand| &lt; 2</string></para>
-  <para unique="1046000">
-   <string>Unbiased exponent k depends on the interval range defined by interv and whether the exponent of the source is even or odd. The sign of the final result is determined by the sign control and the source sign and the leading frac&#173;tion bit.</string></para>
-  <para unique="1046003">
-   <string>The encoded value of imm8[1:0] and sign control are shown in </string><link linkend="70949: 06_Table: Table 2-2. imm8 Controls for VGETMANTPH"><string>Table 5&#8209;17</string></link><string>.</string></para>
-  <para unique="1046005">
-   <string>Each converted FP16 result is encoded according to the sign control, the unbiased exponent k (adding bias) and a mantissa normalized to the range specified by interv.</string></para>
-  <para unique="1046008">
-   <string>The GetMant() function follows </string><link linkend="41597: 06_Table: Table 5-10. GetMant() Special Float Values Behavior"><string>Table 5&#8209;18</string></link><string> when dealing with floating-point special numbers.</string></para>
-  <table>
-   <caption>Table 5-18.  GetMant() Special Float Values Behavior</caption>
-   <colgroup><col align="leftright"/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    <col/>
-    </colgroup>
+  </encoding_table>
+ <operand_table><table unique="1045932">
+   <col width="43.01352pt"/>
+   <col width="61.01352pt"/>
+   <col width="95.65272pt"/>
+   <col width="104.62608pt"/>
+   <col width="103.85784pt"/>
+   <col width="102.5676pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1045934">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1045936">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1045938">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1045940">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1045942">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1045944">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1045946">A</para>
+      </td>
+     <td valign="middle"><para unique="1045948">Full</para>
+      </td>
+     <td valign="middle"><para unique="1045950">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1045952">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045954">imm8 (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045956">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1045957">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1045959">This instruction converts the FP16 values in the source operand (the second operand) to FP16 values with the mantissa normalization and sign control specified by the imm8 byte, see <link unique="1045961" linkend="#70949: 06_Table: Table 2-2. imm8 Controls for VGETMANTPH" xrefstyle="TableNum">Table 5&#8209;17</link>. The converted results are written to the destination operand (the first operand) using writemask k1. The normalized mantissa is specified by interv (imm8[1:0]) and the sign control (SC) is specified by bits 3:2 of the immediate byte.</para>
+  <para unique="1045963">The destination elements are updated according to the writemask.</para>
+  <table id="70949: 06_Table: Table 2-2. imm8 Controls for VGETMANTPH" unique="1045964">
+   <caption><anchor id="70949: 06_Table: Table 2-2. imm8 Controls for VGETMANTPH"/>imm8 Controls for VGETMANTPH/VGETMANTSH</caption>
+   <col width="141.87888pt"/>
+   <col width="368.77464000000003pt"/>
    <tbody>
     <tr>
-     <th><para unique="1046019" format="CellRowHeadL">
-       <string>Input</string></para>
+     <th><para unique="1045971">imm8 Bits</para>
       </th>
-     <th><para unique="1046021" format="CellRowHeadL">
-       <string>Result</string></para>
-      </th>
-     <th><para unique="1046023" format="CellRowHeadL">
-       <string>Exceptions / Comments</string></para>
+     <th><para unique="1045973">Definition</para>
       </th>
      </tr>
     <tr>
-     <td><para unique="1046025" format="CellBodyL">
-       <string>NaN</string></para>
+     <td><para unique="1045975">imm8[7:4]</para>
       </td>
-     <td><para unique="1046027" format="CellBodyL">
-       <string>QNaN(SRC)</string></para>
-      </td>
-     <td><para unique="1046029" format="CellBodyL">
-       <string>Ignore </string><italic><string>interv.</string></italic></para>
-      <para unique="1046030" format="CellBodyL">
-       <string>If (SRC = SNaN), then #IE.</string></para>
+     <td><para unique="1045977">Must be zero.</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046032" format="CellBodyL">
-       <string>+</string><string>&#8734;</string></para>
+     <td><para unique="1045979">imm8[3:2]</para>
       </td>
-     <td><para unique="1046034" format="CellBodyL">
-       <string>1.0</string></para>
-      </td>
-     <td><para unique="1046036" format="CellBodyL">
-       <string>Ignore </string><italic><string>interv.</string></italic></para>
+     <td><para unique="1045981">Sign Control (SC)</para>
+      <para unique="1045982">0b00: Sign(SRC) </para>
+      <para unique="1045983">0b01: 0</para>
+      <para unique="1045984">0b1x: QNaN_Indefinite if sign(SRC)!=0</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046038" format="CellBodyL">
-       <string>+0</string></para>
+     <td><para unique="1045986">imm8[1:0]</para>
       </td>
-     <td><para unique="1046040" format="CellBodyL">
-       <string>1.0 </string></para>
+     <td><para unique="1045988">Interv</para>
+      <para unique="1045989">0b00: Interval is [1, 2) </para>
+      <para unique="1045990">0b01: Interval is [1/2, 2) </para>
+      <para unique="1045991">0b10: Interval is [1/2, 1)</para>
+      <para unique="1045992">0b11: Interval is [3/4, 3/2)</para>
       </td>
-     <td><para unique="1046042" format="CellBodyL">
-       <string>Ignore </string><italic><string>interv.</string></italic></para>
+     </tr>
+    </tbody>
+   </table>
+  <para unique="1045995">For each input FP16 value x, The conversion operation is:</para>
+  <para unique="1045996">	GetMant(x) = &#177;2<superscript>k</superscript>|x.significand|</para>
+  <para unique="1045997">where:</para>
+  <para unique="1045998">	1 &#8804; |x.significand| &lt; 2</para>
+  <para unique="1046000">Unbiased exponent k depends on the interval range defined by interv and whether the exponent of the source is even or odd. The sign of the final result is determined by the sign control and the source sign and the leading frac&#173;tion bit.</para>
+  <para unique="1046003">The encoded value of imm8[1:0] and sign control are shown in <link unique="1046002" linkend="#70949: 06_Table: Table 2-2. imm8 Controls for VGETMANTPH" xrefstyle="TableNum">Table 5&#8209;17</link>.</para>
+  <para unique="1046005">Each converted FP16 result is encoded according to the sign control, the unbiased exponent k (adding bias) and a mantissa normalized to the range specified by interv.</para>
+  <para unique="1046008">The GetMant() function follows <link unique="1046007" linkend="#41597: 06_Table: Table 5-10. GetMant() Special Float Values Behavior" xrefstyle="TableNum">Table 5&#8209;18</link> when dealing with floating-point special numbers.</para>
+  <table id="41597: 06_Table: Table 5-10. GetMant() Special Float Values Behavior" unique="1046010">
+   <caption><anchor id="41597: 06_Table: Table 5-10. GetMant() Special Float Values Behavior"/>GetMant() Special Float Values Behavior</caption>
+   <col width="61.58088pt"/>
+   <col width="271.28448000000003pt"/>
+   <col width="174.73247999999998pt"/>
+   <tbody>
+    <tr>
+     <th><para unique="1046019">Input</para>
+      </th>
+     <th><para unique="1046021">Result</para>
+      </th>
+     <th><para unique="1046023">Exceptions / Comments</para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1046025">NaN</para>
+      </td>
+     <td><para unique="1046027">QNaN(SRC)</para>
+      </td>
+     <td><para unique="1046029">Ignore <italic>interv.</italic></para>
+      <para unique="1046030">If (SRC = SNaN), then #IE.</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046044" format="CellBodyL">
-       <string>-0</string></para>
+     <td><para unique="1046032">+&#8734;</para>
       </td>
-     <td><para unique="1046046" format="CellBodyL">
-       <string>IF (SC[0]) THEN +1.0</string></para>
-      <para unique="1046047" format="CellBodyL">
-       <string>                  ELSE -1.0</string></para>
+     <td><para unique="1046034">1.0</para>
       </td>
-     <td><para unique="1046049" format="CellBodyL">
-       <string>Ignore </string><italic><string>interv.</string></italic></para>
+     <td><para unique="1046036">Ignore <italic>interv.</italic></para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046051" format="CellBodyL">
-       <string>-</string><string>&#8734;</string></para>
+     <td><para unique="1046038">+0</para>
       </td>
-     <td><para unique="1046053" format="CellBodyL">
-       <string>IF (SC[1]) THEN {QNaN_Indefinite} </string></para>
-      <para unique="1046054" format="CellBodyL">
-       <string>ELSE {</string></para>
-      <para unique="1046055" format="CellBodyL">
-       <string>   IF (SC[0]) THEN +1.0</string></para>
-      <para unique="1046056" format="CellBodyL">
-       <string>                     ELSE -1.0</string></para>
+     <td><para unique="1046040">1.0 </para>
       </td>
-     <td><para unique="1046058" format="CellBodyL">
-       <string>Ignore </string><italic><string>interv.</string></italic></para>
-      <para unique="1046059" format="CellBodyL">
-       <string>If (SC[1]), then #IE.</string></para>
+     <td><para unique="1046042">Ignore <italic>interv.</italic></para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046061" format="CellBodyL">
-       <string>negative</string></para>
+     <td><para unique="1046044">-0</para>
       </td>
-     <td><para unique="1046066" format="CellBodyL">
-       <string>SC[1] ? QNaN_Indefinite : Getmant(SRC)</string><footnote><para unique="1046065" format="TableFootnote">
-         <string>In case SC[1]==0, the sign of Getmant(SRC) is declared according to SC[0].</string></para>
+     <td><para unique="1046046">IF (SC[0]) THEN +1.0</para>
+      <para unique="1046047">                  ELSE -1.0</para>
+      </td>
+     <td><para unique="1046049">Ignore <italic>interv.</italic></para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046051">-&#8734;</para>
+      </td>
+     <td><para unique="1046053">IF (SC[1]) THEN {QNaN_Indefinite} </para>
+      <para unique="1046054">ELSE {</para>
+      <para unique="1046055">   IF (SC[0]) THEN +1.0</para>
+      <para unique="1046056">                     ELSE -1.0</para>
+      </td>
+     <td><para unique="1046058">Ignore <italic>interv.</italic></para>
+      <para unique="1046059">If (SC[1]), then #IE.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046061">negative</para>
+      </td>
+     <td><para unique="1046066">SC[1] ? QNaN_Indefinite : Getmant(SRC)<footnote><para unique="1046065" format="TableFootnote">In case SC[1]==0, the sign of Getmant(SRC) is declared according to SC[0].</para>
         </footnote></para>
       </td>
-     <td><para unique="1046068" format="CellBodyL">
-       <string>If (SC[1]), then #IE.</string></para>
+     <td><para unique="1046068">If (SC[1]), then #IE.</para>
       </td>
      </tr>
     </tbody>
    </table>
   </longdesc>
+ <operation>
+  <programlisting>def getmant_fp16(src, sign_control, normalization_interval):
+	bias := 15
+	dst.sign := sign_control[0] ? 0 : src.sign
+	signed_one := sign_control[0] ? +1.0 : -1.0
+	dst.exp := src.exp
+	dst.fraction := src.fraction
+	zero := (dst.exp = 0) and (dst.fraction = 0)
+	denormal := (dst.exp = 0) and (dst.fraction != 0)
+	infinity := (dst.exp = 0x1F) and (dst.fraction = 0)
+	nan := (dst.exp = 0x1F) and (dst.fraction != 0)
+	src_signaling := src.fraction[9]
+	snan := nan and (src_signaling = 0)
+	positive := (src.sign = 0)
+	negative := (src.sign = 1)
+	if nan:
+		if snan:
+			MXCSR.IE := 1
+		return qnan(src)
+	if positive and (zero or infinity):
+		return 1.0
+	if negative:
+		if zero:
+			return signed_one
+		if infinity:
+			if sign_control[1]:
+				MXCSR.IE := 1
+				return QNaN_Indefinite
+			return signed_one
+		if sign_control[1]:
+			MXCSR.IE := 1
+			return QNaN_Indefinite
+	if denormal:
+		jbit := 0
+		dst.exp := bias 					// set exponent to bias value
+		while jbit = 0:
+			jbit := dst.fraction[9]
+			dst.fraction := dst.fraction &lt;&lt; 1
+			dst.exp : = dst.exp - 1
+		MXCSR.DE := 1
+	unbaiased_exp := dst.exp - bias
+	odd_exp := unbaiased_exp[0]
+	signaling_bit := dst.fraction[9]
+	if normalization_interval = 0b00:
+		dst.exp := bias
+	else if normalization_interval = 0b01:
+		dst.exp := odd_exp ? bias-1 : bias
+	else if normalization_interval = 0b10:
+		dst.exp := bias-1
+	else if normalization_interval = 0b11:
+		dst.exp := signaling_bit ? bias-1 : bias
+	return dst</programlisting>
+  <section level="7">
+   <title unique="1046125">VGETMANTPH dest{k1}, src, imm8 </title>
+   <programlisting>VL = 128, 256 or 512
+KL := VL/16
+sign_control := imm8[3:2]
+normalization_interval := imm8[1:0]
+FOR i := 0 to KL-1:
+	IF k1[i] or *no writemask*:
+		IF SRC is memory and (EVEX.b = 1):
+			tsrc := src.fp16[0]
+		ELSE:
+			tsrc := src.fp16[i]
+		DEST.fp16[i] := getmant_fp16(tsrc, sign_control, normalization_interval)
+	ELSE IF *zeroing*:
+		DEST.fp16[i] := 0
+	//else DEST.fp16[i] remains unchanged
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <para unique="1046145">
-   <string>VGETMANTPH __m128h _mm_getmant_ph (__m128h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</string></para>
-  <para unique="1046146">
-   <string>VGETMANTPH __m128h _mm_mask_getmant_ph (__m128h src, __mmask8 k, __m128h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</string></para>
-  <para unique="1046147">
-   <string>VGETMANTPH __m128h _mm_maskz_getmant_ph (__mmask8 k, __m128h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</string></para>
-  <para unique="1046148">
-   <string>VGETMANTPH __m256h _mm256_getmant_ph (__m256h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</string></para>
-  <para unique="1046149">
-   <string>VGETMANTPH __m256h _mm256_mask_getmant_ph (__m256h src, __mmask16 k, __m256h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</string></para>
-  <para unique="1046150">
-   <string>VGETMANTPH __m256h _mm256_maskz_getmant_ph (__mmask16 k, __m256h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</string></para>
-  <para unique="1046151">
-   <string>VGETMANTPH __m512h _mm512_getmant_ph (__m512h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</string></para>
-  <para unique="1046152">
-   <string>VGETMANTPH __m512h _mm512_mask_getmant_ph (__m512h src, __mmask32 k, __m512h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</string></para>
-  <para unique="1046153">
-   <string>VGETMANTPH __m512h _mm512_maskz_getmant_ph (__mmask32 k, __m512h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</string></para>
-  <para unique="1046154">
-   <string>VGETMANTPH __m512h _mm512_getmant_round_ph (__m512h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign, const int sae);</string></para>
-  <para unique="1046155">
-   <string>VGETMANTPH __m512h _mm512_mask_getmant_round_ph (__m512h src, __mmask32 k, __m512h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign, const int sae);</string></para>
-  <para unique="1046156">
-   <string>VGETMANTPH __m512h _mm512_maskz_getmant_round_ph (__mmask32 k, __m512h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign, const int sae);</string></para>
+  <para unique="1046145">VGETMANTPH __m128h _mm_getmant_ph (__m128h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</para>
+  <para unique="1046146">VGETMANTPH __m128h _mm_mask_getmant_ph (__m128h src, __mmask8 k, __m128h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</para>
+  <para unique="1046147">VGETMANTPH __m128h _mm_maskz_getmant_ph (__mmask8 k, __m128h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</para>
+  <para unique="1046148">VGETMANTPH __m256h _mm256_getmant_ph (__m256h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</para>
+  <para unique="1046149">VGETMANTPH __m256h _mm256_mask_getmant_ph (__m256h src, __mmask16 k, __m256h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</para>
+  <para unique="1046150">VGETMANTPH __m256h _mm256_maskz_getmant_ph (__mmask16 k, __m256h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</para>
+  <para unique="1046151">VGETMANTPH __m512h _mm512_getmant_ph (__m512h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</para>
+  <para unique="1046152">VGETMANTPH __m512h _mm512_mask_getmant_ph (__m512h src, __mmask32 k, __m512h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</para>
+  <para unique="1046153">VGETMANTPH __m512h _mm512_maskz_getmant_ph (__mmask32 k, __m512h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign);</para>
+  <para unique="1046154">VGETMANTPH __m512h _mm512_getmant_round_ph (__m512h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign, const int sae);</para>
+  <para unique="1046155">VGETMANTPH __m512h _mm512_mask_getmant_round_ph (__m512h src, __mmask32 k, __m512h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign, const int sae);</para>
+  <para unique="1046156">VGETMANTPH __m512h _mm512_maskz_getmant_round_ph (__mmask32 k, __m512h a, _MM_MANTISSA_NORM_ENUM norm, _MM_MANTISSA_SIGN_ENUM sign, const int sae);</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046158">
-   <string>Invalid, Denormal.</string></para>
+  <para unique="1046158">Invalid, Denormal.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046163" format="xIndent1">
-   <string>EVEX-encoded instructions, see </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046163" format="xIndent1">EVEX-encoded instructions, see <link unique="1046161" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

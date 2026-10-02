@@ -1,36 +1,193 @@
 <instruction name="MAXSD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Return Maximum Scalar Double Precision Floating-Point Value</shortdesc>
- <longdesc><para unique="1091501">
-   <string>Compares the low double precision floating-point values in the first source operand and the second source operand, and returns the maximum value to the low quadword of the destination operand. The second source operand can be an XMM register or a 64-bit memory location. The first source and destination operands are XMM registers. When the second source operand is a memory operand, only 64 bits are accessed. </string></para>
-  <para unique="1091502">
-   <string>If the values being compared are both 0.0s (of either sign), the value in the second source operand is returned. If a value in the second source operand is an SNaN, that SNaN is returned unchanged to the destination (that is, a QNaN version of the SNaN is not returned).</string></para>
-  <para unique="1091503">
-   <string>If only one value is a NaN (SNaN or QNaN) for this instruction, the second source operand, either a NaN or a valid floating-point value, is written to the result. If instead of this behavior, it is required that the NaN of either source operand be returned, the action of MAXSD can be emulated using a sequence of instructions, such as, a compar&#173;ison followed by AND, ANDN, and OR. </string></para>
-  <para unique="1091504">
-   <string>128-bit Legacy SSE version: The destination and first source operand are the same. Bits (MAXVL-1:64) of the corresponding destination register remain unchanged.</string></para>
-  <para unique="1091505">
-   <string>VEX.128 and EVEX encoded version: Bits (127:64) of the XMM register destination are copied from corresponding bits in the first source operand. Bits (MAXVL-1:128) of the destination register are zeroed.</string></para>
-  <para unique="1091506">
-   <string>EVEX encoded version: The low quadword element of the destination operand is updated according to the write&#173;mask.</string></para>
-  <para unique="1091507">
-   <string>Software should ensure VMAXSD is encoded with VEX.L=0. Encoding VMAXSD with VEX.L=1 may encounter unpredictable behavior across different processor generations.</string></para>
+ <encoding_table><table unique="1091390">
+   <col width="83.33207999999999pt"/>
+   <col width="83.33207999999999pt"/>
+   <col width="30.294pt"/>
+   <col width="48.74976pt"/>
+   <col width="58.41647999999999pt"/>
+   <col width="206.58383999999998pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091392">Opcode/</para>
+      <para unique="1091393">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op / En</para>
+      </th>
+     <th><para unique="1091399">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091401">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1091405">F2 0F 5F /r</para>
+      <para unique="1091406">MAXSD xmm1, xmm2/m64</para>
+      </td>
+     <td><para unique="1091410">A</para>
+      </td>
+     <td><para unique="1091412">V/V</para>
+      </td>
+     <td><para unique="1091414">SSE2</para>
+      </td>
+     <td><para unique="1091416">Return the maximum scalar double precision floating-point value between xmm2/m64 and xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091418">VEX.LIG.F2.0F.WIG 5F /r</para>
+      <para unique="1091419">VMAXSD xmm1, xmm2, xmm3/m64</para>
+      </td>
+     <td><para unique="1091423">B</para>
+      </td>
+     <td><para unique="1091425">V/V</para>
+      </td>
+     <td><para unique="1091430">AVX</para>
+      </td>
+     <td><para unique="1091432">Return the maximum scalar double precision floating-point value between xmm3/m64 and xmm2.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091878">EVEX.LLIG.F2.0F.W1 5F /r</para>
+      <para unique="1091879">VMAXSD xmm1 {k1}{z}, xmm2, xmm3/m64{sae}</para>
+      </td>
+     <td><para unique="1091883">C</para>
+      </td>
+     <td><para unique="1091885">V/V</para>
+      </td>
+     <td><para unique="1091890">AVX512F</para>
+      <para unique="1091894">OR AVX10.1<anchor id="+964587"/></para>
+      </td>
+     <td><para unique="1091896">Return the maximum scalar double precision floating-point value between xmm3/m64 and xmm2.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091450">
+   <col width="55.185120000000005pt"/>
+   <col width="59.38488pt"/>
+   <col width="92.9556pt"/>
+   <col width="101.0592pt"/>
+   <col width="98.71992pt"/>
+   <col width="104.30064pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091452">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091454">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091456">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091458">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091460">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091462">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091464">A</para>
+      </td>
+     <td valign="middle"><para unique="1091466">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091468">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091470">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091472">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091474">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091476">B</para>
+      </td>
+     <td valign="middle"><para unique="1091478">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091480">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091482">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091484">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091486">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091488">C</para>
+      </td>
+     <td valign="middle"><para unique="1091490">Tuple1 Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1091492">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091494">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091496">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091498">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091499">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091501">Compares the low double precision floating-point values in the first source operand and the second source operand, and returns the maximum value to the low quadword of the destination operand. The second source operand can be an XMM register or a 64-bit memory location. The first source and destination operands are XMM registers. When the second source operand is a memory operand, only 64 bits are accessed. </para>
+  <para unique="1091502">If the values being compared are both 0.0s (of either sign), the value in the second source operand is returned. If a value in the second source operand is an SNaN, that SNaN is returned unchanged to the destination (that is, a QNaN version of the SNaN is not returned).</para>
+  <para unique="1091503">If only one value is a NaN (SNaN or QNaN) for this instruction, the second source operand, either a NaN or a valid floating-point value, is written to the result. If instead of this behavior, it is required that the NaN of either source operand be returned, the action of MAXSD can be emulated using a sequence of instructions, such as, a compar&#173;ison followed by AND, ANDN, and OR. </para>
+  <para unique="1091504">128-bit Legacy SSE version: The destination and first source operand are the same. Bits (MAXVL-1:64) of the corresponding destination register remain unchanged.</para>
+  <para unique="1091505">VEX.128 and EVEX encoded version: Bits (127:64) of the XMM register destination are copied from corresponding bits in the first source operand. Bits (MAXVL-1:128) of the destination register are zeroed.</para>
+  <para unique="1091506">EVEX encoded version: The low quadword element of the destination operand is updated according to the write&#173;mask.</para>
+  <para unique="1091507">Software should ensure VMAXSD is encoded with VEX.L=0. Encoding VMAXSD with VEX.L=1 may encounter unpredictable behavior across different processor generations.</para>
   </longdesc>
+ <operation>
+  <programlisting>MAX(SRC1, SRC2)
+{
+	IF ((SRC1 = 0.0) and (SRC2 = 0.0)) THEN 	DEST := SRC2;
+		ELSE IF (SRC1 = NaN) THEN DEST := SRC2; FI;
+		ELSE IF (SRC2 = NaN) THEN DEST := SRC2; FI;
+		ELSE IF (SRC1 &gt; SRC2) THEN DEST := SRC1;
+		ELSE DEST := SRC2;
+	FI;
+}</programlisting>
+  <section level="7">
+   <title unique="1091519">VMAXSD (EVEX Encoded Version)</title>
+   <programlisting>IF k1[0] or *no writemask*
+	THEN		DEST[63:0] := MAX(SRC1[63:0], SRC2[63:0])
+	ELSE
+		IF *merging-masking*								; merging-masking
+			THEN *DEST[63:0] remains unchanged*
+			ELSE 							; zeroing-masking
+				DEST[63:0] := 0
+		FI;
+FI;
+DEST[127:64] := SRC1[127:64]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091532">VMAXSD (VEX.128 Encoded Version)</title>
+   <programlisting>DEST[63:0] := MAX(SRC1[63:0], SRC2[63:0])
+DEST[127:64] := SRC1[127:64]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091537">MAXSD (128-bit Legacy SSE Version)</title>
+   <programlisting>DEST[63:0] := MAX(DEST[63:0], SRC[63:0])
+DEST[MAXVL-1:64] (Unmodified)</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VMAXSD __m128d _mm_max_round_sd( __m128d a, __m128d b, int);</string><string>
-</string><string>VMAXSD __m128d _mm_mask_max_round_sd(__m128d s, __mmask8 k, __m128d a, __m128d b, int);</string><string>
-</string><string>VMAXSD __m128d _mm_maskz_max_round_sd( __mmask8 k, __m128d a, __m128d b, int);</string><string>
-</string><string>MAXSD __m128d _mm_max_sd(__m128d a, __m128d b)</string><string>
-</string></programlisting>
+  <programlisting>VMAXSD __m128d _mm_max_round_sd( __m128d a, __m128d b, int);
+VMAXSD __m128d _mm_mask_max_round_sd(__m128d s, __mmask8 k, __m128d a, __m128d b, int);
+VMAXSD __m128d _mm_maskz_max_round_sd( __mmask8 k, __m128d a, __m128d b, int);
+MAXSD __m128d _mm_max_sd(__m128d a, __m128d b)</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091546">
-   <string>Invalid (Including QNaN Source Operand), Denormal.</string></para>
+  <para unique="1091546">Invalid (Including QNaN Source Operand), Denormal.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091551" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="35386: 06_Table: Table 2-20. Type 3 Class Exception Conditions"><string>Table&#160;2&#8209;20, &#8220;Type 3 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091555" format="xIndent1">
-   <string>EVEX-encoded instruction, see </string><link linkend="63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions"><string>Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091551" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1091549" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#35386: 06_Table: Table 2-20. Type 3 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;20, &#8220;Type 3 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091555" format="xIndent1">EVEX-encoded instruction, see <link unique="1091553" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

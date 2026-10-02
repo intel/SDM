@@ -1,113 +1,255 @@
 <instruction name="CMPXCHG">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Compare and Exchange</shortdesc>
- <longdesc><para unique="1261309">
-   <string>Compares the value in the AL, AX, EAX, or RAX register with the first operand (destination operand). If the two values are equal, the second operand (source operand) is loaded into the destination operand. Otherwise, the destination operand is loaded into the AL, AX, EAX or RAX register. RAX register is available only in 64-bit mode.</string></para>
-  <para unique="1261311">
-   <string>This instruction can be used with a </string><indexterm><primary>LOCK prefix</primary></indexterm><string>LOCK prefix to allow the instruction to be executed atomically. To simplify the interface to the processor&#8217;s bus, the destination operand receives a write cycle without regard to the result of the comparison. The destination operand is written back if the comparison fails; otherwise, the source operand is written into the destination. (The processor never produces a locked read without also producing a locked write.)</string></para>
-  <para unique="1261312">
-   <string>In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</string></para>
-  <section level="7">
-   <title unique="1261313"><string>IA-32 Architecture Compatibility</string></title>
-   <para unique="1261314">
-    <string>This instruction is not supported on Intel processors earlier than the Intel486 processors.</string></para>
-   </section>
+ <encoding_table><table unique="1261192">
+   <thead><tr>
+     <th><para unique="1261194">Opcode</para>
+      </th>
+     <th><para unique="1261197">Instruction</para>
+      </th>
+     <th><para unique="1261199">Op/ En</para>
+      </th>
+     <th><para unique="1261201">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261203">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261205">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.784pt"/>
+   <col width="112.104pt"/>
+   <col width="24.696pt"/>
+   <col width="47.952000000000005pt"/>
+   <col width="46.656pt"/>
+   <col width="181.152pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261207">0F B0/r</para>
+      </td>
+     <td><para unique="1261208">CMPXCHG r/m8<footnote><para unique="1261801" format="TableFootnote"><anchor id="90318: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce"/>With a REX prefix in 64-bit mode, attempts to access AH, BH, CH, or DH will instead access SPL, DIL, BPL, or SIL, respectively.</para>
+        </footnote>, r8<link unique="1261935" linkend="#90318: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce" xrefstyle="Footnote">1</link></para>
+      <para unique="1261210"/>
+      </td>
+     <td><para unique="1261212">MR</para>
+      </td>
+     <td><para unique="1261214">Valid</para>
+      </td>
+     <td><para unique="1261216">Valid<footnote><para unique="1261783" format="TableFootnote"><anchor id="80650: TableFootnote: 2. See the IA-32 Architecture Compatibility section b"/>See the IA-32 Architecture Compatibility section below. </para>
+        </footnote></para>
+      </td>
+     <td><para unique="1261218">Compare AL with r/m8. If equal, ZF is set and r8 is loaded into r/m8. Else, clear ZF and load r/m8 into AL.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261233">0F B1/r</para>
+      </td>
+     <td><para unique="1261700">CMPXCHG r/m16, r16</para>
+      </td>
+     <td><para unique="1261238">MR</para>
+      </td>
+     <td><para unique="1261240">Valid</para>
+      </td>
+     <td><para unique="1261242">Valid<link unique="1261885" linkend="#80650: TableFootnote: 2. See the IA-32 Architecture Compatibility section b" xrefstyle="Footnote">2</link></para>
+      </td>
+     <td><para unique="1261244">Compare AX with r/m16. If equal, ZF is set and r16 is loaded into r/m16. Else, clear ZF and load r/m16 into AX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261246">0F B1/r</para>
+      </td>
+     <td><para unique="1261249">CMPXCHG r/m32, r32</para>
+      </td>
+     <td><para unique="1261251">MR</para>
+      </td>
+     <td><para unique="1261253">Valid</para>
+      </td>
+     <td><para unique="1261255">Valid<link unique="1261892" linkend="#80650: TableFootnote: 2. See the IA-32 Architecture Compatibility section b" xrefstyle="Footnote">2</link></para>
+      </td>
+     <td><para unique="1261257">Compare EAX with r/m32. If equal, ZF is set and r32 is loaded into r/m32. Else, clear ZF and load r/m32 into EAX.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261259">REX.W + 0F B1/r</para>
+      </td>
+     <td><para unique="1261262">CMPXCHG r/m64, r64</para>
+      </td>
+     <td><para unique="1261264">MR</para>
+      </td>
+     <td><para unique="1261266">Valid</para>
+      </td>
+     <td><para unique="1261268">N.E.</para>
+      </td>
+     <td><para unique="1261270">Compare RAX with r/m64. If equal, ZF is set and r64 is loaded into r/m64. Else, clear ZF and load r/m64 into RAX.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261286">
+   <col width="45.10008pt"/>
+   <col width="127.44432pt"/>
+   <col width="117.77112pt"/>
+   <col width="110.27232000000001pt"/>
+   <col width="111.38256pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261288">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261290">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261292">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261294">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261296">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261298">MR</para>
+      </td>
+     <td valign="middle"><para unique="1261300">ModRM:r/m (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1261302">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261304">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261306">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261307">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261309">Compares the value in the AL, AX, EAX, or RAX register with the first operand (destination operand). If the two values are equal, the second operand (source operand) is loaded into the destination operand. Otherwise, the destination operand is loaded into the AL, AX, EAX or RAX register. RAX register is available only in 64-bit mode.</para>
+  <para unique="1261311">This instruction can be used with a <indexterm><primary>LOCK prefix</primary></indexterm>LOCK prefix to allow the instruction to be executed atomically. To simplify the interface to the processor&#8217;s bus, the destination operand receives a write cycle without regard to the result of the comparison. The destination operand is written back if the comparison fails; otherwise, the source operand is written into the destination. (The processor never produces a locked read without also producing a locked write.)</para>
+  <para unique="1261312">In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</para>
   </longdesc>
+ <operation>
+  <programlisting>(* Accumulator = AL, AX, EAX, or RAX depending on whether a byte, word, doubleword, or quadword comparison is being performed *)
+TEMP := DEST
+IF accumulator = TEMP
+	THEN
+		ZF := 1;
+		DEST := SRC;
+	ELSE
+		ZF := 0;
+		accumulator := TEMP;
+		DEST := TEMP;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261328">
-   <string>The ZF flag is set if the values in the destination operand and register AL, AX, or EAX are equal; otherwise it is cleared. The CF, PF, AF, SF, and OF flags are set according to the results of the comparison operation.</string></para>
+  <para unique="1261328">The ZF flag is set if the values in the destination operand and register AL, AX, or EAX are equal; otherwise it is cleared. The CF, PF, AF, SF, and OF flags are set according to the results of the comparison operation.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the destination is located in a non-writable segment.</string></listitem>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261330">If the destination is located in a non-writable segment.</para>
+     </listitem>
+    <listitem><para unique="1261331">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1261332">If the DS, ES, FS, or GS register contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261333">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261334">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261335">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used but the destination is not a memory operand.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261336">If the LOCK prefix is used but the destination is not a memory operand.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1261338">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS</term>
+    <listitem><para unique="1261339">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used but the destination is not a memory operand.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261340">If the LOCK prefix is used but the destination is not a memory operand.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261342">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261343">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261344">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261345">If alignment checking is enabled and an unaligned memory reference is made.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used but the destination is not a memory operand.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261346">If the LOCK prefix is used but the destination is not a memory operand.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261348" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261348" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261350">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261351">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261352">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261353">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used but the destination is not a memory operand.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261354">If the LOCK prefix is used but the destination is not a memory operand.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

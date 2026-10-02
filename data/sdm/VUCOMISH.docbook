@@ -1,35 +1,116 @@
 <instruction name="VUCOMISH">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Unordered Compare Scalar FP16 Values and Set EFLAGS</shortdesc>
- <longdesc><para unique="1046133">
-   <string>This instruction compares the FP16 values in the low word of operand 1 (first operand) and operand 2 (second operand), and sets the ZF, PF, and CF flags in the EFLAGS register according to the result (unordered, greater than, less than, or equal). The OF, SF and AF flags in the EFLAGS register are set to 0. The unordered result is returned if either source operand is a NaN (QNaN or SNaN).</string></para>
-  <para unique="1046134">
-   <string>Operand 1 is an XMM register; operand 2 can be an XMM register or a 16-bit memory location.</string></para>
-  <para unique="1046135">
-   <string>The VUCOMISH instruction differs from the VCOMISH instruction in that it signals a SIMD floating-point invalid oper&#173;ation exception (#I) only if a source operand is an SNaN. The COMISS instruction signals an invalid numeric excep&#173;tion when a source operand is either a QNaN or SNaN.</string></para>
-  <para unique="1046136">
-   <string>The EFLAGS register is not updated if an unmasked SIMD floating-point exception is generated. EVEX.vvvv are reserved and must be 1111b, otherwise instructions will #UD.</string></para>
+ <encoding_table><table unique="1046081">
+   <col width="153.5976pt"/>
+   <col width="29.90016pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="199.39968pt"/>
+   <thead><tr>
+     <th><para unique="1046083">Opcode/</para>
+      <para unique="1046084">Instruction</para>
+      </th>
+     <th><para unique="1046086">Op/</para>
+      <para unique="1046087">En</para>
+      </th>
+     <th><para unique="1046089">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1046091">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1046093">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1046471">EVEX.LLIG.NP.MAP5.W0 2E /r</para>
+      <para unique="1046472">VUCOMISH xmm1, xmm2/m16 {sae}</para>
+      </td>
+     <td><para unique="1046474">A</para>
+      </td>
+     <td><para unique="1046476">V/V</para>
+      </td>
+     <td><para unique="1046478">AVX512_FP16 </para>
+      <para unique="1046482">OR AVX10.1<anchor id="+410124"/></para>
+      </td>
+     <td><para unique="1046484">Compare low FP16 values in xmm1 and xmm2/m16 and set the EFLAGS flags accordingly.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1046106">
+   <col width="43.01352pt"/>
+   <col width="61.01352pt"/>
+   <col width="95.65272pt"/>
+   <col width="104.62608pt"/>
+   <col width="103.85784pt"/>
+   <col width="102.5676pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1046108">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1046110">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1046112">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1046114">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1046116">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1046118">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1046120">A</para>
+      </td>
+     <td valign="middle"><para unique="1046122">Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1046124">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046126">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046128">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1046130">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046131">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046133">This instruction compares the FP16 values in the low word of operand 1 (first operand) and operand 2 (second operand), and sets the ZF, PF, and CF flags in the EFLAGS register according to the result (unordered, greater than, less than, or equal). The OF, SF and AF flags in the EFLAGS register are set to 0. The unordered result is returned if either source operand is a NaN (QNaN or SNaN).</para>
+  <para unique="1046134">Operand 1 is an XMM register; operand 2 can be an XMM register or a 16-bit memory location.</para>
+  <para unique="1046135">The VUCOMISH instruction differs from the VCOMISH instruction in that it signals a SIMD floating-point invalid oper&#173;ation exception (#I) only if a source operand is an SNaN. The COMISS instruction signals an invalid numeric excep&#173;tion when a source operand is either a QNaN or SNaN.</para>
+  <para unique="1046136">The EFLAGS register is not updated if an unmasked SIMD floating-point exception is generated. EVEX.vvvv are reserved and must be 1111b, otherwise instructions will #UD.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1046138">VUCOMISH</title>
+   <programlisting>RESULT := UnorderedCompare(SRC1.fp16[0],SRC2.fp16[0])
+if RESULT is UNORDERED:
+	ZF, PF, CF := 1, 1, 1
+else if RESULT is GREATER_THAN:
+	ZF, PF, CF := 0, 0, 0
+else if RESULT is LESS_THAN:
+	ZF, PF, CF := 0, 0, 1
+else: // RESULT is EQUALS
+	ZF, PF, CF := 1, 0, 0
+OF, AF, SF := 0, 0, 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <para unique="1046151">
-   <string>VUCOMISH int _mm_ucomieq_sh (__m128h a, __m128h b);</string></para>
-  <para unique="1046152">
-   <string>VUCOMISH int _mm_ucomige_sh (__m128h a, __m128h b);</string></para>
-  <para unique="1046153">
-   <string>VUCOMISH int _mm_ucomigt_sh (__m128h a, __m128h b);</string></para>
-  <para unique="1046154">
-   <string>VUCOMISH int _mm_ucomile_sh (__m128h a, __m128h b);</string></para>
-  <para unique="1046155">
-   <string>VUCOMISH int _mm_ucomilt_sh (__m128h a, __m128h b);</string></para>
-  <para unique="1046156">
-   <string>VUCOMISH int _mm_ucomineq_sh (__m128h a, __m128h b);</string></para>
+  <para unique="1046151">VUCOMISH int _mm_ucomieq_sh (__m128h a, __m128h b);</para>
+  <para unique="1046152">VUCOMISH int _mm_ucomige_sh (__m128h a, __m128h b);</para>
+  <para unique="1046153">VUCOMISH int _mm_ucomigt_sh (__m128h a, __m128h b);</para>
+  <para unique="1046154">VUCOMISH int _mm_ucomile_sh (__m128h a, __m128h b);</para>
+  <para unique="1046155">VUCOMISH int _mm_ucomilt_sh (__m128h a, __m128h b);</para>
+  <para unique="1046156">VUCOMISH int _mm_ucomineq_sh (__m128h a, __m128h b);</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046158">
-   <string>Invalid, Denormal.</string></para>
+  <para unique="1046158">Invalid, Denormal.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046163" format="xIndent1">
-   <string>EVEX-encoded instructions, see </string><link linkend="71006: 06_Table: Table 2-48. Type E3NF Class Exception Conditions"><string>Table&#160;2&#8209;50, &#8220;Type E3NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046163" format="xIndent1">EVEX-encoded instructions, see <link unique="1046161" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#71006: 06_Table: Table 2-48. Type E3NF Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;50, &#8220;Type E3NF Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

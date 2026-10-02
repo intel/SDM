@@ -1,43 +1,135 @@
 <instruction name="VREDUCESD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Perform a Reduction Transformation on a Scalar Float64 Value</shortdesc>
- <longdesc><para unique="1046136">
-   <string>Perform a reduction transformation of the binary encoded double precision floating-point value in the low qword element of the second source operand (the third operand) and store the reduced result in binary floating-point format to the low qword element of the destination operand (the first operand) under the writemask k1. Bits 127:64 of the destination operand are copied from respective qword elements of the first source operand (the second operand). </string></para>
-  <para unique="1046137">
-   <string>The reduction transformation subtracts the integer part and the leading M fractional bits from the binary floating-point source value, where M is a unsigned integer specified by imm8[7:4], see </string><link linkend="71477: 05_FigureFrame: Figure 5-41. Imm8 Controls for VREDUCEPD/SD/PS/SS"><string>Figure&#160;5&#8209;28</string></link><string>. Specifically, the reduc&#173;tion transformation can be expressed as:</string></para>
-  <para unique="1046141">
-   <string>dest = src &#8211; (ROUND(2</string><superscript><string>M</string></superscript><string>*src))*2</string><superscript><string>-M</string></superscript><string>;</string></para>
-  <para unique="1046142">
-   <string>where &#8220;Round()&#8221; treats &#8220;src&#8221;, &#8220;2</string><superscript><string>M</string></superscript><string>&#8221;, and their product as binary floating-point numbers with normalized signifi&#173;cand and biased exponents.</string></para>
-  <para unique="1046143">
-   <string>The magnitude of the reduced result can be expressed by considering src= 2</string><superscript><string>p</string></superscript><string>*man2,</string></para>
-  <para unique="1046144">
-   <string>where &#8216;man2&#8217; is the normalized significand and &#8216;p&#8217; is the unbiased exponent </string></para>
-  <para unique="1046145">
-   <string>Then if RC = RNE: 0&lt;=|Reduced Result|&lt;=2</string><superscript><string>p-M-1</string></superscript></para>
-  <para unique="1046146">
-   <string>Then if RC &#8800; RNE: 0&lt;=|Reduced Result|&lt;2</string><superscript><string>p-M</string></superscript></para>
-  <para unique="1046147">
-   <string>This instruction might end up with a precision exception set. However, in case of SPE set (i.e., Suppress Precision Exception, which is imm8[3]=1), no precision exception is reported.</string></para>
-  <para unique="1046148">
-   <string>The operation is write masked.</string></para>
-  <para unique="1046151">
-   <string>Handling of special case of input values are listed in </string><link linkend="49295: 06_Table: Table 5-24. VREDUCEPD Special Cases"><string>Table 5&#8209;27</string></link><string>.</string></para>
+ <encoding_table><table unique="1046081">
+   <col width="52.52328pt"/>
+   <col width="74.72664pt"/>
+   <col width="30.749760000000002pt"/>
+   <col width="50.99976pt"/>
+   <col width="71.24976pt"/>
+   <col width="230.00112pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1046083">Opcode/</para>
+      <para unique="1046084">Instruction</para>
+      </th>
+     <th><para unique="1046088">Op / En</para>
+      </th>
+     <th><para unique="1046090">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1046092">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1046094">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1046536">EVEX.LLIG.66.0F3A.W1 57</para>
+      <para unique="1046537">VREDUCESD xmm1 {k1}{z}, xmm2, xmm3/m64{sae}, imm8/r </para>
+      </td>
+     <td><para unique="1046541">A</para>
+      </td>
+     <td><para unique="1046543">V/V</para>
+      </td>
+     <td><para unique="1046545">AVX512DQ</para>
+      <para unique="1046549">OR AVX10.1<anchor id="+102753"/></para>
+      </td>
+     <td><para unique="1046551">Perform a reduction transformation on a scalar double precision floating-point value in xmm3/m64 by subtracting a number of fraction bits specified by the imm8 field. Also, upper double precision floating-point value (bits[127:64]) from xmm2 are copied to xmm1[127:64]. Stores the result in xmm1 register.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1046109">
+   <col width="39.83472pt"/>
+   <col width="83.034pt"/>
+   <col width="95.45472000000001pt"/>
+   <col width="103.71168pt"/>
+   <col width="96.52392pt"/>
+   <col width="92.29535999999999pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1046111">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1046113">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1046115">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1046117">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1046119">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1046121">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1046123">A</para>
+      </td>
+     <td valign="middle"><para unique="1046125">Tuple1 Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1046127">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046129">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046131">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046133">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046134">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046136">Perform a reduction transformation of the binary encoded double precision floating-point value in the low qword element of the second source operand (the third operand) and store the reduced result in binary floating-point format to the low qword element of the destination operand (the first operand) under the writemask k1. Bits 127:64 of the destination operand are copied from respective qword elements of the first source operand (the second operand). </para>
+  <para unique="1046137">The reduction transformation subtracts the integer part and the leading M fractional bits from the binary floating-point source value, where M is a unsigned integer specified by imm8[7:4], see <link unique="1046139" linkend="&lt;c&gt;VREDUCEPD-Perform-Reduction-Transformation-on-Packed-Float64-Values.fm#71477: 05_FigureFrame: Figure 5-41. Imm8 Controls for VREDUCEPD/SD/PS/SS" xrefstyle="FigureNum">Figure&#160;5&#8209;28</link>. Specifically, the reduc&#173;tion transformation can be expressed as:</para>
+  <para unique="1046141">dest = src &#8211; (ROUND(2<superscript>M</superscript>*src))*2<superscript>-M</superscript>;</para>
+  <para unique="1046142">where &#8220;Round()&#8221; treats &#8220;src&#8221;, &#8220;2<superscript>M</superscript>&#8221;, and their product as binary floating-point numbers with normalized signifi&#173;cand and biased exponents.</para>
+  <para unique="1046143">The magnitude of the reduced result can be expressed by considering src= 2<superscript>p</superscript>*man2,</para>
+  <para unique="1046144">where &#8216;man2&#8217; is the normalized significand and &#8216;p&#8217; is the unbiased exponent </para>
+  <para unique="1046145">Then if RC = RNE: 0&lt;=|Reduced Result|&lt;=2<superscript>p-M-1</superscript></para>
+  <para unique="1046146">Then if RC &#8800; RNE: 0&lt;=|Reduced Result|&lt;2<superscript>p-M</superscript></para>
+  <para unique="1046147">This instruction might end up with a precision exception set. However, in case of SPE set (i.e., Suppress Precision Exception, which is imm8[3]=1), no precision exception is reported.</para>
+  <para unique="1046148">The operation is write masked.</para>
+  <para unique="1046151">Handling of special case of input values are listed in <link unique="1046150" linkend="&lt;c&gt;VREDUCEPD-Perform-Reduction-Transformation-on-Packed-Float64-Values.fm#49295: 06_Table: Table 5-24. VREDUCEPD Special Cases" xrefstyle="TableNum">Table 5&#8209;27</link>.</para>
   </longdesc>
+ <operation>
+  <programlisting>ReduceArgumentDP(SRC[63:0], imm8[7:0])
+{
+	// Check for NaN
+	IF (SRC [63:0] = NAN) THEN
+		RETURN (Convert SRC[63:0] to QNaN); FI;
+	M := imm8[7:4]; // Number of fraction bits of the normalized significand to be subtracted
+	RC := imm8[1:0];	// Round Control for ROUND() operation
+	RC source := imm[2];
+	SPE := imm[3];	// Suppress Precision Exception
+	TMP[63:0] := 2-M *{ROUND(2M*SRC[63:0], SPE, RC_source, RC)}; // ROUND() treats SRC and 2M as standard binary FP values
+	TMP[63:0] := SRC[63:0] &#8211; TMP[63:0]; // subtraction under the same RC,SPE controls
+	RETURN TMP[63:0]; // binary encoded FP with biased exponent and normalized significand
+}</programlisting>
+  <section level="7">
+   <title unique="1046168">VREDUCESD </title>
+   <programlisting>IF k1[0] or *no writemask*
+	THEN		DEST[63:0] := ReduceArgumentDP(SRC2[63:0], imm8[7:0])
+	ELSE
+		IF *merging-masking*								; merging-masking
+			THEN *DEST[63:0] remains unchanged*
+			ELSE 							; zeroing-masking
+				THEN DEST[63:0] = 0
+		FI;
+FI;
+DEST[127:64] := SRC1[127:64]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VREDUCESD __m128d _mm_mask_reduce_sd( __m128d a, __m128d b, int imm, int sae)</string><string>
-</string><string>VREDUCESD __m128d _mm_mask_reduce_sd(__m128d s, __mmask16 k, __m128d a, __m128d b, int imm, int sae)</string><string>
-</string><string>VREDUCESD __m128d _mm_maskz_reduce_sd(__mmask16 k, __m128d a, __m128d b, int imm, int sae)</string><string>
-</string></programlisting>
+  <programlisting>VREDUCESD __m128d _mm_mask_reduce_sd( __m128d a, __m128d b, int imm, int sae)
+VREDUCESD __m128d _mm_mask_reduce_sd(__m128d s, __mmask16 k, __m128d a, __m128d b, int imm, int sae)
+VREDUCESD __m128d _mm_maskz_reduce_sd(__mmask16 k, __m128d a, __m128d b, int imm, int sae)</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046185">
-   <string>Invalid, Precision.</string></para>
-  <para unique="1046186">
-   <string>If SPE is enabled, precision exception is not reported (regardless of MXCSR exception mask).</string></para>
+  <para unique="1046185">Invalid, Precision.</para>
+  <para unique="1046186">If SPE is enabled, precision exception is not reported (regardless of MXCSR exception mask).</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046191" format="xIndent1">
-   <string>See </string><link linkend="63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions"><string>Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046191" format="xIndent1">See <link unique="1046189" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#63155: 06_Table: Table 2-47. Type E3 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;49, &#8220;Type E3 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

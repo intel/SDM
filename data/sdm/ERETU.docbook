@@ -1,0 +1,325 @@
+<instruction name="ERETU">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Event Return to User</shortdesc>
+ <encoding_table><table unique="1267197">
+   <thead><tr>
+     <th><para unique="1261194">Opcode</para>
+      </th>
+     <th><para unique="1261196">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261202">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.25984pt"/>
+   <col width="111.46464pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="182.15424000000002pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261206">F3 0F 01 CA</para>
+      </td>
+     <td><para unique="1261208">ERETU</para>
+      </td>
+     <td><para unique="1261210">ZO</para>
+      </td>
+     <td><para unique="1261212">Valid</para>
+      </td>
+     <td><para unique="1261214">Valid</para>
+      </td>
+     <td><para unique="1261216">Event return for events occurring in ring 3.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1267247">
+   <col width="42.27624pt"/>
+   <col width="110.98584pt"/>
+   <col width="118.68336pt"/>
+   <col width="116.67671999999999pt"/>
+   <col width="123.34752pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261244">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261246">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261248">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261250">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261252">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261254">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1261256">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261258">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261260">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261262">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261263">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1268480"><indexterm><primary>Task switch:return from nested task, IRET instruction</primary></indexterm>ERETU returns from an event handler, establishing the state based on the contents of the stack (typically, that which was in effect before FRED event delivery). ERETU can be executed only if CPL&#160;= 0, and it changes CPL to 3. For this reason, ERETU is used to return from handling events that occurred while CPL&#160;= 3.</para>
+  <para unique="1268459">ERETU takes no explicit arguments; its operation depends on the contents of the regular stack.</para>
+  <para unique="1268522">Execution of ERETU causes an invalid-opcode exception (#UD) if FRED transitions are not enabled or if CPL &gt; 0. For this reason, ERETU can be executed only in 64-bit mode.</para>
+  <para unique="1270489">ERETU establishes new values of CS and SS in one of three different ways:</para>
+  <itemizedlist>
+   <listitem><para unique="1270566">If the values popped from the stack correspond to the values of IA32_STAR[63:48]&#160;+ 16 and IA32_STAR[63:48] + 8, respectively, CS and SS are loaded with standard values for operation in 64-bit mode (similar those established by the 64-bit form of SYSCALL).</para>
+    </listitem>
+   <listitem><para unique="1270834">If the values popped from the stack correspond to the values of IA32_STAR[63:48] and IA32_STAR[63:48]&#160;+ 8, respectively, CS and SS are loaded with standard values for operation in compatibility mode (similar those established by the 32-bit form of SYSCALL).</para>
+    </listitem>
+   <listitem><para unique="1270830">Otherwise, CS and SS are loaded from the GDT or LDT using the selectors popped from the stack (similar to the manner used by the 64-bit form of IRET).</para>
+    </listitem>
+   </itemizedlist>
+  <para unique="1268526">For further details see the Operation section below and <link unique="1268524" linkend="&lt;c&gt;__sdm_vol3A_ch08-fred.fm#40002: 03_Level: 7.5.2 ERETU (Event Return to User)" xrefstyle="SectionNum&amp;Title(,)">Section 8.4.2, &#8220;ERETU (Event Return to User),&#8221;</link> in the Intel&#174; 64 and IA-32 Architectures Software Developer&#8217;s Manual, Volume 3.</para>
+  <para unique="1268585"><bold>Instruction ordering.</bold> Instructions following execution of ERETU may be fetched from memory before earlier instructions complete execution, but they will not execute (even speculatively) until all instructions prior to ERETU have completed execution (the later instructions may execute before data stored by the earlier instructions have become globally visible).</para>
+  </longdesc>
+ <operation>
+  <programlisting>IF CR4.FRED&#160;= 0 OR CS.L&#160;= 0 OR CPL&#160;&gt; 0
+	THEN #UD;
+FI;
+IF CSL &gt; 0
+	THEN #GP(0);
+FI;
+// pop old state from regular stack and check it
+RSP := RSP + 8;						// skip over error code so that RSP references the return state
+pop8B newRIP;
+pop8B tempCS;
+pop8B newRFLAGS;
+pop8B newRSP;
+pop8B tempSS;
+IF tempCS &amp; FFFFFFFF_FFFF0003H &#8800; 3 OR											// enforce return to ring 3
+	newRFLAGS&#160;&amp; FFFFFFFF_FFC2B02AH&#160;&#8800; 2 OR										// enforce bit&#160;1 set; IOPL, VM, reserved bits clear
+	tempSS &amp; FFF80003H &#8800; 3										// do not check bits&#160;63:32
+		THEN #GP(0);
+FI;
+pend_DB := tempSS[17];
+NMI_unblock := tempSS[18];
+IF tempCS[15:0]&#160;= IA32_STAR[63:48]&#160;+ 16 AND tempSS[15:0]&#160;= IA32_STAR[63:48]&#160;+ 8
+	THEN									// Return to ring&#160;3 in standard 64-bit configuration
+		// set newCS&#160;to standard values used ring&#160;3 in 64-bit mode
+			newCS.selector&#160;:= tempCS[15:0];
+			newCS.base&#160;:= 0;
+			newCS.limit&#160;:= FFFFFH;
+			newCS.type&#160;:= 11;
+			newCS.S&#160;:= 1;
+			newCS.DPL&#160;:= 3;
+			newCS.P&#160;:= 1;
+			newCS.L&#160;:= 1;
+			newCS.D&#160;:= 0;
+			newCS.G&#160;:= 1;
+			newCS.unusable := 0;
+		// set newSS&#160;to standard values for ring&#160;3
+			newSS.selector&#160;:= tempSS[15:0];
+			newSS.base&#160;:= 0;
+			newSS.limit&#160;:= FFFFFH;
+			newSS.type&#160;:= 3;
+			newSS.S&#160;:= 1;
+			newSS.DPL&#160;:= 3;
+			newSS.P&#160;:= 1;
+			newSS.B&#160;:= 1;
+			newSS.G&#160;:= 1;
+			newSS.unusable := 0;
+ELSIF tempCS[15:0]&#160;= IA32_STAR[63:48] AND tempSS[15:0]&#160;= IA32_STAR[63:48]&#160;+ 8
+	THEN
+		// set newCS&#160;to standard values used ring&#160;3 in compatibility mode
+			newCS.selector&#160;:= tempCS[15:0];
+			newCS.base&#160;:= 0;
+			newCS.limit&#160;:= FFFFFH;
+			newCS.type&#160;:= 11;
+			newCS.S&#160;:= 1;
+			newCS.DPL&#160;:= 3;
+			newCS.P&#160;:= 1;
+			newCS.L&#160;:= 0;
+			newCS.D&#160;:= 1;
+			newCS.G&#160;:= 1;
+			newCS.unusable := 0;
+		// set newSS&#160;to standard values for ring&#160;3
+			newSS.selector&#160;:= tempSS[15:0];
+			newSS.base&#160;:= 0;
+			newSS.limit&#160;:= FFFFFH;
+			newSS.type&#160;:= 3;
+			newSS.S&#160;:= 1;
+			newSS.DPL&#160;:= 3;
+			newSS.P&#160;:= 1;
+			newSS.B&#160;:= 1;
+			newSS.G&#160;:= 1;
+			newSS.unusable := 0;
+	ELSE
+		load newCS using tempCS[15:0];										// load each as is done by IRET, including
+		load newSS using tempSS[15:0];										// checks that may lead to a fault
+FI;
+IF newCS.L&#160;= 1
+	THEN		// return to 64-bit mode
+		IF newRIP is not paging canonical
+			THEN #GP(0);
+		FI;
+	ELSE		// return to compatibility mode
+		newRIP[63:32] := 0;
+		IF newRIP is not within newCS&#8217;s limit (based on limit field and G bit)
+			// newRIP is always within the limit with standard values for ring&#160;3 in compatibility mode
+			THEN #GP(0);
+		FI;
+		newRSP[63:32] := 0;
+FI;
+// If user shadow stacks are enabled, check new SSP value on return to compatibility mode
+IF CR4.CET&#160;= 1 AND IA32_U_CET.SH_STK_EN&#160;= 1 AND newCS.L&#160;= 0 AND IA32_PL3_SSP[63:32]&#160;&#8800; 0
+	THEN #GP(0);
+FI;
+// If supervisor shadow stacks are enabled, compare SSP to the FRED SSP MSR for stack level 0
+IF CR4.CET&#160;= 1 AND IA32_S_CET.SH_STK_EN&#160;= 1 AND IA32_FRED_SSP0&#160;&#8800; SSP
+	THEN #CP(FAR-RET/IRET);
+FI;
+// update registers for return state
+RIP&#160;:= newRIP;
+RFLAGS&#160;:= newRFLAGS;										// ERETU can set RFLAGS.RF to 1
+RSP&#160;:= newRSP;										// load all 64 bits regardless of new mode
+CS := newCS;										// selector and descriptor
+SS := newSS;										// selector and descriptor
+CPL := 3;
+// swap GS.base and IA32_KERNEL_GS_BASE
+tempGSB&#160;:= GS.base;
+GS.base&#160;:= IA32_KERNEL_GS_BASE;
+IA32_KERNEL_GS_BASE&#160;:= tempGSB;
+IF CR4.CET&#160;= 1 AND IA32_U_CET.SH_STK_EN&#160;= 1
+	THEN SSP&#160;:= IA32_PL3_SSP;
+FI;
+// update event-related state
+IF NMI_unblock&#160;= 1
+	THEN unblock NMIs;
+FI;
+IF pend_DB&#160;= 1 AND RFLAGS.TF&#160;=1
+	THEN pend a single-step debug exception (#DB) to be delivered after ERETU;
+FI;</programlisting>
+  </operation>
+ <subsection title="Flags Affected">
+  <para unique="1268627">All defined flags and fields in the RFLAGS register are potentially modified except for the VM flag.</para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term>#UD</term>
+    <listitem><para unique="1268640">The ERETU instruction is not recognized in protected mode.</para>
+     </listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term>#UD</term>
+    <listitem><para unique="1268642">The ERETU instruction is not recognized in real-address mode.</para>
+     </listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term>#UD</term>
+    <listitem><para unique="1268644">The ERETU instruction is not recognized in virtual-8086 mode.</para>
+     </listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term>#UD</term>
+    <listitem><para unique="1268646">The ERETU instruction is not recognized in compatibility mode.</para>
+     </listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term>#UD </term>
+    <listitem><para unique="1268648">If CR4.FRED = 0.</para>
+     </listitem>
+    <listitem><para unique="1270466">If CPL &gt; 0.</para>
+     </listitem>
+    <listitem><para unique="1270472">If the LOCK prefix is used.</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#GP(0)</term>
+    <listitem><para unique="1268649">If CSL &gt; 0.</para>
+     </listitem>
+    <listitem><para unique="1271128">If the return is to 64-bit mode and the RIP image on the stack is not paging canonical.</para>
+     </listitem>
+    <listitem><para unique="1268894">If the return is to compatibility mode and the low 32 bits of the RIP image on the stack is not within the CS.limit being established.</para>
+     </listitem>
+    <listitem><para unique="1268772">If the RFLAGS image on the stack sets reserved bits or the VM bit (or fails to set bit 1).</para>
+     </listitem>
+    <listitem><para unique="1268788">If bits&#160;13:12 of the RFLAGS image on the stack (corresponding to IOPL) are not zero.</para>
+     </listitem>
+    <listitem><para unique="1268651">If the value of bits&#160;1:0 of the CS image on the stack (the target CPL) is not 3.</para>
+     </listitem>
+    <listitem><para unique="1268652">If the value of bits 63:16 of the CS image on the stack is not zero.</para>
+     </listitem>
+    <listitem><para unique="1269116">If the value of bits&#160;1:0 of the SS image on the stack (the target CPL) is not 3.</para>
+     </listitem>
+    <listitem><para unique="1269139">If the SS image on the stack sets undefined bits (bits&#160;31:19).</para>
+     </listitem>
+    <listitem><para unique="1271272">If the return is to compatibility mode and would load SSP with a value that sets any of bits 63:32.</para>
+     </listitem>
+    <listitem><para unique="1269501">If ERETU is loading CS and SS from descriptor tables (see Operation section) and either of the following apply:</para>
+     <itemizedlist>
+      <listitem><para unique="1269873">If the value of bits&#160;15:2 of the CS image on the stack is 0.</para>
+       </listitem>
+      <listitem><para unique="1269885">If the value of bits&#160;15:2 of the SS image on the stack is 0.</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#GP(selector)</term>
+    <listitem><para unique="1269154">If ERETU is loading CS and SS from descriptor tables (see Operation section) and any of the following apply:</para>
+     <itemizedlist>
+      <listitem><para unique="1269937">A segment selector index is outside its descriptor table limits.</para>
+       </listitem>
+      <listitem><para unique="1269938">A segment descriptor memory address is not paging canonical.</para>
+       </listitem>
+      <listitem><para unique="1269939">	The segment descriptor for CS does not indicate that it is a code segment.</para>
+       </listitem>
+      <listitem><para unique="1269940">The segment descriptor for CS has both the D-bit and L-bit set.</para>
+       </listitem>
+      <listitem><para unique="1270102">The segment descriptor for CS is non-conforming and its DPL is not 3.</para>
+       </listitem>
+      <listitem><para unique="1270209">The segment descriptor for SS does not indicate that it is a writable data segment.</para>
+       </listitem>
+      <listitem><para unique="1270355">The DPL of the segment descriptor for SS is not 3.</para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#SS(0)</term>
+    <listitem><para unique="1269782">If an ordinary stack access would use an address that is not paging canonical or would cause a LASS violation.</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#CP(FAR-RET/IRET)</term>
+    <listitem><para unique="1268656">If the value in SSP differs from that in IA32_FRED_SSP0.	</para>
+     </listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ </instruction>

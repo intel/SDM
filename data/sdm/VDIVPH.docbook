@@ -1,30 +1,163 @@
 <instruction name="VDIVPH">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Divide Packed FP16 Values</shortdesc>
- <longdesc><para unique="1045959">
-   <string>This instruction divides packed FP16 values from the first source operand by the corresponding elements in the second source operand, storing the packed FP16 result in the destination operand. The destination elements are updated according to the writemask.</string></para>
+ <encoding_table><table unique="1045885">
+   <col width="153.5976pt"/>
+   <col width="29.90016pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="198.77472pt"/>
+   <thead><tr>
+     <th><para unique="1045887">Opcode/</para>
+      <para unique="1045888">Instruction</para>
+      </th>
+     <th><para unique="1045890">Op/</para>
+      <para unique="1045891">En</para>
+      </th>
+     <th><para unique="1045893">64/32 Bit Mode Support</para>
+      </th>
+     <th><para unique="1045895">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1045897">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1046339">EVEX.128.NP.MAP5.W0 5E /r</para>
+      <para unique="1046340">VDIVPH xmm1{k1}{z}, xmm2, xmm3/m128/m16bcst</para>
+      </td>
+     <td><para unique="1046342">A</para>
+      </td>
+     <td><para unique="1046344">V/V</para>
+      </td>
+     <td><para unique="1046346">(AVX512_FP16 AND AVX512VL) OR AVX10.1<anchor id="+946323"/></para>
+      </td>
+     <td><para unique="1046351">Divide packed FP16 values in xmm2 by packed FP16 values in xmm3/m128/m16bcst, and store the result in xmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046328">EVEX.256.NP.MAP5.W0 5E /r</para>
+      <para unique="1046329">VDIVPH ymm1{k1}{z}, ymm2, ymm3/m256/m16bcst</para>
+      </td>
+     <td><para unique="1046331">A</para>
+      </td>
+     <td><para unique="1046333">V/V</para>
+      </td>
+     <td><para unique="1046335">(AVX512_FP16 AND AVX512VL) OR AVX10.1<anchor id="+765400"/></para>
+      </td>
+     <td><para unique="1046337">Divide packed FP16 values in ymm2 by packed FP16 values in ymm3/m256/m16bcst, and store the result in ymm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046316">EVEX.512.NP.MAP5.W0 5E /r</para>
+      <para unique="1046317">VDIVPH zmm1{k1}{z}, zmm2, zmm3/m512/m16bcst {er}</para>
+      </td>
+     <td><para unique="1046319">A</para>
+      </td>
+     <td><para unique="1046321">V/V</para>
+      </td>
+     <td><para unique="1046323">AVX512_FP16</para>
+      <para unique="1046324">OR AVX10.1<anchor id="+186366"/></para>
+      </td>
+     <td><para unique="1046326">Divide packed FP16 values in zmm2 by packed FP16 values in zmm3/m512/m16bcst, and store the result in zmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1045932">
+   <col width="43.01352pt"/>
+   <col width="61.01352pt"/>
+   <col width="95.65272pt"/>
+   <col width="104.62608pt"/>
+   <col width="103.85784pt"/>
+   <col width="102.5676pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1045934">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1045936">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1045938">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1045940">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1045942">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1045944">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1045946">A</para>
+      </td>
+     <td valign="middle"><para unique="1045948">Full</para>
+      </td>
+     <td valign="middle"><para unique="1045950">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1045952">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045954">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045956">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1045957">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1045959">This instruction divides packed FP16 values from the first source operand by the corresponding elements in the second source operand, storing the packed FP16 result in the destination operand. The destination elements are updated according to the writemask.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1045961">VDIVPH (EVEX Encoded Versions) When SRC2 Operand is a Register</title>
+   <programlisting>VL = 128, 256 or 512
+KL := VL/16
+IF (VL = 512) AND (EVEX.b = 1):
+	SET_RM(EVEX.RC)
+ELSE
+	SET_RM(MXCSR.RC)
+FOR j := 0 TO KL-1:
+	IF k1[j] OR *no writemask*:
+		DEST.fp16[j] := SRC1.fp16[j] / SRC2.fp16[j]
+	ELSE IF *zeroing*:
+		DEST.fp16[j] := 0
+	// else dest.fp16[j] remains unchanged
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1045979">VDIVPH (EVEX Encoded Versions) When SRC2 Operand is a Memory Source</title>
+   <programlisting>VL = 128, 256 or 512
+KL := VL/16
+FOR j := 0 TO KL-1:
+	IF k1[j] OR *no writemask*:
+		IF EVEX.b = 1:
+			DEST.fp16[j] := SRC1.fp16[j] / SRC2.fp16[0]
+		ELSE:
+			DEST.fp16[j] := SRC1.fp16[j] / SRC2.fp16[j]
+	ELSE IF *zeroing*:
+		DEST.fp16[j] := 0
+	// else dest.fp16[j] remains unchanged
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VDIVPH __m128h _mm_div_ph (__m128h a, __m128h b);</string><string>
-</string><string>VDIVPH __m128h _mm_mask_div_ph (__m128h src, __mmask8 k, __m128h a, __m128h b);</string><string>
-</string><string>VDIVPH __m128h _mm_maskz_div_ph (__mmask8 k, __m128h a, __m128h b);</string><string>
-</string><string>VDIVPH __m256h _mm256_div_ph (__m256h a, __m256h b);</string><string>
-</string><string>VDIVPH __m256h _mm256_mask_div_ph (__m256h src, __mmask16 k, __m256h a, __m256h b);</string><string>
-</string><string>VDIVPH __m256h _mm256_maskz_div_ph (__mmask16 k, __m256h a, __m256h b);</string><string>
-</string><string>VDIVPH __m512h _mm512_div_ph (__m512h a, __m512h b);</string><string>
-</string><string>VDIVPH __m512h _mm512_mask_div_ph (__m512h src, __mmask32 k, __m512h a, __m512h b);</string><string>
-</string><string>VDIVPH __m512h _mm512_maskz_div_ph (__mmask32 k, __m512h a, __m512h b);</string><string>
-</string><string>VDIVPH __m512h _mm512_div_round_ph (__m512h a, __m512h b, int rounding);</string><string>
-</string><string>VDIVPH __m512h _mm512_mask_div_round_ph (__m512h src, __mmask32 k, __m512h a, __m512h b, int rounding);</string><string>
-</string><string>VDIVPH __m512h _mm512_maskz_div_round_ph (__mmask32 k, __m512h a, __m512h b, int rounding);</string><string>
-</string></programlisting>
+  <programlisting>VDIVPH __m128h _mm_div_ph (__m128h a, __m128h b);
+VDIVPH __m128h _mm_mask_div_ph (__m128h src, __mmask8 k, __m128h a, __m128h b);
+VDIVPH __m128h _mm_maskz_div_ph (__mmask8 k, __m128h a, __m128h b);
+VDIVPH __m256h _mm256_div_ph (__m256h a, __m256h b);
+VDIVPH __m256h _mm256_mask_div_ph (__m256h src, __mmask16 k, __m256h a, __m256h b);
+VDIVPH __m256h _mm256_maskz_div_ph (__mmask16 k, __m256h a, __m256h b);
+VDIVPH __m512h _mm512_div_ph (__m512h a, __m512h b);
+VDIVPH __m512h _mm512_mask_div_ph (__m512h src, __mmask32 k, __m512h a, __m512h b);
+VDIVPH __m512h _mm512_maskz_div_ph (__mmask32 k, __m512h a, __m512h b);
+VDIVPH __m512h _mm512_div_round_ph (__m512h a, __m512h b, int rounding);
+VDIVPH __m512h _mm512_mask_div_round_ph (__m512h src, __mmask32 k, __m512h a, __m512h b, int rounding);
+VDIVPH __m512h _mm512_maskz_div_round_ph (__mmask32 k, __m512h a, __m512h b, int rounding);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046008">
-   <string>Invalid, Underflow, Overflow, Precision, Denormal, Zero.</string></para>
+  <para unique="1046008">Invalid, Underflow, Overflow, Precision, Denormal, Zero.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046013" format="xIndent1">
-   <string>EVEX-encoded instructions, see </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046013" format="xIndent1">EVEX-encoded instructions, see <link unique="1046011" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

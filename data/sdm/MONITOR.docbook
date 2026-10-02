@@ -1,100 +1,185 @@
 <instruction name="MONITOR">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Set Up Monitor Address</shortdesc>
- <longdesc><para unique="1091440">
-   <string>The MONITOR instruction arms address monitoring hardware using an address specified in EAX (the address range that the monitoring hardware checks for store operations can be determined by using CPUID). A store to an address within the specified address range triggers the monitoring hardware. The state of monitor hardware is used by MWAIT. </string></para>
-  <para unique="1091441">
-   <string>The address is specified in RAX/EAX/AX and the size is based on the effective address size of the encoded instruc&#173;tion. By default, the DS segment is used to create a linear address that is monitored. Segment overrides can be used.</string></para>
-  <para unique="1091442">
-   <string>ECX and EDX are also used. They communicate other information to MONITOR. ECX specifies optional extensions. EDX specifies optional hints; it does not change the architectural behavior of the instruction. For the Pentium 4 processor (family 15, model 3), no extensions or hints are defined. Undefined hints in EDX are ignored by the processor; undefined extensions in ECX raises a general protection fault.</string></para>
-  <para unique="1091443">
-   <string>The address range must use memory of the write-back type. Only write-back memory will correctly trigger the monitoring hardware. Additional information on determining what address range to use in order to prevent false wake-ups is described in </string><link linkend="36559: H1Heading: Chapter 7 Multiple-Processor Management"><string>Chapter 11, &#8220;Multiple-Processor Management&#8218;&#8221;</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A.</string></para>
-  <para unique="1091447">
-   <string>The MONITOR instruction is ordered as a load operation with respect to other memory transactions. The instruction is subject to the permission checking and faults associated with a byte load. Like a load, MONITOR sets the A-bit but not the D-bit in page tables. </string></para>
-  <para unique="1091448">
-   <string>CPUID.01H:ECX.MONITOR[3] indicates the availability of MONITOR and MWAIT in the processor. When set, MONITOR may be executed only at privilege level 0 (use at any other privilege level results in an invalid-opcode exception). The operating system or system BIOS may disable this instruction by using the IA32_MISC_ENABLE MSR; disabling MONITOR clears the CPUID feature flag and causes execution to generate an invalid-opcode excep&#173;tion. </string></para>
-  <para unique="1091449">
-   <string>The instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+ <encoding_table><table unique="1091391">
+   <thead><tr>
+     <th><para unique="1091393">Opcode</para>
+      </th>
+     <th><para unique="1091395">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op/ En</para>
+      </th>
+     <th><para unique="1091399">64-Bit Mode</para>
+      </th>
+     <th><para unique="1091401">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><col width="79.98768pt"/>
+   <col width="90.73656pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="221.904pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1091405">0F 01 C8</para>
+      </td>
+     <td><para unique="1091407">MONITOR</para>
+      </td>
+     <td><para unique="1091409">ZO</para>
+      </td>
+     <td><para unique="1091411">Valid</para>
+      </td>
+     <td><para unique="1091413">Valid</para>
+      </td>
+     <td><para unique="1091415">Sets up a linear address range to be monitored by hardware and activates the monitor. The address range should be a write-back memory caching type. The address is DS:RAX/EAX/AX.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091417">
+   <col width="48.17304pt"/>
+   <col width="116.24976pt"/>
+   <col width="117.5904pt"/>
+   <col width="114.03143999999999pt"/>
+   <col width="115.92576pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091419">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091421">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091423">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091425">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091427">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091429">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1091431">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091433">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091435">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091437">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091438">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091440">The MONITOR instruction arms address monitoring hardware using an address specified in EAX (the address range that the monitoring hardware checks for store operations can be determined by using CPUID). A store to an address within the specified address range triggers the monitoring hardware. The state of monitor hardware is used by MWAIT. </para>
+  <para unique="1091441">The address is specified in RAX/EAX/AX and the size is based on the effective address size of the encoded instruc&#173;tion. By default, the DS segment is used to create a linear address that is monitored. Segment overrides can be used.</para>
+  <para unique="1091442">ECX and EDX are also used. They communicate other information to MONITOR. ECX specifies optional extensions. EDX specifies optional hints; it does not change the architectural behavior of the instruction. For the Pentium 4 processor (family 15, model 3), no extensions or hints are defined. Undefined hints in EDX are ignored by the processor; undefined extensions in ECX raises a general protection fault.</para>
+  <para unique="1091443">The address range must use memory of the write-back type. Only write-back memory will correctly trigger the monitoring hardware. Additional information on determining what address range to use in order to prevent false wake-ups is described in <link unique="1091445" linkend="&lt;c&gt;__sdm_vol3A_ch11.fm#36559: H1Heading: Chapter 7 Multiple-Processor Management" xrefstyle="ChapterNum&amp;TitleCOMMA">Chapter 11, &#8220;Multiple-Processor Management&#8218;&#8221;</link> of the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A.</para>
+  <para unique="1091447">The MONITOR instruction is ordered as a load operation with respect to other memory transactions. The instruction is subject to the permission checking and faults associated with a byte load. Like a load, MONITOR sets the A-bit but not the D-bit in page tables. </para>
+  <para unique="1091448">CPUID.01H:ECX.MONITOR[3] indicates the availability of MONITOR and MWAIT in the processor. When set, MONITOR may be executed only at privilege level 0 (use at any other privilege level results in an invalid-opcode exception). The operating system or system BIOS may disable this instruction by using the IA32_MISC_ENABLE MSR; disabling MONITOR clears the CPUID feature flag and causes execution to generate an invalid-opcode excep&#173;tion. </para>
+  <para unique="1091449">The instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</para>
   </longdesc>
+ <operation>
+  <programlisting>MONITOR sets up an address range for the monitor hardware using the content of EAX (RAX in 64-bit mode) as an effective address and puts the monitor hardware in armed state. Always use memory of the write-back caching type. A store to the specified address range will trigger the monitor hardware. The content of ECX and EDX are used to communicate other information to the monitor hardware.</programlisting>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>MONITOR void _mm_monitor(void const *p, unsigned extensions,unsigned hints)</string><string>
-</string></programlisting>
+  <programlisting>MONITOR void _mm_monitor(void const *p, unsigned extensions,unsigned hints)</programlisting>
   </subsection>
  <subsection title="Numeric Exceptions">
-  <para unique="1091455">
-   <string>None.</string></para>
+  <para unique="1091455">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0) </string></term>
-    <listitem><string>If the value in EAX is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</string></listitem>
-    <listitem><string>If ECX &#185; 0.</string></listitem>
+    <term>#GP(0) </term>
+    <listitem><para unique="1091457">If the value in EAX is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1091458">If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</para>
+     </listitem>
+    <listitem><para unique="1091459">If ECX &#185; 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0) </string></term>
-    <listitem><string>If the value in EAX is outside the SS segment limit.</string></listitem>
+    <term>#SS(0) </term>
+    <listitem><para unique="1091460">If the value in EAX is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code) </string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF(fault-code) </term>
+    <listitem><para unique="1091461">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.01H:ECX.MONITOR[3] = 0.</string></listitem>
-    <listitem><string>If current privilege level is not 0.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091462">If CPUID.01H:ECX.MONITOR[3] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091463">If current privilege level is not 0.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP </string></term>
-    <listitem><string>If the CS, DS, ES, FS, or GS register is used to access memory and the value in EAX is outside of the effective address space from 0 to FFFFH.</string></listitem>
-    <listitem><string>If ECX &#185; 0.</string></listitem>
+    <term>#GP </term>
+    <listitem><para unique="1091465">If the CS, DS, ES, FS, or GS register is used to access memory and the value in EAX is outside of the effective address space from 0 to FFFFH.</para>
+     </listitem>
+    <listitem><para unique="1091466">If ECX &#185; 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS </string></term>
-    <listitem><string>If the SS register is used to access memory and the value in EAX is outside of the effective address space from 0 to FFFFH.</string></listitem>
+    <term>#SS </term>
+    <listitem><para unique="1091467">If the SS register is used to access memory and the value in EAX is outside of the effective address space from 0 to FFFFH.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.01H:ECX.MONITOR[3] = 0.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091468">If CPUID.01H:ECX.MONITOR[3] = 0.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual 8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The MONITOR instruction is not recognized in virtual-8086 mode (even if CPUID.01H:ECX.MONITOR[3] = 1).</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091470">The MONITOR instruction is not recognized in virtual-8086 mode (even if CPUID.01H:ECX.MONITOR[3] = 1).</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091472">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1091472">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the linear address of the operand in the CS, DS, ES, FS, or GS segment is in a non-canonical form.</string></listitem>
-    <listitem><string>If RCX &#185; 0.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091474">If the linear address of the operand in the CS, DS, ES, FS, or GS segment is in a non-canonical form.</para>
+     </listitem>
+    <listitem><para unique="1091475">If RCX &#185; 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If the SS register is used to access memory and the value in EAX is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091476">If the SS register is used to access memory and the value in EAX is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code) </string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF(fault-code) </term>
+    <listitem><para unique="1091477">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If the current privilege level is not 0.</string></listitem>
-    <listitem><string>If CPUID.01H:ECX.MONITOR[3] = 0.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091478">If the current privilege level is not 0.</para>
+     </listitem>
+    <listitem><para unique="1091479">If CPUID.01H:ECX.MONITOR[3] = 0.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

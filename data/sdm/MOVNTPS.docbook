@@ -1,36 +1,200 @@
 <instruction name="MOVNTPS">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Store Packed Single Precision Floating-Point Values Using Non-Temporal Hint</shortdesc>
- <longdesc><para unique="1091542">
-   <string>Moves the packed single precision floating-point values in the source operand (second operand) to the destination operand (first operand) using a non-temporal hint to prevent caching of the data during the write to memory. The source operand is an XMM register, YMM register or ZMM register, which is assumed to contain packed single preci&#173;sion, floating-pointing. The destination operand is a 128-bit, 256-bit or 512-bit memory location. The memory operand must be aligned on a 16-byte (128-bit version), 32-byte (VEX.256 encoded version) or 64-byte (EVEX.512 encoded version) boundary otherwise a general-protection exception (#GP) will be generated. </string></para>
-  <para unique="1091543">
-   <string>The non-temporal hint is implemented by using a write combining (WC) memory type protocol when writing the data to memory. Using this protocol, the processor does not write the data into the cache hierarchy, nor does it fetch the corresponding cache line from memory into the cache hierarchy. The memory type of the region being written to can override the non-temporal hint, if the memory address specified for the non-temporal store is in an uncacheable (UC) or write protected (WP) memory region. For more information on non-temporal stores, see &#8220;Caching of Temporal vs. Non-Temporal Data&#8221; in Chapter 10 in the IA-32 Intel Architecture Software Developer&#8217;s Manual, Volume 1.</string></para>
-  <para unique="1091544">
-   <string>Because the WC protocol uses a weakly-ordered memory consistency model, a fencing operation implemented with the SFENCE or MFENCE instruction should be used in conjunction with MOVNTPS instructions if multiple processors might use different memory types to read/write the destination memory locations.</string></para>
-  <para unique="1091545">
-   <string>Note: VEX.vvvv and EVEX.vvvv are reserved and must be 1111b otherwise instructions will #UD.</string></para>
+ <encoding_table><table unique="1091390">
+   <col width="69.54048pt"/>
+   <col width="69.54048pt"/>
+   <col width="29.244239999999998pt"/>
+   <col width="48.74976pt"/>
+   <col width="72.33336pt"/>
+   <col width="221.33375999999998pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091392">Opcode/</para>
+      <para unique="1091393">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op / En</para>
+      </th>
+     <th><para unique="1091399">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091401">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1091405">NP 0F 2B /r</para>
+      <para unique="1091406">MOVNTPS m128, xmm1</para>
+      </td>
+     <td><para unique="1091410">A</para>
+      </td>
+     <td><para unique="1091412">V/V</para>
+      </td>
+     <td><para unique="1091414">SSE</para>
+      </td>
+     <td><para unique="1091416">Move packed single precision values xmm1 to mem using non-temporal hint.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091418">VEX.128.0F.WIG 2B /r</para>
+      <para unique="1091419">VMOVNTPS m128, xmm1</para>
+      </td>
+     <td><para unique="1091423">A</para>
+      </td>
+     <td><para unique="1091425">V/V</para>
+      </td>
+     <td><para unique="1091430">AVX</para>
+      </td>
+     <td><para unique="1091432">Move packed single precision values xmm1 to mem using non-temporal hint.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091434">VEX.256.0F.WIG 2B /r</para>
+      <para unique="1091435">VMOVNTPS m256, ymm1</para>
+      </td>
+     <td><para unique="1091439">A</para>
+      </td>
+     <td><para unique="1091441">V/V</para>
+      </td>
+     <td><para unique="1091446">AVX</para>
+      </td>
+     <td><para unique="1091448">Move packed single precision values ymm1 to mem using non-temporal hint.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091923">EVEX.128.0F.W0 2B /r</para>
+      <para unique="1091924">VMOVNTPS m128, xmm1</para>
+      </td>
+     <td><para unique="1091928">B</para>
+      </td>
+     <td><para unique="1091930">V/V</para>
+      </td>
+     <td><para unique="1091932">(AVX512VL AND</para>
+      <para unique="1091936">AVX512F) OR AVX10.1<anchor id="+432647"/></para>
+      </td>
+     <td><para unique="1091941">Move packed single precision values in xmm1 to m128 using non-temporal hint.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091906">EVEX.256.0F.W0 2B /r</para>
+      <para unique="1091907">VMOVNTPS m256, ymm1</para>
+      </td>
+     <td><para unique="1091911">B</para>
+      </td>
+     <td><para unique="1091913">V/V</para>
+      </td>
+     <td><para unique="1091915">(AVX512VL AND</para>
+      <para unique="1091919">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1091921">Move packed single precision values in ymm1 to m256 using non-temporal hint.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091889">EVEX.512.0F.W0 2B /r</para>
+      <para unique="1091890">VMOVNTPS m512, zmm1</para>
+      </td>
+     <td><para unique="1091894">B</para>
+      </td>
+     <td><para unique="1091896">V/V</para>
+      </td>
+     <td><para unique="1091901">AVX512F </para>
+      <para unique="1091902">OR AVX10.1</para>
+      </td>
+     <td><para unique="1091904">Move packed single precision values in zmm1 to m512 using non-temporal hint.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091500">
+   <col width="49.028400000000005pt"/>
+   <col width="71.82792pt"/>
+   <col width="98.2944pt"/>
+   <col width="96.95376pt"/>
+   <col width="95.98823999999999pt"/>
+   <col width="98.86536pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091502">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091504">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091506">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091508">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091510">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091512">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091514">A</para>
+      </td>
+     <td valign="middle"><para unique="1091516">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091518">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091520">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091522">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091524">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091526">B</para>
+      </td>
+     <td valign="middle"><para unique="1091528">Full Mem</para>
+      </td>
+     <td valign="middle"><para unique="1091530">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091532">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091534">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091536">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091540">Instruction Operand Encoding<footnote><para unique="1091539">ModRM.MOD != 011B</para>
+     </footnote></caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091542">Moves the packed single precision floating-point values in the source operand (second operand) to the destination operand (first operand) using a non-temporal hint to prevent caching of the data during the write to memory. The source operand is an XMM register, YMM register or ZMM register, which is assumed to contain packed single preci&#173;sion, floating-pointing. The destination operand is a 128-bit, 256-bit or 512-bit memory location. The memory operand must be aligned on a 16-byte (128-bit version), 32-byte (VEX.256 encoded version) or 64-byte (EVEX.512 encoded version) boundary otherwise a general-protection exception (#GP) will be generated. </para>
+  <para unique="1091543">The non-temporal hint is implemented by using a write combining (WC) memory type protocol when writing the data to memory. Using this protocol, the processor does not write the data into the cache hierarchy, nor does it fetch the corresponding cache line from memory into the cache hierarchy. The memory type of the region being written to can override the non-temporal hint, if the memory address specified for the non-temporal store is in an uncacheable (UC) or write protected (WP) memory region. For more information on non-temporal stores, see &#8220;Caching of Temporal vs. Non-Temporal Data&#8221; in Chapter 10 in the IA-32 Intel Architecture Software Developer&#8217;s Manual, Volume 1.</para>
+  <para unique="1091544">Because the WC protocol uses a weakly-ordered memory consistency model, a fencing operation implemented with the SFENCE or MFENCE instruction should be used in conjunction with MOVNTPS instructions if multiple processors might use different memory types to read/write the destination memory locations.</para>
+  <para unique="1091545">Note: VEX.vvvv and EVEX.vvvv are reserved and must be 1111b otherwise instructions will #UD.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091547">VMOVNTPS (EVEX Encoded Versions) </title>
+   <programlisting>VL = 128, 256, 512
+DEST[VL-1:0] := SRC[VL-1:0]
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091552">MOVNTPS</title>
+   <programlisting>DEST := SRC</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VMOVNTPS void _mm512_stream_ps(float * p, __m512d a);</string><string>
-</string><string>MOVNTPS void _mm_stream_ps (float * p, __m128d a);</string><string>
-</string><string>VMOVNTPS void _mm256_stream_ps (float * p, __m256 a);</string><string>
-</string></programlisting>
+  <programlisting>VMOVNTPS void _mm512_stream_ps(float * p, __m512d a);
+MOVNTPS void _mm_stream_ps (float * p, __m128d a);
+VMOVNTPS void _mm256_stream_ps (float * p, __m256 a);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091559">
-   <string>None.</string></para>
+  <para unique="1091559">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091564" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see Exceptions Type1.SSE in </string><link linkend="11555: 06_Table: Table 2-8. Type 1 Class Exception Conditions"><string>Table&#160;2&#8209;18, &#8220;Type 1 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091568" format="xIndent1">
-   <string>EVEX-encoded instruction, see </string><link linkend="41111: 06_Table: Table 2-45. Type E1NF Class Exception Conditions"><string>Table&#160;2&#8209;47, &#8220;Type E1NF Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091569" format="xIndent1">
-   <string>Additionally:</string></para>
+  <para unique="1091564" format="xIndent1">Non-EVEX-encoded instruction, see Exceptions Type1.SSE in <link unique="1091562" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#11555: 06_Table: Table 2-8. Type 1 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;18, &#8220;Type 1 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091568" format="xIndent1">EVEX-encoded instruction, see <link unique="1091566" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#41111: 06_Table: Table 2-45. Type E1NF Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;47, &#8220;Type E1NF Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091569" format="xIndent1">Additionally:</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If VEX.vvvv != 1111B or EVEX.vvvv != 1111B.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091570">If VEX.vvvv != 1111B or EVEX.vvvv != 1111B.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

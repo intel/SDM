@@ -1,25 +1,114 @@
 <instruction name="SHA256RNDS2">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Perform Two Rounds of SHA256 Operation</shortdesc>
- <longdesc><para unique="1091435">
-   <string>The SHA256RNDS2 instruction performs 2 rounds of SHA256 operation using an initial SHA256 state (C,D,G,H) from the first operand, an initial SHA256 state (A,B,E,F) from the second operand, and a pre-computed sum of the next 2 round message dwords and the corresponding round constants from the implicit operand xmm0. Note that only the two lower dwords of XMM0 are used by the instruction.</string></para>
-  <para unique="1091436">
-   <string>The updated SHA256 state (A,B,E,F) is written to the first operand, and the second operand can be used as the updated state (C,D,G,H) in later rounds.</string></para>
+ <encoding_table><table unique="1091389">
+   <col width="50.66568pt"/>
+   <col width="72.08424pt"/>
+   <col width="37.49976pt"/>
+   <col width="48.74976pt"/>
+   <col width="44.24976pt"/>
+   <col width="258.10056pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091391">Opcode/&#8232;Instruction</para>
+      </th>
+     <th><para unique="1091395">Op/En</para>
+      </th>
+     <th><para unique="1091397">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091399">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091401">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1091403">NP 0F 38 CB /r </para>
+      <para unique="1091404">SHA256RNDS2 xmm1, xmm2/m128, &lt;XMM0&gt;</para>
+      </td>
+     <td><para unique="1091408">RMI</para>
+      </td>
+     <td><para unique="1091410">V/V</para>
+      </td>
+     <td><para unique="1091412">SHA</para>
+      </td>
+     <td><para unique="1091414">Perform 2 rounds of SHA256 operation using an initial SHA256 state (C,D,G,H) from xmm1, an initial SHA256 state (A,B,E,F) from xmm2/m128, and a pre-computed sum of the next 2 round mes&#173;sage dwords and the corresponding round constants from the implicit operand XMM0, storing the updated SHA256 state (A,B,E,F) result in xmm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091416">
+   <col width="65.89224pt"/>
+   <col width="141.38496pt"/>
+   <col width="152.05607999999998pt"/>
+   <col width="151.58231999999998pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091418">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091420">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091422">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091424">Operand 3</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091426">RMI</para>
+      </td>
+     <td valign="middle"><para unique="1091428">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091430">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091432">Implicit XMM0 (r)</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091433">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091435">The SHA256RNDS2 instruction performs 2 rounds of SHA256 operation using an initial SHA256 state (C,D,G,H) from the first operand, an initial SHA256 state (A,B,E,F) from the second operand, and a pre-computed sum of the next 2 round message dwords and the corresponding round constants from the implicit operand xmm0. Note that only the two lower dwords of XMM0 are used by the instruction.</para>
+  <para unique="1091436">The updated SHA256 state (A,B,E,F) is written to the first operand, and the second operand can be used as the updated state (C,D,G,H) in later rounds.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091438">SHA256RNDS2 </title>
+   <programlisting>A_0 := SRC2[127:96];
+B_0 := SRC2[95:64];
+C_0 := SRC1[127:96];
+D_0 := SRC1[95:64];
+E_0 := SRC2[63:32];
+F_0 := SRC2[31:0];
+G_0 := SRC1[63:32];
+H_0 := SRC1[31:0];
+WK0 := XMM0[31: 0];
+WK1 := XMM0[63: 32];
+FOR i = 0 to 1
+	A_(i +1) := Ch (E_i, F_i, G_i) +&#931;1( E_i) +WKi+ H_i + Maj(A_i , B_i, C_i) +&#931;0( A_i);
+	B_(i +1) := A_i;
+	C_(i +1) := B_i ;
+	D_(i +1) := C_i;
+	E_(i +1) := Ch (E_i, F_i, G_i) +&#931;1( E_i) +WKi+ H_i + D_i;
+	F_(i +1) := E_i ;
+	G_(i +1) := F_i;
+	H_(i +1) := G_i;
+ENDFOR
+DEST[127:96] := A_2;
+DEST[95:64] := B_2;
+DEST[63:32] := E_2;
+DEST[31:0] := F_2;</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>SHA256RNDS2 __m128i _mm_sha256rnds2_epu32(__m128i, __m128i, __m128i);</string><string>
-</string></programlisting>
+  <programlisting>SHA256RNDS2 __m128i _mm_sha256rnds2_epu32(__m128i, __m128i, __m128i);</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1091468">
-   <string>None.</string></para>
+  <para unique="1091468">None.</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091470">
-   <string>None.</string></para>
+  <para unique="1091470">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091475">
-   <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091475">See <link unique="1091473" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

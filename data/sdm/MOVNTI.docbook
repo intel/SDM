@@ -1,94 +1,189 @@
 <instruction name="MOVNTI">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Store Doubleword Using Non-Temporal Hint</shortdesc>
- <longdesc><para unique="1091453">
-   <string>Moves the doubleword integer in the source operand (second operand) to the destination operand (first operand) using a non-temporal hint to minimize cache pollution during the write to memory. The source operand is a general-purpose register. The destination operand is a 32&#8209;bit memory location.</string></para>
-  <para unique="1091454">
-   <string>The non-temporal hint is implemented by using a write combining (WC) memory type protocol when writing the data to memory. Using this protocol, the processor does not write the data into the cache hierarchy, nor does it fetch the corresponding cache line from memory into the cache hierarchy. The memory type of the region being written to can override the non-temporal hint, if the memory address specified for the non-temporal store is in an uncacheable (UC) or write protected (WP) memory region. For more information on non-temporal stores, see </string><string>&#8220;Caching of Temporal vs. Non-Temporal Data&#8221;</string><string> in </string><link linkend="40469: H1Heading: Chapter 8 Input/Output"><string>Chapter 10</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1.</string></para>
-  <para unique="1091461">
-   <string>Because the WC protocol uses a weakly-ordered memory consistency model, a fencing operation implemented with the SFENCE or MFENCE instruction should be used in conjunction with MOVNTI instructions if multiple processors might use different memory types to read/write the destination memory locations.</string></para>
-  <para unique="1091462">
-   <string>In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</string></para>
+ <encoding_table><table unique="1091389">
+   <thead><tr>
+     <th colspan="2"><para unique="1091391">Opcode /</para>
+      <para unique="1091392">Instruction</para>
+      </th>
+     <th><para unique="1091396">Op/ En</para>
+      </th>
+     <th><para unique="1091398">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091400">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091402">Description</para>
+      </th>
+     </tr>
+    </thead><col width="82.51776pt"/>
+   <col width="93.6072pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="218.15352000000001pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1091404">NP 0F C3 /<italic>r</italic></para>
+      <para unique="1091405">MOVNTI <italic>m32</italic>, <italic>r32</italic></para>
+      </td>
+     <td><para unique="1091409">MR</para>
+      </td>
+     <td><para unique="1091411">V/V</para>
+      </td>
+     <td><para unique="1091413">SSE2</para>
+      </td>
+     <td><para unique="1091415">Move doubleword from <italic>r32</italic> to <italic>m32</italic> using non-temporal hint.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091417">NP REX.W + 0F C3 /<italic>r</italic></para>
+      <para unique="1091418">MOVNTI <italic>m64,</italic> <italic>r64</italic></para>
+      </td>
+     <td><para unique="1091422">MR</para>
+      </td>
+     <td><para unique="1091424">V/N.E.</para>
+      </td>
+     <td><para unique="1091426">SSE2</para>
+      </td>
+     <td><para unique="1091428">Move quadword from <italic>r64</italic> to <italic>m64</italic> using non-temporal hint.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091430">
+   <col width="45.9612pt"/>
+   <col width="116.24616pt"/>
+   <col width="120.0204pt"/>
+   <col width="108.36864pt"/>
+   <col width="119.12400000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091432">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091434">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091436">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091438">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091440">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091442">MR</para>
+      </td>
+     <td valign="middle"><para unique="1091444">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091446">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091448">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091450">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091451">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091453">Moves the doubleword integer in the source operand (second operand) to the destination operand (first operand) using a non-temporal hint to minimize cache pollution during the write to memory. The source operand is a general-purpose register. The destination operand is a 32&#8209;bit memory location.</para>
+  <para unique="1091454">The non-temporal hint is implemented by using a write combining (WC) memory type protocol when writing the data to memory. Using this protocol, the processor does not write the data into the cache hierarchy, nor does it fetch the corresponding cache line from memory into the cache hierarchy. The memory type of the region being written to can override the non-temporal hint, if the memory address specified for the non-temporal store is in an uncacheable (UC) or write protected (WP) memory region. For more information on non-temporal stores, see &#8220;Caching of Temporal vs. Non-Temporal Data&#8221; in <link unique="1091459" linkend="&lt;c&gt;__sdm_vol1_ch10.fm#40469: H1Heading: Chapter 8 Input/Output" xrefstyle="ChapterNum_CR">Chapter 10</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1.</para>
+  <para unique="1091461">Because the WC protocol uses a weakly-ordered memory consistency model, a fencing operation implemented with the SFENCE or MFENCE instruction should be used in conjunction with MOVNTI instructions if multiple processors might use different memory types to read/write the destination memory locations.</para>
+  <para unique="1091462">In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</para>
   </longdesc>
+ <operation>
+  <programlisting>DEST := SRC;</programlisting>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>MOVNTI void _mm_stream_si32 (int *p, int a)</string><string>
-</string><string>MOVNTI void _mm_stream_si64(__int64 *p, __int64 a)</string><string>
-</string></programlisting>
+  <programlisting>MOVNTI void _mm_stream_si32 (int *p, int a)
+MOVNTI void _mm_stream_si64(__int64 *p, __int64 a)</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091469">
-   <string>None.</string></para>
+  <para unique="1091469">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>For an illegal memory operand effective address in the CS, DS, ES, FS or GS segments.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091471">For an illegal memory operand effective address in the CS, DS, ES, FS or GS segments.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0) </string></term>
-    <listitem><string>For an illegal address in the SS segment. </string></listitem>
+    <term>#SS(0) </term>
+    <listitem><para unique="1091472">For an illegal address in the SS segment. </para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code) </string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF(fault-code) </term>
+    <listitem><para unique="1091473">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CPUID.01H:EDX.SSE2[26] = 0.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091474">If CPUID.01H:EDX.SSE2[26] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091475">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If any part of the operand lies outside the effective address space from 0 to FFFFH.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1091477">If any part of the operand lies outside the effective address space from 0 to FFFFH.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CPUID.01H:EDX.SSE2[26] = 0.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091478">If CPUID.01H:EDX.SSE2[26] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091479">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1091481">
-   <string>Same exceptions as in real address mode.</string></para>
+  <para unique="1091481">Same exceptions as in real address mode.</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#PF(fault-code) </string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF(fault-code) </term>
+    <listitem><para unique="1091482">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091484" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1091484" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091486">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091487">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code) </string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF(fault-code) </term>
+    <listitem><para unique="1091488">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CPUID.01H:EDX.SSE2[26] = 0.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091489">If CPUID.01H:EDX.SSE2[26] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091490">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091491">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

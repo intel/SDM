@@ -1,38 +1,268 @@
 <instruction name="PEXTRW">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Extract Word</shortdesc>
- <longdesc><para unique="1091559">
-   <string>Copies the word in the source operand (second operand) specified by the count operand (third operand) to the destination operand (first operand). The source operand can be an MMX technology register or an XMM register. The destination operand can be the low word of a general-purpose register or a 16-bit memory address. The count operand is an 8-bit immediate. When specifying a word location in an MMX technology register, the 2 least-signifi&#173;cant bits of the count operand specify the location; for an XMM register, the 3 least-significant bits specify the loca&#173;tion. The content of the destination register above bit 16 is cleared (set to all 0s).</string></para>
-  <para unique="1091560">
-   <string>In 64-bit mode, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15, R8-15). If the destination operand is a general-purpose register, the default operand size is 64-bits in 64-bit mode. </string></para>
-  <para unique="1091561">
-   <string>Note: In VEX.128 encoded versions, VEX.vvvv is reserved and must be 1111b, VEX.L must be 0, otherwise the instruction will #UD. In EVEX.128 encoded versions, EVEX.vvvv is reserved and must be 1111b, EVEX.L must be 0, otherwise the instruction will #UD. If the destination operand is a register, the default operand size in 64-bit mode for VPEXTRW is 64 bits, the bits above the least significant byte/word/dword data are filled with zeros.</string></para>
+ <encoding_table><table unique="1091390">
+   <thead><tr>
+     <th colspan="2"><para unique="1091392">Opcode/</para>
+      <para unique="1091393">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op/ En</para>
+      </th>
+     <th><para unique="1091399">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091401">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><col width="73.35792000000001pt"/>
+   <col width="83.21616pt"/>
+   <col width="29.39256pt"/>
+   <col width="48.024pt"/>
+   <col width="70.1028pt"/>
+   <col width="206.70408pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1091414">NP 0F C5 /r ib<superscript><footnote><para unique="1091410" format="TableFootnote">See note in <link unique="1091408" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#27214: 02_Level: 2.4 Instruction Exception Specification" xrefstyle="SectionNum&amp;Title(,)">Section 2.5, &#8220;Intel&#174; AVX and Intel&#174; SSE Instruction Exception Classification,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Soft&#173;ware Developer&#8217;s Manual, Volume 2A, and <link unique="1092414" linkend="&lt;c&gt;__sdm_vol3B_ch25.fm#65163: 03_Level: 19.25.3 Exception Conditions of Legacy SIMD Instruction Operating" xrefstyle="SectionNum&amp;Title(,)">Section 25.25.3, &#8220;Exception Conditions of Legacy SIMD Instructions Operating on MMX Registers,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B.</para>
+         </footnote></superscript></para>
+      <para unique="1091415">PEXTRW reg, mm, imm8 </para>
+      </td>
+     <td><para unique="1091419">A</para>
+      </td>
+     <td><para unique="1091421">V/V</para>
+      </td>
+     <td><para unique="1091423">SSE</para>
+      </td>
+     <td><para unique="1091425">Extract the word specified by imm8 from mm and move it to reg, bits 15-0. The upper bits of r32 or r64 is zeroed.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091427">66 0F C5 /r ib</para>
+      <para unique="1091428">PEXTRW reg, xmm, imm8 </para>
+      </td>
+     <td><para unique="1091432">A</para>
+      </td>
+     <td><para unique="1091434">V/V</para>
+      </td>
+     <td><para unique="1091436">SSE2</para>
+      </td>
+     <td><para unique="1091438">Extract the word specified by imm8 from xmm and move it to reg, bits 15-0. The upper bits of r32 or r64 is zeroed.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091440">66 0F 3A 15 /r ib</para>
+      <para unique="1091441">PEXTRW reg/m16, xmm, imm8</para>
+      </td>
+     <td><para unique="1091445">B</para>
+      </td>
+     <td><para unique="1091447">V/V</para>
+      </td>
+     <td><para unique="1091449">SSE4_1</para>
+      </td>
+     <td><para unique="1091451">Extract the word specified by imm8 from xmm and copy it to lowest 16 bits of reg or m16. Zero-extend the result in the destination, r32 or r64.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091453">VEX.128.66.0F.W0 C5 /r ib</para>
+      <para unique="1091454">VPEXTRW reg, xmm1, imm8</para>
+      </td>
+     <td><para unique="1091458">A</para>
+      </td>
+     <td><para unique="1091463">V<superscript><footnote><para unique="1091462" format="TableFootnote">In 64-bit mode, VEX.W1 is ignored for VPEXTRW (similar to legacy REX.W=1 prefix in PEXTRW).</para>
+         </footnote></superscript>/V</para>
+      </td>
+     <td><para unique="1091465">AVX</para>
+      </td>
+     <td><para unique="1091467">Extract the word specified by imm8 from xmm1 and move it to reg, bits 15:0. Zero-extend the result. The upper bits of r64/r32 is filled with zeros.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091469">VEX.128.66.0F3A.W0 15 /r ib</para>
+      <para unique="1091470">VPEXTRW reg/m16, xmm2, imm8</para>
+      </td>
+     <td><para unique="1091474">B</para>
+      </td>
+     <td><para unique="1091476">V/V</para>
+      </td>
+     <td><para unique="1091478">AVX</para>
+      </td>
+     <td><para unique="1091480">Extract a word integer value from xmm2 at the source word offset specified by imm8 into reg or m16. The upper bits of r64/r32 is filled with zeros.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091969">EVEX.128.66.0F.WIG C5 /r ib</para>
+      <para unique="1091970">VPEXTRW reg, xmm1, imm8</para>
+      </td>
+     <td><para unique="1091974">A</para>
+      </td>
+     <td><para unique="1091976">V/V</para>
+      </td>
+     <td><para unique="1091978">AVX512BW</para>
+      <para unique="1091982">OR AVX10.1<anchor id="+331084"/></para>
+      </td>
+     <td><para unique="1091984">Extract the word specified by imm8 from xmm1 and move it to reg, bits 15:0. Zero-extend the result. The upper bits of r64/r32 is filled with zeros.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091955">EVEX.128.66.0F3A.WIG 15 /r ib</para>
+      <para unique="1091956">VPEXTRW reg/m16, xmm2, imm8</para>
+      </td>
+     <td><para unique="1091960">C</para>
+      </td>
+     <td><para unique="1091962">V/V</para>
+      </td>
+     <td><para unique="1091964">AVX512BW</para>
+      <para unique="1091965">OR AVX10.1</para>
+      </td>
+     <td><para unique="1091967">Extract a word integer value from xmm2 at the source word offset specified by imm8 into reg or m16. The upper bits of r64/r32 is filled with zeros.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091508">
+   <col width="42.42096pt"/>
+   <col width="67.62024pt"/>
+   <col width="98.78112pt"/>
+   <col width="100.60056pt"/>
+   <col width="98.89992pt"/>
+   <col width="102.41856pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091510">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091512">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091514">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091516">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091518">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091520">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091522">A</para>
+      </td>
+     <td valign="middle"><para unique="1091524">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091526">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091528">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091530">imm8</para>
+      </td>
+     <td valign="middle"><para unique="1091532">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091534">B</para>
+      </td>
+     <td valign="middle"><para unique="1091536">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091538">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091540">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091542">imm8</para>
+      </td>
+     <td valign="middle"><para unique="1091544">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091546">C</para>
+      </td>
+     <td valign="middle"><para unique="1091548">Tuple1 Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1091550">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091552">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091554">imm8</para>
+      </td>
+     <td valign="middle"><para unique="1091556">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091557">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091559">Copies the word in the source operand (second operand) specified by the count operand (third operand) to the destination operand (first operand). The source operand can be an MMX technology register or an XMM register. The destination operand can be the low word of a general-purpose register or a 16-bit memory address. The count operand is an 8-bit immediate. When specifying a word location in an MMX technology register, the 2 least-signifi&#173;cant bits of the count operand specify the location; for an XMM register, the 3 least-significant bits specify the loca&#173;tion. The content of the destination register above bit 16 is cleared (set to all 0s).</para>
+  <para unique="1091560">In 64-bit mode, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15, R8-15). If the destination operand is a general-purpose register, the default operand size is 64-bits in 64-bit mode. </para>
+  <para unique="1091561">Note: In VEX.128 encoded versions, VEX.vvvv is reserved and must be 1111b, VEX.L must be 0, otherwise the instruction will #UD. In EVEX.128 encoded versions, EVEX.vvvv is reserved and must be 1111b, EVEX.L must be 0, otherwise the instruction will #UD. If the destination operand is a register, the default operand size in 64-bit mode for VPEXTRW is 64 bits, the bits above the least significant byte/word/dword data are filled with zeros.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF (DEST = Mem16)
+THEN
+	SEL := COUNT[2:0];
+	TEMP := (Src &gt;&gt; SEL*16) AND FFFFH;
+	Mem16 := TEMP[15:0];
+ELSE IF (64-Bit Mode and destination is a general-purpose register)
+	THEN
+		FOR (PEXTRW instruction with 64-bit source operand)
+		&#160;&#160;&#160;&#160;{	SEL := COUNT[1:0];
+			TEMP := (SRC &gt;&gt; (SEL * 16)) AND FFFFH;
+			r64[15:0] := TEMP[15:0];
+			r64[63:16] := ZERO_FILL; };
+		FOR (PEXTRW instruction with 128-bit source operand)
+		 &#160;&#160;&#160;{	SEL := COUNT[2:0];
+			TEMP := (SRC &gt;&gt; (SEL * 16)) AND FFFFH;
+			r64[15:0] := TEMP[15:0];
+			r64[63:16] := ZERO_FILL; }
+	ELSE
+		FOR (PEXTRW instruction with 64-bit source operand)
+		&#160;&#160;&#160;{	SEL := COUNT[1:0];
+			TEMP := (SRC &gt;&gt; (SEL * 16)) AND FFFFH;
+			r32[15:0] := TEMP[15:0];
+			r32[31:16] := ZERO_FILL; };
+		FOR (PEXTRW instruction with 128-bit source operand)
+		&#160;&#160;&#160;{	SEL := COUNT[2:0];
+			TEMP := (SRC &gt;&gt; (SEL * 16)) AND FFFFH;
+			r32[15:0] := TEMP[15:0];
+			r32[31:16] := ZERO_FILL; };
+	FI;
+FI;</programlisting>
+  <section level="7">
+   <title unique="1091590">VPEXTRW ( dest=m16)</title>
+   <programlisting>SRC_Offset := imm8[2:0]
+Mem16 := (Src &gt;&gt; Src_Offset*16)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091594">VPEXTRW ( dest=reg)</title>
+   <programlisting>IF (64-Bit Mode )
+THEN
+	SRC_Offset := imm8[2:0]
+	DEST[15:0] := ((Src &gt;&gt; Src_Offset*16) AND 0FFFFh)
+	DEST[63:16] := ZERO_FILL;
+ELSE
+	SRC_Offset := imm8[2:0]
+	DEST[15:0] := ((Src &gt;&gt; Src_Offset*16) AND 0FFFFh)
+	DEST[31:16] := ZERO_FILL;
+FI</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>PEXTRW int _mm_extract_pi16 (__m64 a, int n)</string><string>
-</string><string>PEXTRW int _mm_extract_epi16 ( __m128i a, int imm) </string><string>
-</string></programlisting>
+  <programlisting>PEXTRW int _mm_extract_pi16 (__m64 a, int n)
+PEXTRW int _mm_extract_epi16 ( __m128i a, int imm)</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1091609">
-   <string>None.</string></para>
+  <para unique="1091609">None.</para>
   </subsection>
  <subsection title="Numeric Exceptions">
-  <para unique="1091611">
-   <string>None.</string></para>
+  <para unique="1091611">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091616" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="48385: 06_Table: Table 2-22. Type 5 Class Exception Conditions"><string>Table&#160;2&#8209;22, &#8220;Type 5 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091620" format="xIndent1">
-   <string>EVEX-encoded instruction, see </string><link linkend="32485: 06_Table: Table 2-57. Type E9NF Class Exception Conditions"><string>Table&#160;2&#8209;59, &#8220;Type E9NF Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091621" format="xIndent1">
-   <string>Additionally:</string></para>
+  <para unique="1091616" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1091614" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#48385: 06_Table: Table 2-22. Type 5 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;22, &#8220;Type 5 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091620" format="xIndent1">EVEX-encoded instruction, see <link unique="1091618" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#32485: 06_Table: Table 2-57. Type E9NF Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;59, &#8220;Type E9NF Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091621" format="xIndent1">Additionally:</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If VEX.L = 1 or EVEX.L&#8217;L &gt; 0.</string></listitem>
-    <listitem><string>If VEX.vvvv != 1111B or EVEX.vvvv != 1111B.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091622">If VEX.L = 1 or EVEX.L&#8217;L &gt; 0.</para>
+     </listitem>
+    <listitem><para unique="1091623">If VEX.vvvv != 1111B or EVEX.vvvv != 1111B.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

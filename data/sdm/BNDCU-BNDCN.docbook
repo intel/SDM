@@ -1,0 +1,221 @@
+<instruction name="BNDCU/BNDCN">
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <shortdesc>Check Upper Bound</shortdesc>
+ <encoding_table><table unique="1261191">
+   <col width="50.66568pt"/>
+   <col width="72.08424pt"/>
+   <col width="37.49976pt"/>
+   <col width="48.74976pt"/>
+   <col width="44.24976pt"/>
+   <col width="263.50056pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1261193">Opcode/&#8232;Instruction</para>
+      </th>
+     <th><para unique="1261197">Op/En</para>
+      </th>
+     <th><para unique="1261199">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1261201">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261203">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1261205">F2 0F 1A /r</para>
+      <para unique="1261206">BNDCU bnd, r/m32</para>
+      </td>
+     <td><para unique="1261210">RM</para>
+      </td>
+     <td><para unique="1261212">N.E./V</para>
+      </td>
+     <td><para unique="1261214">MPX</para>
+      </td>
+     <td><para unique="1261216">Generate a #BR if the address in r/m32 is higher than the upper bound in bnd.UB (bnb.UB in 1\qs complement form).</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261218">F2 0F 1A /r</para>
+      <para unique="1261219">BNDCU bnd, r/m64</para>
+      </td>
+     <td><para unique="1261223">RM</para>
+      </td>
+     <td><para unique="1261225">V/N.E.</para>
+      </td>
+     <td><para unique="1261227">MPX</para>
+      </td>
+     <td><para unique="1261229">Generate a #BR if the address in r/m64 is higher than the upper bound in bnd.UB (bnb.UB in 1\qs complement form).</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261231">F2 0F 1B /r</para>
+      <para unique="1261232">BNDCN bnd, r/m32</para>
+      </td>
+     <td><para unique="1261236">RM</para>
+      </td>
+     <td><para unique="1261238">N.E./V</para>
+      </td>
+     <td><para unique="1261240">MPX</para>
+      </td>
+     <td><para unique="1261242">Generate a #BR if the address in r/m32 is higher than the upper bound in bnd.UB (bnb.UB not in 1\qs complement form).</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261244">F2 0F 1B /r</para>
+      <para unique="1261245">BNDCN bnd, r/m64</para>
+      </td>
+     <td><para unique="1261249">RM</para>
+      </td>
+     <td><para unique="1261251">V/N.E.</para>
+      </td>
+     <td><para unique="1261253">MPX</para>
+      </td>
+     <td><para unique="1261255">Generate a #BR if the address in r/m64 is higher than the upper bound in bnd.UB (bnb.UB not in 1\qs complement form).</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261257">
+   <col width="63.49176pt"/>
+   <col width="146.15352000000001pt"/>
+   <col width="152.02295999999998pt"/>
+   <col width="152.24687999999998pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261259">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261261">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261263">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261265">Operand 3</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261267">RM</para>
+      </td>
+     <td valign="middle"><para unique="1261269">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261271">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261273">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261274">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261276">Compare the address in the second operand with the upper bound in bnd. The second operand can be either a register or a memory operand. If the address is higher than the upper bound in bnd.UB, it will set BNDSTATUS to 01H and signal a #BR exception.</para>
+  <para unique="1261277">BNDCU perform 1&#8217;s complement operation on the upper bound of bnd first before proceeding with address compar&#173;ison. BNDCN perform address comparison directly using the upper bound in bnd that is already reverted out of 1&#8217;s complement form. </para>
+  <para unique="1261278">This instruction does not cause any memory access, and does not read or write any flags. </para>
+  <para unique="1261279">Effective address computation of m32/64 has identical behavior to LEA</para>
+  </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1261281">BNDCU BND, reg</title>
+   <programlisting>IF reg &gt; NOT(BND.UB) Then
+	BNDSTATUS := 01H;
+	#BR;
+FI;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261287">BNDCU BND, mem</title>
+   <programlisting>TEMP := LEA(mem);
+IF TEMP &gt; NOT(BND.UB) Then
+	BNDSTATUS := 01H;
+	#BR;
+FI;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261294">BNDCN BND, reg</title>
+   <programlisting>IF reg &gt; BND.UB Then
+	BNDSTATUS := 01H;
+	#BR;
+FI;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261300">BNDCN BND, mem</title>
+   <programlisting>TEMP := LEA(mem);
+IF TEMP &gt; BND.UB Then
+	BNDSTATUS := 01H;
+	#BR;
+FI;</programlisting>
+   </section>
+  </operation>
+ <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
+  <programlisting>BNDCU	 .	void   _bnd_chk_ptr_ubounds(const void *q)</programlisting>
+  </subsection>
+ <subsection title="Flags Affected">
+  <para unique="1261309">None</para>
+  </subsection>
+ <subsection title="Protected Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term>#BR</term>
+    <listitem><para unique="1261311">If upper bound check fails.</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#UD</term>
+    <listitem><para unique="1261312">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1261313">If ModRM.r/m encodes BND4-BND7 when Intel MPX is enabled.</para>
+     </listitem>
+    <listitem><para unique="1261314">If 67H prefix is not used and CS.D=0.</para>
+     </listitem>
+    <listitem><para unique="1261315">If 67H prefix is used and CS.D=1.</para>
+     </listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Real-Address Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term>#BR</term>
+    <listitem><para unique="1261317">If upper bound check fails.</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#UD</term>
+    <listitem><para unique="1261318">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1261319">If ModRM.r/m encodes BND4-BND7 when Intel MPX is enabled.</para>
+     </listitem>
+    <listitem><para unique="1261320">If 16-bit addressing is used.</para>
+     </listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Virtual-8086 Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term>#BR</term>
+    <listitem><para unique="1261322">If upper bound check fails.</para>
+     </listitem>
+    </variablelistentry>
+   <variablelistentry>
+    <term>#UD</term>
+    <listitem><para unique="1261323">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1261324">If ModRM.r/m encodes BND4-BND7 when Intel MPX is enabled.</para>
+     </listitem>
+    <listitem><para unique="1261325">If 16-bit addressing is used.</para>
+     </listitem>
+    </variablelistentry>
+   </variablelist>
+  </subsection>
+ <subsection title="Compatibility Mode Exceptions">
+  <para unique="1261327" format="xIndent1">Same exceptions as in protected mode.</para>
+  </subsection>
+ <subsection title="64-Bit Mode Exceptions">
+  <variablelist>
+   <variablelistentry>
+    <term>#UD</term>
+    <listitem><para unique="1261329">If ModRM.r/m and REX encodes BND4-BND15 when Intel MPX is enabled.</para>
+     </listitem>
+    </variablelistentry>
+   </variablelist>
+  <para unique="1261330" format="xIndent1">Same exceptions as in protected mode.</para>
+  </subsection>
+ </instruction>

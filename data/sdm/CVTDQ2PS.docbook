@@ -1,49 +1,290 @@
 <instruction name="CVTDQ2PS">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Convert Packed Doubleword Integers to Packed Single Precision Floating-Point Values</shortdesc>
- <longdesc><para unique="1261340">
-   <string>Converts four, eight or sixteen packed signed doubleword integers in the source operand to four, eight or sixteen packed single precision floating-point values in the destination operand.</string></para>
-  <para unique="1261341">
-   <string>EVEX encoded versions: The source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory loca&#173;tion or a 512/256/128-bit vector broadcasted from a 32-bit memory location. The destination operand is a ZMM/YMM/XMM register conditionally updated with writemask k1.</string></para>
-  <para unique="1261342">
-   <string>VEX.256 encoded version: The source operand is a YMM register or 256- bit memory location. The destination operand is a YMM register. Bits (MAXVL-1:256) of the corresponding register destination are zeroed.</string></para>
-  <para unique="1261343">
-   <string>VEX.128 encoded version: The source operand is an XMM register or 128- bit memory location. The destination operand is a XMM register. The upper bits (MAXVL-1:128) of the corresponding register destination are zeroed.</string></para>
-  <para unique="1261344">
-   <string>128-bit Legacy SSE version: The source operand is an XMM register or 128- bit memory location. The destination operand is an XMM register. The upper Bits (MAXVL-1:128) of the corresponding register destination are unmodi&#173;fied.</string></para>
-  <para unique="1261345">
-   <string>VEX.vvvv and EVEX.vvvv are reserved and must be 1111b, otherwise instructions will #UD.</string></para>
+ <encoding_table><table unique="1261192">
+   <col width="65.15352pt"/>
+   <col width="92.2392pt"/>
+   <col width="28.95696pt"/>
+   <col width="48.74976pt"/>
+   <col width="71.24976pt"/>
+   <col width="205.33391999999998pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1261194">Opcode</para>
+      <para unique="1261195">Instruction</para>
+      </th>
+     <th><para unique="1261199">Op / En</para>
+      </th>
+     <th><para unique="1261201">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1261203">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261205">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1261207">NP 0F 5B /r</para>
+      <para unique="1261208">CVTDQ2PS xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1261212">A</para>
+      </td>
+     <td><para unique="1261214">V/V</para>
+      </td>
+     <td><para unique="1261216">SSE2</para>
+      </td>
+     <td><para unique="1261218">Convert four packed signed doubleword integers from xmm2/mem to four packed single precision floating-point values in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261220">VEX.128.0F.WIG 5B /r</para>
+      <para unique="1261221">VCVTDQ2PS xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1261225">A</para>
+      </td>
+     <td><para unique="1261227">V/V</para>
+      </td>
+     <td><para unique="1261232">AVX</para>
+      </td>
+     <td><para unique="1261234">Convert four packed signed doubleword integers from xmm2/mem to four packed single precision floating-point values in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261236">VEX.256.0F.WIG 5B /r</para>
+      <para unique="1261237">VCVTDQ2PS ymm1, ymm2/m256</para>
+      </td>
+     <td><para unique="1261241">A</para>
+      </td>
+     <td><para unique="1261243">V/V</para>
+      </td>
+     <td><para unique="1261248">AVX</para>
+      </td>
+     <td><para unique="1261250">Convert eight packed signed doubleword integers from ymm2/mem to eight packed single precision floating-point values in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261850">EVEX.128.0F.W0 5B /r</para>
+      <para unique="1261851">VCVTDQ2PS xmm1 {k1}{z}, xmm2/m128/m32bcst</para>
+      </td>
+     <td><para unique="1261855">B</para>
+      </td>
+     <td><para unique="1261857">V/V</para>
+      </td>
+     <td><para unique="1261859">(AVX512VL AND</para>
+      <para unique="1261863">AVX512F) OR AVX10.1<anchor id="+213196"/></para>
+      </td>
+     <td><para unique="1261868">Convert four packed signed doubleword integers from xmm2/m128/m32bcst to four packed single precision floating-point values in xmm1with writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261833">EVEX.256.0F.W0 5B /r</para>
+      <para unique="1261834">VCVTDQ2PS ymm1 {k1}{z}, ymm2/m256/m32bcst</para>
+      </td>
+     <td><para unique="1261838">B</para>
+      </td>
+     <td><para unique="1261840">V/V</para>
+      </td>
+     <td><para unique="1261842">(AVX512VL AND</para>
+      <para unique="1261846">AVX512F) OR AVX10.1<anchor id="+471159"/></para>
+      </td>
+     <td><para unique="1261848">Convert eight packed signed doubleword integers from ymm2/m256/m32bcst to eight packed single precision floating-point values in ymm1with writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261820">EVEX.256.NP.0F.W0 5B /r</para>
+      <para unique="1261821">VCVTDQ2PS ymm1 {k1}{z}, ymm2/m256/m32bcst {er}</para>
+      </td>
+     <td><para unique="1261825">B</para>
+      </td>
+     <td><para unique="1261827">V/V</para>
+      </td>
+     <td><para unique="1261829">AVX10.2<superscript>1</superscript></para>
+      </td>
+     <td><para unique="1261831">Convert eight packed signed doubleword integers from ymm2/m256/m32bcst to eight packed single precision floating-point values in ymm1with writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261803">EVEX.512.0F.W0 5B /r</para>
+      <para unique="1261804">VCVTDQ2PS zmm1 {k1}{z}, zmm2/m512/m32bcst {er}</para>
+      </td>
+     <td><para unique="1261808">B</para>
+      </td>
+     <td><para unique="1261810">V/V</para>
+      </td>
+     <td><para unique="1261815">AVX512F </para>
+      <para unique="1261816">OR AVX10.1<anchor id="+595786"/></para>
+      </td>
+     <td><para unique="1261818">Convert sixteen packed signed doubleword integers from zmm2/m512/m32bcst to sixteen packed single precision floating-point values in zmm1with writemask k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261301">
+   <col width="56.54952pt"/>
+   <col width="56.54952pt"/>
+   <col width="94.64327999999999pt"/>
+   <col width="100.32408pt"/>
+   <col width="102.81312pt"/>
+   <col width="104.72112000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261303">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261305">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1261307">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261309">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261311">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261313">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261315">A</para>
+      </td>
+     <td valign="middle"><para unique="1261317">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261319">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261321">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261323">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261325">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1261327">B</para>
+      </td>
+     <td valign="middle"><para unique="1261329">Full</para>
+      </td>
+     <td valign="middle"><para unique="1261331">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261333">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261335">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261337">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261338">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261340">Converts four, eight or sixteen packed signed doubleword integers in the source operand to four, eight or sixteen packed single precision floating-point values in the destination operand.</para>
+  <para unique="1261341">EVEX encoded versions: The source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory loca&#173;tion or a 512/256/128-bit vector broadcasted from a 32-bit memory location. The destination operand is a ZMM/YMM/XMM register conditionally updated with writemask k1.</para>
+  <para unique="1261342">VEX.256 encoded version: The source operand is a YMM register or 256- bit memory location. The destination operand is a YMM register. Bits (MAXVL-1:256) of the corresponding register destination are zeroed.</para>
+  <para unique="1261343">VEX.128 encoded version: The source operand is an XMM register or 128- bit memory location. The destination operand is a XMM register. The upper bits (MAXVL-1:128) of the corresponding register destination are zeroed.</para>
+  <para unique="1261344">128-bit Legacy SSE version: The source operand is an XMM register or 128- bit memory location. The destination operand is an XMM register. The upper Bits (MAXVL-1:128) of the corresponding register destination are unmodi&#173;fied.</para>
+  <para unique="1261345">VEX.vvvv and EVEX.vvvv are reserved and must be 1111b, otherwise instructions will #UD.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1261347">VCVTDQ2PS (EVEX Encoded Versions) When SRC Operand is a Register</title>
+   <programlisting>(KL, VL) = (4, 128), (8, 256), (16, 512)
+IF (VL = 512) AND (EVEX.b = 1)
+	THEN
+		SET_ROUNDING_MODE_FOR_THIS_INSTRUCTION(EVEX.RC); 				 ; refer to Table 15&#8209;4 in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1
+	ELSE
+		SET_ROUNDING_MODE_FOR_THIS_INSTRUCTION(MXCSR.RC); 				 ; refer to Table 15&#8209;4 in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1
+FI;
+FOR j := 0 TO KL-1
+	i := j * 32
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+31:i] :=
+			Convert_Integer_To_Single_Precision_Floating_Point(SRC[i+31:i])
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+31:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+31:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261377">VCVTDQ2PS (EVEX Encoded Versions) When SRC Operand is a Memory Source</title>
+   <programlisting>(KL, VL) = (4, 128), (8, 256), (16, 512)
+FOR j := 0 TO KL-1
+	i := j * 32
+	IF k1[j] OR *no writemask*
+		THEN
+			IF (EVEX.b = 1)
+				THEN
+					DEST[i+31:i] :=
+			Convert_Integer_To_Single_Precision_Floating_Point(SRC[31:0])
+				ELSE
+					DEST[i+31:i] :=
+			Convert_Integer_To_Single_Precision_Floating_Point(SRC[i+31:i])
+			FI;
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+31:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+31:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261402">VCVTDQ2PS (VEX.256 Encoded Version)</title>
+   <programlisting>DEST[31:0] := Convert_Integer_To_Single_Precision_Floating_Point(SRC[31:0])
+DEST[63:32] := Convert_Integer_To_Single_Precision_Floating_Point(SRC[63:32])
+DEST[95:64] := Convert_Integer_To_Single_Precision_Floating_Point(SRC[95:64])
+DEST[127:96] := Convert_Integer_To_Single_Precision_Floating_Point(SRC[127:96)
+DEST[159:128] := Convert_Integer_To_Single_Precision_Floating_Point(SRC[159:128])
+DEST[191:160] := Convert_Integer_To_Single_Precision_Floating_Point(SRC[191:160])
+DEST[223:192] := Convert_Integer_To_Single_Precision_Floating_Point(SRC[223:192])
+DEST[255:224] := Convert_Integer_To_Single_Precision_Floating_Point(SRC[255:224)
+DEST[MAXVL-1:256] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261413">VCVTDQ2PS (VEX.128 Encoded Version)</title>
+   <programlisting>DEST[31:0] := Convert_Integer_To_Single_Precision_Floating_Point(SRC[31:0])
+DEST[63:32] := Convert_Integer_To_Single_Precision_Floating_Point(SRC[63:32])
+DEST[95:64] := Convert_Integer_To_Single_Precision_Floating_Point(SRC[95:64])
+DEST[127:96] := Convert_Integer_To_Single_Precision_Floating_Point(SRC[127z:96)
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261420">CVTDQ2PS (128-bit Legacy SSE Version)</title>
+   <programlisting>DEST[31:0] := Convert_Integer_To_Single_Precision_Floating_Point(SRC[31:0])
+DEST[63:32] := Convert_Integer_To_Single_Precision_Floating_Point(SRC[63:32])
+DEST[95:64] := Convert_Integer_To_Single_Precision_Floating_Point(SRC[95:64])
+DEST[127:96] := Convert_Integer_To_Single_Precision_Floating_Point(SRC[127z:96)
+DEST[MAXVL-1:128] (unmodified)</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VCVTDQ2PS __m512 _mm512_cvtepi32_ps( __m512i a);</string><string>
-</string><string>VCVTDQ2PS __m512 _mm512_mask_cvtepi32_ps( __m512 s, __mmask16 k, __m512i a);</string><string>
-</string><string>VCVTDQ2PS __m512 _mm512_maskz_cvtepi32_ps( __mmask16 k, __m512i a);</string><string>
-</string><string>VCVTDQ2PS __m512 _mm512_cvt_roundepi32_ps( __m512i a, int r);</string><string>
-</string><string>VCVTDQ2PS __m512 _mm512_mask_cvt_roundepi_ps( __m512 s, __mmask16 k, __m512i a, int r);</string><string>
-</string><string>VCVTDQ2PS __m512 _mm512_maskz_cvt_roundepi32_ps( __mmask16 k, __m512i a, int r);</string><string>
-</string><string>VCVTDQ2PS __m256 _mm256_mask_cvtepi32_ps( __m256 s, __mmask8 k, __m256i a);</string><string>
-</string><string>VCVTDQ2PS __m256 _mm256_maskz_cvtepi32_ps( __mmask8 k, __m256i a);</string><string>
-</string><string>VCVTDQ2PS __m128 _mm_mask_cvtepi32_ps( __m128 s, __mmask8 k, __m128i a);</string><string>
-</string><string>VCVTDQ2PS __m128 _mm_maskz_cvtepi32_ps( __mmask8 k, __m128i a);</string><string>
-</string><string>CVTDQ2PS __m256 _mm256_cvtepi32_ps (__m256i src)</string><string>
-</string><string>CVTDQ2PS __m128 _mm_cvtepi32_ps (__m128i src)</string><string>
-</string></programlisting>
+  <programlisting>VCVTDQ2PS __m512 _mm512_cvtepi32_ps( __m512i a);
+VCVTDQ2PS __m512 _mm512_mask_cvtepi32_ps( __m512 s, __mmask16 k, __m512i a);
+VCVTDQ2PS __m512 _mm512_maskz_cvtepi32_ps( __mmask16 k, __m512i a);
+VCVTDQ2PS __m512 _mm512_cvt_roundepi32_ps( __m512i a, int r);
+VCVTDQ2PS __m512 _mm512_mask_cvt_roundepi_ps( __m512 s, __mmask16 k, __m512i a, int r);
+VCVTDQ2PS __m512 _mm512_maskz_cvt_roundepi32_ps( __mmask16 k, __m512i a, int r);
+VCVTDQ2PS __m256 _mm256_mask_cvtepi32_ps( __m256 s, __mmask8 k, __m256i a);
+VCVTDQ2PS __m256 _mm256_maskz_cvtepi32_ps( __mmask8 k, __m256i a);
+VCVTDQ2PS __m128 _mm_mask_cvtepi32_ps( __m128 s, __mmask8 k, __m128i a);
+VCVTDQ2PS __m128 _mm_maskz_cvtepi32_ps( __mmask8 k, __m128i a);
+CVTDQ2PS __m256 _mm256_cvtepi32_ps (__m256i src)
+CVTDQ2PS __m128 _mm_cvtepi32_ps (__m128i src)</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1261440">
-   <string>Precision.</string></para>
+  <para unique="1261440">Precision.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1261445" format="xIndent1">
-   <string>VEX-encoded instructions, see </string><link linkend="73761: 06_Table: Table 2-19. Type 2 Class Exception Conditions"><string>Table&#160;2&#8209;19, &#8220;Type 2 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1261449">
-   <string>EVEX-encoded instructions, see </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1261450" format="xIndent1">
-   <string>Additionally:</string></para>
+  <para unique="1261445" format="xIndent1">VEX-encoded instructions, see <link unique="1261443" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#73761: 06_Table: Table 2-19. Type 2 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;19, &#8220;Type 2 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1261449">EVEX-encoded instructions, see <link unique="1261447" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1261450" format="xIndent1">Additionally:</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If VEX.vvvv != 1111B or EVEX.vvvv != 1111B.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1261451">If VEX.vvvv != 1111B or EVEX.vvvv != 1111B.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

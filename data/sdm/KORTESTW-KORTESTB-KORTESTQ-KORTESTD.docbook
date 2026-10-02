@@ -1,25 +1,172 @@
 <instruction name="KORTESTW/KORTESTB/KORTESTQ/KORTESTD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>OR Masks and Set Flags</shortdesc>
- <longdesc><para unique="1261274">
-   <string>Performs a bitwise OR between the vector mask register k2, and the vector mask register k1, and sets CF and ZF based on the operation result. </string></para>
-  <para unique="1261275">
-   <string>ZF flag is set if both sources are 0x0. CF is set if, after the OR operation is done, the operation result is all 1&#8217;s.</string></para>
+ <encoding_table><table unique="1261190">
+   <col width="41.55048pt"/>
+   <col width="59.11559999999999pt"/>
+   <col width="29.49984pt"/>
+   <col width="48.74976pt"/>
+   <col width="57.58272pt"/>
+   <col width="276.79248pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1261192">Opcode/&#8232;Instruction</para>
+      </th>
+     <th><para unique="1261196">Op/En</para>
+      </th>
+     <th><para unique="1261198">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1261200">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261202">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1261204">VEX.L0.0F.W0 98 /r </para>
+      <para unique="1261205">KORTESTW k1, k2</para>
+      </td>
+     <td><para unique="1261209">RR</para>
+      </td>
+     <td><para unique="1261211">V/V</para>
+      </td>
+     <td><para unique="1261610">AVX512F</para>
+      <para unique="1261611">OR AVX10.1</para>
+      </td>
+     <td><para unique="1261218">Bitwise OR 16 bits masks k1 and k2 and update ZF and CF accordingly.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261220">VEX.L0.66.0F.W0 98 /r</para>
+      <para unique="1261221">KORTESTB k1, k2</para>
+      </td>
+     <td><para unique="1261225">RR</para>
+      </td>
+     <td><para unique="1261227">V/V</para>
+      </td>
+     <td><para unique="1261613">AVX512DQ</para>
+      <para unique="1261614">OR AVX10.1</para>
+      </td>
+     <td><para unique="1261231">Bitwise OR 8 bits masks k1 and k2 and update ZF and CF accordingly.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261233">VEX.L0.0F.W1 98 /r </para>
+      <para unique="1261234">KORTESTQ k1, k2</para>
+      </td>
+     <td><para unique="1261238">RR</para>
+      </td>
+     <td><para unique="1261240">V/V</para>
+      </td>
+     <td><para unique="1261616">AVX512BW</para>
+      <para unique="1261617">OR AVX10.1</para>
+      </td>
+     <td><para unique="1261244">Bitwise OR 64 bits masks k1 and k2 and update ZF and CF accordingly.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261246">VEX.L0.66.0F.W1 98 /r </para>
+      <para unique="1261247">KORTESTD k1, k2</para>
+      </td>
+     <td><para unique="1261251">RR</para>
+      </td>
+     <td><para unique="1261253">V/V</para>
+      </td>
+     <td><para unique="1261619">AVX512BW</para>
+      <para unique="1261620">OR AVX10.1</para>
+      </td>
+     <td><para unique="1261257">Bitwise OR 32 bits masks k1 and k2 and update ZF and CF accordingly.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261259">
+   <col width="56.29248pt"/>
+   <col width="221.29847999999998pt"/>
+   <col width="232.22448pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261261">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261263">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261265">Operand 2</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261267">RR</para>
+      </td>
+     <td valign="middle"><para unique="1261269">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261271">ModRM:r/m (r, ModRM:[7:6] must be 11b)</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261272">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261274">Performs a bitwise OR between the vector mask register k2, and the vector mask register k1, and sets CF and ZF based on the operation result. </para>
+  <para unique="1261275">ZF flag is set if both sources are 0x0. CF is set if, after the OR operation is done, the operation result is all 1&#8217;s.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1261277">KORTESTW </title>
+   <programlisting>TMP[15:0] := DEST[15:0] BITWISE OR SRC[15:0]
+IF(TMP[15:0]=0)
+	THEN ZF := 1
+	ELSE ZF := 0
+FI;
+IF(TMP[15:0]=FFFFh)
+	THEN CF := 1
+	ELSE CF := 0
+FI;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261288">KORTESTB </title>
+   <programlisting>TMP[7:0] := DEST[7:0] BITWISE OR SRC[7:0]
+IF(TMP[7:0]=0)
+	THEN ZF := 1
+	ELSE ZF := 0
+FI;
+IF(TMP[7:0]==FFh)
+	THEN CF := 1
+	ELSE CF := 0
+FI;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261299">KORTESTQ </title>
+   <programlisting>TMP[63:0] := DEST[63:0] BITWISE OR SRC[63:0]
+IF(TMP[63:0]=0)
+	THEN ZF := 1
+	ELSE ZF := 0
+FI;
+IF(TMP[63:0]==FFFFFFFF_FFFFFFFFh)
+	THEN CF := 1
+	ELSE CF := 0
+FI;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261310">KORTESTD </title>
+   <programlisting>TMP[31:0] := DEST[31:0] BITWISE OR SRC[31:0]
+IF(TMP[31:0]=0)
+	THEN ZF := 1
+	ELSE ZF := 0
+FI;
+IF(TMP[31:0]=FFFFFFFFh)
+	THEN CF := 1
+	ELSE CF := 0
+FI;</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>KORTESTW __mmask16 _mm512_kortest[cz](__mmask16 a, __mmask16 b);</string><string>
-</string></programlisting>
+  <programlisting>KORTESTW __mmask16 _mm512_kortest[cz](__mmask16 a, __mmask16 b);</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1261323" format="xIndent1">
-   <string>The ZF flag is set if the result of OR-ing both sources is all 0s.</string></para>
-  <para unique="1261324" format="xIndent1">
-   <string>The CF flag is set if the result of OR-ing both sources is all 1s.</string></para>
-  <para unique="1261325" format="xIndent1">
-   <string>The OF, SF, AF, and PF flags are set to 0.</string></para>
+  <para unique="1261323" format="xIndent1">The ZF flag is set if the result of OR-ing both sources is all 0s.</para>
+  <para unique="1261324" format="xIndent1">The CF flag is set if the result of OR-ing both sources is all 1s.</para>
+  <para unique="1261325" format="xIndent1">The OF, SF, AF, and PF flags are set to 0.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1261330" format="xIndent1">
-   <string>See </string><link linkend="42536: 06_Table: Table 2-63. TYPE K20 Exception Definition (VEX-Encoded OpMask"><string>Table&#160;2&#8209;65, &#8220;TYPE K20 Exception Definition (VEX-Encoded OpMask Instructions w/o Memory Arg).&#8221;</string></link></para>
+  <para unique="1261330" format="xIndent1">See <link unique="1261328" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#42536: 06_Table: Table 2-63. TYPE K20 Exception Definition (VEX-Encoded OpMask" xrefstyle="Table All - no page-period">Table&#160;2&#8209;65, &#8220;TYPE K20 Exception Definition (VEX-Encoded OpMask Instructions w/o Memory Arg).&#8221;</link></para>
   </subsection>
  </instruction>

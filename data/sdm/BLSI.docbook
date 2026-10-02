@@ -1,26 +1,115 @@
 <instruction name="BLSI">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Extract Lowest Set Isolated Bit</shortdesc>
- <longdesc><para unique="1261255">
-   <string>Extracts the lowest set bit from the source operand and set the corresponding bit in the destination register. All other bits in the destination operand are zeroed. If no bits are set in the source operand, BLSI sets all the bits in the destination to 0 and sets ZF and CF.</string></para>
-  <para unique="1261256">
-   <string>This instruction is not supported in real mode and virtual-8086 mode. The operand size is always 32 bits if not in 64-bit mode. In 64-bit mode operand size 64 requires VEX.W1. VEX.W1 is ignored in non-64-bit modes. An attempt to execute this instruction with VEX.L not equal to 0 will cause #UD.</string></para>
+ <encoding_table><table unique="1261191">
+   <col width="50.92344pt"/>
+   <col width="72.45144pt"/>
+   <col width="26.87472pt"/>
+   <col width="39.00024pt"/>
+   <col width="44.24976pt"/>
+   <col width="278.25048000000004pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1261194">Opcode/<anchor id="+382876"/>Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64/32-bit Mode</para>
+      </th>
+     <th><para unique="1261202">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1261206">VEX.LZ.0F38.W0 F3 /3</para>
+      <para unique="1261207">BLSI r32, r/m32</para>
+      </td>
+     <td><para unique="1261211">VM</para>
+      </td>
+     <td><para unique="1261213">V/V</para>
+      </td>
+     <td><para unique="1261215">BMI1</para>
+      </td>
+     <td><para unique="1261217">Extract lowest set bit from r/m32 and set that bit in r32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261219">VEX.LZ.0F38.W1 F3 /3</para>
+      <para unique="1261220">BLSI r64, r/m64</para>
+      </td>
+     <td><para unique="1261224">VM</para>
+      </td>
+     <td><para unique="1261226">V/N.E.</para>
+      </td>
+     <td><para unique="1261228">BMI1</para>
+      </td>
+     <td><para unique="1261230">Extract lowest set bit from r/m64, and set that bit in r64.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261232">
+   <col width="45.87984pt"/>
+   <col width="114.05087999999999pt"/>
+   <col width="117.75384pt"/>
+   <col width="114.9768pt"/>
+   <col width="117.80784pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261234">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261236">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261238">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261240">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261242">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261244">VM</para>
+      </td>
+     <td valign="middle"><para unique="1261246">VEX.vvvv (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261248">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261250">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261252">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261253">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261255">Extracts the lowest set bit from the source operand and set the corresponding bit in the destination register. All other bits in the destination operand are zeroed. If no bits are set in the source operand, BLSI sets all the bits in the destination to 0 and sets ZF and CF.</para>
+  <para unique="1261256">This instruction is not supported in real mode and virtual-8086 mode. The operand size is always 32 bits if not in 64-bit mode. In 64-bit mode operand size 64 requires VEX.W1. VEX.W1 is ignored in non-64-bit modes. An attempt to execute this instruction with VEX.L not equal to 0 will cause #UD.</para>
   </longdesc>
+ <operation>
+  <programlisting>temp := (-SRC) bitwiseAND (SRC);
+SF := temp[OperandSize -1];
+ZF := (temp = 0);
+IF SRC = 0
+	CF := 0;
+ELSE
+	CF := 1;
+FI
+DEST := temp;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <programlisting><string>ZF and SF are updated based on the result. CF is set if the source is not zero. OF flags are cleared. AF and PF flags are undefined.</string><string>
-</string></programlisting>
+  <programlisting>ZF and SF are updated based on the result. CF is set if the source is not zero. OF flags are cleared. AF and PF flags are undefined.</programlisting>
   </subsection>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>BLSI 	unsigned __int32 _blsi_u32(unsigned __int32 src);</string><string>
-</string><string>BLSI 	unsigned __int64 _blsi_u64(unsigned __int64 src);</string><string>
-</string></programlisting>
+  <programlisting>BLSI 	unsigned __int32 _blsi_u32(unsigned __int32 src);
+BLSI 	unsigned __int64 _blsi_u64(unsigned __int64 src);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1261273">
-   <string>None.</string></para>
+  <para unique="1261273">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1261278" format="xIndent1">
-   <string>See </string><link linkend="59669: 06_Table: Table 2-30. Exception Definition (VEX-Encoded GPR Instructions)"><string>Table&#160;2&#8209;29, &#8220;Type 13 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1261278" format="xIndent1">See <link unique="1261276" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#59669: 06_Table: Table 2-30. Exception Definition (VEX-Encoded GPR Instructions)" xrefstyle="Table All - no page-period">Table&#160;2&#8209;29, &#8220;Type 13 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

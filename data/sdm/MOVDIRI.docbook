@@ -1,98 +1,202 @@
 <instruction name="MOVDIRI">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Move Doubleword as Direct Store</shortdesc>
- <longdesc><para unique="1091463">
-   <string>Moves the doubleword integer in the source operand (second operand) to the destination operand (first operand) using a direct-store operation. The source operand is a general purpose register. The destination operand is a 32-bit memory location. In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to additional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. See summary chart at the beginning of this section for encoding data and limits.</string></para>
-  <para unique="1091464">
-   <string>The direct-store is implemented by using write combining (WC) memory type protocol for writing data. Using this protocol, the processor does not write the data into the cache hierarchy, nor does it fetch the corresponding cache line from memory into the cache hierarchy. If the destination address is cached, the line is written-back (if modi&#173;fied) and invalidated from the cache, before the direct-store. Unlike stores with non-temporal hint that allow uncached (UC) and write-protected (WP) memory-type for the destination to override the non-temporal hint, direct-stores always follow WC memory type protocol irrespective of the destination address memory type (including UC and WP types).</string></para>
-  <para unique="1091465">
-   <string>Unlike WC stores and stores with non-temporal hint, direct-stores are eligible for immediate eviction from the write-combining buffer, and thus not combined with younger stores (including direct-stores) to the same address. Older WC and non-temporal stores held in the write-combing buffer may be combined with younger direct stores to the same address. Direct stores are weakly ordered relative to other stores. Software that desires stronger ordering should use a fencing instruction (MFENCE or SFENCE) before or after a direct store to enforce the ordering desired.</string></para>
-  <para unique="1091466">
-   <string>Direct-stores issued by MOVDIRI to a destination aligned to a 4-byte boundary (8-byte boundary if used with REX.W prefix) guarantee 4-byte (8-byte with REX.W prefix) write-completion atomicity. This means that the data arrives at the destination in a single undivided 4-byte (or 8-byte) write transaction. If the destination is not aligned for the write size, the direct-stores issued by MOVDIRI are split and arrive at the destination in two parts. Each part of such split direct-store will not merge with younger stores but can arrive at the destination in either order. Avail&#173;ability of the MOVDIRI instruction is indicated by the presence of the CPUID feature flag MOVDIRI (bit 27 of the ECX register in leaf 07H, see </string><link linkend="42531: 05_Level: CPUID&#8212;CPU Identification"><string>&#8220;CPUID&#8212;CPU Identification&#8221;</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Devel&#173;oper&#8217;s Manual, Volume 2A).</string></para>
+ <encoding_table><table unique="1091392">
+   <thead><tr>
+     <th colspan="2"><para unique="1091394">Opcode/</para>
+      <para unique="1091395">Instruction</para>
+      </th>
+     <th><para unique="1091399">Op/ En</para>
+      </th>
+     <th><para unique="1091401">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091403">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091405">Description</para>
+      </th>
+     </tr>
+    </thead><col width="77.80896000000001pt"/>
+   <col width="88.26624pt"/>
+   <col width="31.968pt"/>
+   <col width="48.024pt"/>
+   <col width="50.327999999999996pt"/>
+   <col width="215.154pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1091407">NP 0F 38 F9 /r</para>
+      <para unique="1091408">MOVDIRI m32, r32</para>
+      </td>
+     <td><para unique="1091412">A</para>
+      </td>
+     <td><para unique="1091414">V/V</para>
+      </td>
+     <td><para unique="1091416">MOVDIRI</para>
+      </td>
+     <td><para unique="1091418">Move doubleword from r32 to m32 using direct store.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091420">NP REX.W + 0F 38 F9 /r</para>
+      <para unique="1091421">MOVDIRI m64, r64</para>
+      </td>
+     <td><para unique="1091425">A</para>
+      </td>
+     <td><para unique="1091427">V/N.E.</para>
+      </td>
+     <td><para unique="1091429">MOVDIRI</para>
+      </td>
+     <td><para unique="1091431">Move quadword from r64 to m64 using direct store. </para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091433">
+   <col width="47.103840000000005pt"/>
+   <col width="47.103840000000005pt"/>
+   <col width="101.51136pt"/>
+   <col width="105.53544pt"/>
+   <col width="101.63664pt"/>
+   <col width="109.68336pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091435">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091437">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1091439">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091441">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091443">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091445">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091447">A</para>
+      </td>
+     <td valign="middle"><para unique="1091449">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091451">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091453">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091455">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091457">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091461">Instruction Operand Encoding<footnote><para unique="1091460">The Mod field of the ModR/M byte cannot have value 11B.</para>
+     </footnote></caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091463">Moves the doubleword integer in the source operand (second operand) to the destination operand (first operand) using a direct-store operation. The source operand is a general purpose register. The destination operand is a 32-bit memory location. In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.R prefix permits access to additional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. See summary chart at the beginning of this section for encoding data and limits.</para>
+  <para unique="1091464">The direct-store is implemented by using write combining (WC) memory type protocol for writing data. Using this protocol, the processor does not write the data into the cache hierarchy, nor does it fetch the corresponding cache line from memory into the cache hierarchy. If the destination address is cached, the line is written-back (if modi&#173;fied) and invalidated from the cache, before the direct-store. Unlike stores with non-temporal hint that allow uncached (UC) and write-protected (WP) memory-type for the destination to override the non-temporal hint, direct-stores always follow WC memory type protocol irrespective of the destination address memory type (including UC and WP types).</para>
+  <para unique="1091465">Unlike WC stores and stores with non-temporal hint, direct-stores are eligible for immediate eviction from the write-combining buffer, and thus not combined with younger stores (including direct-stores) to the same address. Older WC and non-temporal stores held in the write-combing buffer may be combined with younger direct stores to the same address. Direct stores are weakly ordered relative to other stores. Software that desires stronger ordering should use a fencing instruction (MFENCE or SFENCE) before or after a direct store to enforce the ordering desired.</para>
+  <para unique="1091466">Direct-stores issued by MOVDIRI to a destination aligned to a 4-byte boundary (8-byte boundary if used with REX.W prefix) guarantee 4-byte (8-byte with REX.W prefix) write-completion atomicity. This means that the data arrives at the destination in a single undivided 4-byte (or 8-byte) write transaction. If the destination is not aligned for the write size, the direct-stores issued by MOVDIRI are split and arrive at the destination in two parts. Each part of such split direct-store will not merge with younger stores but can arrive at the destination in either order. Avail&#173;ability of the MOVDIRI instruction is indicated by the presence of the CPUID feature flag MOVDIRI (bit 27 of the ECX register in leaf 07H, see <link unique="1091468" linkend="&lt;c&gt;CPUID-CPU-Identification.fm#42531: 05_Level: CPUID&#8212;CPU Identification" xrefstyle="SectionTitle">&#8220;CPUID&#8212;CPU Identification&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Devel&#173;oper&#8217;s Manual, Volume 2A).</para>
   </longdesc>
+ <operation>
+  <programlisting>DEST := SRC;</programlisting>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>MOVDIRI void _directstoreu_u32(void *dst, uint32_t val)</string><string>
-</string><string>MOVDIRI void _directstoreu_u64(void *dst, uint64_t val)</string><string>
-</string></programlisting>
+  <programlisting>MOVDIRI void _directstoreu_u32(void *dst, uint32_t val)
+MOVDIRI void _directstoreu_u64(void *dst, uint64_t val)</programlisting>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>For an illegal memory operand effective address in the CS, DS, ES, FS or GS segments.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091476">For an illegal memory operand effective address in the CS, DS, ES, FS or GS segments.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>For an illegal address in the SS segment.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091477">For an illegal address in the SS segment.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF (fault-code)</string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF (fault-code)</term>
+    <listitem><para unique="1091478">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.07H.00H:ECX.MOVDIRI[27] = 0.</string></listitem>
-    <listitem><string>If LOCK prefix or operand-size (66H) prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091479">If CPUID.07H.00H:ECX.MOVDIRI[27] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091480">If LOCK prefix or operand-size (66H) prefix is used.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference made while in current privilege level 3.</string></listitem>
+    <term>#AC</term>
+    <listitem><para unique="1091481">If alignment checking is enabled and an unaligned memory reference made while in current privilege level 3.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If any part of the operand lies outside the effective address space from 0 to FFFFH.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1091483">If any part of the operand lies outside the effective address space from 0 to FFFFH.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.07H.00H:ECX.MOVDIRI[27] = 0.</string></listitem>
-    <listitem><string>If LOCK prefix or operand-size (66H) prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091484">If CPUID.07H.00H:ECX.MOVDIRI[27] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091485">If LOCK prefix or operand-size (66H) prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1091487" format="xIndent1">
-   <string>Same exceptions as in real address mode.</string></para>
+  <para unique="1091487" format="xIndent1">Same exceptions as in real address mode.</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#PF (fault-code)</string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF (fault-code)</term>
+    <listitem><para unique="1091488">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference made while in current privilege level 3.</string></listitem>
+    <term>#AC</term>
+    <listitem><para unique="1091489">If alignment checking is enabled and an unaligned memory reference made while in current privilege level 3.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091491" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1091491" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If memory address referencing the SS segment is in non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091493">If memory address referencing the SS segment is in non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091494">If the memory address is in non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF (fault-code)</string></term>
-    <listitem><string>For a page fault.</string></listitem>
+    <term>#PF (fault-code)</term>
+    <listitem><para unique="1091495">For a page fault.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.07H.00H:ECX.MOVDIRI[27] = 0.</string></listitem>
-    <listitem><string>If LOCK prefix or operand-size (66H) prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091496">If CPUID.07H.00H:ECX.MOVDIRI[27] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091497">If LOCK prefix or operand-size (66H) prefix is used.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference made while in current privilege level 3.</string></listitem>
+    <term>#AC</term>
+    <listitem><para unique="1091498">If alignment checking is enabled and an unaligned memory reference made while in current privilege level 3.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

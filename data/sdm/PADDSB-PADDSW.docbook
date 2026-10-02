@@ -1,56 +1,412 @@
 <instruction name="PADDSB/PADDSW">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Add Packed Signed Integers with Signed Saturation</shortdesc>
- <longdesc><para unique="1091651">
-   <string>Performs a SIMD add of the packed signed integers from the source operand (second operand) and the destination operand (first operand), and stores the packed integer results in the destination operand. See Figure 9-4 in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for an illustration of a SIMD operation. Overflow is handled with signed saturation, as described in the following paragraphs.</string></para>
-  <para unique="1091652">
-   <string>(V)PADDSB performs a SIMD add of the packed signed integers with saturation from the first source operand and second source operand and stores the packed integer results in the destination operand. When an individual byte result is beyond the range of a signed byte integer (that is, greater than 7FH or less than 80H), the saturated value of 7FH or 80H, respectively, is written to the destination operand.</string></para>
-  <para unique="1091653">
-   <string>(V)PADDSW performs a SIMD add of the packed signed word integers with saturation from the first source operand and second source operand and stores the packed integer results in the destination operand. When an individual word result is beyond the range of a signed word integer (that is, greater than 7FFFH or less than 8000H), the satu&#173;rated value of 7FFFH or 8000H, respectively, is written to the destination operand.</string></para>
-  <para unique="1091654">
-   <string>EVEX encoded versions: The first source operand is an ZMM/YMM/XMM register. The second source operand is an ZMM/YMM/XMM register or a memory location. The destination operand is an ZMM/YMM/XMM register.</string></para>
-  <para unique="1091655">
-   <string>VEX.256 encoded version: The first source operand is a YMM register. The second source operand is a YMM register or a 256-bit memory location. The destination operand is a YMM register. </string></para>
-  <para unique="1091656">
-   <string>VEX.128 encoded version: The first source operand is an XMM register. The second source operand is an XMM register or 128-bit memory location. The destination operand is an XMM register. The upper bits (</string><sans><string>MAXVL-1</string></sans><string>:128) of the corresponding register destination are zeroed.</string></para>
-  <para unique="1091657">
-   <string>128-bit Legacy SSE version: The first source operand is an XMM register. The second operand can be an XMM register or an 128-bit memory location. The destination is not distinct from the first source XMM register and the upper bits (</string><sans><string>MAXVL-1</string></sans><string>:128) of the corresponding register destination are unmodified.</string></para>
+ <encoding_table><table unique="1091390">
+   <thead><tr>
+     <th colspan="2"><para unique="1091392">Opcode/</para>
+      <para unique="1091393">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op/ En</para>
+      </th>
+     <th><para unique="1091399">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091401">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><col width="88.65504pt"/>
+   <col width="100.56960000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="69.97824pt"/>
+   <col width="181.404pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1091414">NP 0F EC /r<superscript><footnote><para unique="1091410" format="TableFootnote">See note in <link unique="1091408" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#27214: 02_Level: 2.4 Instruction Exception Specification" xrefstyle="SectionNum&amp;Title(,)">Section 2.5, &#8220;Intel&#174; AVX and Intel&#174; SSE Instruction Exception Classification,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Soft&#173;ware Developer&#8217;s Manual, Volume 2A, and <link unique="1092605" linkend="&lt;c&gt;__sdm_vol3B_ch25.fm#65163: 03_Level: 19.25.3 Exception Conditions of Legacy SIMD Instruction Operating" xrefstyle="SectionNum&amp;Title(,)">Section 25.25.3, &#8220;Exception Conditions of Legacy SIMD Instructions Operating on MMX Reg&#173;isters,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B.</para>
+         </footnote></superscript></para>
+      <para unique="1091415">PADDSB mm, mm/m64</para>
+      </td>
+     <td><para unique="1091419">A</para>
+      </td>
+     <td><para unique="1091421">V/V </para>
+      </td>
+     <td><para unique="1091423">MMX</para>
+      </td>
+     <td><para unique="1091425">Add packed signed byte integers from mm/m64 and mm and saturate the results.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091427">66 0F EC /r</para>
+      <para unique="1091428">PADDSB xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091432">A</para>
+      </td>
+     <td><para unique="1091434">V/V</para>
+      </td>
+     <td><para unique="1091436">SSE2</para>
+      </td>
+     <td><para unique="1091438">Add packed signed byte integers from xmm2/m128 and xmm1 saturate the results.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091440">NP 0F ED /r<superscript>1</superscript></para>
+      <para unique="1091441">PADDSW mm, mm/m64</para>
+      </td>
+     <td><para unique="1091445">A</para>
+      </td>
+     <td><para unique="1091447">V/V</para>
+      </td>
+     <td><para unique="1091449">MMX</para>
+      </td>
+     <td><para unique="1091451">Add packed signed word integers from mm/m64 and mm and saturate the results.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091453">66 0F ED /r</para>
+      <para unique="1091454">PADDSW xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091458">A</para>
+      </td>
+     <td><para unique="1091460">V/V</para>
+      </td>
+     <td><para unique="1091462">SSE2</para>
+      </td>
+     <td><para unique="1091464">Add packed signed word integers from xmm2/m128 and xmm1 and saturate the results.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091466">VEX.128.66.0F.WIG EC /r</para>
+      <para unique="1091467">VPADDSB xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1091471">B</para>
+      </td>
+     <td><para unique="1091473">V/V</para>
+      </td>
+     <td><para unique="1091475">AVX</para>
+      </td>
+     <td><para unique="1091477">Add packed signed byte integers from xmm3/m128 and xmm2 saturate the results.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091479">VEX.128.66.0F.WIG ED /r</para>
+      <para unique="1091480">VPADDSW xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1091484">B</para>
+      </td>
+     <td><para unique="1091486">V/V</para>
+      </td>
+     <td><para unique="1091488">AVX</para>
+      </td>
+     <td><para unique="1091490">Add packed signed word integers from xmm3/m128 and xmm2 and saturate the results.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091492">VEX.256.66.0F.WIG EC /r</para>
+      <para unique="1091493">VPADDSB ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1091497">B</para>
+      </td>
+     <td><para unique="1091499">V/V</para>
+      </td>
+     <td><para unique="1091501">AVX2</para>
+      </td>
+     <td><para unique="1091503">Add packed signed byte integers from ymm2, and ymm3/m256 and store the saturated results in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091505">VEX.256.66.0F.WIG ED /r</para>
+      <para unique="1091506">VPADDSW ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1091510">B</para>
+      </td>
+     <td><para unique="1091512">V/V</para>
+      </td>
+     <td><para unique="1091514">AVX2</para>
+      </td>
+     <td><para unique="1091516">Add packed signed word integers from ymm2, and ymm3/m256 and store the saturated results in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092171">EVEX.128.66.0F.WIG EC /r</para>
+      <para unique="1092172">VPADDSB xmm1 {k1}{z}, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1092176">C</para>
+      </td>
+     <td><para unique="1092178">V/V</para>
+      </td>
+     <td><para unique="1092180">(AVX512VL AND</para>
+      <para unique="1092181">AVX512BW) OR AVX10.1<anchor id="+480103"/></para>
+      </td>
+     <td><para unique="1092186">Add packed signed byte integers from xmm2, and xmm3/m128 and store the saturated results in xmm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092157">EVEX.256.66.0F.WIG EC /r</para>
+      <para unique="1092158">VPADDSB ymm1 {k1}{z}, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1092162">C</para>
+      </td>
+     <td><para unique="1092164">V/V</para>
+      </td>
+     <td><para unique="1092166">(AVX512VL AND</para>
+      <para unique="1092167">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092169">Add packed signed byte integers from ymm2, and ymm3/m256 and store the saturated results in ymm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092143">EVEX.512.66.0F.WIG EC /r</para>
+      <para unique="1092144">VPADDSB zmm1 {k1}{z}, zmm2, zmm3/m512</para>
+      </td>
+     <td><para unique="1092148">C</para>
+      </td>
+     <td><para unique="1092150">V/V</para>
+      </td>
+     <td><para unique="1092152">AVX512BW </para>
+      <para unique="1092153">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092155">Add packed signed byte integers from zmm2, and zmm3/m512 and store the saturated results in zmm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092129">EVEX.128.66.0F.WIG ED /r</para>
+      <para unique="1092130">VPADDSW xmm1 {k1}{z}, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1092134">C</para>
+      </td>
+     <td><para unique="1092136">V/V</para>
+      </td>
+     <td><para unique="1092138">(AVX512VL AND</para>
+      <para unique="1092139">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092141">Add packed signed word integers from xmm2, and xmm3/m128 and store the saturated results in xmm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092115">EVEX.256.66.0F.WIG ED /r</para>
+      <para unique="1092116">VPADDSW ymm1 {k1}{z}, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1092120">C</para>
+      </td>
+     <td><para unique="1092122">V/V</para>
+      </td>
+     <td><para unique="1092124">(AVX512VL AND</para>
+      <para unique="1092125">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092127">Add packed signed word integers from ymm2, and ymm3/m256 and store the saturated results in ymm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092101">EVEX.512.66.0F.WIG ED /r</para>
+      <para unique="1092102">VPADDSW zmm1 {k1}{z}, zmm2, zmm3/m512</para>
+      </td>
+     <td><para unique="1092106">C</para>
+      </td>
+     <td><para unique="1092108">V/V</para>
+      </td>
+     <td><para unique="1092110">AVX512BW </para>
+      <para unique="1092111">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092113">Add packed signed word integers from zmm2, and zmm3/m512 and store the saturated results in zmm1 under writemask k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091600">
+   <col width="45.977039999999995pt"/>
+   <col width="71.7768pt"/>
+   <col width="91.72512pt"/>
+   <col width="97.65360000000001pt"/>
+   <col width="102.79008pt"/>
+   <col width="101.07504pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091602">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091604">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091606">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091608">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091610">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091612">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091614">A</para>
+      </td>
+     <td valign="middle"><para unique="1091616">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091618">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091620">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091622">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091624">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091626">B</para>
+      </td>
+     <td valign="middle"><para unique="1091628">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091630">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091632">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091634">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091636">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091638">C</para>
+      </td>
+     <td valign="middle"><para unique="1091640">Full Mem</para>
+      </td>
+     <td valign="middle"><para unique="1091642">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091644">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091646">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091648">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091649">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091651">Performs a SIMD add of the packed signed integers from the source operand (second operand) and the destination operand (first operand), and stores the packed integer results in the destination operand. See Figure 9-4 in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for an illustration of a SIMD operation. Overflow is handled with signed saturation, as described in the following paragraphs.</para>
+  <para unique="1091652">(V)PADDSB performs a SIMD add of the packed signed integers with saturation from the first source operand and second source operand and stores the packed integer results in the destination operand. When an individual byte result is beyond the range of a signed byte integer (that is, greater than 7FH or less than 80H), the saturated value of 7FH or 80H, respectively, is written to the destination operand.</para>
+  <para unique="1091653">(V)PADDSW performs a SIMD add of the packed signed word integers with saturation from the first source operand and second source operand and stores the packed integer results in the destination operand. When an individual word result is beyond the range of a signed word integer (that is, greater than 7FFFH or less than 8000H), the satu&#173;rated value of 7FFFH or 8000H, respectively, is written to the destination operand.</para>
+  <para unique="1091654">EVEX encoded versions: The first source operand is an ZMM/YMM/XMM register. The second source operand is an ZMM/YMM/XMM register or a memory location. The destination operand is an ZMM/YMM/XMM register.</para>
+  <para unique="1091655">VEX.256 encoded version: The first source operand is a YMM register. The second source operand is a YMM register or a 256-bit memory location. The destination operand is a YMM register. </para>
+  <para unique="1091656">VEX.128 encoded version: The first source operand is an XMM register. The second source operand is an XMM register or 128-bit memory location. The destination operand is an XMM register. The upper bits (<sans>MAXVL-1</sans>:128) of the corresponding register destination are zeroed.</para>
+  <para unique="1091657">128-bit Legacy SSE version: The first source operand is an XMM register. The second operand can be an XMM register or an 128-bit memory location. The destination is not distinct from the first source XMM register and the upper bits (<sans>MAXVL-1</sans>:128) of the corresponding register destination are unmodified.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091659">PADDSB (With 64-bit Operands)</title>
+   <programlisting>DEST[7:0] := SaturateToSignedByte(DEST[7:0] + SRC (7:0]);
+	(* Repeat add operation for 2nd through 7th bytes *)
+	DEST[63:56] := SaturateToSignedByte(DEST[63:56] + SRC[63:56] );</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091664">PADDSB (With 128-bit Operands)</title>
+   <programlisting>DEST[7:0] := SaturateToSignedByte (DEST[7:0] + SRC[7:0]);
+	(* Repeat add operation for 2nd through 14th bytes *)
+	DEST[127:120] := SaturateToSignedByte (DEST[111:120] + SRC[127:120]);</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091669">VPADDSB (VEX.128 Encoded Version)</title>
+   <programlisting>DEST[7:0] := SaturateToSignedByte (SRC1[7:0] + SRC2[7:0]);
+	(* Repeat subtract operation for 2nd through 14th bytes *)
+	DEST[127:120] := SaturateToSignedByte (SRC1[111:120] + SRC2[127:120]);
+	DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091675">VPADDSB (VEX.256 Encoded Version)</title>
+   <programlisting>DEST[7:0] := SaturateToSignedByte (SRC1[7:0] + SRC2[7:0]);
+	(* Repeat add operation for 2nd through 31st bytes *)
+	DEST[255:248] := SaturateToSignedByte (SRC1[255:248] + SRC2[255:248]);</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091679">VPADDSB (EVEX Encoded Versions)</title>
+   <programlisting>(KL, VL) = (16, 128), (32, 256), (64, 512)
+FOR j := 0 TO KL-1
+	i := j * 8
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+7:i] := SaturateToSignedByte (SRC1[i+7:i] + SRC2[i+7:i])
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+7:i] remains unchanged*
+				ELSE *zeroing-masking*								; zeroing-masking
+					DEST[i+7:i] = 0
+			FI
+	FI;
+ENDFOR;
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091695">PADDSW (with 64-bit operands)</title>
+   <programlisting>DEST[15:0] := SaturateToSignedWord(DEST[15:0] + SRC[15:0] );
+	(* Repeat add operation for 2nd and 7th words *)
+	DEST[63:48] := SaturateToSignedWord(DEST[63:48] + SRC[63:48] );</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091699">PADDSW (with 128-bit operands)</title>
+   <programlisting>DEST[15:0] := SaturateToSignedWord (DEST[15:0] + SRC[15:0]);
+	(* Repeat add operation for 2nd through 7th words *)
+	DEST[127:112] := SaturateToSignedWord (DEST[127:112] + SRC[127:112]);</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091704">VPADDSW (VEX.128 Encoded Version)</title>
+   <programlisting>DEST[15:0] := SaturateToSignedWord (SRC1[15:0] + SRC2[15:0]);
+	(* Repeat subtract operation for 2nd through 7th words *)
+	DEST[127:112] := SaturateToSignedWord (SRC1[127:112] + SRC2[127:112]);
+	DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091710">VPADDSW (VEX.256 Encoded Version)</title>
+   <programlisting>DEST[15:0] := SaturateToSignedWord (SRC1[15:0] + SRC2[15:0]);
+	(* Repeat add operation for 2nd through 15th words *)
+	DEST[255:240] := SaturateToSignedWord (SRC1[255:240] + SRC2[255:240])
+</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091715">VPADDSW (EVEX Encoded Versions)</title>
+   <programlisting>(KL, VL) = (8, 128), (16, 256), (32, 512)
+FOR j := 0 TO KL-1
+	i := j * 16
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+15:i] := SaturateToSignedWord (SRC1[i+15:i] + SRC2[i+15:i])
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+15:i] remains unchanged*
+				ELSE *zeroing-masking*								; zeroing-masking
+					DEST[i+15:i] = 0
+			FI
+	FI;
+ENDFOR;
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalents">
-  <programlisting><string>PADDSB	 __m64 _mm_adds_pi8(__m64 m1, __m64 m2)</string><string>
-</string><string>(V)PADDSB 	 __m128i _mm_adds_epi8 ( __m128i a, __m128i b)</string><string>
-</string><string>VPADDSB 		__m256i _mm256_adds_epi8 ( __m256i a, __m256i b)</string><string>
-</string><string>PADDSW __m64 _mm_adds_pi16(__m64 m1, __m64 m2)</string><string>
-</string><string>(V)PADDSW	 __m128i _mm_adds_epi16 ( __m128i a, __m128i b)</string><string>
-</string><string>VPADDSW 		__m256i _mm256_adds_epi16 ( __m256i a, __m256i b)</string><string>
-</string><string>VPADDSB 	__m512i _mm512_adds_epi8 ( __m512i a, __m512i b)</string><string>
-</string><string>VPADDSW 	__m512i _mm512_adds_epi16 ( __m512i a, __m512i b)</string><string>
-</string><string>VPADDSB 	__m512i _mm512_mask_adds_epi8 ( __m512i s, __mmask64 m, __m512i a, __m512i b)</string><string>
-</string><string>VPADDSW 	__m512i _mm512_mask_adds_epi16 ( __m512i s, __mmask32 m, __m512i a, __m512i b)</string><string>
-</string><string>VPADDSB 	__m512i _mm512_maskz_adds_epi8 (__mmask64 m, __m512i a, __m512i b)</string><string>
-</string><string>VPADDSW 	__m512i _mm512_maskz_adds_epi16 (__mmask32 m, __m512i a, __m512i b)</string><string>
-</string><string>VPADDSB 	__m256i _mm256_mask_adds_epi8 (__m256i s, __mmask32 m, __m256i a, __m256i b)</string><string>
-</string><string>VPADDSW 	__m256i _mm256_mask_adds_epi16 (__m256i s, __mmask16 m, __m256i a, __m256i b)</string><string>
-</string><string>VPADDSB	 __m256i _mm256_maskz_adds_epi8 (__mmask32 m, __m256i a, __m256i b)</string><string>
-</string><string>VPADDSW 	__m256i _mm256_maskz_adds_epi16 (__mmask16 m, __m256i a, __m256i b)</string><string>
-</string><string>VPADDSB 	__m128i _mm_mask_adds_epi8 (__m128i s, __mmask16 m, __m128i a, __m128i b)</string><string>
-</string><string>VPADDSW 	__m128i _mm_mask_adds_epi16 (__m128i s, __mmask8 m, __m128i a, __m128i b)</string><string>
-</string><string>VPADDSB 	__m128i _mm_maskz_adds_epi8 (__mmask16 m, __m128i a, __m128i b)</string><string>
-</string><string>VPADDSW 	__m128i _mm_maskz_adds_epi16 (__mmask8 m, __m128i a, __m128i b)</string><string>
-</string></programlisting>
+  <programlisting>PADDSB	 __m64 _mm_adds_pi8(__m64 m1, __m64 m2)
+(V)PADDSB 	 __m128i _mm_adds_epi8 ( __m128i a, __m128i b)
+VPADDSB 		__m256i _mm256_adds_epi8 ( __m256i a, __m256i b)
+PADDSW __m64 _mm_adds_pi16(__m64 m1, __m64 m2)
+(V)PADDSW	 __m128i _mm_adds_epi16 ( __m128i a, __m128i b)
+VPADDSW 		__m256i _mm256_adds_epi16 ( __m256i a, __m256i b)
+VPADDSB 	__m512i _mm512_adds_epi8 ( __m512i a, __m512i b)
+VPADDSW 	__m512i _mm512_adds_epi16 ( __m512i a, __m512i b)
+VPADDSB 	__m512i _mm512_mask_adds_epi8 ( __m512i s, __mmask64 m, __m512i a, __m512i b)
+VPADDSW 	__m512i _mm512_mask_adds_epi16 ( __m512i s, __mmask32 m, __m512i a, __m512i b)
+VPADDSB 	__m512i _mm512_maskz_adds_epi8 (__mmask64 m, __m512i a, __m512i b)
+VPADDSW 	__m512i _mm512_maskz_adds_epi16 (__mmask32 m, __m512i a, __m512i b)
+VPADDSB 	__m256i _mm256_mask_adds_epi8 (__m256i s, __mmask32 m, __m256i a, __m256i b)
+VPADDSW 	__m256i _mm256_mask_adds_epi16 (__m256i s, __mmask16 m, __m256i a, __m256i b)
+VPADDSB	 __m256i _mm256_maskz_adds_epi8 (__mmask32 m, __m256i a, __m256i b)
+VPADDSW 	__m256i _mm256_maskz_adds_epi16 (__mmask16 m, __m256i a, __m256i b)
+VPADDSB 	__m128i _mm_mask_adds_epi8 (__m128i s, __mmask16 m, __m128i a, __m128i b)
+VPADDSW 	__m128i _mm_mask_adds_epi16 (__m128i s, __mmask8 m, __m128i a, __m128i b)
+VPADDSB 	__m128i _mm_maskz_adds_epi8 (__mmask16 m, __m128i a, __m128i b)
+VPADDSW 	__m128i _mm_maskz_adds_epi16 (__mmask8 m, __m128i a, __m128i b)</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1091753">
-   <string>None.</string></para>
+  <para unique="1091753">None.</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091755" format="xIndent1">
-   <string>None.</string></para>
+  <para unique="1091755" format="xIndent1">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091760" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091764">
-   <string>EVEX-encoded instruction, see Exceptions Type E4.nb in </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091760" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1091758" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091764">EVEX-encoded instruction, see Exceptions Type E4.nb in <link unique="1091762" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

@@ -1,26 +1,115 @@
 <instruction name="BLSMSK">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Get Mask Up to Lowest Set Bit</shortdesc>
- <longdesc><para unique="1261255">
-   <string>Sets all the lower bits of the destination operand to &#8220;1&#8221; up to and including lowest set bit (=1) in the source operand. If source operand is zero, BLSMSK sets all bits of the destination operand to 1 and also sets CF to 1.</string></para>
-  <para unique="1261256">
-   <string>This instruction is not supported in real mode and virtual-8086 mode. The operand size is always 32 bits if not in 64-bit mode. In 64-bit mode operand size 64 requires VEX.W1. VEX.W1 is ignored in non-64-bit modes. An attempt to execute this instruction with VEX.L not equal to 0 will cause #UD.</string></para>
+ <encoding_table><table unique="1261191">
+   <col width="51.43896pt"/>
+   <col width="73.18512pt"/>
+   <col width="26.87472pt"/>
+   <col width="39.00024pt"/>
+   <col width="44.24976pt"/>
+   <col width="278.25048000000004pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1261194">Opcode/<anchor id="+484187"/>Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64/32-bit Mode</para>
+      </th>
+     <th><para unique="1261202">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1261206">VEX.LZ.0F38.W0 F3 /2</para>
+      <para unique="1261207">BLSMSK r32, r/m32</para>
+      </td>
+     <td><para unique="1261211">VM</para>
+      </td>
+     <td><para unique="1261213">V/V</para>
+      </td>
+     <td><para unique="1261215">BMI1</para>
+      </td>
+     <td><para unique="1261217">Set all lower bits in r32 to &#8220;1&#8221; starting from bit 0 to lowest set bit in r/m32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261219">VEX.LZ.0F38.W1 F3 /2</para>
+      <para unique="1261220">BLSMSK r64, r/m64</para>
+      </td>
+     <td><para unique="1261224">VM</para>
+      </td>
+     <td><para unique="1261226">V/N.E.</para>
+      </td>
+     <td><para unique="1261228">BMI1</para>
+      </td>
+     <td><para unique="1261230">Set all lower bits in r64 to &#8220;1&#8221; starting from bit 0 to lowest set bit in r/m64.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261232">
+   <col width="46.38168pt"/>
+   <col width="112.63824pt"/>
+   <col width="117.03672pt"/>
+   <col width="118.18656pt"/>
+   <col width="117.72648pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261234">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261236">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261238">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261240">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261242">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261244">VM</para>
+      </td>
+     <td valign="middle"><para unique="1261246">VEX.vvvv (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261248">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261250">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261252">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261253">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261255">Sets all the lower bits of the destination operand to &#8220;1&#8221; up to and including lowest set bit (=1) in the source operand. If source operand is zero, BLSMSK sets all bits of the destination operand to 1 and also sets CF to 1.</para>
+  <para unique="1261256">This instruction is not supported in real mode and virtual-8086 mode. The operand size is always 32 bits if not in 64-bit mode. In 64-bit mode operand size 64 requires VEX.W1. VEX.W1 is ignored in non-64-bit modes. An attempt to execute this instruction with VEX.L not equal to 0 will cause #UD.</para>
   </longdesc>
+ <operation>
+  <programlisting>temp := (SRC-1) XOR (SRC) ;
+SF := temp[OperandSize -1];
+ZF := 0;
+IF SRC = 0
+	CF := 1;
+ELSE
+	CF := 0;
+FI
+DEST := temp;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261268">
-   <string>SF is updated based on the result. CF is set if the source if zero. ZF and OF flags are cleared. AF and PF flag are undefined.</string></para>
+  <para unique="1261268">SF is updated based on the result. CF is set if the source if zero. ZF and OF flags are cleared. AF and PF flag are undefined.</para>
   </subsection>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>BLSMSK 	unsigned __int32 _blsmsk_u32(unsigned __int32 src);</string><string>
-</string><string>BLSMSK 	unsigned __int64 _blsmsk_u64(unsigned __int64 src);</string><string>
-</string></programlisting>
+  <programlisting>BLSMSK 	unsigned __int32 _blsmsk_u32(unsigned __int32 src);
+BLSMSK 	unsigned __int64 _blsmsk_u64(unsigned __int64 src);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1261273">
-   <string>None.</string></para>
+  <para unique="1261273">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1261278" format="xIndent1">
-   <string>See </string><link linkend="59669: 06_Table: Table 2-30. Exception Definition (VEX-Encoded GPR Instructions)"><string>Table&#160;2&#8209;29, &#8220;Type 13 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1261278" format="xIndent1">See <link unique="1261276" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#59669: 06_Table: Table 2-30. Exception Definition (VEX-Encoded GPR Instructions)" xrefstyle="Table All - no page-period">Table&#160;2&#8209;29, &#8220;Type 13 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

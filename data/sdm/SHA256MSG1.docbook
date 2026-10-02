@@ -1,23 +1,98 @@
 <instruction name="SHA256MSG1">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Perform an Intermediate Calculation for the Next Four SHA256 Message Dwords</shortdesc>
- <longdesc><para unique="1091435">
-   <string>The SHA256MSG1 instruction is one of two SHA256 message scheduling instructions. The instruction performs an intermediate calculation for the next four SHA256 message dwords.</string></para>
+ <encoding_table><table unique="1091390">
+   <col width="50.66568pt"/>
+   <col width="72.08424pt"/>
+   <col width="37.49976pt"/>
+   <col width="48.74976pt"/>
+   <col width="44.24976pt"/>
+   <col width="260.50104pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091392">Opcode/&#8232;Instruction</para>
+      </th>
+     <th><para unique="1091396">Op/En</para>
+      </th>
+     <th><para unique="1091398">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091400">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091402">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1091404">NP 0F 38 CC /r </para>
+      <para unique="1091405">SHA256MSG1 xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091409">RM</para>
+      </td>
+     <td><para unique="1091411">V/V</para>
+      </td>
+     <td><para unique="1091413">SHA</para>
+      </td>
+     <td><para unique="1091415">Performs an intermediate calculation for the next four SHA256 message dwords using previous message dwords from xmm1 and xmm2/m128, storing the result in xmm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091416">
+   <col width="63.49176pt"/>
+   <col width="143.76528pt"/>
+   <col width="152.01072000000002pt"/>
+   <col width="152.24687999999998pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091418">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091420">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091422">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091424">Operand 3</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091426">RM</para>
+      </td>
+     <td valign="middle"><para unique="1091428">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091430">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091432">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091433">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091435">The SHA256MSG1 instruction is one of two SHA256 message scheduling instructions. The instruction performs an intermediate calculation for the next four SHA256 message dwords.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091437">SHA256MSG1 </title>
+   <programlisting>W4 := SRC2[31: 0] ;
+W3 := SRC1[127:96] ;
+W2 := SRC1[95:64] ;
+W1 := SRC1[63: 32] ;
+W0 := SRC1[31: 0] ;
+DEST[127:96] := W3 + &#963;0( W4);
+DEST[95:64] := W2 + &#963;0( W3);
+DEST[63:32] := W1 + &#963;0( W2);
+DEST[31:0] := W0 + &#963;0( W1);</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>SHA256MSG1 __m128i _mm_sha256msg1_epu32(__m128i, __m128i);</string><string>
-</string></programlisting>
+  <programlisting>SHA256MSG1 __m128i _mm_sha256msg1_epu32(__m128i, __m128i);</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1091451">
-   <string>None.</string></para>
+  <para unique="1091451">None.</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091453">
-   <string>None.</string></para>
+  <para unique="1091453">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091458">
-   <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091458">See <link unique="1091456" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

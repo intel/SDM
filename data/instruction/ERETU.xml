@@ -1,0 +1,266 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<instruction>
+ <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
+ <notices_and_disclaimers># Notices and Disclaimers
+
+Intel technologies may require enabled hardware, software or service activation.
+
+No product or component can be absolutely secure.
+
+Your costs and results may vary.
+
+All product plans and roadmaps are subject to change without notice.
+
+The products described may contain design defects or errors known as errata which may cause the product to deviate from published specifications. Current characterized errata are available on request.
+
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+
+Code names are used by Intel to identify products, technologies, or services that are in development and not publicly available. These are not “commercial” names and not intended to function as trademarks.
+
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document, with the sole exception that a) you may publish an unmodified copy and b) code, identified as Sample Code in this document is licensed subject to the Zero-Clause BSD open source license (0BSD), [https://opensource.org/licenses/0BSD](https://opensource.org/licenses/0BSD). You may create software implementations based on this document and in compliance with the foregoing that are intended to execute on the Intel product(s) referenced in this document. No rights are granted to create modifications or derivatives of this document.
+
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non-exclusive, royalty-free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+
+If you give Intel any comments or suggestions related to this document or the information contained in it, Intel can use them in any way and disclose them to anyone, without payment or other obligations to you. You represent and warrant that you own, or have sufficient rights from the owner of, any such comments or suggestions, and the intellectual property rights in them, to grant the above permission.
+
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. Other names and brands may be claimed as the property of others.
+</notices_and_disclaimers>
+ <code_status>The code in this file is not 'Sample Code'.</code_status>
+ <iform-group>
+  <iform name="ERETU" xed_iform="ERETU" encoding="F3 0F 01 CA" opcode="01" valid32="N.E." valid64="V">
+   <callee>Std::Boolean::Not</callee>
+   <callee>Std::Integer::Eq</callee>
+   <callee>Std::Integer::Ne</callee>
+   <callee>Std::Bits::Eq</callee>
+   <callee>Data_Size_Of_Current_Mode</callee>
+   <callee>In_64Bit_Mode</callee>
+   <callee>Report_Invalid_Opcode</callee>
+   <callee>Instr_ERETU</callee>
+   <var-used>CPL</var-used>
+   <var-used>CR4</var-used>
+   <var-used>Next_IP</var-used>
+   <instr_code>
+    <decode_args>
+     </decode_args>
+    <read_instr/><decode_checks>
+     <code>if not ((Data_Size_Of_Current_Mode() == 64)) then Report_Invalid_Opcode!(); endif;</code>
+     </decode_checks>
+    <exception_checks>
+     </exception_checks>
+    <exception_check><exception_condition>LockPrefix</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CPL_Not0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>CR4_FRED_0</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><exception_check><exception_condition>NotMode64</exception_condition>
+     <exception_fault>#UD</exception_fault>
+     </exception_check><pre_execute>
+     <code>Next_IP := ip;</code>
+     </pre_execute>
+    <execute>
+     <code>Instr_ERETU?();</code>
+     </execute>
+    <post_execute>
+     </post_execute>
+    </instr_code>
+   <assembly-syntax mnemonic="ERETU">
+    </assembly-syntax>
+   <cpuid-group name="FRED"><cpuid-flag>FRED</cpuid-flag></cpuid-group>
+   </iform>
+  </iform-group>
+ <operation name="ERETU" variant_kind="Standard variant" mnemonic="ERETU">
+  <code>if IA32_FRED_CONFIG.CURRENT_STACK_LEVEL != 0b00 then</code>
+  <code>    Report_General_Protection_Exception!(Zero(32));</code>
+  <code>endif;</code>
+  <code></code>
+  <code>// pop old state from regular stack and check it</code>
+  <code></code>
+  <code>// skip error code so that RSP references the return state</code>
+  <code>var new_rip                           := Logical_Mem_Read?(SS, RSP +  8, 64);</code>
+  <code>let augmented_cs : ERETU_Augmented_CS := Logical_Mem_Read?(SS, RSP + 16, 64);</code>
+  <code>let new_flags    : RFLAGS_Type        := Logical_Mem_Read?(SS, RSP + 24, 64);</code>
+  <code>var new_rsp                           := Logical_Mem_Read?(SS, RSP + 32, 64);</code>
+  <code>let augmented_ss : ERETU_Augmented_SS := Logical_Mem_Read?(SS, RSP + 40, 64);</code>
+  <code></code>
+  <code>if augmented_cs.RPL != 0b11                            // enforce return to ring 3</code>
+  <code>   or not Is_Zero(augmented_cs.RESERVED)</code>
+  <code>   or new_flags.RESERVED_ONE != 0b1</code>
+  <code>   or not Is_Zero(new_flags.RESERVED_ZERO)</code>
+  <code>   or new_flags.IOPL != 0b00</code>
+  <code>   or new_flags.VM != 0b0</code>
+  <code>   or augmented_ss.RPL != 0b11</code>
+  <code>   or not Is_Zero(augmented_ss.RESERVED)                    // do not check bits 63:32</code>
+  <code>    then</code>
+  <code>    Report_General_Protection_Exception!(Zero(32));</code>
+  <code>endif;</code>
+  <code></code>
+  <code>var new_cs : Segment;</code>
+  <code>var new_ss : Segment;</code>
+  <code></code>
+  <code>if augmented_cs.SELECTOR == (IA32_STAR[63:48] + 16)</code>
+  <code>    and augmented_ss.SELECTOR == (IA32_STAR[63:48] + 8) then</code>
+  <code>    // Return to ring 3 in standard 64-bit configuration</code>
+  <code>    new_cs := FRED::Set_CS_Segment_For_CPL3(augmented_cs.SELECTOR, True);</code>
+  <code>    new_ss := FRED::Set_SS_Segment_For_CPL3(augmented_ss.SELECTOR);</code>
+  <code>elsif augmented_cs.SELECTOR == IA32_STAR[63:48]</code>
+  <code>    and augmented_ss.SELECTOR == (IA32_STAR[63:48] + 8) then</code>
+  <code>    // set new_cs to standard values used ring 3 in compatibility mode</code>
+  <code>    new_cs := FRED::Set_CS_Segment_For_CPL3(augmented_cs.SELECTOR, False);</code>
+  <code>    new_ss := FRED::Set_SS_Segment_For_CPL3(augmented_ss.SELECTOR);</code>
+  <code>else</code>
+  <code>    // load each segment as is done by IRET, including checks that may lead to a fault</code>
+  <code>    new_cs := Load_Segment_Descriptor?(augmented_cs.SELECTOR, CS);</code>
+  <code></code>
+  <code>    if Is_Null_Segment_Selector(new_cs.selector) then</code>
+  <code>        Report_General_Protection_Exception!(Zero(32));</code>
+  <code>    endif;</code>
+  <code></code>
+  <code>    if not Is_Code_Segment(new_cs)</code>
+  <code>        or not Is_Valid_Code_Segment(new_cs, Unsigned(new_cs.selector.RPL))</code>
+  <code>        or (new_cs.descriptor.D == 0b1 and new_cs.descriptor.L == 0b1)</code>
+  <code>    then</code>
+  <code>        Report_General_Protection_Exception!(Get_Error_Code_From_Selector(new_cs.selector));</code>
+  <code>    endif;</code>
+  <code></code>
+  <code>    if new_cs.descriptor.P == 0b0 then</code>
+  <code>        Report_Segment_Not_Present!(Get_Error_Code_From_Selector(new_cs.selector));</code>
+  <code>    endif;</code>
+  <code></code>
+  <code>    if new_cs.descriptor.A == 0b0 then</code>
+  <code>        new_cs := Set_Segment_Access_Bit?(new_cs);</code>
+  <code>    endif;</code>
+  <code></code>
+  <code>    new_ss := Load_Segment_Descriptor?(augmented_ss.SELECTOR, SS);</code>
+  <code></code>
+  <code>    if new_ss.selector.RPL != new_cs.selector.RPL</code>
+  <code>       or not Is_Data_Segment(new_ss)</code>
+  <code>       or new_ss.descriptor.W == 0b0</code>
+  <code>       or new_ss.descriptor.DPL != new_cs.selector.RPL</code>
+  <code>    then</code>
+  <code>        Report_General_Protection_Exception!(Get_Error_Code_From_Selector(new_ss.selector));</code>
+  <code>    endif;</code>
+  <code></code>
+  <code>    if new_ss.descriptor.P == 0b0 then</code>
+  <code>        Report_Stack_Fault!(Get_Error_Code_From_Selector(new_ss.selector));</code>
+  <code>    endif;</code>
+  <code></code>
+  <code>    if not Is_Null_Segment_Selector(new_ss.selector) and new_ss.descriptor.A == 0b0 then</code>
+  <code>        new_ss.descriptor.A := 0b1;</code>
+  <code>        Store_Segment_Descriptor?(new_ss, False);</code>
+  <code>    endif;</code>
+  <code>endif;</code>
+  <code></code>
+  <code>if Is_64Bit_Code_Segment(new_cs) then // return to 64-bit mode</code>
+  <code>    if not Is_Canonical_Wrt_Paging_Mode(new_rip, 0, ignore_LAM=&gt;True) then</code>
+  <code>        Report_General_Protection_Exception!(Zero(32));</code>
+  <code>    endif;</code>
+  <code>else // return to compatibility mode</code>
+  <code>    new_rip[63:32] := Zero(32);</code>
+  <code>    new_rsp[63:32] := Zero(32);</code>
+  <code>    Check_Segment_Limit?(new_cs, new_rip, 1);</code>
+  <code>endif;</code>
+  <code></code>
+  <code>// If user shadow stacks are enabled, check new SSP value on return to compatibility mode</code>
+  <code>if CR4.CET == 0b1</code>
+  <code>    and IA32_U_CET.SH_STK_EN == 0b1</code>
+  <code>    and new_cs.descriptor.L == 0b0</code>
+  <code>    and not Is_Zero(IA32_PL3_SSP[63:32])</code>
+  <code>then</code>
+  <code>    Report_General_Protection_Exception!(Zero(32));</code>
+  <code>endif;</code>
+  <code></code>
+  <code>// If supervisor shadow stacks are enabled, compare SSP to the FRED SSP MSR for stack level 0</code>
+  <code>if CR4.CET == 0b1 and IA32_S_CET.SH_STK_EN == 0b1 and IA32_FRED_SSP[0b00] != SSP then</code>
+  <code>    Report_Control_Protection_Exception!(FAR_RET_or_IRET);</code>
+  <code>endif;</code>
+  <code></code>
+  <code>// update registers for return state</code>
+  <code>RFLAGS := new_flags;  // ERETU can set RFLAGS.RF to 1</code>
+  <code>RSP    := new_rsp;    // load all 64 bits regardless of new mode</code>
+  <code>SS     := new_ss;     // selector and descriptor</code>
+  <code>Branch_Far(new_cs, new_rip); // sets CPL to CS.RPL (0b11)</code>
+  <code></code>
+  <code>// swap GS.base and IA32_KERNEL_GS_BASE</code>
+  <code>let temp_gs_base := Get_Segment_Base(GS);</code>
+  <code>GS := Set_Segment_Base(IA32_KERNEL_GS_BASE, GS);</code>
+  <code>IA32_KERNEL_GS_BASE := temp_gs_base;</code>
+  <code></code>
+  <code>if CR4.CET == 0b1 and IA32_U_CET.SH_STK_EN == 0b1 then</code>
+  <code>    SSP := IA32_PL3_SSP;</code>
+  <code>endif;</code>
+  <code></code>
+  <code>// update event-related state</code>
+  <code>if augmented_ss.NMI == 0b1 then</code>
+  <code>    if VMX_Operation_Mode == VMX_Non_Root</code>
+  <code>        and VMCS::Pin_Based_VM_Exec_Controls.NMI_Exiting == 0b1 then</code>
+  <code>        if VMCS::Pin_Based_VM_Exec_Controls.Virtual_NMIs == 0b1 then</code>
+  <code>            Event_Blocked.VIRT_NMI_BLOCKED := False;</code>
+  <code>        endif;</code>
+  <code>    else</code>
+  <code>        Event_Blocked.NMI_BLOCKED := False;</code>
+  <code>    endif;</code>
+  <code>endif;</code>
+  <code></code>
+  <code>if augmented_ss.SYS == 0b1 and RFLAGS.TF == 0b1 then</code>
+  <code>    Debug_Single_Step_Trap_Detected := True;</code>
+  <code>endif;</code>
+  <callee>Std::Boolean::Not</callee>
+  <callee>Std::Boolean::Strict_And</callee>
+  <callee>Std::Boolean::Strict_Or</callee>
+  <callee>Std::Integer::Add</callee>
+  <callee>Std::Bits::Add_int</callee>
+  <callee>Std::Bits::Unsigned</callee>
+  <callee>Std::Bits::Eq</callee>
+  <callee>Std::Bits::Is_Zero</callee>
+  <callee>Std::Bits::Ne</callee>
+  <callee>Std::Bits::Zero</callee>
+  <callee>Branch_Far</callee>
+  <callee>Check_Segment_Limit</callee>
+  <callee>FRED::Set_CS_Segment_For_CPL3</callee>
+  <callee>FRED::Set_SS_Segment_For_CPL3</callee>
+  <callee>Get_Error_Code_From_Selector</callee>
+  <callee>Get_Segment_Base</callee>
+  <callee>IA32_FRED_SSP</callee>
+  <callee>Is_64Bit_Code_Segment</callee>
+  <callee>Is_Canonical_Wrt_Paging_Mode</callee>
+  <callee>Is_Code_Segment</callee>
+  <callee>Is_Data_Segment</callee>
+  <callee>Is_Null_Segment_Selector</callee>
+  <callee>Is_Valid_Code_Segment</callee>
+  <callee>Load_Segment_Descriptor</callee>
+  <callee>Logical_Mem_Read</callee>
+  <callee>Report_Control_Protection_Exception</callee>
+  <callee>Report_General_Protection_Exception</callee>
+  <callee>Report_Segment_Not_Present</callee>
+  <callee>Report_Stack_Fault</callee>
+  <callee>Set_Segment_Access_Bit</callee>
+  <callee>Set_Segment_Base</callee>
+  <callee>Store_Segment_Descriptor</callee>
+  <callee>RSP</callee>
+  <callee>RSP_write</callee>
+  <var-used>True</var-used>
+  <var-used>False</var-used>
+  <var-used>CS</var-used>
+  <var-used>FAR_RET_or_IRET</var-used>
+  <var-used>SSP</var-used>
+  <var-used>CR4</var-used>
+  <var-used>RFLAGS</var-used>
+  <var-used>Memory_Read</var-used>
+  <var-used>SS</var-used>
+  <var-used>Event_Blocked</var-used>
+  <var-used>Debug_Single_Step_Trap_Detected</var-used>
+  <var-used>Normal_Alignment</var-used>
+  <var-used>VMX_Operation_Mode</var-used>
+  <var-used>GS</var-used>
+  <var-used>IA32_FRED_CONFIG</var-used>
+  <var-used>IA32_STAR</var-used>
+  <var-used>IA32_KERNEL_GS_BASE</var-used>
+  <var-used>IA32_U_CET</var-used>
+  <var-used>IA32_PL3_SSP</var-used>
+  <var-used>IA32_S_CET</var-used>
+  <var-used>VMX_Non_Root</var-used>
+  <var-used>VMCS::Pin_Based_VM_Exec_Controls</var-used>
+  </operation>
+ <category>exceptions/fred</category>
+ </instruction>

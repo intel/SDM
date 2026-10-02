@@ -1,48 +1,239 @@
 <instruction name="VPCMPQ/VPCMPUQ">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Compare Packed Integer Values Into Mask</shortdesc>
- <longdesc><para unique="1046223">
-   <string>Performs a SIMD compare of the packed integer values in the second source operand and the first source operand and returns the results of the comparison to the mask destination operand. The comparison predicate operand (immediate byte) specifies the type of comparison performed on each pair of packed values in the two source oper&#173;ands. The result of each comparison is a single mask bit result of 1 (comparison true) or 0 (comparison false).</string></para>
-  <para unique="1046224">
-   <string>VPCMPQ/VPCMPUQ performs a comparison between pairs of signed/unsigned quadword integer values.</string></para>
-  <para unique="1046225">
-   <string>The first source operand (second operand) is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register or a 512/256/128-bit memory location or a 512-bit vector broadcasted from a 64-bit memory location. The destination operand (first operand) is a mask register k1. Up to 8/4/2 comparisons are performed with results written to the destination operand under the writemask k2.</string></para>
-  <para unique="1046226">
-   <string>The comparison predicate operand is an 8-bit immediate: bits 2:0 define the type of comparison to be performed. Bits 3 through 7 of the immediate are reserved. Compiler can implement the pseudo-op mnemonic listed in </string><link linkend="63361: 06_Table: Table 5-19. Pseudo-Op and VPCMPMP* Implementation"><string>Table 5&#8209;19</string></link><string>.</string></para>
+ <encoding_table><table unique="1046081">
+   <col width="58.507920000000006pt"/>
+   <col width="83.24136000000001pt"/>
+   <col width="30.150000000000002pt"/>
+   <col width="48.74976pt"/>
+   <col width="80.08272pt"/>
+   <col width="211.66776000000002pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1046083">Opcode/</para>
+      <para unique="1046084">Instruction</para>
+      </th>
+     <th><para unique="1046088">Op/En</para>
+      </th>
+     <th><para unique="1046090">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1046092">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1046094">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1046737">EVEX.128.66.0F3A.W1 1F /r ib</para>
+      <para unique="1046738">VPCMPQ k1 {k2}, xmm2, xmm3/m128/m64bcst, imm8</para>
+      </td>
+     <td><para unique="1046742">A</para>
+      </td>
+     <td><para unique="1046744">V/V</para>
+      </td>
+     <td><para unique="1046746">(AVX512VL AND</para>
+      <para unique="1046750">AVX512F) OR AVX10.1<anchor id="+862748"/></para>
+      </td>
+     <td><para unique="1046755">Compare packed signed quadword integer values in xmm3/m128/m64bcst and xmm2 using bits 2:0 of imm8 as a comparison predicate with writemask k2 and leave the result in mask register k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046720">EVEX.256.66.0F3A.W1 1F /r ib</para>
+      <para unique="1046721">VPCMPQ k1 {k2}, ymm2, ymm3/m256/m64bcst, imm8</para>
+      </td>
+     <td><para unique="1046725">A</para>
+      </td>
+     <td><para unique="1046727">V/V</para>
+      </td>
+     <td><para unique="1046729">(AVX512VL AND</para>
+      <para unique="1046733">AVX512F) OR AVX10.1<anchor id="+548796"/></para>
+      </td>
+     <td><para unique="1046735">Compare packed signed quadword integer values in ymm3/m256/m64bcst and ymm2 using bits 2:0 of imm8 as a comparison predicate with writemask k2 and leave the result in mask register k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046703">EVEX.512.66.0F3A.W1 1F /r ib</para>
+      <para unique="1046704">VPCMPQ k1 {k2}, zmm2, zmm3/m512/m64bcst, imm8</para>
+      </td>
+     <td><para unique="1046708">A</para>
+      </td>
+     <td><para unique="1046710">V/V</para>
+      </td>
+     <td><para unique="1046715">AVX512F </para>
+      <para unique="1046716">OR AVX10.1<anchor id="+435418"/></para>
+      </td>
+     <td><para unique="1046718">Compare packed signed quadword integer values in zmm3/m512/m64bcst and zmm2 using bits 2:0 of imm8 as a comparison predicate with writemask k2 and leave the result in mask register k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046686">EVEX.128.66.0F3A.W1 1E /r ib</para>
+      <para unique="1046687">VPCMPUQ k1 {k2}, xmm2, xmm3/m128/m64bcst, imm8</para>
+      </td>
+     <td><para unique="1046691">A</para>
+      </td>
+     <td><para unique="1046693">V/V</para>
+      </td>
+     <td><para unique="1046695">(AVX512VL AND</para>
+      <para unique="1046699">AVX512F) OR AVX10.1<anchor id="+735391"/></para>
+      </td>
+     <td><para unique="1046701">Compare packed unsigned quadword integer values in xmm3/m128/m64bcst and xmm2 using bits 2:0 of imm8 as a comparison predicate with writemask k2 and leave the result in mask register k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046669">EVEX.256.66.0F3A.W1 1E /r ib</para>
+      <para unique="1046670">VPCMPUQ k1 {k2}, ymm2, ymm3/m256/m64bcst, imm8</para>
+      </td>
+     <td><para unique="1046674">A</para>
+      </td>
+     <td><para unique="1046676">V/V</para>
+      </td>
+     <td><para unique="1046678">(AVX512VL AND</para>
+      <para unique="1046682">AVX512F) OR AVX10.1<anchor id="+449725"/></para>
+      </td>
+     <td><para unique="1046684">Compare packed unsigned quadword integer values in ymm3/m256/m64bcst and ymm2 using bits 2:0 of imm8 as a comparison predicate with writemask k2 and leave the result in mask register k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046652">EVEX.512.66.0F3A.W1 1E /r ib</para>
+      <para unique="1046653">VPCMPUQ k1 {k2}, zmm2, zmm3/m512/m64bcst, imm8</para>
+      </td>
+     <td><para unique="1046657">A</para>
+      </td>
+     <td><para unique="1046659">V/V</para>
+      </td>
+     <td><para unique="1046664">AVX512F </para>
+      <para unique="1046665">OR AVX10.1<anchor id="+644364"/></para>
+      </td>
+     <td><para unique="1046667">Compare packed unsigned quadword integer values in zmm3/m512/m64bcst and zmm2 using bits 2:0 of imm8 as a comparison predicate with writemask k2 and leave the result in mask register k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1046196">
+   <col width="44.019360000000006pt"/>
+   <col width="66.81960000000001pt"/>
+   <col width="99.03960000000001pt"/>
+   <col width="102.19032pt"/>
+   <col width="97.61688000000001pt"/>
+   <col width="98.80488pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1046198">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1046200">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1046202">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1046204">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1046206">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1046208">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1046210">A</para>
+      </td>
+     <td valign="middle"><para unique="1046212">Full</para>
+      </td>
+     <td valign="middle"><para unique="1046214">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046216">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046218">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046220">imm8</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046221">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046223">Performs a SIMD compare of the packed integer values in the second source operand and the first source operand and returns the results of the comparison to the mask destination operand. The comparison predicate operand (immediate byte) specifies the type of comparison performed on each pair of packed values in the two source oper&#173;ands. The result of each comparison is a single mask bit result of 1 (comparison true) or 0 (comparison false).</para>
+  <para unique="1046224">VPCMPQ/VPCMPUQ performs a comparison between pairs of signed/unsigned quadword integer values.</para>
+  <para unique="1046225">The first source operand (second operand) is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register or a 512/256/128-bit memory location or a 512-bit vector broadcasted from a 64-bit memory location. The destination operand (first operand) is a mask register k1. Up to 8/4/2 comparisons are performed with results written to the destination operand under the writemask k2.</para>
+  <para unique="1046226">The comparison predicate operand is an 8-bit immediate: bits 2:0 define the type of comparison to be performed. Bits 3 through 7 of the immediate are reserved. Compiler can implement the pseudo-op mnemonic listed in <link unique="1046228" linkend="&lt;c&gt;VPCMPB-VPCMPUB-Compare-Packed-Byte-Values-Into-Mask.fm#63361: 06_Table: Table 5-19. Pseudo-Op and VPCMPMP* Implementation" xrefstyle="TableNum">Table 5&#8209;19</link>.</para>
   </longdesc>
+ <operation>
+  <programlisting>CASE (COMPARISON PREDICATE) OF
+	0: OP := EQ;
+	1: OP := LT;
+	2: OP := LE;
+	3: OP := FALSE;
+	4: OP := NEQ;
+	5: OP := NLT;
+	6: OP := NLE;
+	7: OP := TRUE;
+ESAC;</programlisting>
+  <section level="7">
+   <title unique="1046242">VPCMPQ (EVEX encoded versions)</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k2[j] OR *no writemask*
+		THEN
+			IF (EVEX.b = 1) AND (SRC2 *is memory*)
+				THEN CMP := SRC1[i+63:i] OP SRC2[63:0];
+				ELSE CMP := SRC1[i+63:i] OP SRC2[i+63:i];
+			FI;
+			IF CMP = TRUE
+				THEN DEST[j] := 1;
+				ELSE DEST[j] := 0; FI;
+		ELSE 		DEST[j] := 0 					; zeroing-masking only
+	FI;
+ENDFOR
+DEST[MAX_KL-1:KL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046260">VPCMPUQ (EVEX encoded versions)</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k2[j] OR *no writemask*
+		THEN
+			IF (EVEX.b = 1) AND (SRC2 *is memory*)
+				THEN CMP := SRC1[i+63:i] OP SRC2[63:0];
+				ELSE CMP := SRC1[i+63:i] OP SRC2[i+63:i];
+			FI;
+			IF CMP = TRUE
+				THEN DEST[j] := 1;
+				ELSE DEST[j] := 0; FI;
+		ELSE 		DEST[j] := 0 					; zeroing-masking only
+	FI;
+ENDFOR
+DEST[MAX_KL-1:KL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VPCMPQ __mmask8 _mm512_cmp_epi64_mask( __m512i a, __m512i b, int imm);</string><string>
-</string><string>VPCMPQ __mmask8 _mm512_mask_cmp_epi64_mask(__mmask8 k, __m512i a, __m512i b, int imm);</string><string>
-</string><string>VPCMPQ __mmask8 _mm512_cmp[eq|ge|gt|le|lt|neq]_epi64_mask( __m512i a, __m512i b);</string><string>
-</string><string>VPCMPQ __mmask8 _mm512_mask_cmp[eq|ge|gt|le|lt|neq]_epi64_mask(__mmask8 k, __m512i a, __m512i b);</string><string>
-</string><string>VPCMPUQ __mmask8 _mm512_cmp_epu64_mask( __m512i a, __m512i b, int imm);</string><string>
-</string><string>VPCMPUQ __mmask8 _mm512_mask_cmp_epu64_mask(__mmask8 k, __m512i a, __m512i b, int imm);</string><string>
-</string><string>VPCMPUQ __mmask8 _mm512_cmp[eq|ge|gt|le|lt|neq]_epu64_mask( __m512i a, __m512i b);</string><string>
-</string><string>VPCMPUQ __mmask8 _mm512_mask_cmp[eq|ge|gt|le|lt|neq]_epu64_mask(__mmask8 k, __m512i a, __m512i b);</string><string>
-</string><string>VPCMPQ __mmask8 _mm256_cmp_epi64_mask( __m256i a, __m256i b, int imm);</string><string>
-</string><string>VPCMPQ __mmask8 _mm256_mask_cmp_epi64_mask(__mmask8 k, __m256i a, __m256i b, int imm);</string><string>
-</string><string>VPCMPQ __mmask8 _mm256_cmp[eq|ge|gt|le|lt|neq]_epi64_mask( __m256i a, __m256i b);</string><string>
-</string><string>VPCMPQ __mmask8 _mm256_mask_cmp[eq|ge|gt|le|lt|neq]_epi64_mask(__mmask8 k, __m256i a, __m256i b);</string><string>
-</string><string>VPCMPUQ __mmask8 _mm256_cmp_epu64_mask( __m256i a, __m256i b, int imm);</string><string>
-</string><string>VPCMPUQ __mmask8 _mm256_mask_cmp_epu64_mask(__mmask8 k, __m256i a, __m256i b, int imm);</string><string>
-</string><string>VPCMPUQ __mmask8 _mm256_cmp[eq|ge|gt|le|lt|neq]_epu64_mask( __m256i a, __m256i b);</string><string>
-</string><string>VPCMPUQ __mmask8 _mm256_mask_cmp[eq|ge|gt|le|lt|neq]_epu64_mask(__mmask8 k, __m256i a, __m256i b);</string><string>
-</string><string>VPCMPQ __mmask8 _mm_cmp_epi64_mask( __m128i a, __m128i b, int imm);</string><string>
-</string><string>VPCMPQ __mmask8 _mm_mask_cmp_epi64_mask(__mmask8 k, __m128i a, __m128i b, int imm);</string><string>
-</string><string>VPCMPQ __mmask8 _mm_cmp[eq|ge|gt|le|lt|neq]_epi64_mask( __m128i a, __m128i b);</string><string>
-</string><string>VPCMPQ __mmask8 _mm_mask_cmp[eq|ge|gt|le|lt|neq]_epi64_mask(__mmask8 k, __m128i a, __m128i b);</string><string>
-</string><string>VPCMPUQ __mmask8 _mm_cmp_epu64_mask( __m128i a, __m128i b, int imm);</string><string>
-</string><string>VPCMPUQ __mmask8 _mm_mask_cmp_epu64_mask(__mmask8 k, __m128i a, __m128i b, int imm);</string><string>
-</string><string>VPCMPUQ __mmask8 _mm_cmp[eq|ge|gt|le|lt|neq]_epu64_mask( __m128i a, __m128i b);</string><string>
-</string><string>VPCMPUQ __mmask8 _mm_mask_cmp[eq|ge|gt|le|lt|neq]_epu64_mask(__mmask8 k, __m128i a, __m128i b);</string><string>
-</string></programlisting>
+  <programlisting>VPCMPQ __mmask8 _mm512_cmp_epi64_mask( __m512i a, __m512i b, int imm);
+VPCMPQ __mmask8 _mm512_mask_cmp_epi64_mask(__mmask8 k, __m512i a, __m512i b, int imm);
+VPCMPQ __mmask8 _mm512_cmp[eq|ge|gt|le|lt|neq]_epi64_mask( __m512i a, __m512i b);
+VPCMPQ __mmask8 _mm512_mask_cmp[eq|ge|gt|le|lt|neq]_epi64_mask(__mmask8 k, __m512i a, __m512i b);
+VPCMPUQ __mmask8 _mm512_cmp_epu64_mask( __m512i a, __m512i b, int imm);
+VPCMPUQ __mmask8 _mm512_mask_cmp_epu64_mask(__mmask8 k, __m512i a, __m512i b, int imm);
+VPCMPUQ __mmask8 _mm512_cmp[eq|ge|gt|le|lt|neq]_epu64_mask( __m512i a, __m512i b);
+VPCMPUQ __mmask8 _mm512_mask_cmp[eq|ge|gt|le|lt|neq]_epu64_mask(__mmask8 k, __m512i a, __m512i b);
+VPCMPQ __mmask8 _mm256_cmp_epi64_mask( __m256i a, __m256i b, int imm);
+VPCMPQ __mmask8 _mm256_mask_cmp_epi64_mask(__mmask8 k, __m256i a, __m256i b, int imm);
+VPCMPQ __mmask8 _mm256_cmp[eq|ge|gt|le|lt|neq]_epi64_mask( __m256i a, __m256i b);
+VPCMPQ __mmask8 _mm256_mask_cmp[eq|ge|gt|le|lt|neq]_epi64_mask(__mmask8 k, __m256i a, __m256i b);
+VPCMPUQ __mmask8 _mm256_cmp_epu64_mask( __m256i a, __m256i b, int imm);
+VPCMPUQ __mmask8 _mm256_mask_cmp_epu64_mask(__mmask8 k, __m256i a, __m256i b, int imm);
+VPCMPUQ __mmask8 _mm256_cmp[eq|ge|gt|le|lt|neq]_epu64_mask( __m256i a, __m256i b);
+VPCMPUQ __mmask8 _mm256_mask_cmp[eq|ge|gt|le|lt|neq]_epu64_mask(__mmask8 k, __m256i a, __m256i b);
+VPCMPQ __mmask8 _mm_cmp_epi64_mask( __m128i a, __m128i b, int imm);
+VPCMPQ __mmask8 _mm_mask_cmp_epi64_mask(__mmask8 k, __m128i a, __m128i b, int imm);
+VPCMPQ __mmask8 _mm_cmp[eq|ge|gt|le|lt|neq]_epi64_mask( __m128i a, __m128i b);
+VPCMPQ __mmask8 _mm_mask_cmp[eq|ge|gt|le|lt|neq]_epi64_mask(__mmask8 k, __m128i a, __m128i b);
+VPCMPUQ __mmask8 _mm_cmp_epu64_mask( __m128i a, __m128i b, int imm);
+VPCMPUQ __mmask8 _mm_mask_cmp_epu64_mask(__mmask8 k, __m128i a, __m128i b, int imm);
+VPCMPUQ __mmask8 _mm_cmp[eq|ge|gt|le|lt|neq]_epu64_mask( __m128i a, __m128i b);
+VPCMPUQ __mmask8 _mm_mask_cmp[eq|ge|gt|le|lt|neq]_epu64_mask(__mmask8 k, __m128i a, __m128i b);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046303">
-   <string>None</string></para>
+  <para unique="1046303">None</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046308" format="xIndent1">
-   <string>EVEX-encoded instruction, see </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046308" format="xIndent1">EVEX-encoded instruction, see <link unique="1046306" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

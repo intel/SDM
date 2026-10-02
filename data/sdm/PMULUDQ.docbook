@@ -1,48 +1,267 @@
 <instruction name="PMULUDQ">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Multiply Packed Unsigned Doubleword Integers</shortdesc>
- <longdesc><para unique="1091569">
-   <string>Multiplies the first operand (destination operand) by the second operand (source operand) and stores the result in the destination operand. </string></para>
-  <para unique="1091570">
-   <string>In 64-bit mode and not encoded with VEX/EVEX, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).</string></para>
-  <para unique="1091571">
-   <string>Legacy SSE version 64-bit operand: The source operand can be an unsigned doubleword integer stored in the low doubleword of an MMX technology register or a 64-bit memory location. The destination operand can be an unsigned doubleword integer stored in the low doubleword an MMX technology register. The result is an unsigned quadword integer stored in the destination an MMX technology register. When a quadword result is too large to be represented in 64 bits (overflow), the result is wrapped around and the low 64 bits are written to the destination element (that is, the carry is ignored).</string></para>
-  <para unique="1091572">
-   <string>For 64-bit memory operands, 64 bits are fetched from memory, but only the low doubleword is used in the compu&#173;tation.</string></para>
-  <para unique="1091573">
-   <string>128-bit Legacy SSE version: The second source operand is two packed unsigned doubleword integers stored in the first (low) and third doublewords of an XMM register or a 128-bit memory location. For 128-bit memory operands, 128 bits are fetched from memory, but only the first and third doublewords are used in the computation. The first source operand is two packed unsigned doubleword integers stored in the first and third doublewords of an XMM register. The destination contains two packed unsigned quadword integers stored in an XMM register. Bits (MAXVL-1:128) of the corresponding YMM destination register remain unchanged.</string></para>
-  <para unique="1091574">
-   <string>VEX.128 encoded version: The second source operand is two packed unsigned doubleword integers stored in the first (low) and third doublewords of an XMM register or a 128-bit memory location. For 128-bit memory operands, 128 bits are fetched from memory, but only the first and third doublewords are used in the computation. The first source operand is two packed unsigned doubleword integers stored in the first and third doublewords of an XMM register. The destination contains two packed unsigned quadword integers stored in an XMM register. Bits (MAXVL-1:128) of the destination YMM register are zeroed. </string></para>
-  <para unique="1091575">
-   <string>VEX.256 encoded version: The second source operand is four packed unsigned doubleword integers stored in the first (low), third, fifth, and seventh doublewords of a YMM register or a 256-bit memory location. For 256-bit memory operands, 256 bits are fetched from memory, but only the first, third, fifth, and seventh doublewords are used in the computation. The first source operand is four packed unsigned doubleword integers stored in the first, third, fifth, and seventh doublewords of an YMM register. The destination contains four packed unaligned quadword integers stored in an YMM register.</string></para>
-  <para unique="1091576">
-   <string>EVEX encoded version: The input unsigned doubleword integers are taken from the even-numbered elements of the source operands. The first source operand is a ZMM/YMM/XMM registers. The second source operand can be an ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 64-bit memory location. The destination is a ZMM/YMM/XMM register, and updated according to the writemask at 64-bit granularity. </string></para>
+ <encoding_table><table unique="1091392">
+   <thead><tr>
+     <th colspan="2"><para unique="1091394">Opcode/</para>
+      <para unique="1091395">Instruction</para>
+      </th>
+     <th><para unique="1091399">Op/ En</para>
+      </th>
+     <th><para unique="1091401">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091403">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091405">Description</para>
+      </th>
+     </tr>
+    </thead><col width="82.2132pt"/>
+   <col width="93.26159999999999pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="71.22816pt"/>
+   <col width="191.15424000000002pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1091416">NP 0F F4 /r<superscript><footnote><para unique="1091412" format="TableFootnote">See note in <link unique="1091410" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#27214: 02_Level: 2.4 Instruction Exception Specification" xrefstyle="SectionNum&amp;Title(,)">Section 2.5, &#8220;Intel&#174; AVX and Intel&#174; SSE Instruction Exception Classification,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Soft&#173;ware Developer&#8217;s Manual, Volume 2A, and <link unique="1092437" linkend="&lt;c&gt;__sdm_vol3B_ch25.fm#65163: 03_Level: 19.25.3 Exception Conditions of Legacy SIMD Instruction Operating" xrefstyle="SectionNum&amp;Title(,)">Section 25.25.3, &#8220;Exception Conditions of Legacy SIMD Instructions Operating on MMX Registers,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B.</para>
+         </footnote></superscript></para>
+      <para unique="1091417">PMULUDQ mm1, mm2/m64</para>
+      </td>
+     <td><para unique="1091421">A</para>
+      </td>
+     <td><para unique="1091423">V/V</para>
+      </td>
+     <td><para unique="1091425">SSE2</para>
+      </td>
+     <td><para unique="1091427">Multiply unsigned doubleword integer in mm1 by unsigned doubleword integer in mm2/m64, and store the quadword result in mm1. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091429">66 0F F4 /r</para>
+      <para unique="1091430">PMULUDQ xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091434">A</para>
+      </td>
+     <td><para unique="1091436">V/V</para>
+      </td>
+     <td><para unique="1091438">SSE2</para>
+      </td>
+     <td><para unique="1091440">Multiply packed unsigned doubleword integers in xmm1 by packed unsigned doubleword integers in xmm2/m128, and store the quadword results in xmm1. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091442">VEX.128.66.0F.WIG F4 /r</para>
+      <para unique="1091443">VPMULUDQ xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1091447">B</para>
+      </td>
+     <td><para unique="1091449">V/V</para>
+      </td>
+     <td><para unique="1091451">AVX</para>
+      </td>
+     <td><para unique="1091453">Multiply packed unsigned doubleword integers in xmm2 by packed unsigned doubleword integers in xmm3/m128, and store the quadword results in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091455">VEX.256.66.0F.WIG F4 /r</para>
+      <para unique="1091456">VPMULUDQ ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1091460">B</para>
+      </td>
+     <td><para unique="1091462">V/V</para>
+      </td>
+     <td><para unique="1091464">AVX2</para>
+      </td>
+     <td><para unique="1091466">Multiply packed unsigned doubleword integers in ymm2 by packed unsigned doubleword integers in ymm3/m256, and store the quadword results in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092002">EVEX.128.66.0F.W1 F4 /r</para>
+      <para unique="1092003">VPMULUDQ xmm1 {k1}{z}, xmm2, xmm3/m128/m64bcst</para>
+      </td>
+     <td><para unique="1092007">C</para>
+      </td>
+     <td><para unique="1092009">V/V</para>
+      </td>
+     <td><para unique="1092011">(AVX512VL AND</para>
+      <para unique="1092015">AVX512F) OR AVX10.1<anchor id="+619032"/></para>
+      </td>
+     <td><para unique="1092020">Multiply packed unsigned doubleword integers in xmm2 by packed unsigned doubleword integers in xmm3/m128/m64bcst, and store the quadword results in xmm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091985">EVEX.256.66.0F.W1 F4 /r</para>
+      <para unique="1091986">VPMULUDQ ymm1 {k1}{z}, ymm2, ymm3/m256/m64bcst</para>
+      </td>
+     <td><para unique="1091990">C</para>
+      </td>
+     <td><para unique="1091992">V/V</para>
+      </td>
+     <td><para unique="1091994">(AVX512VL AND</para>
+      <para unique="1091998">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092000">Multiply packed unsigned doubleword integers in ymm2 by packed unsigned doubleword integers in ymm3/m256/m64bcst, and store the quadword results in ymm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091968">EVEX.512.66.0F.W1 F4 /r</para>
+      <para unique="1091969">VPMULUDQ zmm1 {k1}{z}, zmm2, zmm3/m512/m64bcst</para>
+      </td>
+     <td><para unique="1091973">C</para>
+      </td>
+     <td><para unique="1091975">V/V</para>
+      </td>
+     <td><para unique="1091980">AVX512F </para>
+      <para unique="1091981">OR AVX10.1</para>
+      </td>
+     <td><para unique="1091983">Multiply packed unsigned doubleword integers in zmm2 by packed unsigned doubleword integers in zmm3/m512/m64bcst, and store the quadword results in zmm1 under writemask k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091518">
+   <col width="41.84856pt"/>
+   <col width="63.44856pt"/>
+   <col width="91.3212pt"/>
+   <col width="102.6432pt"/>
+   <col width="105.90912pt"/>
+   <col width="102.2976pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091520">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091522">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091524">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091526">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091528">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091530">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091532">A</para>
+      </td>
+     <td valign="middle"><para unique="1091534">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091536">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091538">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091540">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091542">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091544">B</para>
+      </td>
+     <td valign="middle"><para unique="1091546">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091548">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091550">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091552">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091554">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091556">C</para>
+      </td>
+     <td valign="middle"><para unique="1091558">Full</para>
+      </td>
+     <td valign="middle"><para unique="1091560">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091562">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091564">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091566">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091567">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091569">Multiplies the first operand (destination operand) by the second operand (source operand) and stores the result in the destination operand. </para>
+  <para unique="1091570">In 64-bit mode and not encoded with VEX/EVEX, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).</para>
+  <para unique="1091571">Legacy SSE version 64-bit operand: The source operand can be an unsigned doubleword integer stored in the low doubleword of an MMX technology register or a 64-bit memory location. The destination operand can be an unsigned doubleword integer stored in the low doubleword an MMX technology register. The result is an unsigned quadword integer stored in the destination an MMX technology register. When a quadword result is too large to be represented in 64 bits (overflow), the result is wrapped around and the low 64 bits are written to the destination element (that is, the carry is ignored).</para>
+  <para unique="1091572">For 64-bit memory operands, 64 bits are fetched from memory, but only the low doubleword is used in the compu&#173;tation.</para>
+  <para unique="1091573">128-bit Legacy SSE version: The second source operand is two packed unsigned doubleword integers stored in the first (low) and third doublewords of an XMM register or a 128-bit memory location. For 128-bit memory operands, 128 bits are fetched from memory, but only the first and third doublewords are used in the computation. The first source operand is two packed unsigned doubleword integers stored in the first and third doublewords of an XMM register. The destination contains two packed unsigned quadword integers stored in an XMM register. Bits (MAXVL-1:128) of the corresponding YMM destination register remain unchanged.</para>
+  <para unique="1091574">VEX.128 encoded version: The second source operand is two packed unsigned doubleword integers stored in the first (low) and third doublewords of an XMM register or a 128-bit memory location. For 128-bit memory operands, 128 bits are fetched from memory, but only the first and third doublewords are used in the computation. The first source operand is two packed unsigned doubleword integers stored in the first and third doublewords of an XMM register. The destination contains two packed unsigned quadword integers stored in an XMM register. Bits (MAXVL-1:128) of the destination YMM register are zeroed. </para>
+  <para unique="1091575">VEX.256 encoded version: The second source operand is four packed unsigned doubleword integers stored in the first (low), third, fifth, and seventh doublewords of a YMM register or a 256-bit memory location. For 256-bit memory operands, 256 bits are fetched from memory, but only the first, third, fifth, and seventh doublewords are used in the computation. The first source operand is four packed unsigned doubleword integers stored in the first, third, fifth, and seventh doublewords of an YMM register. The destination contains four packed unaligned quadword integers stored in an YMM register.</para>
+  <para unique="1091576">EVEX encoded version: The input unsigned doubleword integers are taken from the even-numbered elements of the source operands. The first source operand is a ZMM/YMM/XMM registers. The second source operand can be an ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 64-bit memory location. The destination is a ZMM/YMM/XMM register, and updated according to the writemask at 64-bit granularity. </para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091578">PMULUDQ (With 64-Bit Operands)</title>
+   <programlisting>DEST[63:0] := DEST[31:0] * SRC[31:0];</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091581">PMULUDQ (With 128-Bit Operands)</title>
+   <programlisting>DEST[63:0] := DEST[31:0] * SRC[31:0];
+	DEST[127:64] := DEST[95:64] * SRC[95:64];</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091585">VPMULUDQ (VEX.128 Encoded Version)</title>
+   <programlisting>DEST[63:0] := SRC1[31:0] * SRC2[31:0]
+DEST[127:64] := SRC1[95:64] * SRC2[95:64]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091590">VPMULUDQ (VEX.256 Encoded Version)</title>
+   <programlisting>DEST[63:0] := SRC1[31:0] * SRC2[31:0]
+DEST[127:64] := SRC1[95:64] * SRC2[95:64
+DEST[191:128] := SRC1[159:128] * SRC2[159:128]
+DEST[255:192] := SRC1[223:192] * SRC2[223:192]
+DEST[MAXVL-1:256] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091597">VPMULUDQ (EVEX Encoded Versions)</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask* THEN
+			IF (EVEX.b = 1) AND (SRC2 *is memory*)
+				THEN DEST[i+63:i] := ZeroExtend64( SRC1[i+31:i]) * ZeroExtend64( SRC2[31:0] )
+				ELSE DEST[i+63:i] := ZeroExtend64( SRC1[i+31:i]) * ZeroExtend64( SRC2[i+31:i] )
+			FI;
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE *zeroing-masking*								; zeroing-masking
+					DEST[i+63:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VPMULUDQ __m512i _mm512_mul_epu32(__m512i a, __m512i b);</string><string>
-</string><string>VPMULUDQ __m512i _mm512_mask_mul_epu32(__m512i s, __mmask8 k, __m512i a, __m512i b);</string><string>
-</string><string>VPMULUDQ __m512i _mm512_maskz_mul_epu32( __mmask8 k, __m512i a, __m512i b);</string><string>
-</string><string>VPMULUDQ __m256i _mm256_mask_mul_epu32(__m256i s, __mmask8 k, __m256i a, __m256i b);</string><string>
-</string><string>VPMULUDQ __m256i _mm256_maskz_mul_epu32( __mmask8 k, __m256i a, __m256i b);</string><string>
-</string><string>VPMULUDQ __m128i _mm_mask_mul_epu32(__m128i s, __mmask8 k, __m128i a, __m128i b);</string><string>
-</string><string>VPMULUDQ __m128i _mm_maskz_mul_epu32( __mmask8 k, __m128i a, __m128i b);</string><string>
-</string><string>PMULUDQ 		__m64 _mm_mul_su32 (__m64 a, __m64 b)</string><string>
-</string><string>(V)PMULUDQ 		__m128i _mm_mul_epu32 ( __m128i a, __m128i b)</string><string>
-</string><string>VPMULUDQ 		__m256i _mm256_mul_epu32( __m256i a, __m256i b);</string><string>
-</string></programlisting>
+  <programlisting>VPMULUDQ __m512i _mm512_mul_epu32(__m512i a, __m512i b);
+VPMULUDQ __m512i _mm512_mask_mul_epu32(__m512i s, __mmask8 k, __m512i a, __m512i b);
+VPMULUDQ __m512i _mm512_maskz_mul_epu32( __mmask8 k, __m512i a, __m512i b);
+VPMULUDQ __m256i _mm256_mask_mul_epu32(__m256i s, __mmask8 k, __m256i a, __m256i b);
+VPMULUDQ __m256i _mm256_maskz_mul_epu32( __mmask8 k, __m256i a, __m256i b);
+VPMULUDQ __m128i _mm_mask_mul_epu32(__m128i s, __mmask8 k, __m128i a, __m128i b);
+VPMULUDQ __m128i _mm_maskz_mul_epu32( __mmask8 k, __m128i a, __m128i b);
+PMULUDQ 		__m64 _mm_mul_su32 (__m64 a, __m64 b)
+(V)PMULUDQ 		__m128i _mm_mul_epu32 ( __m128i a, __m128i b)
+VPMULUDQ 		__m256i _mm256_mul_epu32( __m256i a, __m256i b);</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1091627">
-   <string>None.</string></para>
+  <para unique="1091627">None.</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091629">
-   <string>None.</string></para>
+  <para unique="1091629">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091634" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091638">
-   <string>EVEX-encoded instruction, see </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091634" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1091632" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091638">EVEX-encoded instruction, see <link unique="1091636" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

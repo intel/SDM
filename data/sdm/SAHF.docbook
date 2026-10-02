@@ -1,37 +1,120 @@
 <instruction name="SAHF">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Store AH Into Flags</shortdesc>
- <longdesc><para unique="1091443">
-   <string>Loads the SF, ZF, AF, PF, and CF flags of the EFLAGS register with values from the corresponding bits in the AH register (bits 7, 6, 4, 2, and 0, respectively). Bits 1, 3, and 5 of register AH are ignored; the corresponding reserved bits (1, 3, and 5) in the </string><indexterm><primary>EFLAGS register:saving</primary></indexterm><string>EFLAGS register remain as shown in the &#8220;Operation&#8221; section below.</string></para>
-  <para unique="1091445">
-   <string>This instruction executes as described above in compatibility mode and legacy mode. It is valid in 64-bit mode only if CPUID.80000001H:ECX.LAHF_SAHF_64[0] = 1.</string></para>
+ <encoding_table><table unique="1091391">
+   <thead><tr>
+     <th><para unique="1091396">Opcode</para>
+      </th>
+     <th><para unique="1091398">Instruction</para>
+      </th>
+     <th><para unique="1091400">Op/ En</para>
+      </th>
+     <th><para unique="1091402">64-Bit Mode</para>
+      </th>
+     <th><para unique="1091404">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1091406">Description</para>
+      </th>
+     </tr>
+    </thead><col width="86.89824pt"/>
+   <col width="98.57664pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="206.6544pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1091408">9E</para>
+      </td>
+     <td><para unique="1091410">SAHF</para>
+      </td>
+     <td><para unique="1091412">ZO</para>
+      </td>
+     <td><para unique="1091414">Valid<anchor id="+664258"/><bold><footnote><para unique="1091395" format="TableFootnote">Invalid if CPUID.80000001H:ECX.LAHF_SAHF_64 is enumerated as 0<anchor id="+293033"/>.</para>
+         </footnote></bold></para>
+      </td>
+     <td><para unique="1091416">Valid</para>
+      </td>
+     <td><para unique="1091418">Loads SF, ZF, AF, PF, and CF from AH into the EFLAGS register.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091420">
+   <col width="43.56216pt"/>
+   <col width="113.97744pt"/>
+   <col width="113.75424pt"/>
+   <col width="119.43144000000001pt"/>
+   <col width="119.74463999999999pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091422">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091424">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091426">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091428">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091430">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091432">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1091434">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091436">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091438">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091440">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091441">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091443">Loads the SF, ZF, AF, PF, and CF flags of the EFLAGS register with values from the corresponding bits in the AH register (bits 7, 6, 4, 2, and 0, respectively). Bits 1, 3, and 5 of register AH are ignored; the corresponding reserved bits (1, 3, and 5) in the <indexterm><primary>EFLAGS register:saving</primary></indexterm>EFLAGS register remain as shown in the &#8220;Operation&#8221; section below.</para>
+  <para unique="1091445">This instruction executes as described above in compatibility mode and legacy mode. It is valid in 64-bit mode only if CPUID.80000001H:ECX.LAHF_SAHF_64[0] = 1.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF IA-64 Mode
+	THEN
+		IF CPUID.80000001H:ECX[0] = 1;
+			THEN
+				RFLAGS(SF:ZF:0:AF:0:PF:1:CF) := AH;
+			ELSE
+				#UD;
+		FI
+	ELSE
+		EFLAGS(SF:ZF:0:AF:0:PF:1:CF) := AH;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1091456">
-   <string>The SF, ZF, AF, PF, and CF flags are loaded with values from the AH register. Bits 1, 3, and 5 of the EFLAGS register are unaffected, with the values remaining 1, 0, and 0, respectively.</string></para>
+  <para unique="1091456">The SF, ZF, AF, PF, and CF flags are loaded with values from the AH register. Bits 1, 3, and 5 of the EFLAGS register are unaffected, with the values remaining 1, 0, and 0, respectively.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
-  <para unique="1091458" format="xIndent1">
-   <string>None.</string></para>
+  <para unique="1091458" format="xIndent1">None.</para>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
-  <para unique="1091460" format="xIndent1">
-   <string>None.</string></para>
+  <para unique="1091460" format="xIndent1">None.</para>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1091462" format="xIndent1">
-   <string>None.</string></para>
+  <para unique="1091462" format="xIndent1">None.</para>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091464" format="xIndent1">
-   <string>None.</string></para>
+  <para unique="1091464" format="xIndent1">None.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If CPUID.80000001H:ECX.LAHF_SAHF_64[0] = 0.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091466">If CPUID.80000001H:ECX.LAHF_SAHF_64[0] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091467">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

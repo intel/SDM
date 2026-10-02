@@ -1,40 +1,255 @@
 <instruction name="PCMPEQQ">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Compare Packed Qword Data for Equal</shortdesc>
- <longdesc><para unique="1091545">
-   <string>Performs an SIMD compare for equality of the packed quadwords in the destination operand (first operand) and the source operand (second operand).  If a pair of data elements is equal, the corresponding data element in the desti&#173;nation is set to all 1s; otherwise, it is set to 0s.</string></para>
-  <para unique="1091546">
-   <string>128-bit Legacy SSE version: The second source operand can be an XMM register or a 128-bit memory location. The first source and destination operands are XMM registers. Bits (MAXVL-1:128) of the corresponding YMM destination register remain unchanged.</string></para>
-  <para unique="1091547">
-   <string>VEX.128 encoded version: The second source operand can be an XMM register or a 128-bit memory location. The first source and destination operands are XMM registers. Bits (MAXVL-1:128) of the corresponding YMM register are zeroed.</string></para>
-  <para unique="1091548">
-   <string>VEX.256 encoded version: The first source operand is a YMM register. The second source operand is a YMM register or a 256-bit memory location. The destination operand is a YMM register.</string></para>
-  <para unique="1091549">
-   <string>EVEX encoded VPCMPEQQ: The first source operand (second operand) is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 64-bit memory location. The destination operand (first operand) is a mask register updated according to the writemask k2.</string></para>
+ <encoding_table><table unique="1091389">
+   <thead><tr>
+     <th colspan="2"><para unique="1091391">Opcode/</para>
+      <para unique="1091392">Instruction</para>
+      </th>
+     <th><para unique="1091396">Op/ En</para>
+      </th>
+     <th><para unique="1091398">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091400">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091402">Description</para>
+      </th>
+     </tr>
+    </thead><col width="80.33904pt"/>
+   <col width="91.13544pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="72.72792000000001pt"/>
+   <col width="193.90392pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1091404">66 0F 38 29 /r</para>
+      <para unique="1091405">PCMPEQQ xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091409">A</para>
+      </td>
+     <td><para unique="1091411">V/V</para>
+      <para unique="1091412"/>
+      </td>
+     <td><para unique="1091414">SSE4_1</para>
+      </td>
+     <td><para unique="1091416">Compare packed qwords in xmm2/m128 and xmm1 for equality.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091418">VEX.128.66.0F38.WIG 29 /r</para>
+      <para unique="1091419">VPCMPEQQ xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1091423">B</para>
+      </td>
+     <td><para unique="1091425">V/V</para>
+      </td>
+     <td><para unique="1091427">AVX</para>
+      </td>
+     <td><para unique="1091429">Compare packed quadwords in xmm3/m128 and xmm2 for equality.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091431">VEX.256.66.0F38.WIG 29 /r</para>
+      <para unique="1091432">VPCMPEQQ ymm1, ymm2, ymm3 /m256</para>
+      </td>
+     <td><para unique="1091436">B</para>
+      </td>
+     <td><para unique="1091438">V/V</para>
+      </td>
+     <td><para unique="1091440">AVX2</para>
+      </td>
+     <td><para unique="1091442">Compare packed quadwords in ymm3/m256 and ymm2 for equality.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091971">EVEX.128.66.0F38.W1 29 /r</para>
+      <para unique="1091972">VPCMPEQQ k1 {k2}, xmm2, xmm3/m128/m64bcst</para>
+      </td>
+     <td><para unique="1091976">C</para>
+      </td>
+     <td><para unique="1091978">V/V</para>
+      </td>
+     <td><para unique="1091980">(AVX512VL AND</para>
+      <para unique="1091984">AVX512F) OR AVX10.1<anchor id="+266512"/></para>
+      </td>
+     <td><para unique="1091989">Compare Equal between int64 vector xmm2 and int64 vector xmm3/m128/m64bcst, and set vector mask k1 to reflect the zero/nonzero status of each element of the result, under writemask.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091954">EVEX.256.66.0F38.W1 29 /r</para>
+      <para unique="1091955">VPCMPEQQ k1 {k2}, ymm2, ymm3/m256/m64bcst</para>
+      </td>
+     <td><para unique="1091959">C</para>
+      </td>
+     <td><para unique="1091961">V/V</para>
+      </td>
+     <td><para unique="1091963">(AVX512VL AND</para>
+      <para unique="1091967">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1091969">Compare Equal between int64 vector ymm2 and int64 vector ymm3/m256/m64bcst, and set vector mask k1 to reflect the zero/nonzero status of each element of the result, under writemask.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091937">EVEX.512.66.0F38.W1 29 /r</para>
+      <para unique="1091938">VPCMPEQQ k1 {k2}, zmm2, zmm3/m512/m64bcst</para>
+      </td>
+     <td><para unique="1091942">C</para>
+      </td>
+     <td><para unique="1091944">V/V</para>
+      </td>
+     <td><para unique="1091949">AVX512F </para>
+      <para unique="1091950">OR AVX10.1</para>
+      </td>
+     <td><para unique="1091952">Compare Equal between int64 vector zmm2 and int64 vector zmm3/m512/m64bcst, and set vector mask k1 to reflect the zero/nonzero status of each element of the result, under writemask.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091494">
+   <col width="46.68408pt"/>
+   <col width="67.6836pt"/>
+   <col width="93.38544pt"/>
+   <col width="100.28664pt"/>
+   <col width="100.32408pt"/>
+   <col width="102.44015999999999pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091496">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091498">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091500">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091502">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091504">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091506">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091508">A</para>
+      </td>
+     <td valign="middle"><para unique="1091510">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091512">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091514">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091516">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091518">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091520">B</para>
+      </td>
+     <td valign="middle"><para unique="1091522">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091524">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091526">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091528">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091530">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091532">C</para>
+      </td>
+     <td valign="middle"><para unique="1091534">Full</para>
+      </td>
+     <td valign="middle"><para unique="1091536">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091538">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091540">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091542">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091543">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091545">Performs an SIMD compare for equality of the packed quadwords in the destination operand (first operand) and the source operand (second operand).  If a pair of data elements is equal, the corresponding data element in the desti&#173;nation is set to all 1s; otherwise, it is set to 0s.</para>
+  <para unique="1091546">128-bit Legacy SSE version: The second source operand can be an XMM register or a 128-bit memory location. The first source and destination operands are XMM registers. Bits (MAXVL-1:128) of the corresponding YMM destination register remain unchanged.</para>
+  <para unique="1091547">VEX.128 encoded version: The second source operand can be an XMM register or a 128-bit memory location. The first source and destination operands are XMM registers. Bits (MAXVL-1:128) of the corresponding YMM register are zeroed.</para>
+  <para unique="1091548">VEX.256 encoded version: The first source operand is a YMM register. The second source operand is a YMM register or a 256-bit memory location. The destination operand is a YMM register.</para>
+  <para unique="1091549">EVEX encoded VPCMPEQQ: The first source operand (second operand) is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 64-bit memory location. The destination operand (first operand) is a mask register updated according to the writemask k2.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091551">PCMPEQQ (With 128-bit Operands)</title>
+   <programlisting>IF (DEST[63:0] = SRC[63:0])
+	THEN DEST[63:0] := FFFFFFFFFFFFFFFFH;
+	ELSE DEST[63:0] := 0; FI;
+IF (DEST[127:64] = SRC[127:64])
+	THEN DEST[127:64] := FFFFFFFFFFFFFFFFH;
+&#160;	ELSE DEST[127:64] := 0; FI;
+DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091560">COMPARE_QWORDS_EQUAL (SRC1, SRC2)</title>
+   <programlisting>IF SRC1[63:0] = SRC2[63:0]
+	THEN DEST[63:0] := FFFFFFFFFFFFFFFFH;
+	ELSE DEST[63:0] := 0; FI;
+	IF SRC1[127:64] = SRC2[127:64]
+	THEN DEST[127:64] := FFFFFFFFFFFFFFFFH;
+	ELSE DEST[127:64] := 0; FI;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091568">VPCMPEQQ (VEX.128 Encoded Version)</title>
+   <programlisting>DEST[127:0] := COMPARE_QWORDS_EQUAL(SRC1,SRC2)
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091572">VPCMPEQQ (VEX.256 Encoded Version)</title>
+   <programlisting>DEST[127:0] := COMPARE_QWORDS_EQUAL(SRC1[127:0],SRC2[127:0])
+DEST[255:128] := COMPARE_QWORDS_EQUAL(SRC1[255:128],SRC2[255:128])
+DEST[MAXVL-1:256] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091577">VPCMPEQQ (EVEX Encoded Versions)</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k2[j] OR *no writemask*
+		THEN
+			IF (EVEX.b = 1) AND (SRC2 *is memory*)
+				THEN CMP := SRC1[i+63:i] = SRC2[63:0];
+				ELSE CMP := SRC1[i+63:i] = SRC2[i+63:i];
+			FI;
+			IF CMP = TRUE
+				THEN DEST[j] := 1;
+				ELSE DEST[j] := 0; FI;
+		ELSE 		DEST[j] := 0						; zeroing-masking only
+	FI;
+ENDFOR
+DEST[MAX_KL-1:KL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VPCMPEQQ __mmask8 _mm512_cmpeq_epi64_mask( __m512i a, __m512i b);</string><string>
-</string><string>VPCMPEQQ __mmask8 _mm512_mask_cmpeq_epi64_mask(__mmask8 k, __m512i a, __m512i b);</string><string>
-</string><string>VPCMPEQQ __mmask8 _mm256_cmpeq_epi64_mask( __m256i a, __m256i b);</string><string>
-</string><string>VPCMPEQQ __mmask8 _mm256_mask_cmpeq_epi64_mask(__mmask8 k, __m256i a, __m256i b);</string><string>
-</string><string>VPCMPEQQ __mmask8 _mm_cmpeq_epi64_mask( __m128i a, __m128i b);</string><string>
-</string><string>VPCMPEQQ __mmask8 _mm_mask_cmpeq_epi64_mask(__mmask8 k, __m128i a, __m128i b);</string><string>
-</string><string>(V)PCMPEQQ 		__m128i _mm_cmpeq_epi64(__m128i a, __m128i b);</string><string>
-</string><string>VPCMPEQQ 		__m256i _mm256_cmpeq_epi64( __m256i a, __m256i b);</string><string>
-</string></programlisting>
+  <programlisting>VPCMPEQQ __mmask8 _mm512_cmpeq_epi64_mask( __m512i a, __m512i b);
+VPCMPEQQ __mmask8 _mm512_mask_cmpeq_epi64_mask(__mmask8 k, __m512i a, __m512i b);
+VPCMPEQQ __mmask8 _mm256_cmpeq_epi64_mask( __m256i a, __m256i b);
+VPCMPEQQ __mmask8 _mm256_mask_cmpeq_epi64_mask(__mmask8 k, __m256i a, __m256i b);
+VPCMPEQQ __mmask8 _mm_cmpeq_epi64_mask( __m128i a, __m128i b);
+VPCMPEQQ __mmask8 _mm_mask_cmpeq_epi64_mask(__mmask8 k, __m128i a, __m128i b);
+(V)PCMPEQQ 		__m128i _mm_cmpeq_epi64(__m128i a, __m128i b);
+VPCMPEQQ 		__m256i _mm256_cmpeq_epi64( __m256i a, __m256i b);</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1091604">
-   <string>None.</string></para>
+  <para unique="1091604">None.</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091606" format="xIndent1">
-   <string>None.</string></para>
+  <para unique="1091606" format="xIndent1">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091611" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091615" format="xIndent1">
-   <string>EVEX-encoded VPCMPEQQ, see </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091611" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1091609" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091615" format="xIndent1">EVEX-encoded VPCMPEQQ, see <link unique="1091613" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

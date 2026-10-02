@@ -67,16 +67,18 @@ If you give Intel any comments or suggestions related to this document or the in
      </pre_execute>
     <execute>
      <code>let old_rflags := RFLAGS;</code>
+     <code>try</code>
      <code>let count := Unsigned(RCX[0 +: address_size]);</code>
      <code>if count == 0 then</code>
      <code>    Repeat_String_Operation := False;</code>
      <code>else</code>
      <code>    var stride := Get_Repeat_String_Stride(operand_size, count);</code>
-     <code>    while stride &gt; 0 and Repeat_String_Operation do</code>
+     <code>    while stride &gt; 0 do</code>
      <code>        Instr_SCAN_STRING?(address_size, operand_size, context);</code>
-     <code>        Write_RCX(RCX - 1);</code>
+     <code>        Write_RCX(RCX[0 +: address_size] - 1);</code>
      <code>        Repeat_String_Operation := RFLAGS.ZF == 0b0;</code>
      <code>        stride := stride - 1;</code>
+     <code>        if not Repeat_String_Operation then stride := 0; endif;</code>
      <code>    end;</code>
      <code>endif;</code>
      <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]) and RFLAGS.ZF == 0b0;</code>
@@ -84,6 +86,13 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>    // delay update of RFLAGS until the end of the repeat operation</code>
      <code>    RFLAGS := old_rflags;</code>
      <code>endif;</code>
+     <code>catch</code>
+     <code>    when e : Exception_Info =&gt;</code>
+     <code>        // Restore entry flags on faulting exits, but keep completed RCX/RDI updates.</code>
+     <code>        RFLAGS := old_rflags;</code>
+     <code>        throw Exception_Info{ vector=&gt;e.vector,</code>
+     <code>            linear_address=&gt;e.linear_address, error_code=&gt;e.error_code };</code>
+     <code>endtry;</code>
      </execute>
     <post_execute>
      </post_execute>
@@ -181,16 +190,18 @@ If you give Intel any comments or suggestions related to this document or the in
      </pre_execute>
     <execute>
      <code>let old_rflags := RFLAGS;</code>
+     <code>try</code>
      <code>let count := Unsigned(RCX[0 +: address_size]);</code>
      <code>if count == 0 then</code>
      <code>    Repeat_String_Operation := False;</code>
      <code>else</code>
      <code>    var stride := Get_Repeat_String_Stride(operand_size, count);</code>
-     <code>    while stride &gt; 0 and Repeat_String_Operation do</code>
+     <code>    while stride &gt; 0 do</code>
      <code>        Instr_SCAN_STRING?(address_size, operand_size, context);</code>
-     <code>        Write_RCX(RCX - 1);</code>
+     <code>        Write_RCX(RCX[0 +: address_size] - 1);</code>
      <code>        Repeat_String_Operation := RFLAGS.ZF == 0b1;</code>
      <code>        stride := stride - 1;</code>
+     <code>        if not Repeat_String_Operation then stride := 0; endif;</code>
      <code>    end;</code>
      <code>endif;</code>
      <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]) and RFLAGS.ZF == 0b1;</code>
@@ -198,6 +209,13 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>    // delay update of RFLAGS until the end of the repeat operation</code>
      <code>    RFLAGS := old_rflags;</code>
      <code>endif;</code>
+     <code>catch</code>
+     <code>    when e : Exception_Info =&gt;</code>
+     <code>        // Restore entry flags on faulting exits, but keep completed RCX/RDI updates.</code>
+     <code>        RFLAGS := old_rflags;</code>
+     <code>        throw Exception_Info{ vector=&gt;e.vector,</code>
+     <code>            linear_address=&gt;e.linear_address, error_code=&gt;e.error_code };</code>
+     <code>endtry;</code>
      </execute>
     <post_execute>
      </post_execute>
@@ -248,16 +266,18 @@ If you give Intel any comments or suggestions related to this document or the in
      </pre_execute>
     <execute>
      <code>let old_rflags := RFLAGS;</code>
+     <code>try</code>
      <code>let count := Unsigned(RCX[0 +: address_size]);</code>
      <code>if count == 0 then</code>
      <code>    Repeat_String_Operation := False;</code>
      <code>else</code>
      <code>    var stride := Get_Repeat_String_Stride(operand_size, count);</code>
-     <code>    while stride &gt; 0 and Repeat_String_Operation do</code>
+     <code>    while stride &gt; 0 do</code>
      <code>        Instr_SCAN_STRING?(address_size, operand_size, context);</code>
-     <code>        Write_RCX(RCX - 1);</code>
+     <code>        Write_RCX(RCX[0 +: address_size] - 1);</code>
      <code>        Repeat_String_Operation := RFLAGS.ZF == 0b0;</code>
      <code>        stride := stride - 1;</code>
+     <code>        if not Repeat_String_Operation then stride := 0; endif;</code>
      <code>    end;</code>
      <code>endif;</code>
      <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]) and RFLAGS.ZF == 0b0;</code>
@@ -265,6 +285,13 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>    // delay update of RFLAGS until the end of the repeat operation</code>
      <code>    RFLAGS := old_rflags;</code>
      <code>endif;</code>
+     <code>catch</code>
+     <code>    when e : Exception_Info =&gt;</code>
+     <code>        // Restore entry flags on faulting exits, but keep completed RCX/RDI updates.</code>
+     <code>        RFLAGS := old_rflags;</code>
+     <code>        throw Exception_Info{ vector=&gt;e.vector,</code>
+     <code>            linear_address=&gt;e.linear_address, error_code=&gt;e.error_code };</code>
+     <code>endtry;</code>
      </execute>
     <post_execute>
      </post_execute>
@@ -315,16 +342,18 @@ If you give Intel any comments or suggestions related to this document or the in
      </pre_execute>
     <execute>
      <code>let old_rflags := RFLAGS;</code>
+     <code>try</code>
      <code>let count := Unsigned(RCX[0 +: address_size]);</code>
      <code>if count == 0 then</code>
      <code>    Repeat_String_Operation := False;</code>
      <code>else</code>
      <code>    var stride := Get_Repeat_String_Stride(operand_size, count);</code>
-     <code>    while stride &gt; 0 and Repeat_String_Operation do</code>
+     <code>    while stride &gt; 0 do</code>
      <code>        Instr_SCAN_STRING?(address_size, operand_size, context);</code>
-     <code>        Write_RCX(RCX - 1);</code>
+     <code>        Write_RCX(RCX[0 +: address_size] - 1);</code>
      <code>        Repeat_String_Operation := RFLAGS.ZF == 0b0;</code>
      <code>        stride := stride - 1;</code>
+     <code>        if not Repeat_String_Operation then stride := 0; endif;</code>
      <code>    end;</code>
      <code>endif;</code>
      <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]) and RFLAGS.ZF == 0b0;</code>
@@ -332,6 +361,13 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>    // delay update of RFLAGS until the end of the repeat operation</code>
      <code>    RFLAGS := old_rflags;</code>
      <code>endif;</code>
+     <code>catch</code>
+     <code>    when e : Exception_Info =&gt;</code>
+     <code>        // Restore entry flags on faulting exits, but keep completed RCX/RDI updates.</code>
+     <code>        RFLAGS := old_rflags;</code>
+     <code>        throw Exception_Info{ vector=&gt;e.vector,</code>
+     <code>            linear_address=&gt;e.linear_address, error_code=&gt;e.error_code };</code>
+     <code>endtry;</code>
      </execute>
     <post_execute>
      </post_execute>
@@ -385,16 +421,18 @@ If you give Intel any comments or suggestions related to this document or the in
      </pre_execute>
     <execute>
      <code>let old_rflags := RFLAGS;</code>
+     <code>try</code>
      <code>let count := Unsigned(RCX[0 +: address_size]);</code>
      <code>if count == 0 then</code>
      <code>    Repeat_String_Operation := False;</code>
      <code>else</code>
      <code>    var stride := Get_Repeat_String_Stride(operand_size, count);</code>
-     <code>    while stride &gt; 0 and Repeat_String_Operation do</code>
+     <code>    while stride &gt; 0 do</code>
      <code>        Instr_SCAN_STRING?(address_size, operand_size, context);</code>
-     <code>        Write_RCX(RCX - 1);</code>
+     <code>        Write_RCX(RCX[0 +: address_size] - 1);</code>
      <code>        Repeat_String_Operation := RFLAGS.ZF == 0b0;</code>
      <code>        stride := stride - 1;</code>
+     <code>        if not Repeat_String_Operation then stride := 0; endif;</code>
      <code>    end;</code>
      <code>endif;</code>
      <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]) and RFLAGS.ZF == 0b0;</code>
@@ -402,6 +440,13 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>    // delay update of RFLAGS until the end of the repeat operation</code>
      <code>    RFLAGS := old_rflags;</code>
      <code>endif;</code>
+     <code>catch</code>
+     <code>    when e : Exception_Info =&gt;</code>
+     <code>        // Restore entry flags on faulting exits, but keep completed RCX/RDI updates.</code>
+     <code>        RFLAGS := old_rflags;</code>
+     <code>        throw Exception_Info{ vector=&gt;e.vector,</code>
+     <code>            linear_address=&gt;e.linear_address, error_code=&gt;e.error_code };</code>
+     <code>endtry;</code>
      </execute>
     <post_execute>
      </post_execute>
@@ -453,16 +498,18 @@ If you give Intel any comments or suggestions related to this document or the in
      </pre_execute>
     <execute>
      <code>let old_rflags := RFLAGS;</code>
+     <code>try</code>
      <code>let count := Unsigned(RCX[0 +: address_size]);</code>
      <code>if count == 0 then</code>
      <code>    Repeat_String_Operation := False;</code>
      <code>else</code>
      <code>    var stride := Get_Repeat_String_Stride(operand_size, count);</code>
-     <code>    while stride &gt; 0 and Repeat_String_Operation do</code>
+     <code>    while stride &gt; 0 do</code>
      <code>        Instr_SCAN_STRING?(address_size, operand_size, context);</code>
-     <code>        Write_RCX(RCX - 1);</code>
+     <code>        Write_RCX(RCX[0 +: address_size] - 1);</code>
      <code>        Repeat_String_Operation := RFLAGS.ZF == 0b0;</code>
      <code>        stride := stride - 1;</code>
+     <code>        if not Repeat_String_Operation then stride := 0; endif;</code>
      <code>    end;</code>
      <code>endif;</code>
      <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]) and RFLAGS.ZF == 0b0;</code>
@@ -470,6 +517,13 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>    // delay update of RFLAGS until the end of the repeat operation</code>
      <code>    RFLAGS := old_rflags;</code>
      <code>endif;</code>
+     <code>catch</code>
+     <code>    when e : Exception_Info =&gt;</code>
+     <code>        // Restore entry flags on faulting exits, but keep completed RCX/RDI updates.</code>
+     <code>        RFLAGS := old_rflags;</code>
+     <code>        throw Exception_Info{ vector=&gt;e.vector,</code>
+     <code>            linear_address=&gt;e.linear_address, error_code=&gt;e.error_code };</code>
+     <code>endtry;</code>
      </execute>
     <post_execute>
      </post_execute>
@@ -521,16 +575,18 @@ If you give Intel any comments or suggestions related to this document or the in
      </pre_execute>
     <execute>
      <code>let old_rflags := RFLAGS;</code>
+     <code>try</code>
      <code>let count := Unsigned(RCX[0 +: address_size]);</code>
      <code>if count == 0 then</code>
      <code>    Repeat_String_Operation := False;</code>
      <code>else</code>
      <code>    var stride := Get_Repeat_String_Stride(operand_size, count);</code>
-     <code>    while stride &gt; 0 and Repeat_String_Operation do</code>
+     <code>    while stride &gt; 0 do</code>
      <code>        Instr_SCAN_STRING?(address_size, operand_size, context);</code>
-     <code>        Write_RCX(RCX - 1);</code>
+     <code>        Write_RCX(RCX[0 +: address_size] - 1);</code>
      <code>        Repeat_String_Operation := RFLAGS.ZF == 0b0;</code>
      <code>        stride := stride - 1;</code>
+     <code>        if not Repeat_String_Operation then stride := 0; endif;</code>
      <code>    end;</code>
      <code>endif;</code>
      <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]) and RFLAGS.ZF == 0b0;</code>
@@ -538,6 +594,13 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>    // delay update of RFLAGS until the end of the repeat operation</code>
      <code>    RFLAGS := old_rflags;</code>
      <code>endif;</code>
+     <code>catch</code>
+     <code>    when e : Exception_Info =&gt;</code>
+     <code>        // Restore entry flags on faulting exits, but keep completed RCX/RDI updates.</code>
+     <code>        RFLAGS := old_rflags;</code>
+     <code>        throw Exception_Info{ vector=&gt;e.vector,</code>
+     <code>            linear_address=&gt;e.linear_address, error_code=&gt;e.error_code };</code>
+     <code>endtry;</code>
      </execute>
     <post_execute>
      </post_execute>
@@ -586,16 +649,18 @@ If you give Intel any comments or suggestions related to this document or the in
      </pre_execute>
     <execute>
      <code>let old_rflags := RFLAGS;</code>
+     <code>try</code>
      <code>let count := Unsigned(RCX[0 +: address_size]);</code>
      <code>if count == 0 then</code>
      <code>    Repeat_String_Operation := False;</code>
      <code>else</code>
      <code>    var stride := Get_Repeat_String_Stride(operand_size, count);</code>
-     <code>    while stride &gt; 0 and Repeat_String_Operation do</code>
+     <code>    while stride &gt; 0 do</code>
      <code>        Instr_SCAN_STRING?(address_size, operand_size, context);</code>
-     <code>        Write_RCX(RCX - 1);</code>
+     <code>        Write_RCX(RCX[0 +: address_size] - 1);</code>
      <code>        Repeat_String_Operation := RFLAGS.ZF == 0b0;</code>
      <code>        stride := stride - 1;</code>
+     <code>        if not Repeat_String_Operation then stride := 0; endif;</code>
      <code>    end;</code>
      <code>endif;</code>
      <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]) and RFLAGS.ZF == 0b0;</code>
@@ -603,6 +668,13 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>    // delay update of RFLAGS until the end of the repeat operation</code>
      <code>    RFLAGS := old_rflags;</code>
      <code>endif;</code>
+     <code>catch</code>
+     <code>    when e : Exception_Info =&gt;</code>
+     <code>        // Restore entry flags on faulting exits, but keep completed RCX/RDI updates.</code>
+     <code>        RFLAGS := old_rflags;</code>
+     <code>        throw Exception_Info{ vector=&gt;e.vector,</code>
+     <code>            linear_address=&gt;e.linear_address, error_code=&gt;e.error_code };</code>
+     <code>endtry;</code>
      </execute>
     <post_execute>
      </post_execute>
@@ -654,16 +726,18 @@ If you give Intel any comments or suggestions related to this document or the in
      </pre_execute>
     <execute>
      <code>let old_rflags := RFLAGS;</code>
+     <code>try</code>
      <code>let count := Unsigned(RCX[0 +: address_size]);</code>
      <code>if count == 0 then</code>
      <code>    Repeat_String_Operation := False;</code>
      <code>else</code>
      <code>    var stride := Get_Repeat_String_Stride(operand_size, count);</code>
-     <code>    while stride &gt; 0 and Repeat_String_Operation do</code>
+     <code>    while stride &gt; 0 do</code>
      <code>        Instr_SCAN_STRING?(address_size, operand_size, context);</code>
-     <code>        Write_RCX(RCX - 1);</code>
+     <code>        Write_RCX(RCX[0 +: address_size] - 1);</code>
      <code>        Repeat_String_Operation := RFLAGS.ZF == 0b0;</code>
      <code>        stride := stride - 1;</code>
+     <code>        if not Repeat_String_Operation then stride := 0; endif;</code>
      <code>    end;</code>
      <code>endif;</code>
      <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]) and RFLAGS.ZF == 0b0;</code>
@@ -671,6 +745,13 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>    // delay update of RFLAGS until the end of the repeat operation</code>
      <code>    RFLAGS := old_rflags;</code>
      <code>endif;</code>
+     <code>catch</code>
+     <code>    when e : Exception_Info =&gt;</code>
+     <code>        // Restore entry flags on faulting exits, but keep completed RCX/RDI updates.</code>
+     <code>        RFLAGS := old_rflags;</code>
+     <code>        throw Exception_Info{ vector=&gt;e.vector,</code>
+     <code>            linear_address=&gt;e.linear_address, error_code=&gt;e.error_code };</code>
+     <code>endtry;</code>
      </execute>
     <post_execute>
      </post_execute>
@@ -721,16 +802,18 @@ If you give Intel any comments or suggestions related to this document or the in
      </pre_execute>
     <execute>
      <code>let old_rflags := RFLAGS;</code>
+     <code>try</code>
      <code>let count := Unsigned(RCX[0 +: address_size]);</code>
      <code>if count == 0 then</code>
      <code>    Repeat_String_Operation := False;</code>
      <code>else</code>
      <code>    var stride := Get_Repeat_String_Stride(operand_size, count);</code>
-     <code>    while stride &gt; 0 and Repeat_String_Operation do</code>
+     <code>    while stride &gt; 0 do</code>
      <code>        Instr_SCAN_STRING?(address_size, operand_size, context);</code>
-     <code>        Write_RCX(RCX - 1);</code>
+     <code>        Write_RCX(RCX[0 +: address_size] - 1);</code>
      <code>        Repeat_String_Operation := RFLAGS.ZF == 0b1;</code>
      <code>        stride := stride - 1;</code>
+     <code>        if not Repeat_String_Operation then stride := 0; endif;</code>
      <code>    end;</code>
      <code>endif;</code>
      <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]) and RFLAGS.ZF == 0b1;</code>
@@ -738,6 +821,13 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>    // delay update of RFLAGS until the end of the repeat operation</code>
      <code>    RFLAGS := old_rflags;</code>
      <code>endif;</code>
+     <code>catch</code>
+     <code>    when e : Exception_Info =&gt;</code>
+     <code>        // Restore entry flags on faulting exits, but keep completed RCX/RDI updates.</code>
+     <code>        RFLAGS := old_rflags;</code>
+     <code>        throw Exception_Info{ vector=&gt;e.vector,</code>
+     <code>            linear_address=&gt;e.linear_address, error_code=&gt;e.error_code };</code>
+     <code>endtry;</code>
      </execute>
     <post_execute>
      </post_execute>
@@ -788,16 +878,18 @@ If you give Intel any comments or suggestions related to this document or the in
      </pre_execute>
     <execute>
      <code>let old_rflags := RFLAGS;</code>
+     <code>try</code>
      <code>let count := Unsigned(RCX[0 +: address_size]);</code>
      <code>if count == 0 then</code>
      <code>    Repeat_String_Operation := False;</code>
      <code>else</code>
      <code>    var stride := Get_Repeat_String_Stride(operand_size, count);</code>
-     <code>    while stride &gt; 0 and Repeat_String_Operation do</code>
+     <code>    while stride &gt; 0 do</code>
      <code>        Instr_SCAN_STRING?(address_size, operand_size, context);</code>
-     <code>        Write_RCX(RCX - 1);</code>
+     <code>        Write_RCX(RCX[0 +: address_size] - 1);</code>
      <code>        Repeat_String_Operation := RFLAGS.ZF == 0b1;</code>
      <code>        stride := stride - 1;</code>
+     <code>        if not Repeat_String_Operation then stride := 0; endif;</code>
      <code>    end;</code>
      <code>endif;</code>
      <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]) and RFLAGS.ZF == 0b1;</code>
@@ -805,6 +897,13 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>    // delay update of RFLAGS until the end of the repeat operation</code>
      <code>    RFLAGS := old_rflags;</code>
      <code>endif;</code>
+     <code>catch</code>
+     <code>    when e : Exception_Info =&gt;</code>
+     <code>        // Restore entry flags on faulting exits, but keep completed RCX/RDI updates.</code>
+     <code>        RFLAGS := old_rflags;</code>
+     <code>        throw Exception_Info{ vector=&gt;e.vector,</code>
+     <code>            linear_address=&gt;e.linear_address, error_code=&gt;e.error_code };</code>
+     <code>endtry;</code>
      </execute>
     <post_execute>
      </post_execute>
@@ -858,16 +957,18 @@ If you give Intel any comments or suggestions related to this document or the in
      </pre_execute>
     <execute>
      <code>let old_rflags := RFLAGS;</code>
+     <code>try</code>
      <code>let count := Unsigned(RCX[0 +: address_size]);</code>
      <code>if count == 0 then</code>
      <code>    Repeat_String_Operation := False;</code>
      <code>else</code>
      <code>    var stride := Get_Repeat_String_Stride(operand_size, count);</code>
-     <code>    while stride &gt; 0 and Repeat_String_Operation do</code>
+     <code>    while stride &gt; 0 do</code>
      <code>        Instr_SCAN_STRING?(address_size, operand_size, context);</code>
-     <code>        Write_RCX(RCX - 1);</code>
+     <code>        Write_RCX(RCX[0 +: address_size] - 1);</code>
      <code>        Repeat_String_Operation := RFLAGS.ZF == 0b1;</code>
      <code>        stride := stride - 1;</code>
+     <code>        if not Repeat_String_Operation then stride := 0; endif;</code>
      <code>    end;</code>
      <code>endif;</code>
      <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]) and RFLAGS.ZF == 0b1;</code>
@@ -875,6 +976,13 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>    // delay update of RFLAGS until the end of the repeat operation</code>
      <code>    RFLAGS := old_rflags;</code>
      <code>endif;</code>
+     <code>catch</code>
+     <code>    when e : Exception_Info =&gt;</code>
+     <code>        // Restore entry flags on faulting exits, but keep completed RCX/RDI updates.</code>
+     <code>        RFLAGS := old_rflags;</code>
+     <code>        throw Exception_Info{ vector=&gt;e.vector,</code>
+     <code>            linear_address=&gt;e.linear_address, error_code=&gt;e.error_code };</code>
+     <code>endtry;</code>
      </execute>
     <post_execute>
      </post_execute>
@@ -926,16 +1034,18 @@ If you give Intel any comments or suggestions related to this document or the in
      </pre_execute>
     <execute>
      <code>let old_rflags := RFLAGS;</code>
+     <code>try</code>
      <code>let count := Unsigned(RCX[0 +: address_size]);</code>
      <code>if count == 0 then</code>
      <code>    Repeat_String_Operation := False;</code>
      <code>else</code>
      <code>    var stride := Get_Repeat_String_Stride(operand_size, count);</code>
-     <code>    while stride &gt; 0 and Repeat_String_Operation do</code>
+     <code>    while stride &gt; 0 do</code>
      <code>        Instr_SCAN_STRING?(address_size, operand_size, context);</code>
-     <code>        Write_RCX(RCX - 1);</code>
+     <code>        Write_RCX(RCX[0 +: address_size] - 1);</code>
      <code>        Repeat_String_Operation := RFLAGS.ZF == 0b1;</code>
      <code>        stride := stride - 1;</code>
+     <code>        if not Repeat_String_Operation then stride := 0; endif;</code>
      <code>    end;</code>
      <code>endif;</code>
      <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]) and RFLAGS.ZF == 0b1;</code>
@@ -943,6 +1053,13 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>    // delay update of RFLAGS until the end of the repeat operation</code>
      <code>    RFLAGS := old_rflags;</code>
      <code>endif;</code>
+     <code>catch</code>
+     <code>    when e : Exception_Info =&gt;</code>
+     <code>        // Restore entry flags on faulting exits, but keep completed RCX/RDI updates.</code>
+     <code>        RFLAGS := old_rflags;</code>
+     <code>        throw Exception_Info{ vector=&gt;e.vector,</code>
+     <code>            linear_address=&gt;e.linear_address, error_code=&gt;e.error_code };</code>
+     <code>endtry;</code>
      </execute>
     <post_execute>
      </post_execute>
@@ -994,16 +1111,18 @@ If you give Intel any comments or suggestions related to this document or the in
      </pre_execute>
     <execute>
      <code>let old_rflags := RFLAGS;</code>
+     <code>try</code>
      <code>let count := Unsigned(RCX[0 +: address_size]);</code>
      <code>if count == 0 then</code>
      <code>    Repeat_String_Operation := False;</code>
      <code>else</code>
      <code>    var stride := Get_Repeat_String_Stride(operand_size, count);</code>
-     <code>    while stride &gt; 0 and Repeat_String_Operation do</code>
+     <code>    while stride &gt; 0 do</code>
      <code>        Instr_SCAN_STRING?(address_size, operand_size, context);</code>
-     <code>        Write_RCX(RCX - 1);</code>
+     <code>        Write_RCX(RCX[0 +: address_size] - 1);</code>
      <code>        Repeat_String_Operation := RFLAGS.ZF == 0b1;</code>
      <code>        stride := stride - 1;</code>
+     <code>        if not Repeat_String_Operation then stride := 0; endif;</code>
      <code>    end;</code>
      <code>endif;</code>
      <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]) and RFLAGS.ZF == 0b1;</code>
@@ -1011,6 +1130,13 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>    // delay update of RFLAGS until the end of the repeat operation</code>
      <code>    RFLAGS := old_rflags;</code>
      <code>endif;</code>
+     <code>catch</code>
+     <code>    when e : Exception_Info =&gt;</code>
+     <code>        // Restore entry flags on faulting exits, but keep completed RCX/RDI updates.</code>
+     <code>        RFLAGS := old_rflags;</code>
+     <code>        throw Exception_Info{ vector=&gt;e.vector,</code>
+     <code>            linear_address=&gt;e.linear_address, error_code=&gt;e.error_code };</code>
+     <code>endtry;</code>
      </execute>
     <post_execute>
      </post_execute>
@@ -1059,16 +1185,18 @@ If you give Intel any comments or suggestions related to this document or the in
      </pre_execute>
     <execute>
      <code>let old_rflags := RFLAGS;</code>
+     <code>try</code>
      <code>let count := Unsigned(RCX[0 +: address_size]);</code>
      <code>if count == 0 then</code>
      <code>    Repeat_String_Operation := False;</code>
      <code>else</code>
      <code>    var stride := Get_Repeat_String_Stride(operand_size, count);</code>
-     <code>    while stride &gt; 0 and Repeat_String_Operation do</code>
+     <code>    while stride &gt; 0 do</code>
      <code>        Instr_SCAN_STRING?(address_size, operand_size, context);</code>
-     <code>        Write_RCX(RCX - 1);</code>
+     <code>        Write_RCX(RCX[0 +: address_size] - 1);</code>
      <code>        Repeat_String_Operation := RFLAGS.ZF == 0b1;</code>
      <code>        stride := stride - 1;</code>
+     <code>        if not Repeat_String_Operation then stride := 0; endif;</code>
      <code>    end;</code>
      <code>endif;</code>
      <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]) and RFLAGS.ZF == 0b1;</code>
@@ -1076,6 +1204,13 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>    // delay update of RFLAGS until the end of the repeat operation</code>
      <code>    RFLAGS := old_rflags;</code>
      <code>endif;</code>
+     <code>catch</code>
+     <code>    when e : Exception_Info =&gt;</code>
+     <code>        // Restore entry flags on faulting exits, but keep completed RCX/RDI updates.</code>
+     <code>        RFLAGS := old_rflags;</code>
+     <code>        throw Exception_Info{ vector=&gt;e.vector,</code>
+     <code>            linear_address=&gt;e.linear_address, error_code=&gt;e.error_code };</code>
+     <code>endtry;</code>
      </execute>
     <post_execute>
      </post_execute>
@@ -1127,16 +1262,18 @@ If you give Intel any comments or suggestions related to this document or the in
      </pre_execute>
     <execute>
      <code>let old_rflags := RFLAGS;</code>
+     <code>try</code>
      <code>let count := Unsigned(RCX[0 +: address_size]);</code>
      <code>if count == 0 then</code>
      <code>    Repeat_String_Operation := False;</code>
      <code>else</code>
      <code>    var stride := Get_Repeat_String_Stride(operand_size, count);</code>
-     <code>    while stride &gt; 0 and Repeat_String_Operation do</code>
+     <code>    while stride &gt; 0 do</code>
      <code>        Instr_SCAN_STRING?(address_size, operand_size, context);</code>
-     <code>        Write_RCX(RCX - 1);</code>
+     <code>        Write_RCX(RCX[0 +: address_size] - 1);</code>
      <code>        Repeat_String_Operation := RFLAGS.ZF == 0b1;</code>
      <code>        stride := stride - 1;</code>
+     <code>        if not Repeat_String_Operation then stride := 0; endif;</code>
      <code>    end;</code>
      <code>endif;</code>
      <code>Repeat_String_Operation := !Is_Zero(RCX[0 +: address_size]) and RFLAGS.ZF == 0b1;</code>
@@ -1144,6 +1281,13 @@ If you give Intel any comments or suggestions related to this document or the in
      <code>    // delay update of RFLAGS until the end of the repeat operation</code>
      <code>    RFLAGS := old_rflags;</code>
      <code>endif;</code>
+     <code>catch</code>
+     <code>    when e : Exception_Info =&gt;</code>
+     <code>        // Restore entry flags on faulting exits, but keep completed RCX/RDI updates.</code>
+     <code>        RFLAGS := old_rflags;</code>
+     <code>        throw Exception_Info{ vector=&gt;e.vector,</code>
+     <code>            linear_address=&gt;e.linear_address, error_code=&gt;e.error_code };</code>
+     <code>endtry;</code>
      </execute>
     <post_execute>
      </post_execute>

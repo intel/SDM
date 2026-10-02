@@ -1,57 +1,368 @@
 <instruction name="VINSERTF128/VINSERTF32x4/VINSERTF64x2/VINSERTF32x8/VINSERTF64x4">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Insert Packed Floating-Point Values</shortdesc>
- <longdesc><para unique="1046068">
-   <string>V</string><sans><string>INSERT</string></sans><string>F128/V</string><sans><string>INSERT</string></sans><string>F32x4 and VINSERTF64x2 insert 128-bits of packed floating-point values from the second source operand (the third operand) into the destination operand (the first operand) at an 128-bit granularity offset multiplied by imm8[0] (256-bit) or imm8[1:0]. The remaining portions of the destination operand are copied from the corresponding fields of the first source operand (the second operand). The second source operand can be either an XMM register or a 128-bit memory location. The destination and first source operands are vector registers.</string></para>
-  <para unique="1046069">
-   <string>VINSERTF32x4: The destination operand is a ZMM/YMM register and updated at 32-bit granularity according to the writemask. The high 6/7 bits of the immediate are ignored. </string></para>
-  <para unique="1046070">
-   <string>VINSERTF64x2: The destination operand is a ZMM/YMM register and updated at 64-bit granularity according to the writemask. The high 6/7 bits of the immediate are ignored. </string></para>
-  <para unique="1046071">
-   <string>VINSERTF32x8 and V</string><sans><string>INSERT</string></sans><string>F64x4 inserts 256-bits of packed floating-point values from the second source operand (the third operand) into the destination operand (the first operand) at a 256-bit granular offset multiplied by imm8[0]. The remaining portions of the destination are copied from the corresponding fields of the first source operand (the second operand). The second source operand can be either an YMM register or a 256-bit memory location. The high 7 bits of the immediate are ignored. The destination operand is a ZMM register and updated at 32/64-bit granularity according to the writemask.</string></para>
+ <encoding_table><table unique="1045886">
+   <col width="79.29pt"/>
+   <col width="79.29pt"/>
+   <col width="31.644pt"/>
+   <col width="48.74976pt"/>
+   <col width="76.74984pt"/>
+   <col width="196.48368000000002pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1045888">Opcode/</para>
+      <para unique="1045889">Instruction</para>
+      </th>
+     <th><para unique="1045893">Op / En</para>
+      </th>
+     <th><para unique="1045895">64/32 Bit Mode Support</para>
+      </th>
+     <th><para unique="1045897">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1045899">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1045901">VEX.256.66.0F3A.W0 18 /r ib</para>
+      <para unique="1045902">VINSERTF128 ymm1, ymm2, xmm3/m128, imm8</para>
+      </td>
+     <td><para unique="1045906">A</para>
+      </td>
+     <td><para unique="1045908">V/V</para>
+      </td>
+     <td><para unique="1045913">AVX</para>
+      </td>
+     <td><para unique="1045915">Insert 128 bits of packed floating-point values from xmm3/m128 and the remaining values from ymm2 into ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046621">EVEX.256.66.0F3A.W0 18 /r ib</para>
+      <para unique="1046622">VINSERTF32X4 ymm1 {k1}{z}, ymm2, xmm3/m128, imm8</para>
+      </td>
+     <td><para unique="1046626">C</para>
+      </td>
+     <td><para unique="1046628">V/V</para>
+      </td>
+     <td><para unique="1046630">(AVX512VL AND</para>
+      <para unique="1046634">AVX512F) OR AVX10.1<anchor id="+386564"/></para>
+      </td>
+     <td><para unique="1046639">Insert 128 bits of packed single-precision floating-point values from xmm3/m128 and the remaining values from ymm2 into ymm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046604">EVEX.512.66.0F3A.W0 18 /r ib</para>
+      <para unique="1046605">VINSERTF32X4 zmm1 {k1}{z}, zmm2, xmm3/m128, imm8</para>
+      </td>
+     <td><para unique="1046609">C</para>
+      </td>
+     <td><para unique="1046611">V/V</para>
+      </td>
+     <td><para unique="1046616">AVX512F</para>
+      <para unique="1046617">OR AVX10.1<anchor id="+952072"/></para>
+      </td>
+     <td><para unique="1046619">Insert 128 bits of packed single-precision floating-point values from xmm3/m128 and the remaining values from zmm2 into zmm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046590">EVEX.256.66.0F3A.W1 18 /r ib</para>
+      <para unique="1046591">VINSERTF64X2 ymm1 {k1}{z}, ymm2, xmm3/m128, imm8</para>
+      </td>
+     <td><para unique="1046595">B</para>
+      </td>
+     <td><para unique="1046597">V/V</para>
+      </td>
+     <td><para unique="1046599">(AVX512VL AND</para>
+      <para unique="1046600">AVX512DQ) OR AVX10.1<anchor id="+495052"/></para>
+      </td>
+     <td><para unique="1046602">Insert 128 bits of packed double precision floating-point values from xmm3/m128 and the remaining values from ymm2 into ymm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046576">EVEX.512.66.0F3A.W1 18 /r ib</para>
+      <para unique="1046577">VINSERTF64X2 zmm1 {k1}{z}, zmm2, xmm3/m128, imm8</para>
+      </td>
+     <td><para unique="1046581">B</para>
+      </td>
+     <td><para unique="1046583">V/V</para>
+      </td>
+     <td><para unique="1046585">AVX512DQ </para>
+      <para unique="1046586">OR AVX10.1<anchor id="+689525"/></para>
+      </td>
+     <td><para unique="1046588">Insert 128 bits of packed double precision floating-point values from xmm3/m128 and the remaining values from zmm2 into zmm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046562">EVEX.512.66.0F3A.W0 1A /r ib</para>
+      <para unique="1046563">VINSERTF32X8 zmm1 {k1}{z}, zmm2, ymm3/m256, imm8</para>
+      </td>
+     <td><para unique="1046567">D</para>
+      </td>
+     <td><para unique="1046569">V/V</para>
+      </td>
+     <td><para unique="1046571">AVX512DQ </para>
+      <para unique="1046572">OR AVX10.1<anchor id="+987117"/></para>
+      </td>
+     <td><para unique="1046574">Insert 256 bits of packed single-precision floating-point values from ymm3/m256 and the remaining values from zmm2 into zmm1 under writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046545">EVEX.512.66.0F3A.W1 1A /r ib</para>
+      <para unique="1046546">VINSERTF64X4 zmm1 {k1}{z}, zmm2, ymm3/m256, imm8</para>
+      </td>
+     <td><para unique="1046550">C</para>
+      </td>
+     <td><para unique="1046552">V/V</para>
+      </td>
+     <td><para unique="1046557">AVX512F</para>
+      <para unique="1046558">OR AVX10.1<anchor id="+446802"/></para>
+      </td>
+     <td><para unique="1046560">Insert 256 bits of packed double precision floating-point values from ymm3/m256 and the remaining values from zmm2 into zmm1 under writemask k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1046005">
+   <col width="38.81232pt"/>
+   <col width="80.02584pt"/>
+   <col width="96.18192pt"/>
+   <col width="99.70848000000001pt"/>
+   <col width="98.85239999999999pt"/>
+   <col width="98.82864pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1046007">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1046009">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1046011">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1046013">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1046015">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1046017">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1046019">A</para>
+      </td>
+     <td valign="middle"><para unique="1046021">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1046023">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046025">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046027">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046029">imm8</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1046031">B</para>
+      </td>
+     <td valign="middle"><para unique="1046033">Tuple2</para>
+      </td>
+     <td valign="middle"><para unique="1046035">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046037">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046039">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046041">imm8</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1046043">C</para>
+      </td>
+     <td valign="middle"><para unique="1046045">Tuple4</para>
+      </td>
+     <td valign="middle"><para unique="1046047">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046049">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046051">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046053">imm8</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1046055">D</para>
+      </td>
+     <td valign="middle"><para unique="1046057">Tuple8</para>
+      </td>
+     <td valign="middle"><para unique="1046059">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1046061">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046063">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046065">imm8</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046066">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046068">V<sans>INSERT</sans>F128/V<sans>INSERT</sans>F32x4 and VINSERTF64x2 insert 128-bits of packed floating-point values from the second source operand (the third operand) into the destination operand (the first operand) at an 128-bit granularity offset multiplied by imm8[0] (256-bit) or imm8[1:0]. The remaining portions of the destination operand are copied from the corresponding fields of the first source operand (the second operand). The second source operand can be either an XMM register or a 128-bit memory location. The destination and first source operands are vector registers.</para>
+  <para unique="1046069">VINSERTF32x4: The destination operand is a ZMM/YMM register and updated at 32-bit granularity according to the writemask. The high 6/7 bits of the immediate are ignored. </para>
+  <para unique="1046070">VINSERTF64x2: The destination operand is a ZMM/YMM register and updated at 64-bit granularity according to the writemask. The high 6/7 bits of the immediate are ignored. </para>
+  <para unique="1046071">VINSERTF32x8 and V<sans>INSERT</sans>F64x4 inserts 256-bits of packed floating-point values from the second source operand (the third operand) into the destination operand (the first operand) at a 256-bit granular offset multiplied by imm8[0]. The remaining portions of the destination are copied from the corresponding fields of the first source operand (the second operand). The second source operand can be either an YMM register or a 256-bit memory location. The high 7 bits of the immediate are ignored. The destination operand is a ZMM register and updated at 32/64-bit granularity according to the writemask.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1046073">VINSERTF32x4 (EVEX encoded versions) </title>
+   <programlisting>(KL, VL) = (8, 256), (16, 512)
+TEMP_DEST[VL-1:0] := SRC1[VL-1:0]
+IF VL = 256
+	CASE (imm8[0]) OF
+		0: 	TMP_DEST[127:0] := SRC2[127:0]
+		1: 	TMP_DEST[255:128] := SRC2[127:0]
+	ESAC.
+FI;
+IF VL = 512
+	CASE (imm8[1:0]) OF
+		00: 	TMP_DEST[127:0] := SRC2[127:0]
+		01: 	TMP_DEST[255:128] := SRC2[127:0]
+		10: 	TMP_DEST[383:256] := SRC2[127:0]
+		11: 	TMP_DEST[511:384] := SRC2[127:0]
+	ESAC.
+FI;
+FOR j := 0 TO KL-1
+	i := j * 32
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+31:i] := TMP_DEST[i+31:i]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+31:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+31:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046104">VINSERTF64x2 (EVEX encoded versions) </title>
+   <programlisting>(KL, VL) = (4, 256), (8, 512)
+TEMP_DEST[VL-1:0] := SRC1[VL-1:0]
+IF VL = 256
+	CASE (imm8[0]) OF
+		0: 	TMP_DEST[127:0] := SRC2[127:0]
+		1: 	TMP_DEST[255:128] := SRC2[127:0]
+	ESAC.
+FI;
+IF VL = 512
+	CASE (imm8[1:0]) OF
+		00: 	TMP_DEST[127:0] := SRC2[127:0]
+		01: 	TMP_DEST[255:128] := SRC2[127:0]
+		10: 	TMP_DEST[383:256] := SRC2[127:0]
+		11: 	TMP_DEST[511:384] := SRC2[127:0]
+	ESAC.
+FI;
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+63:i] := TMP_DEST[i+63:i]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+63:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046135">VINSERTF32x8 (EVEX.U1.512 encoded version)</title>
+   <programlisting>TEMP_DEST[VL-1:0] := SRC1[VL-1:0]
+CASE (imm8[0]) OF
+	0: TMP_DEST[255:0] := SRC2[255:0]
+	1: TMP_DEST[511:256] := SRC2[255:0]
+ESAC.
+FOR j := 0 TO 15
+	i := j * 32
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+31:i] := TMP_DEST[i+31:i]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+31:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+31:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046156">VINSERTF64x4 (EVEX.512 encoded version) </title>
+   <programlisting>VL = 512
+TEMP_DEST[VL-1:0] := SRC1[VL-1:0]
+CASE (imm8[0]) OF
+	0: TMP_DEST[255:0] := SRC2[255:0]
+	1: TMP_DEST[511:256] := SRC2[255:0]
+ESAC.
+FOR j := 0 TO 7
+	i := j * 64
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+63:i] := TMP_DEST[i+63:i]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE 							; zeroing-masking
+					DEST[i+63:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046177">VINSERTF128 (VEX encoded version)</title>
+   <programlisting>TEMP[255:0] := SRC1[255:0]
+CASE (imm8[0]) OF
+	0: TEMP[127:0] := SRC2[127:0]
+	1: TEMP[255:128] := SRC2[127:0]
+ESAC
+DEST := TEMP</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VINSERTF32x4 __m512 _mm512_insertf32x4( __m512 a, __m128 b, int imm);</string><string>
-</string><string>VINSERTF32x4 __m512 _mm512_mask_insertf32x4(__m512 s, __mmask16 k, __m512 a, __m128 b, int imm);</string><string>
-</string><string>VINSERTF32x4 __m512 _mm512_maskz_insertf32x4( __mmask16 k, __m512 a, __m128 b, int imm);</string><string>
-</string><string>VINSERTF32x4 __m256 _mm256_insertf32x4( __m256 a, __m128 b, int imm);</string><string>
-</string><string>VINSERTF32x4 __m256 _mm256_mask_insertf32x4(__m256 s, __mmask8 k, __m256 a, __m128 b, int imm);</string><string>
-</string><string>VINSERTF32x4 __m256 _mm256_maskz_insertf32x4( __mmask8 k, __m256 a, __m128 b, int imm);</string><string>
-</string><string>VINSERTF32x8 __m512 _mm512_insertf32x8( __m512 a, __m256 b, int imm);</string><string>
-</string><string>VINSERTF32x8 __m512 _mm512_mask_insertf32x8(__m512 s, __mmask16 k, __m512 a, __m256 b, int imm);</string><string>
-</string><string>VINSERTF32x8 __m512 _mm512_maskz_insertf32x8( __mmask16 k, __m512 a, __m256 b, int imm);</string><string>
-</string><string>VINSERTF64x2 __m512d _mm512_insertf64x2( __m512d a, __m128d b, int imm);</string><string>
-</string><string>VINSERTF64x2 __m512d _mm512_mask_insertf64x2(__m512d s, __mmask8 k, __m512d a, __m128d b, int imm);</string><string>
-</string><string>VINSERTF64x2 __m512d _mm512_maskz_insertf64x2( __mmask8 k, __m512d a, __m128d b, int imm);</string><string>
-</string><string>VINSERTF64x2 __m256d _mm256_insertf64x2( __m256d a, __m128d b, int imm);</string><string>
-</string><string>VINSERTF64x2 __m256d _mm256_mask_insertf64x2(__m256d s, __mmask8 k, __m256d a, __m128d b, int imm);</string><string>
-</string><string>VINSERTF64x2 __m256d _mm256_maskz_insertf64x2( __mmask8 k, __m256d a, __m128d b, int imm);</string><string>
-</string><string>VINSERTF64x4 __m512d _mm512_insertf64x4( __m512d a, __m256d b, int imm);</string><string>
-</string><string>VINSERTF64x4 __m512d _mm512_mask_insertf64x4(__m512d s, __mmask8 k, __m512d a, __m256d b, int imm);</string><string>
-</string><string>VINSERTF64x4 __m512d _mm512_maskz_insertf64x4( __mmask8 k, __m512d a, __m256d b, int imm);</string><string>
-</string><string>VINSERTF128 __m256 _mm256_insertf128_ps (__m256 a, __m128 b, int offset);</string><string>
-</string><string>VINSERTF128 __m256d _mm256_insertf128_pd (__m256d a, __m128d b, int offset);</string><string>
-</string><string>VINSERTF128 __m256i _mm256_insertf128_si256 (__m256i a, __m128i b, int offset);</string><string>
-</string></programlisting>
+  <programlisting>VINSERTF32x4 __m512 _mm512_insertf32x4( __m512 a, __m128 b, int imm);
+VINSERTF32x4 __m512 _mm512_mask_insertf32x4(__m512 s, __mmask16 k, __m512 a, __m128 b, int imm);
+VINSERTF32x4 __m512 _mm512_maskz_insertf32x4( __mmask16 k, __m512 a, __m128 b, int imm);
+VINSERTF32x4 __m256 _mm256_insertf32x4( __m256 a, __m128 b, int imm);
+VINSERTF32x4 __m256 _mm256_mask_insertf32x4(__m256 s, __mmask8 k, __m256 a, __m128 b, int imm);
+VINSERTF32x4 __m256 _mm256_maskz_insertf32x4( __mmask8 k, __m256 a, __m128 b, int imm);
+VINSERTF32x8 __m512 _mm512_insertf32x8( __m512 a, __m256 b, int imm);
+VINSERTF32x8 __m512 _mm512_mask_insertf32x8(__m512 s, __mmask16 k, __m512 a, __m256 b, int imm);
+VINSERTF32x8 __m512 _mm512_maskz_insertf32x8( __mmask16 k, __m512 a, __m256 b, int imm);
+VINSERTF64x2 __m512d _mm512_insertf64x2( __m512d a, __m128d b, int imm);
+VINSERTF64x2 __m512d _mm512_mask_insertf64x2(__m512d s, __mmask8 k, __m512d a, __m128d b, int imm);
+VINSERTF64x2 __m512d _mm512_maskz_insertf64x2( __mmask8 k, __m512d a, __m128d b, int imm);
+VINSERTF64x2 __m256d _mm256_insertf64x2( __m256d a, __m128d b, int imm);
+VINSERTF64x2 __m256d _mm256_mask_insertf64x2(__m256d s, __mmask8 k, __m256d a, __m128d b, int imm);
+VINSERTF64x2 __m256d _mm256_maskz_insertf64x2( __mmask8 k, __m256d a, __m128d b, int imm);
+VINSERTF64x4 __m512d _mm512_insertf64x4( __m512d a, __m256d b, int imm);
+VINSERTF64x4 __m512d _mm512_mask_insertf64x4(__m512d s, __mmask8 k, __m512d a, __m256d b, int imm);
+VINSERTF64x4 __m512d _mm512_maskz_insertf64x4( __mmask8 k, __m512d a, __m256d b, int imm);
+VINSERTF128 __m256 _mm256_insertf128_ps (__m256 a, __m128 b, int offset);
+VINSERTF128 __m256d _mm256_insertf128_pd (__m256d a, __m128d b, int offset);
+VINSERTF128 __m256i _mm256_insertf128_si256 (__m256i a, __m128i b, int offset);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046207">
-   <string>None</string></para>
+  <para unique="1046207">None</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046212" format="xIndent1">
-   <string>VEX-encoded instruction, see </string><link linkend="57777: 06_Table: Table 2-23. Type 6 Class Exception Conditions"><string>Table&#160;2&#8209;23, &#8220;Type 6 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1046213" format="xIndent1">
-   <string>Additionally:</string></para>
+  <para unique="1046212" format="xIndent1">VEX-encoded instruction, see <link unique="1046210" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#57777: 06_Table: Table 2-23. Type 6 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;23, &#8220;Type 6 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1046213" format="xIndent1">Additionally:</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If VEX.L = 0.</string></listitem>
-    </variablelistentry>
-   <variablelistentry>
-    <term><string>EVEX-encoded instruction, see </string></term>
-    <listitem><link linkend="46133: 06_Table: Table 2-54. Type E6NF Class Exception Conditions"><string>Table&#160;2&#8209;56, &#8220;Type E6NF Class Exception Conditions.&#8221;</string></link></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1046214">If VEX.L = 0.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
+  <para unique="1046218" format="xIndent1">EVEX-encoded instruction, see <link unique="1046216" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#46133: 06_Table: Table 2-54. Type E6NF Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;56, &#8220;Type E6NF Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

@@ -1,43 +1,133 @@
 <instruction name="LDDQU">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Load Unaligned Integer 128 Bits</shortdesc>
- <longdesc><para unique="1261268">
-   <string>The instruction is </string><italic><string>functionally similar </string></italic><string>to (V)MOVDQU ymm/xmm, m256/m128 for loading from memory. That is: 32/16 bytes of data starting at an address specified by the source memory operand (second operand) are fetched from memory and placed in a destination register (first operand). The source operand need not be aligned on a 32/16-byte boundary. Up to 64/32 bytes may be loaded from memory; this is implementation dependent.</string></para>
-  <para unique="1261269">
-   <string>This instruction may improve performance relative to (V)MOVDQU if the source operand crosses a cache line boundary. In situations that require the data loaded by (V)LDDQU be modified and stored to the same location, use (V)MOVDQU or (V)MOVDQA instead of (V)LDDQU. To move a double quadword to or from memory locations that are known to be aligned on 16-byte boundaries, use the (V)MOVDQA instruction.</string></para>
-  <section level="7">
-   <title unique="1261270"><string>Implementation Notes</string></title>
-   <itemizedlist><listitem><para unique="1261271">
-      <string>If the source is aligned to a 32/16-byte boundary, based on the implementation, the 32/16 bytes may be loaded more than once. For that reason, the usage of (V)LDDQU should be avoided when using uncached or write-combining (WC) memory regions. For uncached or WC memory regions, keep using (V)MOVDQU.</string></para>
-     </listitem>
-    <listitem><para unique="1261272">
-      <string>This instruction is a replacement for (V)MOVDQU (load) in situations where cache line splits significantly affect performance. It should not be used in situations where store-load forwarding is performance critical. If performance of store-load forwarding is critical to the application, use (V)MOVDQA store-load pairs when data is 256/128-bit aligned or (V)MOVDQU store-load pairs when data is 256/128-bit unaligned.</string></para>
-     </listitem>
-    <listitem><para unique="1261273">
-      <string>If the memory address is not aligned on 32/16-byte boundary, some implementations may load up to 64/32 bytes and return 32/16 bytes in the destination. Some processor implementations may issue multiple loads to access the appropriate 32/16 bytes. Developers of multi-threaded or multi-processor software should be aware that on these processors the loads will be performed in a non-atomic way.</string></para>
-     </listitem>
-    <listitem><para unique="1261274">
-      <string>If alignment checking is enabled (CR0.AM&#160;= 1, RFLAGS.AC&#160;= 1, and CPL&#160;= 3), an alignment-check exception (#AC) may or may not be generated (depending on processor implementation) when the memory address is not aligned on an 8-byte boundary.</string></para>
-     </listitem>
-    </itemizedlist><para unique="1261275">
-    <string>In 64-bit mode, use of the REX.R prefix permits this instruction to access additional registers (XMM8-XMM15).</string></para>
-   <para unique="1261276">
-    <string>Note: In VEX-encoded versions, VEX.vvvv is reserved and must be 1111b otherwise instructions will #UD.</string></para>
-   </section>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th colspan="2"><para unique="1261193">Opcode/</para>
+      <para unique="1261194">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64/32-bit Mode</para>
+      </th>
+     <th><para unique="1261202">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><col width="96.8544pt"/>
+   <col width="109.86984000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="182.15424000000002pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1261206">F2 0F F0 /r</para>
+      <para unique="1261207">LDDQU xmm1, mem</para>
+      </td>
+     <td><para unique="1261211">RM</para>
+      </td>
+     <td><para unique="1261213">V/V</para>
+      </td>
+     <td><para unique="1261215">SSE3</para>
+      </td>
+     <td><para unique="1261217">Load unaligned data from mem and return double quadword in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261219">VEX.128.F2.0F.WIG F0 /r</para>
+      <para unique="1261220">VLDDQU xmm1, m128</para>
+      </td>
+     <td><para unique="1261224">RM</para>
+      </td>
+     <td><para unique="1261226">V/V</para>
+      </td>
+     <td><para unique="1261228">AVX</para>
+      </td>
+     <td><para unique="1261230">Load unaligned packed integer values from mem to xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261232">VEX.256.F2.0F.WIG F0 /r</para>
+      <para unique="1261233">VLDDQU ymm1, m256</para>
+      </td>
+     <td><para unique="1261237">RM</para>
+      </td>
+     <td><para unique="1261239">V/V</para>
+      </td>
+     <td><para unique="1261241">AVX</para>
+      </td>
+     <td><para unique="1261243">Load unaligned packed integer values from mem to ymm1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261245">
+   <col width="51.95304pt"/>
+   <col width="113.71752pt"/>
+   <col width="119.05199999999999pt"/>
+   <col width="111.47112000000001pt"/>
+   <col width="115.77600000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261247">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261249">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261251">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261253">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261255">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261257">RM</para>
+      </td>
+     <td valign="middle"><para unique="1261259">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261261">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261263">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261265">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261266">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261268">The instruction is <italic>functionally similar </italic>to (V)MOVDQU ymm/xmm, m256/m128 for loading from memory. That is: 32/16 bytes of data starting at an address specified by the source memory operand (second operand) are fetched from memory and placed in a destination register (first operand). The source operand need not be aligned on a 32/16-byte boundary. Up to 64/32 bytes may be loaded from memory; this is implementation dependent.</para>
+  <para unique="1261269">This instruction may improve performance relative to (V)MOVDQU if the source operand crosses a cache line boundary. In situations that require the data loaded by (V)LDDQU be modified and stored to the same location, use (V)MOVDQU or (V)MOVDQA instead of (V)LDDQU. To move a double quadword to or from memory locations that are known to be aligned on 16-byte boundaries, use the (V)MOVDQA instruction.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1261278">LDDQU (128-bit Legacy SSE Version)</title>
+   <programlisting>DEST[127:0] := SRC[127:0]
+DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261282">VLDDQU (VEX.128 Encoded Version)</title>
+   <programlisting>DEST[127:0] := SRC[127:0]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1261286">VLDDQU (VEX.256 Encoded Version)</title>
+   <programlisting>DEST[255:0] := SRC[255:0]
+DEST[MAXVL-1:256] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>LDDQU 	__m128i _mm_lddqu_si128 (__m128i * p);</string><string>
-</string><string>VLDDQU 		__m256i _mm256_lddqu_si256 (__m256i * p);</string><string>
-</string></programlisting>
+  <programlisting>LDDQU 	__m128i _mm_lddqu_si128 (__m128i * p);
+VLDDQU 		__m256i _mm256_lddqu_si256 (__m256i * p);</programlisting>
   </subsection>
  <subsection title="Numeric Exceptions">
-  <para unique="1261292">
-   <string>None.</string></para>
+  <para unique="1261292">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1261297" format="xIndent1">
-   <string>See </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1261298" format="xIndent1">
-   <string>Note treatment of #AC varies.</string></para>
+  <para unique="1261297" format="xIndent1">See <link unique="1261295" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1261298" format="xIndent1">Note treatment of #AC varies.</para>
   </subsection>
  </instruction>

@@ -1,44 +1,139 @@
 <instruction name="AAD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>ASCII Adjust AX Before Division</shortdesc>
- <longdesc><para unique="1261253">
-   <string>Adjusts two unpacked BCD digits (the least-significant digit in the AL register and the most-significant digit in the AH register) so that a division operation performed on the result will yield a correct unpacked </string><indexterm><primary>BCD integers:unpacked</primary></indexterm><string>BCD value. The AAD instruction is only useful when it precedes a DIV instruction that divides (binary division) the adjusted value in the AX register by an unpacked BCD value.</string></para>
-  <para unique="1261255">
-   <string>The AAD instruction sets the value in the AL register to (AL </string><string>+ (10 * AH)), and then clears the AH register to 00H. The value in the AX register is then equal to the binary equivalent of the original unpacked two-digit (base 10) number in registers AH and&#160;AL.</string></para>
-  <para unique="1261256">
-   <string>The generalized version of this instruction allows adjustment of two unpacked digits of any number base (see the &#8220;Operation&#8221; section below), by setting the </string><italic><string>imm8</string></italic><string> byte to the selected number base (for example, 08H for octal, 0AH for decimal, or 0CH for base 12 numbers). The AAD mnemonic is interpreted by all assemblers to mean adjust ASCII (base 10) values. To adjust values in another number base, the instruction must be hand coded in machine code (D5 </string><italic><string>imm8</string></italic><string>).</string></para>
-  <para unique="1261257">
-   <string>This instruction executes as described in compatibility mode and legacy mode. It is not valid in 64-bit mode.</string></para>
+ <encoding_table><table unique="1261192">
+   <thead><tr>
+     <th><para unique="1261194">Opcode</para>
+      </th>
+     <th><para unique="1261196">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64-bit Mode</para>
+      </th>
+     <th><para unique="1261202">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.25984pt"/>
+   <col width="111.46464pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="47.999520000000004pt"/>
+   <col width="46.728pt"/>
+   <col width="182.15424000000002pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261206">D5 0A</para>
+      </td>
+     <td><para unique="1261208">AAD</para>
+      </td>
+     <td><para unique="1261210">ZO</para>
+      </td>
+     <td><para unique="1261212">Invalid</para>
+      </td>
+     <td><para unique="1261214">Valid</para>
+      </td>
+     <td><para unique="1261216">ASCII adjust AX before division.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261218">D5 ib</para>
+      </td>
+     <td><para unique="1261220">AAD imm8</para>
+      </td>
+     <td><para unique="1261222">ZO</para>
+      </td>
+     <td><para unique="1261224">Invalid</para>
+      </td>
+     <td><para unique="1261226">Valid</para>
+      </td>
+     <td><para unique="1261228">Adjust AX before division to number base imm8.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261230">
+   <col width="45.47808pt"/>
+   <col width="111.78072pt"/>
+   <col width="123.04944pt"/>
+   <col width="113.56992000000001pt"/>
+   <col width="118.84176pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261232">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261234">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261236">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261238">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261240">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261242">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1261244">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261246">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261248">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261250">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261251">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261253">Adjusts two unpacked BCD digits (the least-significant digit in the AL register and the most-significant digit in the AH register) so that a division operation performed on the result will yield a correct unpacked <indexterm><primary>BCD integers:unpacked</primary></indexterm>BCD value. The AAD instruction is only useful when it precedes a DIV instruction that divides (binary division) the adjusted value in the AX register by an unpacked BCD value.</para>
+  <para unique="1261255">The AAD instruction sets the value in the AL register to (AL + (10 * AH)), and then clears the AH register to 00H. The value in the AX register is then equal to the binary equivalent of the original unpacked two-digit (base 10) number in registers AH and&#160;AL.</para>
+  <para unique="1261256">The generalized version of this instruction allows adjustment of two unpacked digits of any number base (see the &#8220;Operation&#8221; section below), by setting the <italic>imm8</italic> byte to the selected number base (for example, 08H for octal, 0AH for decimal, or 0CH for base 12 numbers). The AAD mnemonic is interpreted by all assemblers to mean adjust ASCII (base 10) values. To adjust values in another number base, the instruction must be hand coded in machine code (D5 <italic>imm8</italic>).</para>
+  <para unique="1261257">This instruction executes as described in compatibility mode and legacy mode. It is not valid in 64-bit mode.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF 64-Bit Mode
+	THEN
+		#UD;
+	ELSE
+		tempAL := AL;
+		tempAH := AH;
+		AL := (tempAL + (tempAH * imm8)) AND FFH;
+		(* imm8 is set to 0AH for the AAD mnemonic.*)
+		AH := 0;
+FI;
+The immediate value (imm8) is taken from the second byte of the instruction.</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261266">
-   <string>The SF, ZF, and PF flags are set according to the resulting binary value in the AL register; the OF, AF, and CF flags are undefined.</string></para>
+  <para unique="1261266">The SF, ZF, and PF flags are set according to the resulting binary value in the AL register; the OF, AF, and CF flags are undefined.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261268">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
-  <para unique="1261270" format="xIndent1">
-   <string>Same exceptions as protected mode.</string></para>
+  <para unique="1261270" format="xIndent1">Same exceptions as protected mode.</para>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1261272" format="xIndent1">
-   <string>Same exceptions as protected mode.</string></para>
+  <para unique="1261272" format="xIndent1">Same exceptions as protected mode.</para>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261274" format="xIndent1">
-   <string>Same exceptions as protected mode.</string></para>
+  <para unique="1261274" format="xIndent1">Same exceptions as protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If in 64-bit mode.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1261276">If in 64-bit mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

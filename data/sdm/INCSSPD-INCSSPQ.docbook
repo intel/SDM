@@ -1,55 +1,172 @@
 <instruction name="INCSSPD/INCSSPQ">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Increment Shadow Stack Pointer</shortdesc>
- <longdesc><para unique="1261258">
-   <string>This instruction can be used to increment the current shadow stack pointer by the operand size of the instruction times the unsigned 8-bit value specified by bits 7:0 in the source operand. The instruction performs a pop and discard of the first and last element on the shadow stack in the range specified by the unsigned 8-bit value in bits 7:0 of the source operand.</string></para>
+ <encoding_table><table unique="1261190">
+   <col width="83.79pt"/>
+   <col width="83.79pt"/>
+   <col width="30.443759999999997pt"/>
+   <col width="48.74976pt"/>
+   <col width="52.24968pt"/>
+   <col width="212.08391999999998pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1261192">Opcode/</para>
+      <para unique="1261193">Instruction</para>
+      </th>
+     <th><para unique="1261197">Op / En</para>
+      </th>
+     <th><para unique="1261199">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1261201">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1261203">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1261205">F3 0F AE /5</para>
+      <para unique="1261206">INCSSPD r32</para>
+      </td>
+     <td><para unique="1261210">R</para>
+      </td>
+     <td><para unique="1261212">V/V</para>
+      </td>
+     <td><para unique="1261214">CET_SS</para>
+      </td>
+     <td><para unique="1261216">Increment SSP by 4 * r32[7:0].</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1261218">F3 REX.W 0F AE /5</para>
+      <para unique="1261219">INCSSPQ r64</para>
+      </td>
+     <td><para unique="1261223">R</para>
+      </td>
+     <td><para unique="1261225">V/N.E.</para>
+      </td>
+     <td><para unique="1261227">CET_SS</para>
+      </td>
+     <td><para unique="1261229">Increment SSP by 8 * r64[7:0].</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261231">
+   <col width="50.64192pt"/>
+   <col width="61.44192pt"/>
+   <col width="99.74016pt"/>
+   <col width="97.96608pt"/>
+   <col width="98.86896pt"/>
+   <col width="103.85856pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261233">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261235">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1261237">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261239">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261241">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261243">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261245">R</para>
+      </td>
+     <td valign="middle"><para unique="1261247">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261249">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261251">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261253">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261255">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261256">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261258">This instruction can be used to increment the current shadow stack pointer by the operand size of the instruction times the unsigned 8-bit value specified by bits 7:0 in the source operand. The instruction performs a pop and discard of the first and last element on the shadow stack in the range specified by the unsigned 8-bit value in bits 7:0 of the source operand.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF CPL = 3
+	IF (CR4.CET &amp; IA32_U_CET.SH_STK_EN) = 0
+		THEN #UD; FI;
+ELSE
+	IF (CR4.CET &amp; IA32_S_CET.SH_STK_EN) = 0
+		THEN #UD; FI;
+FI;
+IF (operand size is 64-bit)
+	THEN
+		Range := R64[7:0];
+		shadow_stack_load 8 bytes from SSP;
+		IF Range &gt; 0
+              			THEN shadow_stack_load 8 bytes from SSP + 8 * (Range - 1);
+		FI;
+		SSP := SSP + Range * 8;
+	ELSE
+		Range := R32[7:0];
+		shadow_stack_load 4 bytes from SSP;
+		IF Range &gt; 0
+              			THEN shadow_stack_load 4 bytes from SSP + 4 * (Range - 1);
+		FI;
+		SSP := SSP + Range * 4;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261285">
-   <string>None.</string></para>
+  <para unique="1261285">None.</para>
   </subsection>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>INCSSPD		 void _incsspd(int);</string><string>
-</string><string>INCSSPQ		 void _incsspq(int);</string><string>
-</string></programlisting>
+  <programlisting>INCSSPD		 void _incsspd(int);
+INCSSPQ		 void _incsspq(int);</programlisting>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If CR4.CET = 0.</string></listitem>
-    <listitem><string>IF CPL = 3 and IA32_U_CET.SH_STK_EN = 0.</string></listitem>
-    <listitem><string>IF CPL &lt; 3 and IA32_S_CET.SH_STK_EN = 0.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1261290">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1261291">If CR4.CET = 0.</para>
+     </listitem>
+    <listitem><para unique="1261292">IF CPL = 3 and IA32_U_CET.SH_STK_EN = 0.</para>
+     </listitem>
+    <listitem><para unique="1261293">IF CPL &lt; 3 and IA32_S_CET.SH_STK_EN = 0.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261294">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>The INCSSP instruction is not recognized in real-address mode.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261296">The INCSSP instruction is not recognized in real-address mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>The INCSSP instruction is not recognized in virtual-8086 mode.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261298">The INCSSP instruction is not recognized in virtual-8086 mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261300" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261300" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
-  <para unique="1261302" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261302" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  </instruction>

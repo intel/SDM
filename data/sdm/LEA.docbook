@@ -1,196 +1,282 @@
 <instruction name="LEA">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Load Effective Address</shortdesc>
- <longdesc><para unique="1261264">
-   <string>Computes the effective address of the second operand (the source operand) and stores it in the first operand (destination operand). The source operand is a memory address (offset part) specified with one of the processors addressing modes; the destination operand is a general-purpose register. The address-size and operand-size attri&#173;butes affect the action performed by this instruction, as shown in the following table. The operand-size attribute of the instruction is determined by the chosen register; the address-size attribute is determined by the attribute of the code segment.</string></para>
-  <table>
-   <caption>Table 3-57.  Non-64-bit Mode LEA Operation with Address and Operand Size Attributes</caption>
-   <colgroup><col width="69.03864pt"/>
-    <col width="73.22616000000001pt"/>
-    <col width="369.26640000000003pt"/>
-    <col width="72.0pt"/>
-    <col width="72.0pt"/>
-    <col width="36.858959999999996pt"/>
-    </colgroup>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th><para unique="1261193">Opcode</para>
+      </th>
+     <th><para unique="1261195">Instruction</para>
+      </th>
+     <th><para unique="1261197">Op/ En</para>
+      </th>
+     <th><para unique="1261199">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261201">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261203">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.96256pt"/>
+   <col width="112.26168000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="182.15424000000002pt"/>
    <tbody>
     <tr>
-     <th><para unique="1261273" format="CellColHead">
-       <string>Operand Size</string></para>
-      </th>
-     <th><para unique="1261275" format="CellColHead">
-       <string>Address Size</string></para>
-      </th>
-     <th><para unique="1261277" format="CellColHead">
-       <string>Action Performed</string></para>
-      </th>
-     </tr>
-    <tr>
-     <td><para unique="1261279" format="CellBodyC">
-       <string>16</string></para>
+     <td><para unique="1261205">8D /r</para>
       </td>
-     <td><para unique="1261281" format="CellBodyC">
-       <string>16</string></para>
+     <td><para unique="1261207">LEA r16,m</para>
       </td>
-     <td><para unique="1261283" format="CellBodyL">
-       <string>16-bit effective address is calculated and stored in requested 16&#8209;bit register destination.</string></para>
+     <td><para unique="1261209">RM</para>
+      </td>
+     <td><para unique="1261211">Valid</para>
+      </td>
+     <td><para unique="1261213">Valid</para>
+      </td>
+     <td><para unique="1261215">Store effective address for m in register r16.</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261285" format="CellBodyC">
-       <string>16</string></para>
+     <td><para unique="1261217">8D /r</para>
       </td>
-     <td><para unique="1261287" format="CellBodyC">
-       <string>32</string></para>
+     <td><para unique="1261219">LEA r32,m</para>
       </td>
-     <td><para unique="1261289" format="CellBodyL">
-       <string>32-bit effective address is calculated. The lower 16 bits of the address are stored in the requested 16-bit register destination.</string></para>
+     <td><para unique="1261221">RM</para>
       </td>
-     </tr>
-    <tr>
-     <td><para unique="1261291" format="CellBodyC">
-       <string>32</string></para>
+     <td><para unique="1261223">Valid</para>
       </td>
-     <td><para unique="1261293" format="CellBodyC">
-       <string>16</string></para>
+     <td><para unique="1261225">Valid</para>
       </td>
-     <td><para unique="1261295" format="CellBodyL">
-       <string>16-bit effective address is calculated. The 16-bit address is zero-extended and stored in the requested 32-bit register destination.</string></para>
+     <td><para unique="1261227">Store effective address for m in register r32.</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261297" format="CellBodyC">
-       <string>32</string></para>
+     <td><para unique="1261229">REX.W + 8D /r</para>
       </td>
-     <td><para unique="1261299" format="CellBodyC">
-       <string>32</string></para>
+     <td><para unique="1261231">LEA r64,m</para>
       </td>
-     <td><para unique="1261301" format="CellBodyL">
-       <string>32-bit effective address is calculated and stored in the requested 32-bit register destination.</string></para>
+     <td><para unique="1261233">RM</para>
+      </td>
+     <td><para unique="1261235">Valid</para>
+      </td>
+     <td><para unique="1261237">N.E.</para>
+      </td>
+     <td><para unique="1261239">Store effective address for m in register r64. </para>
       </td>
      </tr>
     </tbody>
    </table>
-  <para unique="1261303">
-   <string>Different assemblers may use different algorithms based on the size attribute and symbolic reference of the source operand.</string></para>
-  <para unique="1261304">
-   <string>In 64-bit mode, the instruction&#8217;s destination operand is governed by operand size attribute, the default operand size is 32 bits. Address calculation is governed by address size attribute, the default address size is 64-bits. In 64-bit mode, address size of 16 bits is not encodable. See </string><link linkend="92479: 06_Table: Table 3-59. 64-bit Mode LEA Operation with Address and Operand Size Attributes"><string>Table 3&#8209;58</string></link><string>.</string></para>
-  <table>
-   <caption>Table 3-58.  64-bit Mode LEA Operation with Address and Operand Size Attributes</caption>
-   <colgroup><col width="69.24024pt" align="center"/>
-    <col width="73.44pt"/>
-    <col width="368.85024pt"/>
-    <col width="72.0pt"/>
-    <col width="72.0pt"/>
-    <col width="36.858959999999996pt"/>
-    </colgroup>
+  </encoding_table>
+ <operand_table><table unique="1261241">
+   <col width="52.1928pt"/>
+   <col width="108.64512pt"/>
+   <col width="119.59776pt"/>
+   <col width="114.37992pt"/>
+   <col width="117.90504pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261243">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261245">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261247">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261249">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261251">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261253">RM</para>
+      </td>
+     <td valign="middle"><para unique="1261255">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1261257">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1261259">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261261">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261262">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261264">Computes the effective address of the second operand (the source operand) and stores it in the first operand (destination operand). The source operand is a memory address (offset part) specified with one of the processors addressing modes; the destination operand is a general-purpose register. The address-size and operand-size attri&#173;butes affect the action performed by this instruction, as shown in the following table. The operand-size attribute of the instruction is determined by the chosen register; the address-size attribute is determined by the attribute of the code segment.</para>
+  <table unique="1261265">
+   <caption>Non-64-bit Mode LEA Operation with Address and Operand Size Attributes</caption>
+   <col width="69.03864pt"/>
+   <col width="73.22616000000001pt"/>
+   <col width="369.26640000000003pt"/>
    <tbody>
     <tr>
-     <th><para unique="1261317" format="CellColHead">
-       <string>Operand Size</string></para>
+     <th><para unique="1261273">Operand Size</para>
       </th>
-     <th><para unique="1261319" format="CellColHead">
-       <string>Address Size</string></para>
+     <th><para unique="1261275">Address Size</para>
       </th>
-     <th><para unique="1261321" format="CellColHead">
-       <string>Action Performed</string></para>
+     <th><para unique="1261277">Action Performed</para>
       </th>
      </tr>
     <tr>
-     <td><para unique="1261323" format="CellBodyC">
-       <string>16</string></para>
+     <td><para unique="1261279">16</para>
       </td>
-     <td><para unique="1261325" format="CellBodyC">
-       <string>32</string></para>
+     <td><para unique="1261281">16</para>
       </td>
-     <td><para unique="1261327" format="CellBodyL">
-       <string>32-bit effective address is calculated (using 67H prefix). The lower 16 bits of the address are stored in the requested 16&#8209;bit register destination (using 66H prefix).</string></para>
+     <td><para unique="1261283">16-bit effective address is calculated and stored in requested 16&#8209;bit register destination.</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261329" format="CellBodyC">
-       <string>16</string></para>
+     <td><para unique="1261285">16</para>
       </td>
-     <td><para unique="1261331" format="CellBodyC">
-       <string>64</string></para>
+     <td><para unique="1261287">32</para>
       </td>
-     <td><para unique="1261333" format="CellBodyL">
-       <string>64-bit effective address is calculated (default address size). The lower 16 bits of the address are stored in the requested 16-bit register destination (using 66H prefix).</string></para>
+     <td><para unique="1261289">32-bit effective address is calculated. The lower 16 bits of the address are stored in the requested 16-bit register destination.</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261335" format="CellBodyC">
-       <string>32</string></para>
+     <td><para unique="1261291">32</para>
       </td>
-     <td><para unique="1261337" format="CellBodyC">
-       <string>32</string></para>
+     <td><para unique="1261293">16</para>
       </td>
-     <td><para unique="1261339" format="CellBodyL">
-       <string>32-bit effective address is calculated (using 67H prefix) and stored in the requested 32-bit register destination.</string></para>
+     <td><para unique="1261295">16-bit effective address is calculated. The 16-bit address is zero-extended and stored in the requested 32-bit register destination.</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261341" format="CellBodyC">
-       <string>32</string></para>
+     <td><para unique="1261297">32</para>
       </td>
-     <td><para unique="1261343" format="CellBodyC">
-       <string>64</string></para>
+     <td><para unique="1261299">32</para>
       </td>
-     <td><para unique="1261345" format="CellBodyL">
-       <string>64-bit effective address is calculated (default address size) and the lower 32 bits of the address are stored in the requested 32-bit register destination.</string></para>
+     <td><para unique="1261301">32-bit effective address is calculated and stored in the requested 32-bit register destination.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  <para unique="1261303">Different assemblers may use different algorithms based on the size attribute and symbolic reference of the source operand.</para>
+  <para unique="1261304">In 64-bit mode, the instruction&#8217;s destination operand is governed by operand size attribute, the default operand size is 32 bits. Address calculation is governed by address size attribute, the default address size is 64-bits. In 64-bit mode, address size of 16 bits is not encodable. See <link unique="1261306" linkend="#92479: 06_Table: Table 3-59. 64-bit Mode LEA Operation with Address and Operand Size Attributes" xrefstyle="TableNum">Table 3&#8209;58</link>.</para>
+  <table id="92479: 06_Table: Table 3-59. 64-bit Mode LEA Operation with Address and Operand Size Attributes" unique="1261308">
+   <caption><anchor id="92479: 06_Table: Table 3-59. 64-bit Mode LEA Operation with Address and Operand Size Attributes"/>64-bit Mode LEA Operation with Address and Operand Size Attributes</caption>
+   <col width="69.24024pt"/>
+   <col width="73.44pt"/>
+   <col width="368.85024pt"/>
+   <tbody>
+    <tr>
+     <th><para unique="1261317">Operand Size</para>
+      </th>
+     <th><para unique="1261319">Address Size</para>
+      </th>
+     <th><para unique="1261321">Action Performed</para>
+      </th>
+     </tr>
+    <tr>
+     <td><para unique="1261323">16</para>
+      </td>
+     <td><para unique="1261325">32</para>
+      </td>
+     <td><para unique="1261327">32-bit effective address is calculated (using 67H prefix). The lower 16 bits of the address are stored in the requested 16&#8209;bit register destination (using 66H prefix).</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261347" format="CellBodyC">
-       <string>64</string></para>
+     <td><para unique="1261329">16</para>
       </td>
-     <td><para unique="1261349" format="CellBodyC">
-       <string>32</string></para>
+     <td><para unique="1261331">64</para>
       </td>
-     <td><para unique="1261351" format="CellBodyL">
-       <string>32-bit effective address is calculated (using 67H prefix), zero-extended to 64-bits, and stored in the requested 64-bit register destination (using REX.W).</string></para>
+     <td><para unique="1261333">64-bit effective address is calculated (default address size). The lower 16 bits of the address are stored in the requested 16-bit register destination (using 66H prefix).</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1261353" format="CellBodyC">
-       <string>64</string></para>
+     <td><para unique="1261335">32</para>
       </td>
-     <td><para unique="1261355" format="CellBodyC">
-       <string>64</string></para>
+     <td><para unique="1261337">32</para>
       </td>
-     <td><para unique="1261357" format="CellBodyL">
-       <string>64-bit effective address is calculated (default address size) and all 64-bits of the address are stored in the requested 64-bit register destination (using REX.W).</string></para>
+     <td><para unique="1261339">32-bit effective address is calculated (using 67H prefix) and stored in the requested 32-bit register destination.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261341">32</para>
+      </td>
+     <td><para unique="1261343">64</para>
+      </td>
+     <td><para unique="1261345">64-bit effective address is calculated (default address size) and the lower 32 bits of the address are stored in the requested 32-bit register destination.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261347">64</para>
+      </td>
+     <td><para unique="1261349">32</para>
+      </td>
+     <td><para unique="1261351">32-bit effective address is calculated (using 67H prefix), zero-extended to 64-bits, and stored in the requested 64-bit register destination (using REX.W).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261353">64</para>
+      </td>
+     <td><para unique="1261355">64</para>
+      </td>
+     <td><para unique="1261357">64-bit effective address is calculated (default address size) and all 64-bits of the address are stored in the requested 64-bit register destination (using REX.W).</para>
       </td>
      </tr>
     </tbody>
    </table>
   </longdesc>
+ <operation>
+  <programlisting>IF OperandSize = 16 and AddressSize = 16
+	THEN
+		DEST := EffectiveAddress(SRC); (* 16-bit address *)
+	ELSE IF OperandSize = 16 and AddressSize = 32
+		THEN
+			temp := EffectiveAddress(SRC); (* 32-bit address *)
+			DEST := temp[0:15]; (* 16-bit address *)
+		FI;
+	ELSE IF OperandSize = 32 and AddressSize = 16
+		THEN
+			temp := EffectiveAddress(SRC); (* 16-bit address *)
+			DEST := ZeroExtend(temp); (* 32-bit address *)
+		FI;
+	ELSE IF OperandSize = 32 and AddressSize = 32
+		THEN
+			DEST := EffectiveAddress(SRC); (* 32-bit address *)
+		FI;
+	ELSE IF OperandSize = 16 and AddressSize = 64
+		THEN
+			temp := EffectiveAddress(SRC); (* 64-bit address *)
+			DEST := temp[0:15]; (* 16-bit address *)
+		FI;
+	ELSE IF OperandSize = 32 and AddressSize = 64
+		THEN
+			temp := EffectiveAddress(SRC); (* 64-bit address *)
+			DEST := temp[0:31]; (* 16-bit address *)
+		FI;
+	ELSE IF OperandSize = 64 and AddressSize = 64
+		THEN
+			DEST := EffectiveAddress(SRC); (* 64-bit address *)
+		FI;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261393">
-   <string>None.</string></para>
+  <para unique="1261393">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If source operand is not a memory location.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1261395">If source operand is not a memory location.</para>
+     </listitem>
+    <listitem><para unique="1261396">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
-  <para unique="1261398" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261398" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1261400" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261400" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261402" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261402" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
-  <para unique="1261404" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261404" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  </instruction>

@@ -1,55 +1,127 @@
 <instruction name="EMMS">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Empty MMX Technology State</shortdesc>
- <longdesc><para unique="1261240">
-   <string>Sets the values of all the tags in the x87 FPU tag word to empty (all 1s). This operation marks the x87 FPU data registers (which are aliased to the MMX technology registers) as available for use by x87 FPU floating-point instruc&#173;tions. (See </string><string>Figure 8-7</string><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for the format of the x87 FPU tag word.) All other MMX instructions (other than the EMMS instruction) set all the tags in x87 FPU tag word to valid (all 0s).</string></para>
-  <para unique="1261244">
-   <string>The EMMS instruction must be used to clear the MMX technology state at the end of all MMX technology procedures or subroutines and before calling other procedures or subroutines that may execute x87 floating-point instructions. If a floating-point instruction loads one of the registers in the x87 FPU data register stack before the x87 FPU tag word has been reset by the EMMS instruction, an x87 floating-point register stack overflow can occur that will result in an x87 floating-point exception or incorrect result.</string></para>
-  <para unique="1261245">
-   <string>EMMS operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+ <encoding_table><table unique="1261191">
+   <thead><tr>
+     <th><para unique="1261193">Opcode</para>
+      </th>
+     <th><para unique="1261195">Instruction</para>
+      </th>
+     <th><para unique="1261197">Op/ En</para>
+      </th>
+     <th><para unique="1261199">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261201">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261203">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.6112pt"/>
+   <col width="111.8628pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="181.404pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261205">NP 0F 77</para>
+      </td>
+     <td><para unique="1261207">EMMS</para>
+      </td>
+     <td><para unique="1261209">ZO</para>
+      </td>
+     <td><para unique="1261211">Valid</para>
+      </td>
+     <td><para unique="1261213">Valid</para>
+      </td>
+     <td><para unique="1261215">Set the x87 FPU tag word to empty.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261217">
+   <col width="54.745920000000005pt"/>
+   <col width="111.30912000000001pt"/>
+   <col width="116.53056pt"/>
+   <col width="109.88928pt"/>
+   <col width="117.99576pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261219">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261221">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261223">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261225">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261227">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261229">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1261231">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261233">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261235">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261237">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261238">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261240">Sets the values of all the tags in the x87 FPU tag word to empty (all 1s). This operation marks the x87 FPU data registers (which are aliased to the MMX technology registers) as available for use by x87 FPU floating-point instruc&#173;tions. (See Figure 8-7 in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for the format of the x87 FPU tag word.) All other MMX instructions (other than the EMMS instruction) set all the tags in x87 FPU tag word to valid (all 0s).</para>
+  <para unique="1261244">The EMMS instruction must be used to clear the MMX technology state at the end of all MMX technology procedures or subroutines and before calling other procedures or subroutines that may execute x87 floating-point instructions. If a floating-point instruction loads one of the registers in the x87 FPU data register stack before the x87 FPU tag word has been reset by the EMMS instruction, an x87 floating-point register stack overflow can occur that will result in an x87 floating-point exception or incorrect result.</para>
+  <para unique="1261245">EMMS operation is the same in non-64-bit modes and 64-bit mode.</para>
   </longdesc>
+ <operation>
+  <programlisting>x87FPUTagWord := FFFFH;</programlisting>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>void _mm_empty()</string><string>
-</string></programlisting>
+  <programlisting>void _mm_empty()</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1261251">
-   <string>None</string></para>
+  <para unique="1261251">None</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CR0.EM[bit 2] = 1.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1261253">If CR0.EM[bit 2] = 1.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#NM</string></term>
-    <listitem><string>If CR0.TS[bit 3] = 1.</string></listitem>
+    <term>#NM</term>
+    <listitem><para unique="1261254">If CR0.TS[bit 3] = 1.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#MF</string></term>
-    <listitem><string>If there is a pending FPU exception.</string></listitem>
+    <term>#MF</term>
+    <listitem><para unique="1261255">If there is a pending FPU exception.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261256">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
-  <para unique="1261258">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261258">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1261260">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261260">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261262" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261262" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
-  <para unique="1261264" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261264" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  </instruction>

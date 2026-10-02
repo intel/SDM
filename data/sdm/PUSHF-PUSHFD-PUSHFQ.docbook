@@ -1,94 +1,230 @@
 <instruction name="PUSHF/PUSHFD/PUSHFQ">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Push EFLAGS Register Onto the Stack</shortdesc>
- <longdesc><para unique="1091463">
-   <string>Decrements the stack pointer by 4 (if the current operand-size attribute is 32) and pushes the entire contents of the </string><indexterm><primary>EFLAGS register:pushing</primary></indexterm><string>EFLAGS register onto the stack, or decrements the stack pointer by 2 (if the operand-size attribute is 16) and pushes the lower 16 bits of the EFLAGS register (that is, the FLAGS register) onto the stack. These instructions reverse the operation of the POPF/POPFD instructions. </string></para>
-  <para unique="1091465">
-   <string>When copying the entire EFLAGS register to the stack, the VM and RF flags (bits 16 and 17) are not copied; instead, the values for these flags are cleared in the EFLAGS image stored on the stack. See </string><link linkend="40668: 01_Level: CHAPTER 3 Basic Execution Environment"><string>Chapter 3</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for more information about the EFLAGS register. </string></para>
-  <para unique="1091469">
-   <string>The PUSHF (push flags) and PUSHFD (push flags double) mnemonics reference the same opcode. The PUSHF instruction is intended for use when the operand-size attribute is 16 and the PUSHFD instruction for when the operand-size attribute is 32. Some assemblers may force the operand size to 16 when PUSHF is used and to 32 when PUSHFD is used. Others may treat these mnemonics as synonyms (PUSHF/PUSHFD) and use the current setting of the operand-size attribute to determine the size of values to be pushed from the stack, regardless of the mnemonic used.</string></para>
-  <para unique="1091470">
-   <string>In 64-bit mode, the instruction&#8217;s default operation is to decrement the stack pointer (RSP) by 8 and pushes RFLAGS on the stack. 16-bit operation is supported using the operand size override prefix 66H. 32-bit operand size cannot be encoded in this mode. When copying RFLAGS to the stack, the VM and RF flags (bits 16 and 17) are not copied; instead, values for these flags are cleared in the RFLAGS image stored on the stack.</string></para>
-  <para unique="1091471">
-   <string>When operating in virtual-8086 mode (EFLAGS.VM = 1) without the virtual-8086 mode extensions (CR4.VME = 0), the PUSHF/PUSHFD instructions can be used only if IOPL = 3; otherwise, a general-protection exception (#GP) occurs. If the virtual-8086 mode extensions are enabled (CR4.VME = 1), PUSHF (but not PUSHFD) can be executed in virtual-8086 mode with IOPL &lt; 3.</string></para>
-  <para unique="1091472">
-   <string>(The protected-mode virtual-interrupt feature &#8212; enabled by setting CR4.PVI &#8212; affects the CLI and STI instructions in the same manner as the virtual-8086 mode extensions. PUSHF, however, is not affected by CR4.PVI.)</string></para>
-  <para unique="1091473">
-   <string>In the real-address mode, if the ESP or SP register is 1 when PUSHF/PUSHFD instruction executes: an #SS excep&#173;tion is generated but not delivered (the stack error reported prevents #SS delivery). Next, the processor generates a #DF exception and enters a shutdown state as described in the #DF discussion in </string><link linkend="26613: H1Heading: Chapter 5 Protected-Mode Exceptions and Interrupts"><string>Chapter 7</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A.</string></para>
+ <encoding_table><table unique="1091390">
+   <thead><tr>
+     <th><para unique="1091392">Opcode</para>
+      </th>
+     <th><para unique="1091394">Instruction</para>
+      </th>
+     <th><para unique="1091396">Op/ En</para>
+      </th>
+     <th><para unique="1091398">64-Bit Mode</para>
+      </th>
+     <th><para unique="1091400">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1091402">Description</para>
+      </th>
+     </tr>
+    </thead><col width="97.90848pt"/>
+   <col width="111.06576000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="181.404pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1091404">9C</para>
+      </td>
+     <td><para unique="1091406">PUSHF</para>
+      </td>
+     <td><para unique="1091408">ZO</para>
+      </td>
+     <td><para unique="1091410">Valid</para>
+      </td>
+     <td><para unique="1091412">Valid</para>
+      </td>
+     <td><para unique="1091414">Push lower 16 bits of EFLAGS.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091416">9C</para>
+      </td>
+     <td><para unique="1091418">PUSHFD</para>
+      </td>
+     <td><para unique="1091420">ZO</para>
+      </td>
+     <td><para unique="1091422">N.E.</para>
+      </td>
+     <td><para unique="1091424">Valid</para>
+      </td>
+     <td><para unique="1091426">Push EFLAGS.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091428">9C</para>
+      </td>
+     <td><para unique="1091430">PUSHFQ</para>
+      </td>
+     <td><para unique="1091432">ZO</para>
+      </td>
+     <td><para unique="1091434">Valid</para>
+      </td>
+     <td><para unique="1091436">N.E.</para>
+      </td>
+     <td><para unique="1091438">Push RFLAGS.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091440">
+   <col width="47.48472pt"/>
+   <col width="112.21343999999999pt"/>
+   <col width="114.27984000000001pt"/>
+   <col width="119.98367999999999pt"/>
+   <col width="118.008pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091442">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091444">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091446">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091448">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091450">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091452">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1091454">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091456">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091458">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091460">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091461">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091463">Decrements the stack pointer by 4 (if the current operand-size attribute is 32) and pushes the entire contents of the <indexterm><primary>EFLAGS register:pushing</primary></indexterm>EFLAGS register onto the stack, or decrements the stack pointer by 2 (if the operand-size attribute is 16) and pushes the lower 16 bits of the EFLAGS register (that is, the FLAGS register) onto the stack. These instructions reverse the operation of the POPF/POPFD instructions. </para>
+  <para unique="1091465">When copying the entire EFLAGS register to the stack, the VM and RF flags (bits 16 and 17) are not copied; instead, the values for these flags are cleared in the EFLAGS image stored on the stack. See <link unique="1091467" linkend="&lt;c&gt;__sdm_vol1_ch03.fm#40668: 01_Level: CHAPTER 3 Basic Execution Environment" xrefstyle="ChapterNum_CR">Chapter 3</link> of the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for more information about the EFLAGS register. </para>
+  <para unique="1091469">The PUSHF (push flags) and PUSHFD (push flags double) mnemonics reference the same opcode. The PUSHF instruction is intended for use when the operand-size attribute is 16 and the PUSHFD instruction for when the operand-size attribute is 32. Some assemblers may force the operand size to 16 when PUSHF is used and to 32 when PUSHFD is used. Others may treat these mnemonics as synonyms (PUSHF/PUSHFD) and use the current setting of the operand-size attribute to determine the size of values to be pushed from the stack, regardless of the mnemonic used.</para>
+  <para unique="1091470">In 64-bit mode, the instruction&#8217;s default operation is to decrement the stack pointer (RSP) by 8 and pushes RFLAGS on the stack. 16-bit operation is supported using the operand size override prefix 66H. 32-bit operand size cannot be encoded in this mode. When copying RFLAGS to the stack, the VM and RF flags (bits 16 and 17) are not copied; instead, values for these flags are cleared in the RFLAGS image stored on the stack.</para>
+  <para unique="1091471">When operating in virtual-8086 mode (EFLAGS.VM = 1) without the virtual-8086 mode extensions (CR4.VME = 0), the PUSHF/PUSHFD instructions can be used only if IOPL = 3; otherwise, a general-protection exception (#GP) occurs. If the virtual-8086 mode extensions are enabled (CR4.VME = 1), PUSHF (but not PUSHFD) can be executed in virtual-8086 mode with IOPL &lt; 3.</para>
+  <para unique="1091472">(The protected-mode virtual-interrupt feature &#8212; enabled by setting CR4.PVI &#8212; affects the CLI and STI instructions in the same manner as the virtual-8086 mode extensions. PUSHF, however, is not affected by CR4.PVI.)</para>
+  <para unique="1091473">In the real-address mode, if the ESP or SP register is 1 when PUSHF/PUSHFD instruction executes: an #SS excep&#173;tion is generated but not delivered (the stack error reported prevents #SS delivery). Next, the processor generates a #DF exception and enters a shutdown state as described in the #DF discussion in <link unique="1091475" linkend="&lt;c&gt;__sdm_vol3A_ch07.fm#26613: H1Heading: Chapter 5 Protected-Mode Exceptions and Interrupts" xrefstyle="ChapterNum">Chapter 7</link> of the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF (PE = 0) or (PE = 1 and ((VM = 0) or (VM = 1 and IOPL = 3)))
+(* Real-Address Mode, Protected mode, or Virtual-8086 mode with IOPL equal to 3 *)
+	THEN
+		IF OperandSize = 32
+			THEN
+				push (EFLAGS AND 00FCFFFFH);
+				(* VM and RF bits are cleared in image stored on the stack *)
+			ELSE
+				push (EFLAGS); (* Lower 16 bits only *)
+		FI;
+	ELSE IF 64-bit MODE (* In 64-bit Mode *)
+		IF OperandSize = 64
+			THEN
+				push (RFLAGS AND 00000000_00FCFFFFH);
+				(* VM and RF bits are cleared in image stored on the stack; *)
+			ELSE
+				push (EFLAGS); (* Lower 16 bits only *)
+		FI;
+	ELSE (* In Virtual-8086 Mode with IOPL less than 3 *)
+		IF (CR4.VME = 0) OR (OperandSize = 32)
+			THEN #GP(0); (* Trap to virtual-8086 monitor *)
+			ELSE
+				tempFLAGS = EFLAGS[15:0];
+				tempFLAGS[9] = tempFLAGS[19];								(* VIF replaces IF *)
+				tempFlags[13:12] = 3; 					(* IOPL is set to 3 in image stored on the stack *)
+				push (tempFLAGS);
+		FI;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1091506">
-   <string>None.</string></para>
+  <para unique="1091506">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If the new value of the ESP register is outside the stack segment boundary. </string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091508">If the new value of the ESP register is outside the stack segment boundary. </para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091509">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If an unaligned memory reference is made while CPL = 3 and alignment checking is enabled.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091510">If an unaligned memory reference is made while CPL = 3 and alignment checking is enabled.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091511">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091513">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the I/O privilege level is less than 3.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091515">If the I/O privilege level is less than 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091516">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If an unaligned memory reference is made while alignment checking is enabled.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091517">If an unaligned memory reference is made while alignment checking is enabled.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091518">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091520" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1091520" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If the stack address is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091522">If the stack address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091523">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If an unaligned memory reference is made while CPL = 3 and alignment checking is enabled.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091524">If an unaligned memory reference is made while CPL = 3 and alignment checking is enabled.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091525">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

@@ -1,44 +1,267 @@
 <instruction name="MAXPS">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Maximum of Packed Single Precision Floating-Point Values</shortdesc>
- <longdesc><para unique="1091551">
-   <string>Performs a SIMD compare of the packed single precision floating-point values in the first source operand and the second source operand and returns the maximum value for each pair of values to the destination operand. </string></para>
-  <para unique="1091552">
-   <string>If the values being compared are both 0.0s (of either sign), the value in the second operand (source operand) is returned. If a value in the second operand is an SNaN, then SNaN is forwarded unchanged to the destination (that is, a QNaN version of the SNaN is not returned). </string></para>
-  <para unique="1091553">
-   <string>If only one value is a NaN (SNaN or QNaN) for this instruction, the second operand (source operand), either a NaN or a valid floating-point value, is written to the result. If instead of this behavior, it is required that the NaN source operand (from either the first or second operand) be returned, the action of MAXPS can be emulated using a sequence of instructions, such as, a comparison followed by AND, ANDN, and OR. </string></para>
-  <para unique="1091554">
-   <string>EVEX encoded versions: The first source operand (the second operand) is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 32-bit memory location. The destination operand is a ZMM/YMM/XMM register conditionally updated with writemask k1.</string></para>
-  <para unique="1091555">
-   <string>VEX.256 encoded version: The first source operand is a YMM register. The second source operand can be a YMM register or a 256-bit memory location. The destination operand is a YMM register. The upper bits (MAXVL-1:256) of the corresponding ZMM register destination are zeroed.</string></para>
-  <para unique="1091556">
-   <string>VEX.128 encoded version: The first source operand is a XMM register. The second source operand can be a XMM register or a 128-bit memory location. The destination operand is a XMM register. The upper bits (MAXVL-1:128) of the corresponding ZMM register destination are zeroed.</string></para>
-  <para unique="1091557">
-   <string>128-bit Legacy SSE version: The second source can be an XMM register or an 128-bit memory location. The desti&#173;nation is not distinct from the first source XMM register and the upper bits (MAXVL-1:128) of the corresponding ZMM register destination are unmodified.</string></para>
+ <encoding_table><table unique="1091390">
+   <col width="66.3732pt"/>
+   <col width="66.37392pt"/>
+   <col width="30.294pt"/>
+   <col width="48.74976pt"/>
+   <col width="71.41608000000001pt"/>
+   <col width="227.75039999999998pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091392">Opcode/</para>
+      <para unique="1091393">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op / En</para>
+      </th>
+     <th><para unique="1091399">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091401">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1091405">NP 0F 5F /r</para>
+      <para unique="1091406">MAXPS xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091410">A</para>
+      </td>
+     <td><para unique="1091412">V/V</para>
+      </td>
+     <td><para unique="1091414">SSE</para>
+      </td>
+     <td><para unique="1091416">Return the maximum single precision floating-point values between xmm1 and xmm2/mem. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091418">VEX.128.0F.WIG 5F /r</para>
+      <para unique="1091419">VMAXPS xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1091423">B</para>
+      </td>
+     <td><para unique="1091425">V/V</para>
+      </td>
+     <td><para unique="1091430">AVX</para>
+      </td>
+     <td><para unique="1091432">Return the maximum single precision floating-point values between xmm2 and xmm3/mem. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091434">VEX.256.0F.WIG 5F /r</para>
+      <para unique="1091435">VMAXPS ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1091439">B</para>
+      </td>
+     <td><para unique="1091441">V/V</para>
+      </td>
+     <td><para unique="1091446">AVX</para>
+      </td>
+     <td><para unique="1091448">Return the maximum single precision floating-point values between ymm2 and ymm3/mem.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092001">EVEX.128.0F.W0 5F /r</para>
+      <para unique="1092002">VMAXPS xmm1 {k1}{z}, xmm2, xmm3/m128/m32bcst</para>
+      </td>
+     <td><para unique="1092006">C</para>
+      </td>
+     <td><para unique="1092008">V/V</para>
+      </td>
+     <td><para unique="1092010">(AVX512VL AND</para>
+      <para unique="1092014">AVX512F) OR AVX10.1<anchor id="+379772"/></para>
+      </td>
+     <td><para unique="1092019">Return the maximum packed single precision floating-point values between xmm2 and xmm3/m128/m32bcst and store result in xmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091984">EVEX.256.0F.W0 5F /r</para>
+      <para unique="1091985">VMAXPS ymm1 {k1}{z}, ymm2, ymm3/m256/m32bcst</para>
+      </td>
+     <td><para unique="1091989">C</para>
+      </td>
+     <td><para unique="1091991">V/V</para>
+      </td>
+     <td><para unique="1091993">(AVX512VL AND</para>
+      <para unique="1091997">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1091999">Return the maximum packed single precision floating-point values between ymm2 and ymm3/m256/m32bcst and store result in ymm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091967">EVEX.512.0F.W0 5F /r</para>
+      <para unique="1091968">VMAXPS zmm1 {k1}{z}, zmm2, zmm3/m512/m32bcst{sae}</para>
+      </td>
+     <td><para unique="1091972">C</para>
+      </td>
+     <td><para unique="1091974">V/V</para>
+      </td>
+     <td><para unique="1091979">AVX512F </para>
+      <para unique="1091980">OR AVX10.1</para>
+      </td>
+     <td><para unique="1091982">Return the maximum packed single precision floating-point values between zmm2 and zmm3/m512/m32bcst and store result in zmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091500">
+   <col width="46.73448pt"/>
+   <col width="54.53424pt"/>
+   <col width="98.18712pt"/>
+   <col width="102.41784pt"/>
+   <col width="104.20128000000001pt"/>
+   <col width="104.51304pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091502">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091504">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091506">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091508">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091510">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091512">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091514">A</para>
+      </td>
+     <td valign="middle"><para unique="1091516">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091518">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091520">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091522">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091524">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091526">B</para>
+      </td>
+     <td valign="middle"><para unique="1091528">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091530">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091532">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091534">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091536">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091538">C</para>
+      </td>
+     <td valign="middle"><para unique="1091540">Full</para>
+      </td>
+     <td valign="middle"><para unique="1091542">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091544">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091546">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091548">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091549">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091551">Performs a SIMD compare of the packed single precision floating-point values in the first source operand and the second source operand and returns the maximum value for each pair of values to the destination operand. </para>
+  <para unique="1091552">If the values being compared are both 0.0s (of either sign), the value in the second operand (source operand) is returned. If a value in the second operand is an SNaN, then SNaN is forwarded unchanged to the destination (that is, a QNaN version of the SNaN is not returned). </para>
+  <para unique="1091553">If only one value is a NaN (SNaN or QNaN) for this instruction, the second operand (source operand), either a NaN or a valid floating-point value, is written to the result. If instead of this behavior, it is required that the NaN source operand (from either the first or second operand) be returned, the action of MAXPS can be emulated using a sequence of instructions, such as, a comparison followed by AND, ANDN, and OR. </para>
+  <para unique="1091554">EVEX encoded versions: The first source operand (the second operand) is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 32-bit memory location. The destination operand is a ZMM/YMM/XMM register conditionally updated with writemask k1.</para>
+  <para unique="1091555">VEX.256 encoded version: The first source operand is a YMM register. The second source operand can be a YMM register or a 256-bit memory location. The destination operand is a YMM register. The upper bits (MAXVL-1:256) of the corresponding ZMM register destination are zeroed.</para>
+  <para unique="1091556">VEX.128 encoded version: The first source operand is a XMM register. The second source operand can be a XMM register or a 128-bit memory location. The destination operand is a XMM register. The upper bits (MAXVL-1:128) of the corresponding ZMM register destination are zeroed.</para>
+  <para unique="1091557">128-bit Legacy SSE version: The second source can be an XMM register or an 128-bit memory location. The desti&#173;nation is not distinct from the first source XMM register and the upper bits (MAXVL-1:128) of the corresponding ZMM register destination are unmodified.</para>
   </longdesc>
+ <operation>
+  <programlisting>MAX(SRC1, SRC2)
+{
+	IF ((SRC1 = 0.0) and (SRC2 = 0.0)) THEN 	DEST := SRC2;
+		ELSE IF (SRC1 = NaN) THEN DEST := SRC2; FI;
+		ELSE IF (SRC2 = NaN) THEN DEST := SRC2; FI;
+		ELSE IF (SRC1 &gt; SRC2) THEN DEST := SRC1;
+		ELSE DEST := SRC2;
+	FI;
+}</programlisting>
+  <section level="7">
+   <title unique="1091569">VMAXPS (EVEX Encoded Versions)</title>
+   <programlisting>(KL, VL) = (4, 128), (8, 256), (16, 512)
+FOR j := 0 TO KL-1
+	i := j * 32
+	IF k1[j] OR *no writemask*
+		THEN
+			IF (EVEX.b = 1) AND (SRC2 *is memory*)
+				THEN
+					DEST[i+31:i] := MAX(SRC1[i+31:i], SRC2[31:0])
+				ELSE
+					DEST[i+31:i] := MAX(SRC1[i+31:i], SRC2[i+31:i])
+			FI;
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+31:i] remains unchanged*
+				ELSE 	 DEST[i+31:i] := 0			 			; zeroing-masking
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091590">VMAXPS (VEX.256 Encoded Version)</title>
+   <programlisting>DEST[31:0] := MAX(SRC1[31:0], SRC2[31:0])
+DEST[63:32] := MAX(SRC1[63:32], SRC2[63:32])
+DEST[95:64] := MAX(SRC1[95:64], SRC2[95:64])
+DEST[127:96] := MAX(SRC1[127:96], SRC2[127:96])
+DEST[159:128] := MAX(SRC1[159:128], SRC2[159:128])
+DEST[191:160] := MAX(SRC1[191:160], SRC2[191:160])
+DEST[223:192] := MAX(SRC1[223:192], SRC2[223:192])
+DEST[255:224] := MAX(SRC1[255:224], SRC2[255:224])
+DEST[MAXVL-1:256] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091601">VMAXPS (VEX.128 Encoded Version)</title>
+   <programlisting>DEST[31:0] := MAX(SRC1[31:0], SRC2[31:0])
+DEST[63:32] := MAX(SRC1[63:32], SRC2[63:32])
+DEST[95:64] := MAX(SRC1[95:64], SRC2[95:64])
+DEST[127:96] := MAX(SRC1[127:96], SRC2[127:96])
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091608">MAXPS (128-bit Legacy SSE Version)</title>
+   <programlisting>DEST[31:0] := MAX(DEST[31:0], SRC[31:0])
+DEST[63:32] := MAX(DEST[63:32], SRC[63:32])
+DEST[95:64] := MAX(DEST[95:64], SRC[95:64])
+DEST[127:96] := MAX(DEST[127:96], SRC[127:96])
+DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VMAXPS __m512 _mm512_max_ps( __m512 a, __m512 b);</string><string>
-</string><string>VMAXPS __m512 _mm512_mask_max_ps(__m512 s, __mmask16 k, __m512 a, __m512 b);</string><string>
-</string><string>VMAXPS __m512 _mm512_maskz_max_ps( __mmask16 k, __m512 a, __m512 b);</string><string>
-</string><string>VMAXPS __m512 _mm512_max_round_ps( __m512 a, __m512 b, int);</string><string>
-</string><string>VMAXPS __m512 _mm512_mask_max_round_ps(__m512 s, __mmask16 k, __m512 a, __m512 b, int);</string><string>
-</string><string>VMAXPS __m512 _mm512_maskz_max_round_ps( __mmask16 k, __m512 a, __m512 b, int);</string><string>
-</string><string>VMAXPS __m256 _mm256_mask_max_ps(__m256 s, __mmask8 k, __m256 a, __m256 b);</string><string>
-</string><string>VMAXPS __m256 _mm256_maskz_max_ps( __mmask8 k, __m256 a, __m256 b);</string><string>
-</string><string>VMAXPS __m128 _mm_mask_max_ps(__m128 s, __mmask8 k, __m128 a, __m128 b);</string><string>
-</string><string>VMAXPS __m128 _mm_maskz_max_ps( __mmask8 k, __m128 a, __m128 b);</string><string>
-</string><string>VMAXPS __m256 _mm256_max_ps (__m256 a, __m256 b);</string><string>
-</string><string>MAXPS __m128 _mm_max_ps (__m128 a, __m128 b);</string><string>
-</string></programlisting>
+  <programlisting>VMAXPS __m512 _mm512_max_ps( __m512 a, __m512 b);
+VMAXPS __m512 _mm512_mask_max_ps(__m512 s, __mmask16 k, __m512 a, __m512 b);
+VMAXPS __m512 _mm512_maskz_max_ps( __mmask16 k, __m512 a, __m512 b);
+VMAXPS __m512 _mm512_max_round_ps( __m512 a, __m512 b, int);
+VMAXPS __m512 _mm512_mask_max_round_ps(__m512 s, __mmask16 k, __m512 a, __m512 b, int);
+VMAXPS __m512 _mm512_maskz_max_round_ps( __mmask16 k, __m512 a, __m512 b, int);
+VMAXPS __m256 _mm256_mask_max_ps(__m256 s, __mmask8 k, __m256 a, __m256 b);
+VMAXPS __m256 _mm256_maskz_max_ps( __mmask8 k, __m256 a, __m256 b);
+VMAXPS __m128 _mm_mask_max_ps(__m128 s, __mmask8 k, __m128 a, __m128 b);
+VMAXPS __m128 _mm_maskz_max_ps( __mmask8 k, __m128 a, __m128 b);
+VMAXPS __m256 _mm256_max_ps (__m256 a, __m256 b);
+MAXPS __m128 _mm_max_ps (__m128 a, __m128 b);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091628">
-   <string>Invalid (including QNaN Source Operand), Denormal.</string></para>
+  <para unique="1091628">Invalid (including QNaN Source Operand), Denormal.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091633" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="73761: 06_Table: Table 2-19. Type 2 Class Exception Conditions"><string>Table&#160;2&#8209;19, &#8220;Type 2 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091637" format="xIndent1">
-   <string>EVEX-encoded instruction, see </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091633" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1091631" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#73761: 06_Table: Table 2-19. Type 2 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;19, &#8220;Type 2 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091637" format="xIndent1">EVEX-encoded instruction, see <link unique="1091635" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

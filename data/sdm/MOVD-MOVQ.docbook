@@ -1,66 +1,420 @@
 <instruction name="MOVD/MOVQ">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Move Doubleword/Move Quadword</shortdesc>
- <longdesc><para unique="1091690">
-   <string>Copies a doubleword from the source operand (second operand) to the destination operand (first operand). The source and destination operands can be general-purpose registers, MMX technology registers, XMM registers, or 32-bit memory locations. This instruction can be used to move a doubleword to and from the low doubleword of an MMX technology register and a general-purpose register or a 32-bit memory location, or to and from the low doubleword of an XMM register and a general-purpose register or a 32-bit memory location. The instruction cannot be used to transfer data between MMX technology registers, between XMM registers, between general-purpose registers, or between memory locations.</string></para>
-  <para unique="1091691">
-   <string>When the destination operand is an MMX technology register, the source operand is written to the low doubleword of the register, and the register is zero-extended to 64 bits. When the destination operand is an XMM register, the source operand is written to the low doubleword of the register, and the register is zero-extended to 128 bits.</string></para>
-  <para unique="1091692">
-   <string>In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.B prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</string></para>
-  <para unique="1091693">
-   <string>MOVD/Q with XMM destination:</string></para>
-  <para unique="1091694">
-   <string>Moves a dword/qword integer from the source operand and stores it in the low 32/64-bits of the destination XMM register. The upper bits of the destination are zeroed. The source operand can be a 32/64-bit register or 32/64-bit memory location. </string></para>
-  <para unique="1091695">
-   <string>128-bit Legacy SSE version: Bits (MAXVL-1:128) of the corresponding YMM destination register remain unchanged. Qword operation requires the use of REX.W=1.</string></para>
-  <para unique="1091696">
-   <string>VEX.128 encoded version: Bits (MAXVL-1:128) of the destination register are zeroed. Qword operation requires the use of VEX.W=1.</string></para>
-  <para unique="1091697">
-   <string>EVEX.128 encoded version: Bits (MAXVL-1:128) of the destination register are zeroed. Qword operation requires the use of EVEX.W=1.</string></para>
-  <para unique="1091698">
-   <string>MOVD/Q with 32/64 reg/mem destination:</string></para>
-  <para unique="1091699">
-   <string>Stores the low dword/qword of the source XMM register to 32/64-bit memory location or general-purpose register. Qword operation requires the use of REX.W=1, VEX.W=1, or EVEX.W=1.</string></para>
-  <para unique="1091700">
-   <string>Note: VEX.vvvv and EVEX.vvvv are reserved and must be 1111b otherwise instructions will #UD.</string></para>
-  <para unique="1091701">
-   <string>If VMOVD or VMOVQ is encoded with VEX.L= 1, an attempt to execute the instruction encoded with VEX.L= 1 will cause an #UD exception.</string></para>
+ <encoding_table><table unique="1091389">
+   <thead><tr>
+     <th colspan="2"><para unique="1091391">Opcode/</para>
+      <para unique="1091392">Instruction</para>
+      </th>
+     <th><para unique="1091396">Op/ En</para>
+      </th>
+     <th><para unique="1091398">64/32-bit Mode</para>
+      </th>
+     <th><para unique="1091400">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091402">Description</para>
+      </th>
+     </tr>
+    </thead><col width="62.1288pt"/>
+   <col width="103.27968pt"/>
+   <col width="36.30024pt"/>
+   <col width="48.024pt"/>
+   <col width="58.22784pt"/>
+   <col width="202.32144000000002pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1091404">NP 0F 6E /r</para>
+      <para unique="1091405">MOVD mm, r/m32</para>
+      </td>
+     <td><para unique="1091409">A</para>
+      </td>
+     <td><para unique="1091411">V/V</para>
+      </td>
+     <td><para unique="1091413">MMX</para>
+      </td>
+     <td><para unique="1091415">Move doubleword from r/m32 to mm.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091417">NP REX.W + 0F 6E /r</para>
+      <para unique="1091418">MOVQ mm, r/m64</para>
+      </td>
+     <td><para unique="1091422">A</para>
+      </td>
+     <td><para unique="1091424">V/N.E.</para>
+      </td>
+     <td><para unique="1091426">MMX</para>
+      </td>
+     <td><para unique="1091428">Move quadword from r/m64 to mm.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091430">NP 0F 7E /r</para>
+      <para unique="1091431">MOVD r/m32, mm</para>
+      </td>
+     <td><para unique="1091435">B</para>
+      </td>
+     <td><para unique="1091437">V/V</para>
+      </td>
+     <td><para unique="1091439">MMX</para>
+      </td>
+     <td><para unique="1091441">Move doubleword from mm to r/m32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091443">NP REX.W + 0F 7E /r</para>
+      <para unique="1091444">MOVQ r/m64, mm</para>
+      </td>
+     <td><para unique="1091448">B</para>
+      </td>
+     <td><para unique="1091450">V/N.E.</para>
+      </td>
+     <td><para unique="1091452">MMX</para>
+      </td>
+     <td><para unique="1091454">Move quadword from mm to r/m64.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091456">66 0F 6E /r</para>
+      <para unique="1091457">MOVD xmm, r/m32</para>
+      </td>
+     <td><para unique="1091461">A</para>
+      </td>
+     <td><para unique="1091463">V/V</para>
+      </td>
+     <td><para unique="1091465">SSE2</para>
+      </td>
+     <td><para unique="1091467">Move doubleword from r/m32 to xmm.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091469">66 REX.W 0F 6E /r</para>
+      <para unique="1091470">MOVQ xmm, r/m64</para>
+      </td>
+     <td><para unique="1091474">A</para>
+      </td>
+     <td><para unique="1091476">V/N.E.</para>
+      </td>
+     <td><para unique="1091478">SSE2</para>
+      </td>
+     <td><para unique="1091480">Move quadword from r/m64 to xmm.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091482">66 0F 7E /r</para>
+      <para unique="1091483">MOVD r/m32, xmm</para>
+      </td>
+     <td><para unique="1091487">B</para>
+      </td>
+     <td><para unique="1091489">V/V</para>
+      </td>
+     <td><para unique="1091491">SSE2</para>
+      </td>
+     <td><para unique="1091493">Move doubleword from xmm register to r/m32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091495"> 66 REX.W 0F 7E /r</para>
+      <para unique="1091496">MOVQ r/m64, xmm</para>
+      </td>
+     <td><para unique="1091500">B</para>
+      </td>
+     <td><para unique="1091502">V/N.E.</para>
+      </td>
+     <td><para unique="1091504">SSE2</para>
+      </td>
+     <td><para unique="1091506">Move quadword from xmm register to r/m64.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091508">VEX.128.66.0F.W0 6E /</para>
+      <para unique="1091509">VMOVD xmm1, r32/m32</para>
+      </td>
+     <td><para unique="1091513">A</para>
+      </td>
+     <td><para unique="1091515">V/V</para>
+      </td>
+     <td><para unique="1091517">AVX</para>
+      </td>
+     <td><para unique="1091519">Move doubleword from r/m32 to xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091521">VEX.128.66.0F.W1 6E /r</para>
+      <para unique="1091522">VMOVQ xmm1, r64/m64</para>
+      </td>
+     <td><para unique="1091526">A</para>
+      </td>
+     <td><para unique="1091528">V/N.E.<footnote><para unique="1091585" format="TableFootnote">For this specific instruction, VEX.W/EVEX.W in non-64 bit is ignored; the instruction behaves as if the W0 version is used.</para>
+        </footnote></para>
+      </td>
+     <td><para unique="1091530">AVX</para>
+      </td>
+     <td><para unique="1091532">Move quadword from r/m64 to xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091534">VEX.128.66.0F.W0 7E /r</para>
+      <para unique="1091535">VMOVD r32/m32, xmm1</para>
+      </td>
+     <td><para unique="1091539">B</para>
+      </td>
+     <td><para unique="1091541">V/V</para>
+      </td>
+     <td><para unique="1091543">AVX</para>
+      </td>
+     <td><para unique="1091545">Move doubleword from xmm1 register to r/m32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091547">VEX.128.66.0F.W1 7E /r</para>
+      <para unique="1091548">VMOVQ r64/m64, xmm1</para>
+      </td>
+     <td><para unique="1091552">B</para>
+      </td>
+     <td><para unique="1091554">V/N.E.<superscript>1</superscript></para>
+      </td>
+     <td><para unique="1091556">AVX</para>
+      </td>
+     <td><para unique="1091558">Move quadword from xmm1 register to r/m64.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092166">EVEX.128.66.0F.W0 6E /r</para>
+      <para unique="1092167">VMOVD xmm1, r32/m32</para>
+      </td>
+     <td><para unique="1092171">C</para>
+      </td>
+     <td><para unique="1092173">V/V</para>
+      </td>
+     <td><para unique="1092178">AVX512F</para>
+      <para unique="1092182">OR AVX10.1<anchor id="+806571"/></para>
+      </td>
+     <td><para unique="1092184">Move doubleword from r/m32 to xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092149">EVEX.128.66.0F.W1 6E /r</para>
+      <para unique="1092150">VMOVQ xmm1, r64/m64</para>
+      </td>
+     <td><para unique="1092154">C</para>
+      </td>
+     <td><para unique="1092156">V/N.E.</para>
+      </td>
+     <td><para unique="1092161">AVX512F</para>
+      <para unique="1092162">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092164">Move quadword from r/m64 to xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092132">EVEX.128.66.0F.W0 7E /r</para>
+      <para unique="1092133">VMOVD r32/m32, xmm1</para>
+      </td>
+     <td><para unique="1092137">D</para>
+      </td>
+     <td><para unique="1092139">V/V</para>
+      </td>
+     <td><para unique="1092144">AVX512F</para>
+      <para unique="1092145">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092147">Move doubleword from xmm1 register to r/m32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092115">EVEX.128.66.0F.W1 7E /r</para>
+      <para unique="1092116">VMOVQ r64/m64, xmm1</para>
+      </td>
+     <td><para unique="1092120">D</para>
+      </td>
+     <td><para unique="1092122">V/N.E.<superscript>1</superscript></para>
+      </td>
+     <td><para unique="1092127">AVX512F</para>
+      <para unique="1092128">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092130">Move quadword from xmm1 register to r/m64.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091627">
+   <col width="50.082480000000004pt"/>
+   <col width="59.68224pt"/>
+   <col width="99.0504pt"/>
+   <col width="105.9192pt"/>
+   <col width="100.99296pt"/>
+   <col width="96.06024000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091629">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091631">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091633">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091635">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091637">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091639">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091641">A</para>
+      </td>
+     <td valign="middle"><para unique="1091643">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091645">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091647">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091649">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091651">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091653">B</para>
+      </td>
+     <td valign="middle"><para unique="1091655">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091657">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091659">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091661">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091663">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091665">C</para>
+      </td>
+     <td valign="middle"><para unique="1091667">Tuple1 Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1091669">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091671">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091673">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091675">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091677">D</para>
+      </td>
+     <td valign="middle"><para unique="1091679">Tuple1 Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1091681">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091683">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091685">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091687">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091688">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091690">Copies a doubleword from the source operand (second operand) to the destination operand (first operand). The source and destination operands can be general-purpose registers, MMX technology registers, XMM registers, or 32-bit memory locations. This instruction can be used to move a doubleword to and from the low doubleword of an MMX technology register and a general-purpose register or a 32-bit memory location, or to and from the low doubleword of an XMM register and a general-purpose register or a 32-bit memory location. The instruction cannot be used to transfer data between MMX technology registers, between XMM registers, between general-purpose registers, or between memory locations.</para>
+  <para unique="1091691">When the destination operand is an MMX technology register, the source operand is written to the low doubleword of the register, and the register is zero-extended to 64 bits. When the destination operand is an XMM register, the source operand is written to the low doubleword of the register, and the register is zero-extended to 128 bits.</para>
+  <para unique="1091692">In 64-bit mode, the instruction&#8217;s default operation size is 32 bits. Use of the REX.B prefix permits access to addi&#173;tional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. See the summary chart at the beginning of this section for encoding data and limits.</para>
+  <para unique="1091693">MOVD/Q with XMM destination:</para>
+  <para unique="1091694">Moves a dword/qword integer from the source operand and stores it in the low 32/64-bits of the destination XMM register. The upper bits of the destination are zeroed. The source operand can be a 32/64-bit register or 32/64-bit memory location. </para>
+  <para unique="1091695">128-bit Legacy SSE version: Bits (MAXVL-1:128) of the corresponding YMM destination register remain unchanged. Qword operation requires the use of REX.W=1.</para>
+  <para unique="1091696">VEX.128 encoded version: Bits (MAXVL-1:128) of the destination register are zeroed. Qword operation requires the use of VEX.W=1.</para>
+  <para unique="1091697">EVEX.128 encoded version: Bits (MAXVL-1:128) of the destination register are zeroed. Qword operation requires the use of EVEX.W=1.</para>
+  <para unique="1091698">MOVD/Q with 32/64 reg/mem destination:</para>
+  <para unique="1091699">Stores the low dword/qword of the source XMM register to 32/64-bit memory location or general-purpose register. Qword operation requires the use of REX.W=1, VEX.W=1, or EVEX.W=1.</para>
+  <para unique="1091700">Note: VEX.vvvv and EVEX.vvvv are reserved and must be 1111b otherwise instructions will #UD.</para>
+  <para unique="1091701">If VMOVD or VMOVQ is encoded with VEX.L= 1, an attempt to execute the instruction encoded with VEX.L= 1 will cause an #UD exception.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091703">MOVD (When Destination Operand is an MMX Technology Register)</title>
+   <programlisting>DEST[31:0] := SRC;
+	DEST[63:32] := 00000000H;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091707">MOVD (When Destination Operand is an XMM Register)</title>
+   <programlisting>DEST[31:0] := SRC;
+	DEST[127:32] := 000000000000000000000000H;
+	DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091712">MOVD (When Source Operand is an MMX Technology or XMM Register)</title>
+   <programlisting>DEST := SRC[31:0];</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091715">VMOVD (VEX-Encoded Version when Destination is an XMM Register)</title>
+   <programlisting>DEST[31:0] := SRC[31:0]
+	DEST[MAXVL-1:32] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091719">MOVQ (When Destination Operand is an XMM Register)</title>
+   <programlisting>DEST[63:0] := SRC[63:0];
+	DEST[127:64] := 0000000000000000H;
+	DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091724">MOVQ (When Destination Operand is r/m64)</title>
+   <programlisting>DEST[63:0] := SRC[63:0];</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091727">MOVQ (When Source Operand is an XMM Register or r/m64)</title>
+   <programlisting>DEST := SRC[63:0];</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091730">VMOVQ (VEX-Encoded Version When Destination is an XMM Register)</title>
+   <programlisting>DEST[63:0] := SRC[63:0]
+	DEST[MAXVL-1:64] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091734">VMOVD (EVEX-Encoded Version When Destination is an XMM Register)</title>
+   <programlisting>DEST[31:0] := SRC[31:0]
+DEST[MAXVL-1:32] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091738">VMOVQ (EVEX-Encoded Version When Destination is an XMM Register)</title>
+   <programlisting>DEST[63:0] := SRC[63:0]
+DEST[MAXVL-1:64] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>MOVD __m64 _mm_cvtsi32_si64 (int i )</string><string>
-</string><string>MOVD int _mm_cvtsi64_si32 ( __m64m ) </string><string>
-</string><string>MOVD __m128i _mm_cvtsi32_si128 (int a) </string><string>
-</string><string>MOVD int _mm_cvtsi128_si32 ( __m128i a)</string><string>
-</string><string>MOVQ __int64 _mm_cvtsi128_si64(__m128i); </string><string>
-</string><string>MOVQ __m128i _mm_cvtsi64_si128(__int64);</string><string>
-</string><string>VMOVD __m128i _mm_cvtsi32_si128( int);</string><string>
-</string><string>VMOVD int _mm_cvtsi128_si32( __m128i );</string><string>
-</string><string>VMOVQ __m128i _mm_cvtsi64_si128 (__int64);</string><string>
-</string><string>VMOVQ __int64 _mm_cvtsi128_si64(__m128i );</string><string>
-</string><string>VMOVQ __m128i _mm_loadl_epi64( __m128i * s);</string><string>
-</string><string>VMOVQ void _mm_storel_epi64( __m128i * d, __m128i s);</string><string>
-</string></programlisting>
+  <programlisting>MOVD __m64 _mm_cvtsi32_si64 (int i )
+MOVD int _mm_cvtsi64_si32 ( __m64m )
+MOVD __m128i _mm_cvtsi32_si128 (int a)
+MOVD int _mm_cvtsi128_si32 ( __m128i a)
+MOVQ __int64 _mm_cvtsi128_si64(__m128i);
+MOVQ __m128i _mm_cvtsi64_si128(__int64);
+VMOVD __m128i _mm_cvtsi32_si128( int);
+VMOVD int _mm_cvtsi128_si32( __m128i );
+VMOVQ __m128i _mm_cvtsi64_si128 (__int64);
+VMOVQ __int64 _mm_cvtsi128_si64(__m128i );
+VMOVQ __m128i _mm_loadl_epi64( __m128i * s);
+VMOVQ void _mm_storel_epi64( __m128i * d, __m128i s);</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1091755">
-   <string>None.</string></para>
+  <para unique="1091755">None.</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091757">
-   <string>None.</string></para>
+  <para unique="1091757">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091762" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="48385: 06_Table: Table 2-22. Type 5 Class Exception Conditions"><string>Table&#160;2&#8209;22, &#8220;Type 5 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091766" format="xIndent1">
-   <string>EVEX-encoded instruction, see </string><link linkend="32485: 06_Table: Table 2-57. Type E9NF Class Exception Conditions"><string>Table&#160;2&#8209;59, &#8220;Type E9NF Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091767" format="xIndent1">
-   <string>Additionally:</string></para>
+  <para unique="1091762" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1091760" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#48385: 06_Table: Table 2-22. Type 5 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;22, &#8220;Type 5 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091766" format="xIndent1">EVEX-encoded instruction, see <link unique="1091764" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#32485: 06_Table: Table 2-57. Type E9NF Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;59, &#8220;Type E9NF Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091767" format="xIndent1">Additionally:</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If VEX.L = 1.</string></listitem>
-    <listitem><string>If VEX.vvvv != 1111B or EVEX.vvvv != 1111B.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091768">If VEX.L = 1.</para>
+     </listitem>
+    <listitem><para unique="1091769">If VEX.vvvv != 1111B or EVEX.vvvv != 1111B.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

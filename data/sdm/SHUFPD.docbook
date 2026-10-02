@@ -1,93 +1,380 @@
 <instruction name="SHUFPD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Packed Interleave Shuffle of Pairs of Double Precision Floating-Point Values</shortdesc>
- <longdesc><para unique="1091551">
-   <string>Selects a double precision floating-point value of an input pair using a bit control and move to a designated element of the destination operand. The low-to-high order of double precision element of the destination operand is inter&#173;leaved between the first source operand and the second source operand at the granularity of input pair of 128 bits. Each bit in the imm8 byte, starting from bit 0, is the select control of the corresponding element of the destination to received the shuffled result of an input pair. </string></para>
-  <para unique="1091552">
-   <string>EVEX encoded versions: The first source operand is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 64-bit memory location The destination operand is a ZMM/YMM/XMM register updated according to the writemask. The select controls are the lower 8/4/2 bits of the imm8 byte.</string></para>
-  <para unique="1091553">
-   <string>VEX.256 encoded version: The first source operand is a YMM register. The second source operand can be a YMM register or a 256-bit memory location. The destination operand is a YMM register. The select controls are the bit 3:0 of the imm8 byte, imm8[7:4) are ignored.</string></para>
-  <para unique="1091554">
-   <string>VEX.128 encoded version: The first source operand is a XMM register. The second source operand can be a XMM register or a 128-bit memory location. The destination operand is a XMM register. The upper bits (MAXVL-1:128) of the corresponding ZMM register destination are zeroed. The select controls are the bit 1:0 of the imm8 byte, imm8[7:2) are ignored.</string></para>
-  <para unique="1091555">
-   <string>128-bit Legacy SSE version: The second source can be an XMM register or an 128-bit memory location. The desti&#173;nation operand and the first source operand is the same and is an XMM register. The upper bits (MAXVL-1:128) of the corresponding ZMM register destination are unmodified. The select controls are the bit 1:0 of the imm8 byte, imm8[7:2) are ignored.</string></para>
-  <table>
-   <caption>Figure 4-25.  256-bit VSHUFPD Operation of Four Pairs of Double Precision Floating-Point Values</caption>
-   <colgroup><col/>
-    <col/>
-    </colgroup>
-   <tbody>
+ <encoding_table><table unique="1091390">
+   <col width="74.37312pt"/>
+   <col width="74.37312pt"/>
+   <col width="34.49376pt"/>
+   <col width="48.74976pt"/>
+   <col width="77.24952pt"/>
+   <col width="202.58424000000002pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091392">Opcode/</para>
+      <para unique="1091393">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op / En</para>
+      </th>
+     <th><para unique="1091399">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091401">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
     <tr>
-     <td><para unique="1091599" format="05_FigureGraphic">
-       <svg width="1000" height="252.39656142882288" viewBox="0 0 413.16696 104.28192000000001">
-        <defs>
-        <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
-          <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
-        </marker>
-      </defs>
-        <rect width="74.25" height="13.5" x="59.45832" y="76.83336" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="83.08295999999999" y="85.36967999999999" font-size="6">Y2 or Y3</text>
-        <rect width="74.25" height="13.5" x="133.70832" y="76.83336" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="157.33295999999999" y="85.36967999999999" font-size="6">X2 or X3</text>
-        <rect width="74.25" height="13.5" x="207.95832000000001" y="76.83336" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="231.58295999999999" y="85.36967999999999" font-size="6">Y0 or Y1</text>
-        <rect width="74.25" height="13.5" x="282.20832" y="76.83336" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="305.83296" y="85.36967999999999" font-size="6">X0 or X1</text>
-        <text x="39.20832" y="85.36967999999999" font-size="6">DEST</text>
-        <rect width="74.25" height="13.5" x="59.45832" y="9.333359999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="95.29776" y="17.83944" font-size="6">X3</text>
-        <rect width="74.25" height="13.5" x="133.70832" y="9.333359999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="169.54776" y="17.83944" font-size="6">X2</text>
-        <text x="39.4668" y="19.49256" font-size="6">SRC1</text>
-        <polyline points="248.45832000000001,53.20872 248.45832000000001,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <rect width="74.25" height="13.5" x="207.95832000000001" y="9.333359999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="243.79776" y="17.83944" font-size="6">X1</text>
-        <rect width="74.25" height="13.5" x="282.20832" y="9.333359999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="318.04776" y="17.83944" font-size="6">X0</text>
-        <polyline points="322.70831999999996,22.833360000000003 322.70831999999996,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <polyline points="174.20832000000001,49.83336 99.95832,49.83336" style="stroke-width:2.0; stroke: #000000; fill: #ffffff;"/>
-        <polyline points="322.70831999999996,49.83336 248.45832000000001,49.83336" style="stroke-width:2.0; stroke: #000000; fill: #ffffff;"/>
-        <rect width="74.25" height="13.5" x="59.45832" y="39.70872" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="95.29776" y="48.2148" font-size="6">Y3</text>
-        <rect width="74.25" height="13.5" x="133.70832" y="39.70872" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="169.54776" y="48.2148" font-size="6">Y2</text>
-        <rect width="74.25" height="13.5" x="207.95832000000001" y="39.70872" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="243.79776" y="48.2148" font-size="6">Y1</text>
-        <rect width="74.25" height="13.5" x="282.20832" y="39.70872" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
-        <text x="318.04776" y="48.2148" font-size="6">Y0</text>
-        <text x="39.20832" y="49.86792" font-size="6">SRC2</text>
-        <polyline points="245.08295999999999,22.833360000000003 322.70831999999996,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <polyline points="319.33296,53.20872 248.45832000000001,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <polyline points="96.58295999999999,53.20872 96.58295999999999,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <polyline points="93.20832,22.833360000000003 170.83295999999999,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <polyline points="167.45832000000001,53.20872 96.58295999999999,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        <polyline points="170.83295999999999,22.833360000000003 170.83295999999999,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
-        </svg></para>
+     <td colspan="2"><para unique="1091405">66 0F C6 /r ib</para>
+      <para unique="1091406">SHUFPD xmm1, xmm2/m128, imm8</para>
+      </td>
+     <td><para unique="1091410">A</para>
+      </td>
+     <td><para unique="1091412">V/V</para>
+      </td>
+     <td><para unique="1091414">SSE2</para>
+      </td>
+     <td><para unique="1091416">Shuffle two pairs of double precision floating-point values from xmm1 and xmm2/m128 using imm8 to select from each pair, interleaved result is stored in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091418">VEX.128.66.0F.WIG C6 /r ib</para>
+      <para unique="1091419">VSHUFPD xmm1, xmm2, xmm3/m128, imm8</para>
+      </td>
+     <td><para unique="1091423">B</para>
+      </td>
+     <td><para unique="1091425">V/V</para>
+      </td>
+     <td><para unique="1091430">AVX</para>
+      </td>
+     <td><para unique="1091432">Shuffle two pairs of double precision floating-point values from xmm2 and xmm3/m128 using imm8 to select from each pair, interleaved result is stored in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091434">VEX.256.66.0F.WIG C6 /r ib</para>
+      <para unique="1091435">VSHUFPD ymm1, ymm2, ymm3/m256, imm8</para>
+      </td>
+     <td><para unique="1091439">B</para>
+      </td>
+     <td><para unique="1091441">V/V</para>
+      </td>
+     <td><para unique="1091446">AVX</para>
+      </td>
+     <td><para unique="1091448">Shuffle four pairs of double precision floating-point values from ymm2 and ymm3/m256 using imm8 to select from each pair, interleaved result is stored in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092123">EVEX.128.66.0F.W1 C6 /r ib</para>
+      <para unique="1092124">VSHUFPD xmm1{k1}{z}, xmm2, xmm3/m128/m64bcst, imm8</para>
+      </td>
+     <td><para unique="1092128">C</para>
+      </td>
+     <td><para unique="1092130">V/V</para>
+      </td>
+     <td><para unique="1092132">(AVX512VL AND</para>
+      <para unique="1092136">AVX512F) OR AVX10.1<anchor id="+726760"/></para>
+      </td>
+     <td><para unique="1092141">Shuffle two pairs of double precision floating-point values from xmm2 and xmm3/m128/m64bcst using imm8 to select from each pair. store interleaved results in xmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092106">EVEX.256.66.0F.W1 C6 /r ib</para>
+      <para unique="1092107">VSHUFPD ymm1{k1}{z}, ymm2, ymm3/m256/m64bcst, imm8</para>
+      </td>
+     <td><para unique="1092111">C</para>
+      </td>
+     <td><para unique="1092113">V/V</para>
+      </td>
+     <td><para unique="1092115">(AVX512VL AND</para>
+      <para unique="1092119">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092121">Shuffle four pairs of double precision floating-point values from ymm2 and ymm3/m256/m64bcst using imm8 to select from each pair. store interleaved results in ymm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092089">EVEX.512.66.0F.W1 C6 /r ib</para>
+      <para unique="1092090">VSHUFPD zmm1{k1}{z}, zmm2, zmm3/m512/m64bcst, imm8</para>
+      </td>
+     <td><para unique="1092094">C</para>
+      </td>
+     <td><para unique="1092096">V/V</para>
+      </td>
+     <td><para unique="1092101">AVX512F </para>
+      <para unique="1092102">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092104">Shuffle eight pairs of double precision floating-point values from zmm2 and zmm3/m512/m64bcst using imm8 to select from each pair. store interleaved results in zmm1 subject to writemask k1.</para>
       </td>
      </tr>
     </tbody>
    </table>
-  </longdesc>
+  </encoding_table>
+ <operand_table><table unique="1091500">
+   <col width="49.052879999999995pt"/>
+   <col width="67.65264pt"/>
+   <col width="96.50376pt"/>
+   <col width="101.034pt"/>
+   <col width="101.77416pt"/>
+   <col width="94.7232pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091502">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091504">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091506">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091508">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091510">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091512">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091514">A</para>
+      </td>
+     <td valign="middle"><para unique="1091516">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091518">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091520">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091522">imm8</para>
+      </td>
+     <td valign="middle"><para unique="1091524">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091526">B</para>
+      </td>
+     <td valign="middle"><para unique="1091528">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091530">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091532">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091534">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091536">imm8</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091538">C</para>
+      </td>
+     <td valign="middle"><para unique="1091540">Full</para>
+      </td>
+     <td valign="middle"><para unique="1091542">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091544">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091546">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091548">imm8</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091549">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091551">Selects a double precision floating-point value of an input pair using a bit control and move to a designated element of the destination operand. The low-to-high order of double precision element of the destination operand is inter&#173;leaved between the first source operand and the second source operand at the granularity of input pair of 128 bits. Each bit in the imm8 byte, starting from bit 0, is the select control of the corresponding element of the destination to received the shuffled result of an input pair. </para>
+  <para unique="1091552">EVEX encoded versions: The first source operand is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 64-bit memory location The destination operand is a ZMM/YMM/XMM register updated according to the writemask. The select controls are the lower 8/4/2 bits of the imm8 byte.</para>
+  <para unique="1091553">VEX.256 encoded version: The first source operand is a YMM register. The second source operand can be a YMM register or a 256-bit memory location. The destination operand is a YMM register. The select controls are the bit 3:0 of the imm8 byte, imm8[7:4) are ignored.</para>
+  <para unique="1091554">VEX.128 encoded version: The first source operand is a XMM register. The second source operand can be a XMM register or a 128-bit memory location. The destination operand is a XMM register. The upper bits (MAXVL-1:128) of the corresponding ZMM register destination are zeroed. The select controls are the bit 1:0 of the imm8 byte, imm8[7:2) are ignored.</para>
+  <para unique="1091555">128-bit Legacy SSE version: The second source can be an XMM register or an 128-bit memory location. The desti&#173;nation operand and the first source operand is the same and is an XMM register. The upper bits (MAXVL-1:128) of the corresponding ZMM register destination are unmodified. The select controls are the bit 1:0 of the imm8 byte, imm8[7:2) are ignored.</para>
+  <figure><title>256-bit VSHUFPD Operation of Four Pairs of Double Precision Floating-Point Values</title>
+   <mediaobject><imageobject><svg width="1000" height="252.39656142882288" viewBox="0 0 413.16696 104.28192000000001">
+      <defs>
+        <marker id="arrow" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+          <path d="M 0 0 L 6 3 L 0 6 L 1.5 3 z"/>
+        </marker>
+      </defs>
+      <rect width="74.25" height="13.5" x="59.45832" y="76.83336" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="83.08295999999999" y="85.36967999999999" font-size="6">Y2 or Y3</text>
+      <rect width="74.25" height="13.5" x="133.70832" y="76.83336" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="157.33295999999999" y="85.36967999999999" font-size="6">X2 or X3</text>
+      <rect width="74.25" height="13.5" x="207.95832000000001" y="76.83336" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="231.58295999999999" y="85.36967999999999" font-size="6">Y0 or Y1</text>
+      <rect width="74.25" height="13.5" x="282.20832" y="76.83336" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="305.83296" y="85.36967999999999" font-size="6">X0 or X1</text>
+      <text x="39.20832" y="85.36967999999999" font-size="6">DEST</text>
+      <rect width="74.25" height="13.5" x="59.45832" y="9.333359999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="95.29776" y="17.83944" font-size="6">X3</text>
+      <rect width="74.25" height="13.5" x="133.70832" y="9.333359999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="169.54776" y="17.83944" font-size="6">X2</text>
+      <text x="39.4668" y="19.49256" font-size="6">SRC1</text>
+      <polyline points="248.45832000000001,53.20872 248.45832000000001,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <rect width="74.25" height="13.5" x="207.95832000000001" y="9.333359999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="243.79776" y="17.83944" font-size="6">X1</text>
+      <rect width="74.25" height="13.5" x="282.20832" y="9.333359999999999" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="318.04776" y="17.83944" font-size="6">X0</text>
+      <polyline points="322.70831999999996,22.833360000000003 322.70831999999996,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <polyline points="174.20832000000001,49.83336 99.95832,49.83336" style="stroke-width:2.0; stroke: #000000; fill: #ffffff;"/>
+      <polyline points="322.70831999999996,49.83336 248.45832000000001,49.83336" style="stroke-width:2.0; stroke: #000000; fill: #ffffff;"/>
+      <rect width="74.25" height="13.5" x="59.45832" y="39.70872" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="95.29776" y="48.2148" font-size="6">Y3</text>
+      <rect width="74.25" height="13.5" x="133.70832" y="39.70872" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="169.54776" y="48.2148" font-size="6">Y2</text>
+      <rect width="74.25" height="13.5" x="207.95832000000001" y="39.70872" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="243.79776" y="48.2148" font-size="6">Y1</text>
+      <rect width="74.25" height="13.5" x="282.20832" y="39.70872" style="stroke-width:0.5; stroke: #000000; fill: #ffffff;"/>
+      <text x="318.04776" y="48.2148" font-size="6">Y0</text>
+      <text x="39.20832" y="49.86792" font-size="6">SRC2</text>
+      <polyline points="245.08295999999999,22.833360000000003 322.70831999999996,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <polyline points="319.33296,53.20872 248.45832000000001,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <polyline points="96.58295999999999,53.20872 96.58295999999999,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <polyline points="93.20832,22.833360000000003 170.83295999999999,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <polyline points="167.45832000000001,53.20872 96.58295999999999,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      <polyline points="170.83295999999999,22.833360000000003 170.83295999999999,76.83336" marker-end="url(#arrow)" style="stroke-width:0.25; stroke: #000000; fill: #ffffff;"/>
+      </svg></imageobject></mediaobject></figure></longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091605">VSHUFPD (EVEX Encoded Versions When SRC2 is a Vector Register)</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+IF IMM0[0] = 0
+	THEN TMP_DEST[63:0] := SRC1[63:0]
+	ELSE TMP_DEST[63:0] := SRC1[127:64] FI;
+IF IMM0[1] = 0
+	THEN TMP_DEST[127:64] := SRC2[63:0]
+	ELSE TMP_DEST[127:64] := SRC2[127:64] FI;
+IF VL &gt;= 256
+	IF IMM0[2] = 0
+		THEN TMP_DEST[191:128] := SRC1[191:128]
+		ELSE TMP_DEST[191:128] := SRC1[255:192] FI;
+	IF IMM0[3] = 0
+		THEN TMP_DEST[255:192] := SRC2[191:128]
+		ELSE TMP_DEST[255:192] := SRC2[255:192] FI;
+FI;
+IF VL &gt;= 512
+	IF IMM0[4] = 0
+		THEN TMP_DEST[319:256] := SRC1[319:256]
+		ELSE TMP_DEST[319:256] := SRC1[383:320] FI;
+	IF IMM0[5] = 0
+		THEN TMP_DEST[383:320] := SRC2[319:256]
+		ELSE TMP_DEST[383:320] := SRC2[383:320] FI;
+	IF IMM0[6] = 0
+		THEN TMP_DEST[447:384] := SRC1[447:384]
+		ELSE TMP_DEST[447:384] := SRC1[511:448] FI;
+	IF IMM0[7] = 0
+		THEN TMP_DEST[511:448] := SRC2[447:384]
+		ELSE TMP_DEST[511:448] := SRC2[511:448] FI;
+FI;
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+63:i] := TMP_DEST[i+63:i]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE *zeroing-masking*								; zeroing-masking
+					DEST[i+63:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091649">VSHUFPD (EVEX Encoded Versions When SRC2 is Memory)</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF (EVEX.b = 1)
+		THEN TMP_SRC2[i+63:i] := SRC2[63:0]
+		ELSE TMP_SRC2[i+63:i] := SRC2[i+63:i]
+	FI;
+ENDFOR;
+IF IMM0[0] = 0
+	THEN TMP_DEST[63:0] := SRC1[63:0]
+	ELSE TMP_DEST[63:0] := SRC1[127:64] FI;
+IF IMM0[1] = 0
+	THEN TMP_DEST[127:64] := TMP_SRC2[63:0]
+	ELSE TMP_DEST[127:64] := TMP_SRC2[127:64] FI;
+IF VL &gt;= 256
+	IF IMM0[2] = 0
+		THEN TMP_DEST[191:128] := SRC1[191:128]
+		ELSE TMP_DEST[191:128] := SRC1[255:192] FI;
+	IF IMM0[3] = 0
+		THEN TMP_DEST[255:192] := TMP_SRC2[191:128]
+		ELSE TMP_DEST[255:192] := TMP_SRC2[255:192] FI;
+FI;
+IF VL &gt;= 512
+	IF IMM0[4] = 0
+		THEN TMP_DEST[319:256] := SRC1[319:256]
+		ELSE TMP_DEST[319:256] := SRC1[383:320] FI;
+	IF IMM0[5] = 0
+		THEN TMP_DEST[383:320] := TMP_SRC2[319:256]
+		ELSE TMP_DEST[383:320] := TMP_SRC2[383:320] FI;
+	IF IMM0[6] = 0
+		THEN TMP_DEST[447:384] := SRC1[447:384]
+		ELSE TMP_DEST[447:384] := SRC1[511:448] FI;
+	IF IMM0[7] = 0
+		THEN TMP_DEST[511:448] := TMP_SRC2[447:384]
+		ELSE TMP_DEST[511:448] := TMP_SRC2[511:448] FI;
+FI;
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+63:i] := TMP_DEST[i+63:i]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE *zeroing-masking*								; zeroing-masking
+					DEST[i+63:i] := 0
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091701">VSHUFPD (VEX.256 Encoded Version)</title>
+   <programlisting>IF IMM0[0] = 0
+	THEN DEST[63:0] := SRC1[63:0]
+	ELSE DEST[63:0] := SRC1[127:64] FI;
+IF IMM0[1] = 0
+	THEN DEST[127:64] := SRC2[63:0]
+	ELSE DEST[127:64] := SRC2[127:64] FI;
+IF IMM0[2] = 0
+	THEN DEST[191:128] := SRC1[191:128]
+	ELSE DEST[191:128] := SRC1[255:192] FI;
+IF IMM0[3] = 0
+	THEN DEST[255:192] := SRC2[191:128]
+	ELSE DEST[255:192] := SRC2[255:192] FI;
+DEST[MAXVL-1:256] (Unmodified)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091716">VSHUFPD (VEX.128 Encoded Version)</title>
+   <programlisting>IF IMM0[0] = 0
+	THEN DEST[63:0] := SRC1[63:0]
+	ELSE DEST[63:0] := SRC1[127:64] FI;
+IF IMM0[1] = 0
+	THEN DEST[127:64] := SRC2[63:0]
+	ELSE DEST[127:64] := SRC2[127:64] FI;
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091725">VSHUFPD (128-bit Legacy SSE Version)</title>
+   <programlisting>IF IMM0[0] = 0
+	THEN DEST[63:0] := SRC1[63:0]
+	ELSE DEST[63:0] := SRC1[127:64] FI;
+IF IMM0[1] = 0
+	THEN DEST[127:64] := SRC2[63:0]
+	ELSE DEST[127:64] := SRC2[127:64] FI;
+DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VSHUFPD __m512d _mm512_shuffle_pd(__m512d a, __m512d b, int imm);</string><string>
-</string><string>VSHUFPD __m512d _mm512_mask_shuffle_pd(__m512d s, __mmask8 k, __m512d a, __m512d b, int imm);</string><string>
-</string><string>VSHUFPD __m512d _mm512_maskz_shuffle_pd( __mmask8 k, __m512d a, __m512d b, int imm);</string><string>
-</string><string>VSHUFPD __m256d _mm256_shuffle_pd (__m256d a, __m256d b, const int select);</string><string>
-</string><string>VSHUFPD __m256d _mm256_mask_shuffle_pd(__m256d s, __mmask8 k, __m256d a, __m256d b, int imm);</string><string>
-</string><string>VSHUFPD __m256d _mm256_maskz_shuffle_pd( __mmask8 k, __m256d a, __m256d b, int imm);</string><string>
-</string><string>SHUFPD __m128d _mm_shuffle_pd (__m128d a, __m128d b, const int select);</string><string>
-</string><string>VSHUFPD __m128d _mm_mask_shuffle_pd(__m128d s, __mmask8 k, __m128d a, __m128d b, int imm);</string><string>
-</string><string>VSHUFPD __m128d _mm_maskz_shuffle_pd( __mmask8 k, __m128d a, __m128d b, int imm);</string><string>
-</string></programlisting>
+  <programlisting>VSHUFPD __m512d _mm512_shuffle_pd(__m512d a, __m512d b, int imm);
+VSHUFPD __m512d _mm512_mask_shuffle_pd(__m512d s, __mmask8 k, __m512d a, __m512d b, int imm);
+VSHUFPD __m512d _mm512_maskz_shuffle_pd( __mmask8 k, __m512d a, __m512d b, int imm);
+VSHUFPD __m256d _mm256_shuffle_pd (__m256d a, __m256d b, const int select);
+VSHUFPD __m256d _mm256_mask_shuffle_pd(__m256d s, __mmask8 k, __m256d a, __m256d b, int imm);
+VSHUFPD __m256d _mm256_maskz_shuffle_pd( __mmask8 k, __m256d a, __m256d b, int imm);
+SHUFPD __m128d _mm_shuffle_pd (__m128d a, __m128d b, const int select);
+VSHUFPD __m128d _mm_mask_shuffle_pd(__m128d s, __mmask8 k, __m128d a, __m128d b, int imm);
+VSHUFPD __m128d _mm_maskz_shuffle_pd( __mmask8 k, __m128d a, __m128d b, int imm);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091744">
-   <string>None.</string></para>
+  <para unique="1091744">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091749" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091753" format="xIndent1">
-   <string>EVEX-encoded instruction, see </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091749" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1091747" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091753" format="xIndent1">EVEX-encoded instruction, see <link unique="1091751" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

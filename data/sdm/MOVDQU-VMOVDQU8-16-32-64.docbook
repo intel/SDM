@@ -1,97 +1,799 @@
 <instruction name="MOVDQU,VMOVDQU8/16/32/64">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Move Unaligned Packed Integer Values</shortdesc>
- <longdesc><para unique="1091922">
-   <string>Note: VEX.vvvv and EVEX.vvvv are reserved and must be 1111b otherwise instructions will #UD.</string></para>
-  <para unique="1091923">
-   <string>EVEX encoded versions:</string></para>
-  <para unique="1091924">
-   <string>Moves 128, 256 or 512 bits of packed byte/word/doubleword/quadword integer values from the source operand (the second operand) to the destination operand (first operand). This instruction can be used to load a vector register from a memory location, to store the contents of a vector register into a memory location, or to move data between two vector registers. </string></para>
-  <para unique="1091925">
-   <string>The destination operand is updated at 8-bit (VMOVDQU8), 16-bit (VMOVDQU16), 32-bit (VMOVDQU32), or 64-bit (VMOVDQU64) granularity according to the writemask.</string></para>
-  <para unique="1091926">
-   <string>VEX.256 encoded version:</string></para>
-  <para unique="1091927">
-   <string>Moves 256 bits of packed integer values from the source operand (second operand) to the destination operand (first operand). This instruction can be used to load a YMM register from a 256-bit memory location, to store the contents of a YMM register into a 256-bit memory location, or to move data between two YMM registers. </string></para>
-  <para unique="1091928">
-   <string>Bits (MAXVL-1:256) of the destination register are zeroed.</string></para>
-  <para unique="1091930">
-   <string>128-bit versions:</string></para>
-  <para unique="1091931">
-   <string>Moves 128 bits of packed integer values from the source operand (second operand) to the destination operand (first operand). This instruction can be used to load an XMM register from a 128-bit memory location, to store the contents of an XMM register into a 128-bit memory location, or to move data between two XMM registers. </string></para>
-  <para unique="1091932">
-   <string>128-bit Legacy SSE version: Bits (MAXVL-1:128) of the corresponding destination register remain unchanged.</string></para>
-  <para unique="1091933">
-   <string>When the source or destination operand is a memory operand, the operand may be unaligned to any alignment without causing a general-protection exception (#GP) to be generated</string></para>
-  <para unique="1091934">
-   <string>VEX.128 encoded version: Bits (MAXVL-1:128) of the destination register are zeroed.</string></para>
+ <encoding_table><table unique="1091390">
+   <col width="71.7372pt"/>
+   <col width="102.06288pt"/>
+   <col width="46.8828pt"/>
+   <col width="47.48328pt"/>
+   <col width="74.916pt"/>
+   <col width="168.58368pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091392">Opcode/</para>
+      <para unique="1091393">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op/En</para>
+      </th>
+     <th><para unique="1091399">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091401">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1091405">F3 0F 6F /r</para>
+      <para unique="1091406">MOVDQU xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091410">A</para>
+      </td>
+     <td><para unique="1091412">V/V</para>
+      </td>
+     <td><para unique="1091414">SSE2</para>
+      </td>
+     <td><para unique="1091416">Move unaligned packed integer values from xmm2/m128 to xmm1. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091418">F3 0F 7F /r</para>
+      <para unique="1091419">MOVDQU xmm2/m128, xmm1</para>
+      </td>
+     <td><para unique="1091423">B</para>
+      </td>
+     <td><para unique="1091425">V/V</para>
+      </td>
+     <td><para unique="1091427">SSE2</para>
+      </td>
+     <td><para unique="1091429">Move unaligned packed integer values from xmm1 to xmm2/m128. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091431">VEX.128.F3.0F.WIG 6F /r</para>
+      <para unique="1091432">VMOVDQU xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091436">A</para>
+      </td>
+     <td><para unique="1091438">V/V</para>
+      </td>
+     <td><para unique="1091443">AVX</para>
+      </td>
+     <td><para unique="1091445">Move unaligned packed integer values from xmm2/m128 to xmm1. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091447">VEX.128.F3.0F.WIG 7F /r</para>
+      <para unique="1091448">VMOVDQU xmm2/m128, xmm1</para>
+      </td>
+     <td><para unique="1091452">B</para>
+      </td>
+     <td><para unique="1091454">V/V</para>
+      </td>
+     <td><para unique="1091459">AVX</para>
+      </td>
+     <td><para unique="1091461">Move unaligned packed integer values from xmm1 to xmm2/m128.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091463">VEX.256.F3.0F.WIG 6F /r</para>
+      <para unique="1091464">VMOVDQU ymm1, ymm2/m256</para>
+      </td>
+     <td><para unique="1091468">A</para>
+      </td>
+     <td><para unique="1091470">V/V</para>
+      </td>
+     <td><para unique="1091475">AVX</para>
+      </td>
+     <td><para unique="1091477">Move unaligned packed integer values from ymm2/m256 to ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091479">VEX.256.F3.0F.WIG 7F /r</para>
+      <para unique="1091480">VMOVDQU ymm2/m256, ymm1</para>
+      </td>
+     <td><para unique="1091484">B</para>
+      </td>
+     <td><para unique="1091486">V/V</para>
+      </td>
+     <td><para unique="1091491">AVX</para>
+      </td>
+     <td><para unique="1091493">Move unaligned packed integer values from ymm1 to ymm2/m256.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092882">EVEX.128.F2.0F.W0 6F /r</para>
+      <para unique="1092883">VMOVDQU8 xmm1 {k1}{z}, xmm2/m128</para>
+      </td>
+     <td><para unique="1092887">C</para>
+      </td>
+     <td><para unique="1092889">V/V</para>
+      </td>
+     <td><para unique="1092891">(AVX512VL AND</para>
+      <para unique="1092892">AVX512BW) OR AVX10.1<anchor id="+344912"/></para>
+      </td>
+     <td><para unique="1092897">Move unaligned packed byte integer values from xmm2/m128 to xmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092868">EVEX.256.F2.0F.W0 6F /r</para>
+      <para unique="1092869">VMOVDQU8 ymm1 {k1}{z}, ymm2/m256 </para>
+      </td>
+     <td><para unique="1092873">C</para>
+      </td>
+     <td><para unique="1092875">V/V</para>
+      </td>
+     <td><para unique="1092877">(AVX512VL AND</para>
+      <para unique="1092878">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092880">Move unaligned packed byte integer values from ymm2/m256 to ymm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092854">EVEX.512.F2.0F.W0 6F /r</para>
+      <para unique="1092855">VMOVDQU8 zmm1 {k1}{z}, zmm2/m512</para>
+      </td>
+     <td><para unique="1092859">C</para>
+      </td>
+     <td><para unique="1092861">V/V</para>
+      </td>
+     <td><para unique="1092863">AVX512BW </para>
+      <para unique="1092864">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092866">Move unaligned packed byte integer values from zmm2/m512 to zmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092840">EVEX.128.F2.0F.W0 7F /r</para>
+      <para unique="1092841">VMOVDQU8 xmm2/m128 {k1}{z}, xmm1</para>
+      </td>
+     <td><para unique="1092845">D</para>
+      </td>
+     <td><para unique="1092847">V/V</para>
+      </td>
+     <td><para unique="1092849">(AVX512VL AND</para>
+      <para unique="1092850">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092852">Move unaligned packed byte integer values from xmm1 to xmm2/m128 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092826">EVEX.256.F2.0F.W0 7F /r</para>
+      <para unique="1092827">VMOVDQU8 ymm2/m256 {k1}{z}, ymm1</para>
+      </td>
+     <td><para unique="1092831">D</para>
+      </td>
+     <td><para unique="1092833">V/V</para>
+      </td>
+     <td><para unique="1092835">(AVX512VL AND</para>
+      <para unique="1092836">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092838">Move unaligned packed byte integer values from ymm1 to ymm2/m256 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092812">EVEX.512.F2.0F.W0 7F /r</para>
+      <para unique="1092813">VMOVDQU8 zmm2/m512 {k1}{z}, zmm1</para>
+      </td>
+     <td><para unique="1092817">D</para>
+      </td>
+     <td><para unique="1092819">V/V</para>
+      </td>
+     <td><para unique="1092821">AVX512BW </para>
+      <para unique="1092822">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092824">Move unaligned packed byte integer values from zmm1 to zmm2/m512 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092798">EVEX.128.F2.0F.W1 6F /r</para>
+      <para unique="1092799">VMOVDQU16 xmm1 {k1}{z}, xmm2/m128 </para>
+      </td>
+     <td><para unique="1092803">C</para>
+      </td>
+     <td><para unique="1092805">V/V</para>
+      </td>
+     <td><para unique="1092807">(AVX512VL AND</para>
+      <para unique="1092808">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092810">Move unaligned packed word integer values from xmm2/m128 to xmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092784">EVEX.256.F2.0F.W1 6F /r</para>
+      <para unique="1092785">VMOVDQU16 ymm1 {k1}{z}, ymm2/m256</para>
+      </td>
+     <td><para unique="1092789">C</para>
+      </td>
+     <td><para unique="1092791">V/V</para>
+      </td>
+     <td><para unique="1092793">(AVX512VL AND</para>
+      <para unique="1092794">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092796">Move unaligned packed word integer values from ymm2/m256 to ymm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092770">EVEX.512.F2.0F.W1 6F /r</para>
+      <para unique="1092771">VMOVDQU16 zmm1 {k1}{z}, zmm2/m512 </para>
+      </td>
+     <td><para unique="1092775">C</para>
+      </td>
+     <td><para unique="1092777">V/V</para>
+      </td>
+     <td><para unique="1092779">AVX512BW </para>
+      <para unique="1092780">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092782">Move unaligned packed word integer values from zmm2/m512 to zmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092756">EVEX.128.F2.0F.W1 7F /r</para>
+      <para unique="1092757">VMOVDQU16 xmm2/m128 {k1}{z}, xmm1</para>
+      </td>
+     <td><para unique="1092761">D</para>
+      </td>
+     <td><para unique="1092763">V/V</para>
+      </td>
+     <td><para unique="1092765">(AVX512VL AND</para>
+      <para unique="1092766">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092768">Move unaligned packed word integer values from xmm1 to xmm2/m128 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092742">EVEX.256.F2.0F.W1 7F /r</para>
+      <para unique="1092743">VMOVDQU16 ymm2/m256 {k1}{z}, ymm1</para>
+      </td>
+     <td><para unique="1092747">D</para>
+      </td>
+     <td><para unique="1092749">V/V</para>
+      </td>
+     <td><para unique="1092751">(AVX512VL AND</para>
+      <para unique="1092752">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092754">Move unaligned packed word integer values from ymm1 to ymm2/m256 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092728">EVEX.512.F2.0F.W1 7F /r</para>
+      <para unique="1092729">VMOVDQU16 zmm2/m512 {k1}{z}, zmm1</para>
+      </td>
+     <td><para unique="1092733">D</para>
+      </td>
+     <td><para unique="1092735">V/V</para>
+      </td>
+     <td><para unique="1092737">AVX512BW </para>
+      <para unique="1092738">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092740">Move unaligned packed word integer values from zmm1 to zmm2/m512 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092711">EVEX.128.F3.0F.W0 6F /r</para>
+      <para unique="1092712">VMOVDQU32 xmm1 {k1}{z}, xmm2/mm128</para>
+      </td>
+     <td><para unique="1092716">C</para>
+      </td>
+     <td><para unique="1092718">V/V</para>
+      </td>
+     <td><para unique="1092720">(AVX512VL AND</para>
+      <para unique="1092724">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092726">Move unaligned packed doubleword integer values from xmm2/m128 to xmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092694">EVEX.256.F3.0F.W0 6F /r</para>
+      <para unique="1092695">VMOVDQU32 ymm1 {k1}{z}, ymm2/m256 </para>
+      </td>
+     <td><para unique="1092699">C</para>
+      </td>
+     <td><para unique="1092701">V/V</para>
+      </td>
+     <td><para unique="1092703">(AVX512VL AND</para>
+      <para unique="1092707">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092709">Move unaligned packed doubleword integer values from ymm2/m256 to ymm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092677">EVEX.512.F3.0F.W0 6F /r</para>
+      <para unique="1092678">VMOVDQU32 zmm1 {k1}{z}, zmm2/m512</para>
+      </td>
+     <td><para unique="1092682">C</para>
+      </td>
+     <td><para unique="1092684">V/V</para>
+      </td>
+     <td><para unique="1092689">AVX512F </para>
+      <para unique="1092690">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092692">Move unaligned packed doubleword integer values from zmm2/m512 to zmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092660">EVEX.128.F3.0F.W0 7F /r</para>
+      <para unique="1092661">VMOVDQU32 xmm2/m128 {k1}{z}, xmm1</para>
+      </td>
+     <td><para unique="1092665">D</para>
+      </td>
+     <td><para unique="1092667">V/V</para>
+      </td>
+     <td><para unique="1092669">(AVX512VL AND</para>
+      <para unique="1092673">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092675">Move unaligned packed doubleword integer values from xmm1 to xmm2/m128 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092643">EVEX.256.F3.0F.W0 7F /r</para>
+      <para unique="1092644">VMOVDQU32 ymm2/m256 {k1}{z}, ymm1</para>
+      </td>
+     <td><para unique="1092648">D</para>
+      </td>
+     <td><para unique="1092650">V/V</para>
+      </td>
+     <td><para unique="1092652">(AVX512VL AND</para>
+      <para unique="1092656">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092658">Move unaligned packed doubleword integer values from ymm1 to ymm2/m256 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092626">EVEX.512.F3.0F.W0 7F /r</para>
+      <para unique="1092627">VMOVDQU32 zmm2/m512 {k1}{z}, zmm1</para>
+      </td>
+     <td><para unique="1092631">D</para>
+      </td>
+     <td><para unique="1092633">V/V</para>
+      </td>
+     <td><para unique="1092638">AVX512F </para>
+      <para unique="1092639">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092641">Move unaligned packed doubleword integer values from zmm1 to zmm2/m512 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092609">EVEX.128.F3.0F.W1 6F /r</para>
+      <para unique="1092610">VMOVDQU64 xmm1 {k1}{z}, xmm2/m128 </para>
+      </td>
+     <td><para unique="1092614">C</para>
+      </td>
+     <td><para unique="1092616">V/V</para>
+      </td>
+     <td><para unique="1092618">(AVX512VL AND</para>
+      <para unique="1092622">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092624">Move unaligned packed quadword integer values from xmm2/m128 to xmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092592">EVEX.256.F3.0F.W1 6F /r</para>
+      <para unique="1092593">VMOVDQU64 ymm1 {k1}{z}, ymm2/m256</para>
+      </td>
+     <td><para unique="1092597">C</para>
+      </td>
+     <td><para unique="1092599">V/V</para>
+      </td>
+     <td><para unique="1092601">(AVX512VL AND</para>
+      <para unique="1092605">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092607">Move unaligned packed quadword integer values from ymm2/m256 to ymm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092575">EVEX.512.F3.0F.W1 6F /r</para>
+      <para unique="1092576">VMOVDQU64 zmm1 {k1}{z}, zmm2/m512</para>
+      </td>
+     <td><para unique="1092580">C</para>
+      </td>
+     <td><para unique="1092582">V/V</para>
+      </td>
+     <td><para unique="1092587">AVX512F </para>
+      <para unique="1092588">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092590">Move unaligned packed quadword integer values from zmm2/m512 to zmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092558">EVEX.128.F3.0F.W1 7F /r</para>
+      <para unique="1092559">VMOVDQU64 xmm2/m128 {k1}{z}, xmm1</para>
+      </td>
+     <td><para unique="1092563">D</para>
+      </td>
+     <td><para unique="1092565">V/V</para>
+      </td>
+     <td><para unique="1092567">(AVX512VL AND</para>
+      <para unique="1092571">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092573">Move unaligned packed quadword integer values from xmm1 to xmm2/m128 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092541">EVEX.256.F3.0F.W1 7F /r</para>
+      <para unique="1092542">VMOVDQU64 ymm2/m256 {k1}{z}, ymm1</para>
+      </td>
+     <td><para unique="1092546">D</para>
+      </td>
+     <td><para unique="1092548">V/V</para>
+      </td>
+     <td><para unique="1092550">(AVX512VL AND</para>
+      <para unique="1092554">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092556">Move unaligned packed quadword integer values from ymm1 to ymm2/m256 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092524">EVEX.512.F3.0F.W1 7F /r</para>
+      <para unique="1092525">VMOVDQU64 zmm2/m512 {k1}{z}, zmm1</para>
+      </td>
+     <td><para unique="1092529">D</para>
+      </td>
+     <td><para unique="1092531">V/V</para>
+      </td>
+     <td><para unique="1092536">AVX512F </para>
+      <para unique="1092537">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092539">Move unaligned packed quadword integer values from zmm1 to zmm2/m512 using writemask k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091859">
+   <col width="48.421440000000004pt"/>
+   <col width="70.6212pt"/>
+   <col width="98.19216pt"/>
+   <col width="99.04608pt"/>
+   <col width="97.1136pt"/>
+   <col width="96.90047999999999pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091861">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091863">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091865">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091867">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091869">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091871">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091873">A</para>
+      </td>
+     <td valign="middle"><para unique="1091875">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091877">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091879">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091881">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091883">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091885">B</para>
+      </td>
+     <td valign="middle"><para unique="1091887">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091889">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091891">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091893">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091895">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091897">C</para>
+      </td>
+     <td valign="middle"><para unique="1091899">Full Mem</para>
+      </td>
+     <td valign="middle"><para unique="1091901">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091903">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091905">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091907">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091909">D</para>
+      </td>
+     <td valign="middle"><para unique="1091911">Full Mem</para>
+      </td>
+     <td valign="middle"><para unique="1091913">ModRM:r/m (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091915">ModRM:reg (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091917">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091919">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091920">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091922">Note: VEX.vvvv and EVEX.vvvv are reserved and must be 1111b otherwise instructions will #UD.</para>
+  <para unique="1091923">EVEX encoded versions:</para>
+  <para unique="1091924">Moves 128, 256 or 512 bits of packed byte/word/doubleword/quadword integer values from the source operand (the second operand) to the destination operand (first operand). This instruction can be used to load a vector register from a memory location, to store the contents of a vector register into a memory location, or to move data between two vector registers. </para>
+  <para unique="1091925">The destination operand is updated at 8-bit (VMOVDQU8), 16-bit (VMOVDQU16), 32-bit (VMOVDQU32), or 64-bit (VMOVDQU64) granularity according to the writemask.</para>
+  <para unique="1091926">VEX.256 encoded version:</para>
+  <para unique="1091927">Moves 256 bits of packed integer values from the source operand (second operand) to the destination operand (first operand). This instruction can be used to load a YMM register from a 256-bit memory location, to store the contents of a YMM register into a 256-bit memory location, or to move data between two YMM registers. </para>
+  <para unique="1091928">Bits (MAXVL-1:256) of the destination register are zeroed.</para>
+  <para unique="1091930">128-bit versions:</para>
+  <para unique="1091931">Moves 128 bits of packed integer values from the source operand (second operand) to the destination operand (first operand). This instruction can be used to load an XMM register from a 128-bit memory location, to store the contents of an XMM register into a 128-bit memory location, or to move data between two XMM registers. </para>
+  <para unique="1091932">128-bit Legacy SSE version: Bits (MAXVL-1:128) of the corresponding destination register remain unchanged.</para>
+  <para unique="1091933">When the source or destination operand is a memory operand, the operand may be unaligned to any alignment without causing a general-protection exception (#GP) to be generated</para>
+  <para unique="1091934">VEX.128 encoded version: Bits (MAXVL-1:128) of the destination register are zeroed.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091936">VMOVDQU8 (EVEX Encoded Versions, Register-Copy Form)</title>
+   <programlisting>(KL, VL) = (16, 128), (32, 256), (64, 512)
+FOR j := 0 TO KL-1
+	i := j * 8
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+7:i] := SRC[i+7:i]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+7:i] remains unchanged*
+				ELSE 	 DEST[i+7:i] := 0			 			; zeroing-masking
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091951">VMOVDQU8 (EVEX Encoded Versions, Store-Form) </title>
+   <programlisting>(KL, VL) = (16, 128), (32, 256), (64, 512)
+FOR j := 0 TO KL-1
+	i := j * 8
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+7:i] :=
+			SRC[i+7:i]
+		ELSE 	*DEST[i+7:i] remains unchanged*									; merging-masking
+	FI;
+ENDFOR;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091962">VMOVDQU8 (EVEX Encoded Versions, Load-Form) </title>
+   <programlisting>(KL, VL) = (16, 128), (32, 256), (64, 512)
+FOR j := 0 TO KL-1
+	i := j * 8
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+7:i] := SRC[i+7:i]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+7:i] remains unchanged*
+				ELSE 	 DEST[i+7:i] := 0			 			; zeroing-masking
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091977">VMOVDQU16 (EVEX Encoded Versions, Register-Copy Form)</title>
+   <programlisting>(KL, VL) = (8, 128), (16, 256), (32, 512)
+FOR j := 0 TO KL-1
+	i := j * 16
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+15:i] := SRC[i+15:i]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+15:i] remains unchanged*
+				ELSE 	 DEST[i+15:i] := 0			 			; zeroing-masking
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091992">VMOVDQU16 (EVEX Encoded Versions, Store-Form) </title>
+   <programlisting>(KL, VL) = (8, 128), (16, 256), (32, 512)
+FOR j := 0 TO KL-1
+	i := j * 16
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+15:i] :=
+			SRC[i+15:i]
+		ELSE 	*DEST[i+15:i] remains unchanged*									; merging-masking
+	FI;
+ENDFOR;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1092003">VMOVDQU16 (EVEX Encoded Versions, Load-Form) </title>
+   <programlisting>(KL, VL) = (8, 128), (16, 256), (32, 512)
+FOR j := 0 TO KL-1
+	i := j * 16
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+15:i] := SRC[i+15:i]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+15:i] remains unchanged*
+				ELSE 	 DEST[i+15:i] := 0			 			; zeroing-masking
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1092018">VMOVDQU32 (EVEX Encoded Versions, Register-Copy Form)</title>
+   <programlisting>(KL, VL) = (4, 128), (8, 256), (16, 512)
+FOR j := 0 TO KL-1
+	i := j * 32
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+31:i] := SRC[i+31:i]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+31:i] remains unchanged*
+				ELSE 	 DEST[i+31:i] := 0			 			; zeroing-masking
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1092033">VMOVDQU32 (EVEX Encoded Versions, Store-Form) </title>
+   <programlisting>(KL, VL) = (4, 128), (8, 256), (16, 512)
+FOR j := 0 TO KL-1
+	i := j * 32
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+31:i] :=
+			SRC[i+31:i]
+		ELSE 	*DEST[i+31:i] remains unchanged*									; merging-masking
+	FI;
+ENDFOR;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1092044">VMOVDQU32 (EVEX Encoded Versions, Load-Form) </title>
+   <programlisting>(KL, VL) = (4, 128), (8, 256), (16, 512)
+FOR j := 0 TO KL-1
+	i := j * 32
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+31:i] := SRC[i+31:i]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+31:i] remains unchanged*
+				ELSE 	 DEST[i+31:i] := 0			 			; zeroing-masking
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1092059">VMOVDQU64 (EVEX Encoded Versions, Register-Copy Form)</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+63:i] := SRC[i+63:i]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE 	 DEST[i+63:i] := 0			 			; zeroing-masking
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1092074">VMOVDQU64 (EVEX Encoded Versions, Store-Form) </title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+63:i] := SRC[i+63:i]
+		ELSE 	*DEST[i+63:i] remains unchanged*									; merging-masking
+	FI;
+ENDFOR;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1092085">VMOVDQU64 (EVEX Encoded Versions, Load-Form) </title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask*
+		THEN DEST[i+63:i] := SRC[i+63:i]
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE 	 DEST[i+63:i] := 0			 			; zeroing-masking
+			FI
+	FI;
+ENDFOR
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1092100">VMOVDQU (VEX.256 Encoded Version, Load - and Register Copy)</title>
+   <programlisting>DEST[255:0] := SRC[255:0]
+DEST[MAXVL-1:256] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1092104">VMOVDQU (VEX.256 Encoded Version, Store-Form)</title>
+   <programlisting>DEST[255:0] := SRC[255:0]
+VMOVDQU (VEX.128 encoded version)
+DEST[127:0] := SRC[127:0]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1092111">VMOVDQU (128-bit Load- and Register-Copy- Form Legacy SSE Version)</title>
+   <programlisting>DEST[127:0] := SRC[127:0]
+DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1092115">(V)MOVDQU (128-bit Store-Form Version)</title>
+   <programlisting>DEST[127:0] := SRC[127:0]</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VMOVDQU16 __m512i _mm512_mask_loadu_epi16(__m512i s, __mmask32 k, void * sa); </string><string>
-</string><string>VMOVDQU16 __m512i _mm512_maskz_loadu_epi16( __mmask32 k, void * sa); </string><string>
-</string><string>VMOVDQU16 void _mm512_mask_storeu_epi16(void * d, __mmask32 k, __m512i a); </string><string>
-</string><string>VMOVDQU16 __m256i _mm256_mask_loadu_epi16(__m256i s, __mmask16 k, void * sa); </string><string>
-</string><string>VMOVDQU16 __m256i _mm256_maskz_loadu_epi16( __mmask16 k, void * sa); </string><string>
-</string><string>VMOVDQU16 void _mm256_mask_storeu_epi16(void * d, __mmask16 k, __m256i a); </string><string>
-</string><string>VMOVDQU16 __m128i _mm_mask_loadu_epi16(__m128i s, __mmask8 k, void * sa); </string><string>
-</string><string>VMOVDQU16 __m128i _mm_maskz_loadu_epi16( __mmask8 k, void * sa); </string><string>
-</string><string>VMOVDQU16 void _mm_mask_storeu_epi16(void * d, __mmask8 k, __m128i a); </string><string>
-</string><string>VMOVDQU32 __m512i _mm512_loadu_epi32( void * sa); </string><string>
-</string><string>VMOVDQU32 __m512i _mm512_mask_loadu_epi32(__m512i s, __mmask16 k, void * sa); </string><string>
-</string><string>VMOVDQU32 __m512i _mm512_maskz_loadu_epi32( __mmask16 k, void * sa); </string><string>
-</string><string>VMOVDQU32 void _mm512_storeu_epi32(void * d, __m512i a); </string><string>
-</string><string>VMOVDQU32 void _mm512_mask_storeu_epi32(void * d, __mmask16 k, __m512i a); </string><string>
-</string><string>VMOVDQU32 __m256i _mm256_mask_loadu_epi32(__m256i s, __mmask8 k, void * sa); </string><string>
-</string><string>VMOVDQU32 __m256i _mm256_maskz_loadu_epi32( __mmask8 k, void * sa); </string><string>
-</string><string>VMOVDQU32 void _mm256_storeu_epi32(void * d, __m256i a); </string><string>
-</string><string>VMOVDQU32 void _mm256_mask_storeu_epi32(void * d, __mmask8 k, __m256i a); </string><string>
-</string><string>VMOVDQU32 __m128i _mm_mask_loadu_epi32(__m128i s, __mmask8 k, void * sa); </string><string>
-</string><string>VMOVDQU32 __m128i _mm_maskz_loadu_epi32( __mmask8 k, void * sa); </string><string>
-</string><string>VMOVDQU32 void _mm_storeu_epi32(void * d, __m128i a); </string><string>
-</string><string>VMOVDQU32 void _mm_mask_storeu_epi32(void * d, __mmask8 k, __m128i a); </string><string>
-</string><string>VMOVDQU64 __m512i _mm512_loadu_epi64( void * sa); </string><string>
-</string><string>VMOVDQU64 __m512i _mm512_mask_loadu_epi64(__m512i s, __mmask8 k, void * sa); </string><string>
-</string><string>VMOVDQU64 __m512i _mm512_maskz_loadu_epi64( __mmask8 k, void * sa); </string><string>
-</string><string>VMOVDQU64 void _mm512_storeu_epi64(void * d, __m512i a); </string><string>
-</string><string>VMOVDQU64 void _mm512_mask_storeu_epi64(void * d, __mmask8 k, __m512i a); </string><string>
-</string><string>VMOVDQU64 __m256i _mm256_mask_loadu_epi64(__m256i s, __mmask8 k, void * sa); </string><string>
-</string><string>VMOVDQU64 __m256i _mm256_maskz_loadu_epi64( __mmask8 k, void * sa); </string><string>
-</string><string>VMOVDQU64 void _mm256_storeu_epi64(void * d, __m256i a); </string><string>
-</string><string>VMOVDQU64 void _mm256_mask_storeu_epi64(void * d, __mmask8 k, __m256i a); </string><string>
-</string><string>VMOVDQU64 __m128i _mm_mask_loadu_epi64(__m128i s, __mmask8 k, void * sa); </string><string>
-</string><string>VMOVDQU64 __m128i _mm_maskz_loadu_epi64( __mmask8 k, void * sa); </string><string>
-</string><string>VMOVDQU64 void _mm_storeu_epi64(void * d, __m128i a); </string><string>
-</string><string>VMOVDQU64 void _mm_mask_storeu_epi64(void * d, __mmask8 k, __m128i a); </string><string>
-</string><string>VMOVDQU8 __m512i _mm512_mask_loadu_epi8(__m512i s, __mmask64 k, void * sa); </string><string>
-</string><string>VMOVDQU8 __m512i _mm512_maskz_loadu_epi8( __mmask64 k, void * sa); </string><string>
-</string><string>VMOVDQU8 void _mm512_mask_storeu_epi8(void * d, __mmask64 k, __m512i a); </string><string>
-</string><string>VMOVDQU8 __m256i _mm256_mask_loadu_epi8(__m256i s, __mmask32 k, void * sa); </string><string>
-</string><string>VMOVDQU8 __m256i _mm256_maskz_loadu_epi8( __mmask32 k, void * sa); </string><string>
-</string><string>VMOVDQU8 void _mm256_mask_storeu_epi8(void * d, __mmask32 k, __m256i a); </string><string>
-</string><string>VMOVDQU8 __m128i _mm_mask_loadu_epi8(__m128i s, __mmask16 k, void * sa); </string><string>
-</string><string>VMOVDQU8 __m128i _mm_maskz_loadu_epi8( __mmask16 k, void * sa); </string><string>
-</string><string>VMOVDQU8 void _mm_mask_storeu_epi8(void * d, __mmask16 k, __m128i a); </string><string>
-</string><string>MOVDQU __m256i _mm256_loadu_si256 (__m256i * p);</string><string>
-</string><string>MOVDQU _mm256_storeu_si256(_m256i *p, __m256i a);</string><string>
-</string><string>MOVDQU __m128i _mm_loadu_si128 (__m128i * p);</string><string>
-</string><string>MOVDQU _mm_storeu_si128(__m128i *p, __m128i a);</string><string>
-</string></programlisting>
+  <programlisting>VMOVDQU16 __m512i _mm512_mask_loadu_epi16(__m512i s, __mmask32 k, void * sa);
+VMOVDQU16 __m512i _mm512_maskz_loadu_epi16( __mmask32 k, void * sa);
+VMOVDQU16 void _mm512_mask_storeu_epi16(void * d, __mmask32 k, __m512i a);
+VMOVDQU16 __m256i _mm256_mask_loadu_epi16(__m256i s, __mmask16 k, void * sa);
+VMOVDQU16 __m256i _mm256_maskz_loadu_epi16( __mmask16 k, void * sa);
+VMOVDQU16 void _mm256_mask_storeu_epi16(void * d, __mmask16 k, __m256i a);
+VMOVDQU16 __m128i _mm_mask_loadu_epi16(__m128i s, __mmask8 k, void * sa);
+VMOVDQU16 __m128i _mm_maskz_loadu_epi16( __mmask8 k, void * sa);
+VMOVDQU16 void _mm_mask_storeu_epi16(void * d, __mmask8 k, __m128i a);
+VMOVDQU32 __m512i _mm512_loadu_epi32( void * sa);
+VMOVDQU32 __m512i _mm512_mask_loadu_epi32(__m512i s, __mmask16 k, void * sa);
+VMOVDQU32 __m512i _mm512_maskz_loadu_epi32( __mmask16 k, void * sa);
+VMOVDQU32 void _mm512_storeu_epi32(void * d, __m512i a);
+VMOVDQU32 void _mm512_mask_storeu_epi32(void * d, __mmask16 k, __m512i a);
+VMOVDQU32 __m256i _mm256_mask_loadu_epi32(__m256i s, __mmask8 k, void * sa);
+VMOVDQU32 __m256i _mm256_maskz_loadu_epi32( __mmask8 k, void * sa);
+VMOVDQU32 void _mm256_storeu_epi32(void * d, __m256i a);
+VMOVDQU32 void _mm256_mask_storeu_epi32(void * d, __mmask8 k, __m256i a);
+VMOVDQU32 __m128i _mm_mask_loadu_epi32(__m128i s, __mmask8 k, void * sa);
+VMOVDQU32 __m128i _mm_maskz_loadu_epi32( __mmask8 k, void * sa);
+VMOVDQU32 void _mm_storeu_epi32(void * d, __m128i a);
+VMOVDQU32 void _mm_mask_storeu_epi32(void * d, __mmask8 k, __m128i a);
+VMOVDQU64 __m512i _mm512_loadu_epi64( void * sa);
+VMOVDQU64 __m512i _mm512_mask_loadu_epi64(__m512i s, __mmask8 k, void * sa);
+VMOVDQU64 __m512i _mm512_maskz_loadu_epi64( __mmask8 k, void * sa);
+VMOVDQU64 void _mm512_storeu_epi64(void * d, __m512i a);
+VMOVDQU64 void _mm512_mask_storeu_epi64(void * d, __mmask8 k, __m512i a);
+VMOVDQU64 __m256i _mm256_mask_loadu_epi64(__m256i s, __mmask8 k, void * sa);
+VMOVDQU64 __m256i _mm256_maskz_loadu_epi64( __mmask8 k, void * sa);
+VMOVDQU64 void _mm256_storeu_epi64(void * d, __m256i a);
+VMOVDQU64 void _mm256_mask_storeu_epi64(void * d, __mmask8 k, __m256i a);
+VMOVDQU64 __m128i _mm_mask_loadu_epi64(__m128i s, __mmask8 k, void * sa);
+VMOVDQU64 __m128i _mm_maskz_loadu_epi64( __mmask8 k, void * sa);
+VMOVDQU64 void _mm_storeu_epi64(void * d, __m128i a);
+VMOVDQU64 void _mm_mask_storeu_epi64(void * d, __mmask8 k, __m128i a);
+VMOVDQU8 __m512i _mm512_mask_loadu_epi8(__m512i s, __mmask64 k, void * sa);
+VMOVDQU8 __m512i _mm512_maskz_loadu_epi8( __mmask64 k, void * sa);
+VMOVDQU8 void _mm512_mask_storeu_epi8(void * d, __mmask64 k, __m512i a);
+VMOVDQU8 __m256i _mm256_mask_loadu_epi8(__m256i s, __mmask32 k, void * sa);
+VMOVDQU8 __m256i _mm256_maskz_loadu_epi8( __mmask32 k, void * sa);
+VMOVDQU8 void _mm256_mask_storeu_epi8(void * d, __mmask32 k, __m256i a);
+VMOVDQU8 __m128i _mm_mask_loadu_epi8(__m128i s, __mmask16 k, void * sa);
+VMOVDQU8 __m128i _mm_maskz_loadu_epi8( __mmask16 k, void * sa);
+VMOVDQU8 void _mm_mask_storeu_epi8(void * d, __mmask16 k, __m128i a);
+MOVDQU __m256i _mm256_loadu_si256 (__m256i * p);
+MOVDQU _mm256_storeu_si256(_m256i *p, __m256i a);
+MOVDQU __m128i _mm_loadu_si128 (__m128i * p);
+MOVDQU _mm_storeu_si128(__m128i *p, __m128i a);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1092167">
-   <string>None.</string></para>
+  <para unique="1092167">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1092172" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1092176" format="xIndent1">
-   <string>EVEX-encoded instruction, see Exceptions Type E4.nb in </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1092177" format="xIndent1">
-   <string>Additionally:</string></para>
+  <para unique="1092172" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1092170" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1092176" format="xIndent1">EVEX-encoded instruction, see Exceptions Type E4.nb in <link unique="1092174" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1092177" format="xIndent1">Additionally:</para>
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If EVEX.vvvv != 1111B or VEX.vvvv != 1111B.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1092178">If EVEX.vvvv != 1111B or VEX.vvvv != 1111B.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

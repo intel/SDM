@@ -1,133 +1,487 @@
 <instruction name="PUSH">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Push Word, Doubleword, or Quadword Onto the Stack</shortdesc>
- <longdesc><para unique="1091643">
-   <string>Decrements the stack pointer and then stores the source operand on the top of the </string><indexterm><primary>Stack, pushing values on</primary></indexterm><string>stack. Address and operand sizes are determined and used as follows:</string></para>
-  <itemizedlist><listitem><para unique="1091644">
-     <string>Address size. The D flag in the current code-segment descriptor determines the default address size; it may be overridden by an instruction prefix (67H).</string></para>
+ <encoding_table><table unique="1091392">
+   <thead><tr>
+     <th><para unique="1091397">Opcode<footnote><para unique="1091396" format="TableFootnote">See the IA-32 Architecture Compatibility section below.</para>
+        </footnote></para>
+      </th>
+     <th><para unique="1091399">Instruction</para>
+      </th>
+     <th><para unique="1091401">Op/ En</para>
+      </th>
+     <th><para unique="1091403">64-Bit Mode</para>
+      </th>
+     <th><para unique="1091405">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1091407">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.25984pt"/>
+   <col width="111.46464pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="181.404pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1091409">FF /6</para>
+      </td>
+     <td><para unique="1091411">PUSH r/m16</para>
+      </td>
+     <td><para unique="1091413">M</para>
+      </td>
+     <td><para unique="1091415">Valid</para>
+      </td>
+     <td><para unique="1091417">Valid</para>
+      </td>
+     <td><para unique="1091419">Push r/m16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091421">FF /6</para>
+      </td>
+     <td><para unique="1091423">PUSH r/m32</para>
+      </td>
+     <td><para unique="1091425">M</para>
+      </td>
+     <td><para unique="1091427">N.E.</para>
+      </td>
+     <td><para unique="1091429">Valid</para>
+      </td>
+     <td><para unique="1091431">Push r/m32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091433">FF /6</para>
+      </td>
+     <td><para unique="1091435">PUSH r/m64</para>
+      </td>
+     <td><para unique="1091437">M</para>
+      </td>
+     <td><para unique="1091439">Valid</para>
+      </td>
+     <td><para unique="1091441">N.E.</para>
+      </td>
+     <td><para unique="1091443">Push r/m64. </para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091445">50+rw</para>
+      </td>
+     <td><para unique="1091447">PUSH r16</para>
+      </td>
+     <td><para unique="1091449">O</para>
+      </td>
+     <td><para unique="1091451">Valid </para>
+      </td>
+     <td><para unique="1091453">Valid</para>
+      </td>
+     <td><para unique="1091455">Push r16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091457">50+rd</para>
+      </td>
+     <td><para unique="1091459">PUSH r32</para>
+      </td>
+     <td><para unique="1091461">O</para>
+      </td>
+     <td><para unique="1091463">N.E.</para>
+      </td>
+     <td><para unique="1091465">Valid</para>
+      </td>
+     <td><para unique="1091467">Push r32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091469">50+rd</para>
+      </td>
+     <td><para unique="1091471">PUSH r64</para>
+      </td>
+     <td><para unique="1091473">O</para>
+      </td>
+     <td><para unique="1091475">Valid</para>
+      </td>
+     <td><para unique="1091477">N.E.</para>
+      </td>
+     <td><para unique="1091479">Push r64.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091481">6A ib</para>
+      </td>
+     <td><para unique="1091483">PUSH imm8</para>
+      </td>
+     <td><para unique="1091485">I</para>
+      </td>
+     <td><para unique="1091487">Valid</para>
+      </td>
+     <td><para unique="1091489">Valid</para>
+      </td>
+     <td><para unique="1091491">Push imm8.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091493">68 iw</para>
+      </td>
+     <td><para unique="1091495">PUSH imm16</para>
+      </td>
+     <td><para unique="1091497">I</para>
+      </td>
+     <td><para unique="1091499">Valid</para>
+      </td>
+     <td><para unique="1091501">Valid</para>
+      </td>
+     <td><para unique="1091503">Push imm16.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091505">68 id</para>
+      </td>
+     <td><para unique="1091507">PUSH imm32</para>
+      </td>
+     <td><para unique="1091509">I</para>
+      </td>
+     <td><para unique="1091511">Valid</para>
+      </td>
+     <td><para unique="1091513">Valid</para>
+      </td>
+     <td><para unique="1091515">Push imm32.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091517">0E</para>
+      </td>
+     <td><para unique="1091519">PUSH CS</para>
+      </td>
+     <td><para unique="1091521">ZO</para>
+      </td>
+     <td><para unique="1091523">Invalid</para>
+      </td>
+     <td><para unique="1091525">Valid</para>
+      </td>
+     <td><para unique="1091527">Push CS.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091529">16</para>
+      </td>
+     <td><para unique="1091531">PUSH SS</para>
+      </td>
+     <td><para unique="1091533">ZO</para>
+      </td>
+     <td><para unique="1091535">Invalid</para>
+      </td>
+     <td><para unique="1091537">Valid</para>
+      </td>
+     <td><para unique="1091539">Push SS.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091541">1E</para>
+      </td>
+     <td><para unique="1091543">PUSH DS</para>
+      </td>
+     <td><para unique="1091545">ZO</para>
+      </td>
+     <td><para unique="1091547">Invalid</para>
+      </td>
+     <td><para unique="1091549">Valid</para>
+      </td>
+     <td><para unique="1091551">Push DS.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091553">06</para>
+      </td>
+     <td><para unique="1091555">PUSH ES</para>
+      </td>
+     <td><para unique="1091557">ZO</para>
+      </td>
+     <td><para unique="1091559">Invalid</para>
+      </td>
+     <td><para unique="1091561">Valid</para>
+      </td>
+     <td><para unique="1091563">Push ES.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091565">0F A0</para>
+      </td>
+     <td><para unique="1091567">PUSH FS</para>
+      </td>
+     <td><para unique="1091569">ZO</para>
+      </td>
+     <td><para unique="1091571">Valid</para>
+      </td>
+     <td><para unique="1091573">Valid</para>
+      </td>
+     <td><para unique="1091575">Push FS.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1091577">0F A8</para>
+      </td>
+     <td><para unique="1091579">PUSH GS</para>
+      </td>
+     <td><para unique="1091581">ZO</para>
+      </td>
+     <td><para unique="1091583">Valid</para>
+      </td>
+     <td><para unique="1091585">Valid</para>
+      </td>
+     <td><para unique="1091587">Push GS.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091589">
+   <col width="41.407199999999996pt"/>
+   <col width="113.56416pt"/>
+   <col width="117.10224pt"/>
+   <col width="113.6988pt"/>
+   <col width="125.44775999999999pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091591">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091593">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091595">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091597">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091599">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091601">M</para>
+      </td>
+     <td valign="middle"><para unique="1091603">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091605">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091607">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091609">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091611">O</para>
+      </td>
+     <td valign="middle"><para unique="1091613">opcode + rd (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091615">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091617">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091619">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091621">I</para>
+      </td>
+     <td valign="middle"><para unique="1091623">imm8/16/32</para>
+      </td>
+     <td valign="middle"><para unique="1091625">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091627">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091629">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091631">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1091633">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091635">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091637">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091639">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091640">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091643">Decrements the stack pointer and then stores the source operand on the top of the <indexterm><primary>Stack, pushing values on</primary></indexterm>stack. Address and operand sizes are determined and used as follows:</para>
+  <itemizedlist>
+   <listitem><para unique="1091644">Address size. The D flag in the current code-segment descriptor determines the default address size; it may be overridden by an instruction prefix (67H).</para>
+    <para unique="1091645">The address size is used only when referencing a source operand in memory.</para>
     </listitem>
-   </itemizedlist><para unique="1091645" format="ListBulletBigContinue">
-   <string>The address size is used only when referencing a source operand in memory.</string></para>
-  <itemizedlist><listitem><para unique="1091646">
-     <string>Operand size. The D flag in the current code-segment descriptor determines the default operand size; it may be overridden by instruction prefixes (66H or REX.W).</string></para>
+   <listitem><para unique="1091646">Operand size. The D flag in the current code-segment descriptor determines the default operand size; it may be overridden by instruction prefixes (66H or REX.W).</para>
+    <para unique="1091647">The operand size (16, 32, or 64 bits) determines the amount by which the stack pointer is decremented (2, 4 or 8).</para>
+    <para unique="1091648">If the source operand is an immediate of size less than the operand size, a sign-extended value is pushed on the stack. If the source operand is a segment register (16 bits) and the operand size is 64-bits, a zero-extended value is pushed on the stack; if the operand size is 32-bits, either a zero-extended value is pushed on the stack or the segment selector is written on the stack using a 16-bit move. For the last case, all recent Intel Core and Intel Atom processors perform a 16-bit move, leaving the upper portion of the stack location unmodified.</para>
     </listitem>
-   </itemizedlist><para unique="1091647" format="ListBulletBigContinue">
-   <string>The operand size (16, 32, or 64 bits) determines the amount by which the stack pointer is decremented (2, 4 or 8).</string></para>
-  <para unique="1091648" format="ListBulletBigContinue">
-   <string>If the source operand is an immediate of size less than the operand size, a sign-extended value is pushed on the stack. If the source operand is a segment register (16 bits) and the operand size is 64-bits, a zero-extended value is pushed on the stack; if the operand size is 32-bits, either a zero-extended value is pushed on the stack or the segment selector is written on the stack using a 16-bit move. For the last case, all recent Intel Core and Intel Atom processors perform a 16-bit move, leaving the upper portion of the stack location unmodified.</string></para>
-  <itemizedlist><listitem><para unique="1091649">
-     <string>Stack-address size. Outside of 64-bit mode, the B flag in the current stack-segment descriptor determines the size of the stack pointer (16 or 32 bits); in 64-bit mode, the size of the stack pointer is always 64 bits.</string></para>
+   <listitem><para unique="1091649">Stack-address size. Outside of 64-bit mode, the B flag in the current stack-segment descriptor determines the size of the stack pointer (16 or 32 bits); in 64-bit mode, the size of the stack pointer is always 64 bits.</para>
+    <para unique="1091650">The stack-address size determines the width of the stack pointer when writing to the stack in memory and when decrementing the stack pointer. (As stated above, the amount by which the stack pointer is decremented is determined by the operand size.)</para>
+    <para unique="1091651">If the operand size is less than the stack-address size, the PUSH instruction may result in a misaligned stack pointer (a stack pointer that is not aligned on a doubleword or quadword boundary).</para>
     </listitem>
-   </itemizedlist><para unique="1091650" format="ListBulletBigContinue">
-   <string>The stack-address size determines the width of the stack pointer when writing to the stack in memory and when decrementing the stack pointer. (As stated above, the amount by which the stack pointer is decremented is determined by the operand size.)</string></para>
-  <para unique="1091651" format="ListBulletBigContinue">
-   <string>If the operand size is less than the stack-address size, the PUSH instruction may result in a misaligned stack pointer (a stack pointer that is not aligned on a doubleword or quadword boundary).</string></para>
-  <para unique="1091652">
-   <string>The PUSH ESP instruction pushes the value of the ESP register as it existed before the instruction was executed. If a PUSH instruction uses a memory operand in which the ESP register is used for computing the operand address, the address of the operand is computed before the ESP register is decremented. </string></para>
-  <para unique="1091653">
-   <string>If the ESP or SP register is 1 when the PUSH instruction is executed in real-address mode, a stack-fault exception (#SS) is generated (because the limit of the stack segment is violated). Its delivery encounters a second stack-fault exception (for the same reason), causing generation of a double-fault exception (#DF). Delivery of the double-fault exception encounters a third stack-fault exception, and the logical processor enters shutdown mode. See the discussion of the double-fault exception in </string><link linkend="26613: H1Heading: Chapter 5 Protected-Mode Exceptions and Interrupts"><string>Chapter 7</string></link><string> of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A.</string></para>
-  <section level="7">
-   <title unique="1091657"><string>IA-32 Architecture Compatibility</string></title>
-   <para unique="1091658">
-    <string>For IA-32 processors from the Intel 286 on, the PUSH ESP instruction pushes the value of the ESP register as it existed before the instruction was executed. (This is also true for Intel 64 architecture, real-address and virtual-8086 modes of IA-32 architecture.) For the Intel</string><string>&#174; 8086 processor, the PUSH SP instruction pushes the new value of the SP register (that is the value after it has been decremented by 2).</string></para>
-   </section>
+   </itemizedlist>
+  <para unique="1091652">The PUSH ESP instruction pushes the value of the ESP register as it existed before the instruction was executed. If a PUSH instruction uses a memory operand in which the ESP register is used for computing the operand address, the address of the operand is computed before the ESP register is decremented. </para>
+  <para unique="1091653">If the ESP or SP register is 1 when the PUSH instruction is executed in real-address mode, a stack-fault exception (#SS) is generated (because the limit of the stack segment is violated). Its delivery encounters a second stack-fault exception (for the same reason), causing generation of a double-fault exception (#DF). Delivery of the double-fault exception encounters a third stack-fault exception, and the logical processor enters shutdown mode. See the discussion of the double-fault exception in <link unique="1091655" linkend="&lt;c&gt;__sdm_vol3A_ch07.fm#26613: H1Heading: Chapter 5 Protected-Mode Exceptions and Interrupts" xrefstyle="ChapterNum">Chapter 7</link> of the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3A.</para>
   </longdesc>
+ <operation>
+  <programlisting>(* See Description section for possible sign-extension or zero-extension of source operand and for *)
+(* a case in which the size of the memory store may be smaller than the instruction&#8217;s operand size *)
+IF StackAddrSize = 64
+	THEN
+		IF OperandSize = 64
+			THEN
+				RSP := RSP &#8211; 8;
+				Memory[SS:RSP] := SRC;								(* push quadword *)
+		ELSE IF OperandSize = 32
+			THEN
+				RSP := RSP &#8211; 4;
+				Memory[SS:RSP] := SRC;								(* push dword *)
+			ELSE (* OperandSize = 16 *)
+				RSP := RSP &#8211; 2;
+				Memory[SS:RSP] := SRC;								(* push word *)
+		FI;
+ELSE IF StackAddrSize = 32
+	THEN
+		IF OperandSize = 64
+			THEN
+				ESP := ESP &#8211; 8;
+				Memory[SS:ESP] := SRC;								(* push quadword *)
+		ELSE IF OperandSize = 32
+			THEN
+				ESP := ESP &#8211; 4;
+				Memory[SS:ESP] := SRC;								(* push dword *)
+			ELSE (* OperandSize = 16 *)
+				ESP := ESP &#8211; 2;
+				Memory[SS:ESP] := SRC;								(* push word *)
+		FI;
+	ELSE (* StackAddrSize = 16 *)
+		IF OperandSize = 32
+			THEN
+				SP := SP &#8211; 4;
+				Memory[SS:SP] := SRC;								(* push dword *)
+			ELSE (* OperandSize = 16 *)
+				SP := SP &#8211; 2;
+				Memory[SS:SP] := SRC;								(* push word *)
+		FI;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1091701">
-   <string>None.</string></para>
+  <para unique="1091701">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091703">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1091704">If the DS, ES, FS, or GS register is used to access memory and it contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091705">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091706">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091707">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091708">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1091710">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
-    <listitem><string>If the new value of the SP or ESP register is outside the stack segment limit.</string></listitem>
+    <term>#SS</term>
+    <listitem><para unique="1091711">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1091712">If the new value of the SP or ESP register is outside the stack segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091713">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091715">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091716">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091717">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091718">If alignment checking is enabled and an unaligned memory reference is made.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091719">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091721" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1091721" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1091723">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If the stack address is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1091724">If the stack address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1091725">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091726">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If the PUSH is of CS, SS, DS, or ES.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1091727">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1091728">If the PUSH is of CS, SS, DS, or ES.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

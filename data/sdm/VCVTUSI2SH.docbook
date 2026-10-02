@@ -1,26 +1,126 @@
 <instruction name="VCVTUSI2SH">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Convert Unsigned Doubleword Integer to an FP16 Value</shortdesc>
- <longdesc><para unique="1045951">
-   <string>This instruction converts an unsigned doubleword integer (or unsigned quadword integer if operand size is 64 bits) in the second source operand to a FP16 value in the destination operand. The result is stored in the low word of the destination operand. When conversion is inexact, the value returned is rounded according to the rounding control bits in the MXCSR register or embedded rounding controls.</string></para>
-  <para unique="1045952">
-   <string>The second source operand can be a general-purpose register or a 32/64-bit memory location. The first source and destination operands are XMM registers. Bits 127:16 of the XMM register destination are copied from corre&#173;sponding bits in the first source operand. Bits MAXVL-1:128 of the destination register are zeroed.</string></para>
-  <para unique="1045953">
-   <string>If the result of the convert operation is overflow and MXCSR.OM=0 then a SIMD exception will be raised with OE=1, PE=1.</string></para>
+ <encoding_table><table unique="1045885">
+   <col width="153.5976pt"/>
+   <col width="28.02528pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="200.6496pt"/>
+   <thead><tr>
+     <th><para unique="1045887">Opcode/</para>
+      <para unique="1045888">Instruction</para>
+      </th>
+     <th><para unique="1045890">Op/</para>
+      <para unique="1045891">En</para>
+      </th>
+     <th><para unique="1045893">64/32 Bit Mode Support</para>
+      </th>
+     <th><para unique="1045895">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1045897">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1045899">EVEX.LLIG.F3.MAP5.W0 7B /r</para>
+      <para unique="1045900">VCVTUSI2SH xmm1, xmm2, r32/m32 {er}</para>
+      </td>
+     <td><para unique="1045902">A</para>
+      </td>
+     <td><para unique="1045907">V/V<footnote><para unique="1045906" format="TableFootnote">Outside of 64b mode, the EVEX.W field is ignored. The instruction behaves as if W=0 was used.</para>
+        </footnote></para>
+      </td>
+     <td><para unique="1045909">AVX512_FP16</para>
+      </td>
+     <td><para unique="1045911">Convert an unsigned doubleword integer from r32/m32 to an FP16 value, and store the result in xmm1. Bits 127:16 from xmm2 are copied to xmm1[127:16].</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1045913">EVEX.LLIG.F3.MAP5.W1 7B /r</para>
+      <para unique="1045914">VCVTUSI2SH xmm1, xmm2, r64/m64 {er}</para>
+      </td>
+     <td><para unique="1045916">A</para>
+      </td>
+     <td><para unique="1045918">V/N.E.</para>
+      </td>
+     <td><para unique="1045920">AVX512_FP16</para>
+      </td>
+     <td><para unique="1045922">Convert an unsigned quadword integer from r64/m64 to an FP16 value, and store the result in xmm1. Bits 127:16 from xmm2 are copied to xmm1[127:16].</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1045924">
+   <col width="43.01352pt"/>
+   <col width="61.01352pt"/>
+   <col width="95.65272pt"/>
+   <col width="104.62608pt"/>
+   <col width="103.85784pt"/>
+   <col width="102.5676pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1045926">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1045928">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1045930">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1045932">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1045934">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1045936">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1045938">A</para>
+      </td>
+     <td valign="middle"><para unique="1045940">Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1045942">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1045944">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045946">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045948">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1045949">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1045951">This instruction converts an unsigned doubleword integer (or unsigned quadword integer if operand size is 64 bits) in the second source operand to a FP16 value in the destination operand. The result is stored in the low word of the destination operand. When conversion is inexact, the value returned is rounded according to the rounding control bits in the MXCSR register or embedded rounding controls.</para>
+  <para unique="1045952">The second source operand can be a general-purpose register or a 32/64-bit memory location. The first source and destination operands are XMM registers. Bits 127:16 of the XMM register destination are copied from corre&#173;sponding bits in the first source operand. Bits MAXVL-1:128 of the destination register are zeroed.</para>
+  <para unique="1045953">If the result of the convert operation is overflow and MXCSR.OM=0 then a SIMD exception will be raised with OE=1, PE=1.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1045955">VCVTUSI2SH dest, src1, src2</title>
+   <programlisting>IF *SRC2 is a register* and (EVEX.b = 1):
+	SET_RM(EVEX.RC)
+ELSE:
+	SET_RM(MXCSR.RC)
+IF 64-mode and OperandSize == 64:
+	DEST.fp16[0] := Convert_unsigned_integer64_to_fp16(SRC2.qword)
+ELSE:
+	DEST.fp16[0] := Convert_unsigned_integer32_to_fp16(SRC2.dword)
+DEST[127:16] := SRC1[127:16]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VCVTUSI2SH __m128h _mm_cvt_roundu32_sh (__m128h a, unsigned int b, int rounding);</string><string>
-</string><string>VCVTUSI2SH __m128h _mm_cvt_roundu64_sh (__m128h a, unsigned __int64 b, int rounding);</string><string>
-</string><string>VCVTUSI2SH __m128h _mm_cvtu32_sh (__m128h a, unsigned int b);</string><string>
-</string><string>VCVTUSI2SH __m128h _mm_cvtu64_sh (__m128h a, unsigned __int64 b);</string><string>
-</string></programlisting>
+  <programlisting>VCVTUSI2SH __m128h _mm_cvt_roundu32_sh (__m128h a, unsigned int b, int rounding);
+VCVTUSI2SH __m128h _mm_cvt_roundu64_sh (__m128h a, unsigned __int64 b, int rounding);
+VCVTUSI2SH __m128h _mm_cvtu32_sh (__m128h a, unsigned int b);
+VCVTUSI2SH __m128h _mm_cvtu64_sh (__m128h a, unsigned __int64 b);</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1045974">
-   <string>Overflow, Precision.</string></para>
+  <para unique="1045974">Overflow, Precision.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1045979" format="xIndent1">
-   <string>EVEX-encoded instructions, see </string><link linkend="71006: 06_Table: Table 2-48. Type E3NF Class Exception Conditions"><string>Table&#160;2&#8209;50, &#8220;Type E3NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1045979" format="xIndent1">EVEX-encoded instructions, see <link unique="1045977" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#71006: 06_Table: Table 2-48. Type E3NF Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;50, &#8220;Type E3NF Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

@@ -1,31 +1,131 @@
 <instruction name="RSQRTSS">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Compute Reciprocal of Square Root of Scalar Single Precision Floating-Point Value</shortdesc>
- <longdesc><para unique="1091464">
-   <string>Computes an approximate reciprocal of the square root of the low single precision floating-point value in the source operand (second operand) stores the single precision floating-point result in the destination operand. The source operand can be an XMM register or a 32-bit memory location. The destination operand is an XMM register. The three high-order doublewords of the destination operand remain unchanged. See Figure 10-6 in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for an illustration of a scalar single precision floating-point operation.</string></para>
-  <para unique="1091465">
-   <string>The relative error for this approximation is:</string></para>
-  <programlisting><string>	|Relative Error| </string><string>&#8804; 1.5 </string><string>* 2</string><superscript><string>&#8722;</string></superscript><superscript><string>12</string></superscript><string> </string><string>
-</string></programlisting>
-  <para unique="1091467">
-   <string>The RSQRTSS instruction is not affected by the rounding control bits in the MXCSR register. When a source value is a 0.0, an </string><string>&#8734; of the sign of the source value is returned. A denormal source value is treated as a 0.0 (of the same sign). When a source value is a negative value (other than </string><string>&#8722;0.0), a floating-point indefinite is returned. When a source value is an SNaN or QNaN, the SNaN is converted to a QNaN or the source QNaN is returned. </string></para>
-  <para unique="1091468">
-   <string>In 64-bit mode, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).</string></para>
-  <para unique="1091469">
-   <string>128-bit Legacy SSE version: The first source operand and the destination operand are the same. Bits (MAXVL-1:32) of the corresponding YMM destination register remain unchanged.</string></para>
-  <para unique="1091470">
-   <string>VEX.128 encoded version: Bits (MAXVL-1:128) of the destination YMM register are zeroed.</string></para>
+ <encoding_table><table unique="1091390">
+   <thead><tr>
+     <th colspan="2"><para unique="1091392">Opcode*/</para>
+      <para unique="1091393">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op/ En</para>
+      </th>
+     <th><para unique="1091399">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091401">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><col width="84.204pt"/>
+   <col width="95.52024pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="212.40432pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1091405">F3 0F 52 /r</para>
+      <para unique="1091406">RSQRTSS xmm1, xmm2/m32</para>
+      </td>
+     <td><para unique="1091410">RM</para>
+      </td>
+     <td><para unique="1091412">V/V</para>
+      </td>
+     <td><para unique="1091414">SSE</para>
+      </td>
+     <td><para unique="1091416">Computes the approximate reciprocal of the square root of the low single precision floating-point value in xmm2/m32 and stores the results in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091418">VEX.LIG.F3.0F.WIG 52 /r</para>
+      <para unique="1091419">VRSQRTSS xmm1, xmm2, xmm3/m32</para>
+      </td>
+     <td><para unique="1091423">RVM</para>
+      </td>
+     <td><para unique="1091425">V/V</para>
+      </td>
+     <td><para unique="1091427">AVX</para>
+      </td>
+     <td><para unique="1091429">Computes the approximate reciprocal of the square root of the low single precision floating-point value in xmm3/m32 and stores the results in xmm1. Also, upper single precision floating-point values (bits[127:32]) from xmm2 are copied to xmm1[127:32].</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091431">
+   <col width="49.0572pt"/>
+   <col width="110.38319999999999pt"/>
+   <col width="112.41576pt"/>
+   <col width="120.2796pt"/>
+   <col width="116.83368pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091433">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091435">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091437">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091439">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091441">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091443">RM</para>
+      </td>
+     <td valign="middle"><para unique="1091445">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091447">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091449">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091451">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091453">RVM</para>
+      </td>
+     <td valign="middle"><para unique="1091455">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091457">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091459">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091461">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091462">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091464">Computes an approximate reciprocal of the square root of the low single precision floating-point value in the source operand (second operand) stores the single precision floating-point result in the destination operand. The source operand can be an XMM register or a 32-bit memory location. The destination operand is an XMM register. The three high-order doublewords of the destination operand remain unchanged. See Figure 10-6 in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for an illustration of a scalar single precision floating-point operation.</para>
+  <para unique="1091465">The relative error for this approximation is:</para>
+  <programlisting>|Relative Error| &#8804; 1.5 * 2&#8722;12
+The RSQRTSS instruction is not affected by the rounding control bits in the MXCSR register. When a source value is a 0.0, an &#8734; of the sign of the source value is returned. A denormal source value is treated as a 0.0 (of the same sign). When a source value is a negative value (other than &#8722;0.0), a floating-point indefinite is returned. When a source value is an SNaN or QNaN, the SNaN is converted to a QNaN or the source QNaN is returned.
+In 64-bit mode, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).
+128-bit Legacy SSE version: The first source operand and the destination operand are the same. Bits (MAXVL-1:32) of the corresponding YMM destination register remain unchanged.
+VEX.128 encoded version: Bits (MAXVL-1:128) of the destination YMM register are zeroed.</programlisting>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091472">RSQRTSS (128-bit Legacy SSE Version)</title>
+   <programlisting>DEST[31:0] := APPROXIMATE(1/SQRT(SRC2[31:0]))
+DEST[MAXVL-1:32] (Unmodified)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091476">VRSQRTSS (VEX.128 Encoded Version)</title>
+   <programlisting>DEST[31:0] := APPROXIMATE(1/SQRT(SRC2[31:0]))
+DEST[127:32] := SRC1[127:32]
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>RSQRTSS 	__m128 _mm_rsqrt_ss(__m128 a)</string><string>
-</string></programlisting>
+  <programlisting>RSQRTSS 	__m128 _mm_rsqrt_ss(__m128 a)</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091483">
-   <string>None.</string></para>
+  <para unique="1091483">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091488" format="xIndent1">
-   <string>See </string><link linkend="48385: 06_Table: Table 2-22. Type 5 Class Exception Conditions"><string>Table&#160;2&#8209;22, &#8220;Type 5 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091488" format="xIndent1">See <link unique="1091486" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#48385: 06_Table: Table 2-22. Type 5 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;22, &#8220;Type 5 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

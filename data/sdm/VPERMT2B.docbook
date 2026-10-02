@@ -1,41 +1,157 @@
 <instruction name="VPERMT2B">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Full Permute of Bytes From Two Tables Overwriting a Table</shortdesc>
- <longdesc><para unique="1046165">
-   <string>Permutes byte values from two tables, comprising of the first operand (also the destination operand) and the third operand (the second source operand). The second operand (the first source operand) provides byte indices to select byte results from the two tables. The selected byte elements are written to the destination at byte granu&#173;larity under the writemask k1. </string></para>
-  <para unique="1046166">
-   <string>The first and second operands are ZMM/YMM/XMM registers. The second operand contains input indices to select elements from the two input tables in the 1st and 3rd operands. The first operand is also the destination of the result. The second source operand can be a ZMM/YMM/XMM register, or a 512/256/128-bit memory location. In each index byte, the id bit for table selection is bit 6/5/4, and bits [5:0]/[4:0]/[3:0] selects element within each input table.</string></para>
-  <para unique="1046167">
-   <string>Note that these instructions permit a byte value in the source operands to be copied to more than one location in the destination operand. Also, the second table and the indices can be reused in subsequent iterations, but the first table is overwritten.</string></para>
-  <para unique="1046168">
-   <string>Bits (MAX_VL-1:256/128) of the destination are zeroed for VL=256,128.</string></para>
+ <encoding_table><table unique="1046081">
+   <col width="60.572160000000004pt"/>
+   <col width="86.17896pt"/>
+   <col width="26.40024pt"/>
+   <col width="48.74976pt"/>
+   <col width="80.50032pt"/>
+   <col width="208.2492pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1046083">Opcode/</para>
+      <para unique="1046084">Instruction</para>
+      </th>
+     <th><para unique="1046088">Op/</para>
+      <para unique="1046089">En</para>
+      </th>
+     <th><para unique="1046091">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1046093">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1046095">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1046549">EVEX.128.66.0F38.W0 7D /r</para>
+      <para unique="1046550">VPERMT2B xmm1 {k1}{z}, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1046554">A</para>
+      </td>
+     <td><para unique="1046556">V/V</para>
+      </td>
+     <td><para unique="1046558">(AVX512VL AND</para>
+      <para unique="1046559">AVX512_VBMI) OR AVX10.1<anchor id="+703715"/></para>
+      </td>
+     <td><para unique="1046564">Permute bytes in xmm3/m128 and xmm1 using byte indexes in xmm2 and store the byte results in xmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046535">EVEX.256.66.0F38.W0 7D /r</para>
+      <para unique="1046536">VPERMT2B ymm1 {k1}{z}, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1046540">A</para>
+      </td>
+     <td><para unique="1046542">V/V</para>
+      </td>
+     <td><para unique="1046544">(AVX512VL</para>
+      <para unique="1046545">AVX512_VBMI) OR AVX10.1<anchor id="+485349"/></para>
+      </td>
+     <td><para unique="1046547">Permute bytes in ymm3/m256 and ymm1 using byte indexes in ymm2 and store the byte results in ymm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1046522">EVEX.512.66.0F38.W0 7D /r</para>
+      <para unique="1046523">VPERMT2B zmm1 {k1}{z}, zmm2, zmm3/m512</para>
+      </td>
+     <td><para unique="1046527">A</para>
+      </td>
+     <td><para unique="1046529">V/V</para>
+      </td>
+     <td><para unique="1046531">AVX512_VBMI OR AVX10.1<anchor id="+498188"/></para>
+      </td>
+     <td><para unique="1046533">Permute bytes in zmm3/m512 and zmm1 using byte indexes in zmm2 and store the byte results in zmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1046138">
+   <col width="41.459759999999996pt"/>
+   <col width="55.85976pt"/>
+   <col width="99.25704pt"/>
+   <col width="106.758pt"/>
+   <col width="101.83032pt"/>
+   <col width="104.61312000000001pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1046140">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1046142">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1046144">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1046146">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1046148">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1046150">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1046152">A</para>
+      </td>
+     <td valign="middle"><para unique="1046154">Full Mem</para>
+      </td>
+     <td valign="middle"><para unique="1046156">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1046158">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046160">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046162">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046163">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046165">Permutes byte values from two tables, comprising of the first operand (also the destination operand) and the third operand (the second source operand). The second operand (the first source operand) provides byte indices to select byte results from the two tables. The selected byte elements are written to the destination at byte granu&#173;larity under the writemask k1. </para>
+  <para unique="1046166">The first and second operands are ZMM/YMM/XMM registers. The second operand contains input indices to select elements from the two input tables in the 1st and 3rd operands. The first operand is also the destination of the result. The second source operand can be a ZMM/YMM/XMM register, or a 512/256/128-bit memory location. In each index byte, the id bit for table selection is bit 6/5/4, and bits [5:0]/[4:0]/[3:0] selects element within each input table.</para>
+  <para unique="1046167">Note that these instructions permit a byte value in the source operands to be copied to more than one location in the destination operand. Also, the second table and the indices can be reused in subsequent iterations, but the first table is overwritten.</para>
+  <para unique="1046168">Bits (MAX_VL-1:256/128) of the destination are zeroed for VL=256,128.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1046170">VPERMT2B (EVEX encoded versions)</title>
+   <programlisting>(KL, VL) = (16, 128), (32, 256), (64, 512)
+IF VL = 128:
+	id := 3;
+ELSE IF VL = 256:
+	id := 4;
+ELSE IF VL = 512:
+	id := 5;
+FI;
+TMP_DEST[VL-1:0] := DEST[VL-1:0];
+FOR j := 0 TO KL-1
+	off := 8*SRC1[j*8 + id: j*8] ;
+	IF k1[j] OR *no writemask*:
+		DEST[j*8 + 7: j*8] := SRC1[j*8+id+1]? SRC2[off+7:off] : TMP_DEST[off+7:off];
+	ELSE IF *zeroing-masking*
+		DEST[j*8 + 7: j*8] := 0;
+	*ELSE
+		DEST[j*8 + 7: j*8] remains unchanged*
+	FI;
+ENDFOR
+DEST[MAX_VL-1:VL] := 0;</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <para unique="1046192">
-   <string>VPERMT2B __m512i _mm512_permutex2var_epi8(__m512i a, __m512i idx, __m512i b);</string></para>
-  <para unique="1046193">
-   <string>VPERMT2B __m512i _mm512_mask_permutex2var_epi8(__m512i a, __mmask64 k, __m512i idx, __m512i b);</string></para>
-  <para unique="1046194">
-   <string>VPERMT2B __m512i _mm512_maskz_permutex2var_epi8(__mmask64 k, __m512i a, __m512i idx, __m512i b);</string></para>
-  <para unique="1046195">
-   <string>VPERMT2B __m256i _mm256_permutex2var_epi8(__m256i a, __m256i idx, __m256i b);</string></para>
-  <para unique="1046196">
-   <string>VPERMT2B __m256i _mm256_mask_permutex2var_epi8(__m256i a, __mmask32 k, __m256i idx, __m256i b);</string></para>
-  <para unique="1046197">
-   <string>VPERMT2B __m256i _mm256_maskz_permutex2var_epi8(__mmask32 k, __m256i a, __m256i idx, __m256i b);</string></para>
-  <para unique="1046198">
-   <string>VPERMT2B __m128i _mm_permutex2var_epi8(__m128i a, __m128i idx, __m128i b);</string></para>
-  <para unique="1046199">
-   <string>VPERMT2B __m128i _mm_mask_permutex2var_epi8(__m128i a, __mmask16 k, __m128i idx, __m128i b);</string></para>
-  <para unique="1046200">
-   <string>VPERMT2B __m128i _mm_maskz_permutex2var_epi8(__mmask16 k, __m128i a, __m128i idx, __m128i b);</string></para>
+  <para unique="1046192">VPERMT2B __m512i _mm512_permutex2var_epi8(__m512i a, __m512i idx, __m512i b);</para>
+  <para unique="1046193">VPERMT2B __m512i _mm512_mask_permutex2var_epi8(__m512i a, __mmask64 k, __m512i idx, __m512i b);</para>
+  <para unique="1046194">VPERMT2B __m512i _mm512_maskz_permutex2var_epi8(__mmask64 k, __m512i a, __m512i idx, __m512i b);</para>
+  <para unique="1046195">VPERMT2B __m256i _mm256_permutex2var_epi8(__m256i a, __m256i idx, __m256i b);</para>
+  <para unique="1046196">VPERMT2B __m256i _mm256_mask_permutex2var_epi8(__m256i a, __mmask32 k, __m256i idx, __m256i b);</para>
+  <para unique="1046197">VPERMT2B __m256i _mm256_maskz_permutex2var_epi8(__mmask32 k, __m256i a, __m256i idx, __m256i b);</para>
+  <para unique="1046198">VPERMT2B __m128i _mm_permutex2var_epi8(__m128i a, __m128i idx, __m128i b);</para>
+  <para unique="1046199">VPERMT2B __m128i _mm_mask_permutex2var_epi8(__m128i a, __mmask16 k, __m128i idx, __m128i b);</para>
+  <para unique="1046200">VPERMT2B __m128i _mm_maskz_permutex2var_epi8(__mmask16 k, __m128i a, __m128i idx, __m128i b);</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046202">
-   <string>None.</string></para>
+  <para unique="1046202">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046207">
-   <string>See Exceptions Type E4NF.nb in </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046207">See Exceptions Type E4NF.nb in <link unique="1046205" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

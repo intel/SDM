@@ -1,54 +1,127 @@
 <instruction name="MOVQ2DQ">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Move Quadword from MMX Technology to XMM Register</shortdesc>
- <longdesc><para unique="1091441">
-   <string>Moves the quadword from the source operand (second operand) to the low quadword of the destination operand (first operand). The source operand is an MMX technology register and the destination operand is an XMM register. </string></para>
-  <para unique="1091442">
-   <string>This instruction causes a transition from x87 FPU to MMX technology operation (that is, the x87 FPU top-of-stack pointer is set to 0 and the x87 FPU tag word is set to all 0s [valid]). If this instruction is executed while an x87 FPU floating-point exception is pending, the exception is handled before the MOVQ2DQ instruction is executed.</string></para>
-  <para unique="1091443">
-   <string>In 64-bit mode, use of the REX.R prefix permits this instruction to access additional registers (XMM8-XMM15).</string></para>
+ <encoding_table><table unique="1091390">
+   <thead><tr>
+     <th colspan="2"><para unique="1091392">Opcode /</para>
+      <para unique="1091393">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op/ En</para>
+      </th>
+     <th><para unique="1091399">64/32-bit Mode</para>
+      </th>
+     <th><para unique="1091401">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.96256pt"/>
+   <col width="112.26168000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="182.15424000000002pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1091405">F3 0F D6 /r</para>
+      <para unique="1091406">MOVQ2DQ xmm, mm</para>
+      </td>
+     <td><para unique="1091410">RM</para>
+      </td>
+     <td><para unique="1091412">V/V</para>
+      </td>
+     <td><para unique="1091414">SSE2</para>
+      </td>
+     <td><para unique="1091416">Move quadword from mmx to low quadword of xmm.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091418">
+   <col width="45.31248pt"/>
+   <col width="114.60528pt"/>
+   <col width="118.32552pt"/>
+   <col width="112.37256pt"/>
+   <col width="120.60432pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091420">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091422">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091424">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091426">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091428">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091430">RM</para>
+      </td>
+     <td valign="middle"><para unique="1091432">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091434">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091436">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091438">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091439">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091441">Moves the quadword from the source operand (second operand) to the low quadword of the destination operand (first operand). The source operand is an MMX technology register and the destination operand is an XMM register. </para>
+  <para unique="1091442">This instruction causes a transition from x87 FPU to MMX technology operation (that is, the x87 FPU top-of-stack pointer is set to 0 and the x87 FPU tag word is set to all 0s [valid]). If this instruction is executed while an x87 FPU floating-point exception is pending, the exception is handled before the MOVQ2DQ instruction is executed.</para>
+  <para unique="1091443">In 64-bit mode, use of the REX.R prefix permits this instruction to access additional registers (XMM8-XMM15).</para>
   </longdesc>
+ <operation>
+  <programlisting>DEST[63:0] := SRC[63:0];
+DEST[127:64] := 00000000000000000H;</programlisting>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>MOVQ2DQ	__128i _mm_movpi64_epi64 ( __m64 a)</string><string>
-</string></programlisting>
+  <programlisting>MOVQ2DQ	__128i _mm_movpi64_epi64 ( __m64 a)</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091450">
-   <string>None.</string></para>
+  <para unique="1091450">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#NM</string></term>
-    <listitem><string>If CR0.TS[bit 3] = 1. </string></listitem>
+    <term>#NM</term>
+    <listitem><para unique="1091452">If CR0.TS[bit 3] = 1. </para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If CR0.EM[bit 2] = 1.</string></listitem>
-    <listitem><string>If CR4.OSFXSR[bit 9] = 0.</string></listitem>
-    <listitem><string>If CPUID.01H:EDX.SSE2[26] = 0.</string></listitem>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091453">If CR0.EM[bit 2] = 1.</para>
+     </listitem>
+    <listitem><para unique="1091454">If CR4.OSFXSR[bit 9] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091455">If CPUID.01H:EDX.SSE2[26] = 0.</para>
+     </listitem>
+    <listitem><para unique="1091456">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#MF</string></term>
-    <listitem><string>If there is a pending x87 FPU exception.</string></listitem>
+    <term>#MF</term>
+    <listitem><para unique="1091457">If there is a pending x87 FPU exception.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
-  <para unique="1091459" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1091459" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1091461" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1091461" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091463" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1091463" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
-  <para unique="1091467" format="xIndent1">
-   <string>Same exceptions as in</string><indexterm><primary>MOVNTDQ instruction</primary></indexterm><indexterm><primary>MOVNTI instruction</primary></indexterm><string> protected mode.</string></para>
+  <para unique="1091467" format="xIndent1">Same exceptions as in<indexterm><primary>MOVNTDQ instruction</primary></indexterm><indexterm><primary>MOVNTI instruction</primary></indexterm> protected mode.</para>
   </subsection>
  </instruction>

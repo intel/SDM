@@ -1,110 +1,284 @@
 <instruction name="DEC">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Decrement by 1</shortdesc>
- <longdesc><para unique="1261336">
-   <string>Subtracts 1 from the destination operand, while preserving the state of the CF flag. The destination operand can be a register or a memory location. This instruction allows a loop counter to be updated without disturbing the CF flag. (To perform a decrement operation that updates the CF flag, use a SUB instruction with an immediate operand of 1.)</string></para>
-  <para unique="1261338">
-   <string>This instruction can be used with a </string><indexterm><primary>LOCK prefix</primary></indexterm><string>LOCK prefix to allow the instruction to be executed atomically.</string></para>
-  <para unique="1261339">
-   <string>In 64-bit mode, DEC r16 and DEC r32 are not encodable (because opcodes 48H through 4FH are REX prefixes). Otherwise, the instruction&#8217;s 64-bit mode default operation size is 32 bits. Use of the REX.R prefix permits access to additional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. </string></para>
-  <para unique="1261340">
-   <string>See the summary chart at the beginning of this section for encoding data and limits.</string></para>
+ <encoding_table><table unique="1261192">
+   <thead><tr>
+     <th><para unique="1261194">Opcode</para>
+      </th>
+     <th><para unique="1261196">Instruction</para>
+      </th>
+     <th><para unique="1261198">Op/ En</para>
+      </th>
+     <th><para unique="1261200">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261202">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261204">Description</para>
+      </th>
+     </tr>
+    </thead><col width="98.25984pt"/>
+   <col width="111.46464pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="182.15424000000002pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261206">FE /1</para>
+      </td>
+     <td><para unique="1261208">DEC r/m8<footnote><para unique="1262086" format="TableFootnote"><anchor id="70102: TableFootnote: 1. With a REX prefix in 64-bit mode, attempts to acce"/>With a REX prefix in 64-bit mode, attempts to access AH, BH, CH, or DH will instead access SPL, DIL, BPL, or SIL, respectively.</para>
+        </footnote></para>
+      </td>
+     <td><para unique="1261210">M</para>
+      </td>
+     <td><para unique="1261212">Valid</para>
+      </td>
+     <td><para unique="1261214">Valid</para>
+      </td>
+     <td><para unique="1261216">Decrement <italic>r/m8</italic> by 1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261230">FF /1</para>
+      </td>
+     <td><para unique="1261232">DEC r/m16</para>
+      </td>
+     <td><para unique="1261234">M</para>
+      </td>
+     <td><para unique="1261236">Valid</para>
+      </td>
+     <td><para unique="1261238">Valid</para>
+      </td>
+     <td><para unique="1261240">Decrement <italic>r/m16</italic> by 1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261242">FF /1</para>
+      </td>
+     <td><para unique="1261244">DEC r/m32</para>
+      </td>
+     <td><para unique="1261246">M</para>
+      </td>
+     <td><para unique="1261248">Valid</para>
+      </td>
+     <td><para unique="1261250">Valid</para>
+      </td>
+     <td><para unique="1261252">Decrement <italic>r/m32</italic> by 1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261254">REX.W + FF /1</para>
+      </td>
+     <td><para unique="1261256">DEC r/m64</para>
+      </td>
+     <td><para unique="1261258">M</para>
+      </td>
+     <td><para unique="1261260">Valid</para>
+      </td>
+     <td><para unique="1261262">N.E.</para>
+      </td>
+     <td><para unique="1261264">Decrement <italic>r/m64</italic> by 1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261266">48+rw</para>
+      </td>
+     <td><para unique="1261268">DEC r16</para>
+      </td>
+     <td><para unique="1261270">O</para>
+      </td>
+     <td><para unique="1261272">N.E.</para>
+      </td>
+     <td><para unique="1261274">Valid</para>
+      </td>
+     <td><para unique="1261276">Decrement <italic>r16</italic> by 1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261278">48+rd</para>
+      </td>
+     <td><para unique="1261280">DEC r32</para>
+      </td>
+     <td><para unique="1261282">O</para>
+      </td>
+     <td><para unique="1261284">N.E.</para>
+      </td>
+     <td><para unique="1261286">Valid</para>
+      </td>
+     <td><para unique="1261288">Decrement <italic>r32</italic> by 1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1261303">
+   <col width="53.41968pt"/>
+   <col width="116.77176pt"/>
+   <col width="120.56255999999999pt"/>
+   <col width="107.24759999999999pt"/>
+   <col width="113.21784pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1261305">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1261307">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1261309">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1261311">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1261313">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1261315">M</para>
+      </td>
+     <td valign="middle"><para unique="1261317">ModRM:r/m (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1261319">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261321">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261323">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1261325">O</para>
+      </td>
+     <td valign="middle"><para unique="1261327">opcode + rd (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1261329">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261331">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1261333">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1261334">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1261336">Subtracts 1 from the destination operand, while preserving the state of the CF flag. The destination operand can be a register or a memory location. This instruction allows a loop counter to be updated without disturbing the CF flag. (To perform a decrement operation that updates the CF flag, use a SUB instruction with an immediate operand of 1.)</para>
+  <para unique="1261338">This instruction can be used with a <indexterm><primary>LOCK prefix</primary></indexterm>LOCK prefix to allow the instruction to be executed atomically.</para>
+  <para unique="1261339">In 64-bit mode, DEC r16 and DEC r32 are not encodable (because opcodes 48H through 4FH are REX prefixes). Otherwise, the instruction&#8217;s 64-bit mode default operation size is 32 bits. Use of the REX.R prefix permits access to additional registers (R8-R15). Use of the REX.W prefix promotes operation to 64 bits. </para>
+  <para unique="1261340">See the summary chart at the beginning of this section for encoding data and limits.</para>
   </longdesc>
+ <operation>
+  <programlisting>DEST := DEST &#8211; 1;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1261344">
-   <string>The CF flag is not affected. The OF, SF, ZF, AF, and PF flags are set according to the result.</string></para>
+  <para unique="1261344">The CF flag is not affected. The OF, SF, ZF, AF, and PF flags are set according to the result.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the destination operand is located in a non-writable segment.</string></listitem>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
-    <listitem><string>If the DS, ES, FS, or GS register contains a NULL segment selector.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261346">If the destination operand is located in a non-writable segment.</para>
+     </listitem>
+    <listitem><para unique="1261347">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
+    <listitem><para unique="1261348">If the DS, ES, FS, or GS register contains a NULL segment selector.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261349">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261350">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261351">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used but the destination is not a memory operand.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261352">If the LOCK prefix is used but the destination is not a memory operand.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1261354">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS</term>
+    <listitem><para unique="1261355">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used but the destination is not a memory operand.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261356">If the LOCK prefix is used but the destination is not a memory operand.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261358">If a memory operand effective address is outside the CS, DS, ES, FS, or GS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory operand effective address is outside the SS segment limit.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261359">If a memory operand effective address is outside the SS segment limit.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261360">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261361">If alignment checking is enabled and an unaligned memory reference is made.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used but the destination is not a memory operand.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261362">If the LOCK prefix is used but the destination is not a memory operand.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261364" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261364" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#SS(0)</string></term>
-    <listitem><string>If a memory address referencing the SS segment is in a non-canonical form.</string></listitem>
+    <term>#SS(0)</term>
+    <listitem><para unique="1261366">If a memory address referencing the SS segment is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1261367">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code)</string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code)</term>
+    <listitem><para unique="1261368">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1261369">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used but the destination is not a memory operand.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261370">If the LOCK prefix is used but the destination is not a memory operand.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

@@ -1,69 +1,606 @@
 <instruction name="PCMPGTB/PCMPGTW/PCMPGTD">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Compare Packed Signed Integers for Greater Than</shortdesc>
- <longdesc><para unique="1091765">
-   <string>Performs an SIMD signed compare for the greater value of the packed byte, word, or doubleword integers in the destination operand (first operand) and the source operand (second operand). If a data element in the destination operand is greater than the corresponding date element in the source operand, the corresponding data element in the destination operand is set to all 1s; otherwise, it is set to all 0s.</string></para>
-  <para unique="1091766">
-   <string>The PCMPGTB instruction compares the corresponding signed byte integers in the destination and source oper&#173;ands; the PCMPGTW instruction compares the corresponding signed word integers in the destination and source operands; and the PCMPGTD instruction compares the corresponding signed doubleword integers in the destina&#173;tion and source operands.</string></para>
-  <para unique="1091767">
-   <string>In 64-bit mode and not encoded with VEX/EVEX, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).</string></para>
-  <para unique="1091768">
-   <string>Legacy SSE instructions: The source operand can be an MMX technology register or a 64-bit memory location. The destination operand can be an MMX technology register.</string></para>
-  <para unique="1091769">
-   <string>128-bit Legacy SSE version: The second source operand can be an XMM register or a 128-bit memory location. The first source operand and destination operand are XMM registers. Bits (MAXVL-1:128) of the corresponding YMM destination register remain unchanged. </string></para>
-  <para unique="1091770">
-   <string>VEX.128 encoded version: The second source operand can be an XMM register or a 128-bit memory location. The first source operand and destination operand are XMM registers. Bits (MAXVL-1:128) of the corresponding YMM register are zeroed.</string></para>
-  <para unique="1091771">
-   <string>VEX.256 encoded version: The first source operand is a YMM register. The second source operand is a YMM register or a 256-bit memory location. The destination operand is a YMM register.</string></para>
-  <para unique="1091772">
-   <string>EVEX encoded VPCMPGTD: The first source operand (second operand) is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 32-bit memory location. The destination operand (first operand) is a mask register updated according to the writemask k2.</string></para>
-  <para unique="1091773">
-   <string>EVEX encoded VPCMPGTB/W: The first source operand (second operand) is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location. The destination operand (first operand) is a mask register updated according to the writemask k2.</string></para>
+ <encoding_table><table unique="1091390">
+   <col width="78.9336pt"/>
+   <col width="89.54136pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="74.22767999999999pt"/>
+   <col width="197.154pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091392">Opcode/</para>
+      <para unique="1091393">Instruction</para>
+      </th>
+     <th><para unique="1091397">Op/ En</para>
+      </th>
+     <th><para unique="1091399">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091401">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1091414">NP 0F 64 /r<superscript><footnote><para unique="1091410" format="TableFootnote">See note in <link unique="1091408" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#27214: 02_Level: 2.4 Instruction Exception Specification" xrefstyle="SectionNum&amp;Title(,)">Section 2.5, &#8220;Intel&#174; AVX and Intel&#174; SSE Instruction Exception Classification,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Soft&#173;ware Developer&#8217;s Manual, Volume 2A, and <link unique="1092890" linkend="&lt;c&gt;__sdm_vol3B_ch25.fm#65163: 03_Level: 19.25.3 Exception Conditions of Legacy SIMD Instruction Operating" xrefstyle="SectionNum&amp;Title(,)">Section 25.25.3, &#8220;Exception Conditions of Legacy SIMD Instructions Operating on MMX Reg&#173;isters,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B.</para>
+         </footnote></superscript></para>
+      <para unique="1091415">PCMPGTB mm, mm/m64</para>
+      </td>
+     <td><para unique="1091419">A</para>
+      </td>
+     <td><para unique="1091421">V/V</para>
+      </td>
+     <td><para unique="1091423">MMX</para>
+      </td>
+     <td><para unique="1091425">Compare packed signed byte integers in mm and mm/m64 for greater than.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091427">66 0F 64 /r</para>
+      <para unique="1091428">PCMPGTB xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091432">A</para>
+      </td>
+     <td><para unique="1091434">V/V</para>
+      </td>
+     <td><para unique="1091436">SSE2</para>
+      </td>
+     <td><para unique="1091438">Compare packed signed byte integers in xmm1 and xmm2/m128 for greater than.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091440">NP 0F 65 /r<superscript>1</superscript></para>
+      <para unique="1091441">PCMPGTW mm, mm/m64</para>
+      </td>
+     <td><para unique="1091445">A</para>
+      </td>
+     <td><para unique="1091447">V/V</para>
+      </td>
+     <td><para unique="1091449">MMX</para>
+      </td>
+     <td><para unique="1091451">Compare packed signed word integers in mm and mm/m64 for greater than.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091453">66 0F 65 /r</para>
+      <para unique="1091454">PCMPGTW xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091458">A</para>
+      </td>
+     <td><para unique="1091460">V/V </para>
+      </td>
+     <td><para unique="1091462">SSE2</para>
+      </td>
+     <td><para unique="1091464">Compare packed signed word integers in xmm1 and xmm2/m128 for greater than.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091466">NP 0F 66 /r<superscript>1</superscript></para>
+      <para unique="1091467">PCMPGTD mm, mm/m64</para>
+      </td>
+     <td><para unique="1091471">A</para>
+      </td>
+     <td><para unique="1091473">V/V </para>
+      </td>
+     <td><para unique="1091475">MMX</para>
+      </td>
+     <td><para unique="1091477">Compare packed signed doubleword integers in mm and mm/m64 for greater than.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091479">66 0F 66 /r</para>
+      <para unique="1091480">PCMPGTD xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091484">A</para>
+      </td>
+     <td><para unique="1091486">V/V</para>
+      </td>
+     <td><para unique="1091488">SSE2</para>
+      </td>
+     <td><para unique="1091490">Compare packed signed doubleword integers in xmm1 and xmm2/m128 for greater than.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091492">VEX.128.66.0F.WIG 64 /r</para>
+      <para unique="1091493">VPCMPGTB xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1091497">B</para>
+      </td>
+     <td><para unique="1091499">V/V</para>
+      </td>
+     <td><para unique="1091501">AVX</para>
+      </td>
+     <td><para unique="1091503">Compare packed signed byte integers in xmm2 and xmm3/m128 for greater than.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091505">VEX.128.66.0F.WIG 65 /r</para>
+      <para unique="1091506">VPCMPGTW xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1091510">B</para>
+      </td>
+     <td><para unique="1091512">V/V</para>
+      </td>
+     <td><para unique="1091514">AVX</para>
+      </td>
+     <td><para unique="1091516">Compare packed signed word integers in xmm2 and xmm3/m128 for greater than.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091518">VEX.128.66.0F.WIG 66 /r</para>
+      <para unique="1091519">VPCMPGTD xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1091523">B</para>
+      </td>
+     <td><para unique="1091525">V/V</para>
+      </td>
+     <td><para unique="1091527">AVX</para>
+      </td>
+     <td><para unique="1091529">Compare packed signed doubleword integers in xmm2 and xmm3/m128 for greater than.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091531">VEX.256.66.0F.WIG 64 /r</para>
+      <para unique="1091532">VPCMPGTB ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1091536">B</para>
+      </td>
+     <td><para unique="1091538">V/V</para>
+      </td>
+     <td><para unique="1091540">AVX2</para>
+      </td>
+     <td><para unique="1091542">Compare packed signed byte integers in ymm2 and ymm3/m256 for greater than.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091544">VEX.256.66.0F.WIG 65 /r</para>
+      <para unique="1091545">VPCMPGTW ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1091549">B</para>
+      </td>
+     <td><para unique="1091551">V/V</para>
+      </td>
+     <td><para unique="1091553">AVX2</para>
+      </td>
+     <td><para unique="1091555">Compare packed signed word integers in ymm2 and ymm3/m256 for greater than.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091557">VEX.256.66.0F.WIG 66 /r</para>
+      <para unique="1091558">VPCMPGTD ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1091562">B</para>
+      </td>
+     <td><para unique="1091564">V/V</para>
+      </td>
+     <td><para unique="1091566">AVX2</para>
+      </td>
+     <td><para unique="1091568">Compare packed signed doubleword integers in ymm2 and ymm3/m256 for greater than.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092430">EVEX.128.66.0F.W0 66 /r</para>
+      <para unique="1092431">VPCMPGTD k1 {k2}, xmm2, xmm3/m128/m32bcst</para>
+      </td>
+     <td><para unique="1092435">C</para>
+      </td>
+     <td><para unique="1092437">V/V</para>
+      </td>
+     <td><para unique="1092439">(AVX512VL AND</para>
+      <para unique="1092443">AVX512F) OR AVX10.1<anchor id="+937949"/></para>
+      </td>
+     <td><para unique="1092448">Compare Greater between int32 vector xmm2 and int32 vector xmm3/m128/m32bcst, and set vector mask k1 to reflect the zero/nonzero status of each element of the result, under writemask.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092413">EVEX.256.66.0F.W0 66 /r</para>
+      <para unique="1092414">VPCMPGTD k1 {k2}, ymm2, ymm3/m256/m32bcst</para>
+      </td>
+     <td><para unique="1092418">C</para>
+      </td>
+     <td><para unique="1092420">V/V</para>
+      </td>
+     <td><para unique="1092422">(AVX512VL AND</para>
+      <para unique="1092426">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092428">Compare Greater between int32 vector ymm2 and int32 vector ymm3/m256/m32bcst, and set vector mask k1 to reflect the zero/nonzero status of each element of the result, under writemask.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092396">EVEX.512.66.0F.W0 66 /r</para>
+      <para unique="1092397">VPCMPGTD k1 {k2}, zmm2, zmm3/m512/m32bcst</para>
+      </td>
+     <td><para unique="1092401">C</para>
+      </td>
+     <td><para unique="1092403">V/V</para>
+      </td>
+     <td><para unique="1092408">AVX512F </para>
+      <para unique="1092409">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092411">Compare Greater between int32 elements in zmm2 and zmm3/m512/m32bcst, and set destination k1 according to the comparison results under writemask. k2.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092382">EVEX.128.66.0F.WIG 64 /r</para>
+      <para unique="1092383">VPCMPGTB k1 {k2}, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1092387">D</para>
+      </td>
+     <td><para unique="1092389">V/V</para>
+      </td>
+     <td><para unique="1092391">(AVX512VL AND</para>
+      <para unique="1092392">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092394">Compare packed signed byte integers in xmm2 and xmm3/m128 for greater than, and set vector mask k1 to reflect the zero/nonzero status of each element of the result, under writemask.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092368">EVEX.256.66.0F.WIG 64 /r</para>
+      <para unique="1092369">VPCMPGTB k1 {k2}, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1092373">D</para>
+      </td>
+     <td><para unique="1092375">V/V</para>
+      </td>
+     <td><para unique="1092377">(AVX512VL AND</para>
+      <para unique="1092378">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092380">Compare packed signed byte integers in ymm2 and ymm3/m256 for greater than, and set vector mask k1 to reflect the zero/nonzero status of each element of the result, under writemask.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092354">EVEX.512.66.0F.WIG 64 /r</para>
+      <para unique="1092355">VPCMPGTB k1 {k2}, zmm2, zmm3/m512</para>
+      </td>
+     <td><para unique="1092359">D</para>
+      </td>
+     <td><para unique="1092361">V/V</para>
+      </td>
+     <td><para unique="1092363">AVX512BW </para>
+      <para unique="1092364">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092366">Compare packed signed byte integers in zmm2 and zmm3/m512 for greater than, and set vector mask k1 to reflect the zero/nonzero status of each element of the result, under writemask.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092340">EVEX.128.66.0F.WIG 65 /r</para>
+      <para unique="1092341">VPCMPGTW k1 {k2}, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1092345">D</para>
+      </td>
+     <td><para unique="1092347">V/V</para>
+      </td>
+     <td><para unique="1092349">(AVX512VL AND</para>
+      <para unique="1092350">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092352">Compare packed signed word integers in xmm2 and xmm3/m128 for greater than, and set vector mask k1 to reflect the zero/nonzero status of each element of the result, under writemask.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092326">EVEX.256.66.0F.WIG 65 /r</para>
+      <para unique="1092327">VPCMPGTW k1 {k2}, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1092331">D</para>
+      </td>
+     <td><para unique="1092333">V/V</para>
+      </td>
+     <td><para unique="1092335">(AVX512VL AND</para>
+      <para unique="1092336">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092338">Compare packed signed word integers in ymm2 and ymm3/m256 for greater than, and set vector mask k1 to reflect the zero/nonzero status of each element of the result, under writemask.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092312">EVEX.512.66.0F.WIG 65 /r</para>
+      <para unique="1092313">VPCMPGTW k1 {k2}, zmm2, zmm3/m512</para>
+      </td>
+     <td><para unique="1092317">D</para>
+      </td>
+     <td><para unique="1092319">V/V</para>
+      </td>
+     <td><para unique="1092321">AVX512BW </para>
+      <para unique="1092322">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092324">Compare packed signed word integers in zmm2 and zmm3/m512 for greater than, and set vector mask k1 to reflect the zero/nonzero status of each element of the result, under writemask.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091702">
+   <col width="44.31888pt"/>
+   <col width="74.91816pt"/>
+   <col width="94.74696pt"/>
+   <col width="100.1592pt"/>
+   <col width="100.638pt"/>
+   <col width="98.00784pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091704">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091706">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091708">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091710">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091712">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091714">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091716">A</para>
+      </td>
+     <td valign="middle"><para unique="1091718">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091720">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091722">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091724">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091726">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091728">B</para>
+      </td>
+     <td valign="middle"><para unique="1091730">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091732">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091734">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091736">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091738">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091740">C</para>
+      </td>
+     <td valign="middle"><para unique="1091742">Full</para>
+      </td>
+     <td valign="middle"><para unique="1091744">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091746">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091748">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091750">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091752">D</para>
+      </td>
+     <td valign="middle"><para unique="1091754">Full Mem</para>
+      </td>
+     <td valign="middle"><para unique="1091756">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091758">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091760">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091762">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091763">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091765">Performs an SIMD signed compare for the greater value of the packed byte, word, or doubleword integers in the destination operand (first operand) and the source operand (second operand). If a data element in the destination operand is greater than the corresponding date element in the source operand, the corresponding data element in the destination operand is set to all 1s; otherwise, it is set to all 0s.</para>
+  <para unique="1091766">The PCMPGTB instruction compares the corresponding signed byte integers in the destination and source oper&#173;ands; the PCMPGTW instruction compares the corresponding signed word integers in the destination and source operands; and the PCMPGTD instruction compares the corresponding signed doubleword integers in the destina&#173;tion and source operands.</para>
+  <para unique="1091767">In 64-bit mode and not encoded with VEX/EVEX, using a REX prefix in the form of REX.R permits this instruction to access additional registers (XMM8-XMM15).</para>
+  <para unique="1091768">Legacy SSE instructions: The source operand can be an MMX technology register or a 64-bit memory location. The destination operand can be an MMX technology register.</para>
+  <para unique="1091769">128-bit Legacy SSE version: The second source operand can be an XMM register or a 128-bit memory location. The first source operand and destination operand are XMM registers. Bits (MAXVL-1:128) of the corresponding YMM destination register remain unchanged. </para>
+  <para unique="1091770">VEX.128 encoded version: The second source operand can be an XMM register or a 128-bit memory location. The first source operand and destination operand are XMM registers. Bits (MAXVL-1:128) of the corresponding YMM register are zeroed.</para>
+  <para unique="1091771">VEX.256 encoded version: The first source operand is a YMM register. The second source operand is a YMM register or a 256-bit memory location. The destination operand is a YMM register.</para>
+  <para unique="1091772">EVEX encoded VPCMPGTD: The first source operand (second operand) is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location or a 512/256/128-bit vector broadcasted from a 32-bit memory location. The destination operand (first operand) is a mask register updated according to the writemask k2.</para>
+  <para unique="1091773">EVEX encoded VPCMPGTB/W: The first source operand (second operand) is a ZMM/YMM/XMM register. The second source operand can be a ZMM/YMM/XMM register, a 512/256/128-bit memory location. The destination operand (first operand) is a mask register updated according to the writemask k2.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1091775">PCMPGTB (With 64-bit Operands)</title>
+   <programlisting>IF DEST[7:0] &gt; SRC[7:0]
+		THEN DEST[7:0) := FFH;
+		ELSE DEST[7:0] := 0; FI;
+	(* Continue comparison of 2nd through 7th bytes in DEST and SRC *)
+	IF DEST[63:56] &gt; SRC[63:56]
+		THEN DEST[63:56] := FFH;
+		ELSE DEST[63:56] := 0; FI;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091784">COMPARE_BYTES_GREATER (SRC1, SRC2)</title>
+   <programlisting>IF SRC1[7:0] &gt; SRC2[7:0]
+	THEN DEST[7:0] := FFH;
+	ELSE DEST[7:0] := 0; FI;
+(* Continue comparison of 2nd through 15th bytes in SRC1 and SRC2 *)
+	IF SRC1[127:120] &gt; SRC2[127:120]
+	THEN DEST[127:120] := FFH;
+	ELSE DEST[127:120] := 0; FI;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091793">COMPARE_WORDS_GREATER (SRC1, SRC2)</title>
+   <programlisting>IF SRC1[15:0] &gt; SRC2[15:0]
+	THEN DEST[15:0] := FFFFH;
+	ELSE DEST[15:0] := 0; FI;
+(* Continue comparison of 2nd through 7th 16-bit words in SRC1 and SRC2 *)
+	IF SRC1[127:112] &gt; SRC2[127:112]
+	THEN DEST[127:112] := FFFFH;
+	ELSE DEST[127:112] := 0; FI;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091802">COMPARE_DWORDS_GREATER (SRC1, SRC2)</title>
+   <programlisting>IF SRC1[31:0] &gt; SRC2[31:0]
+	THEN DEST[31:0] := FFFFFFFFH;
+	ELSE DEST[31:0] := 0; FI;
+(* Continue comparison of 2nd through 3rd 32-bit dwords in SRC1 and SRC2 *)
+	IF SRC1[127:96] &gt; SRC2[127:96]
+	THEN DEST[127:96] := FFFFFFFFH;
+	ELSE DEST[127:96] := 0; FI;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091811">PCMPGTB (With 128-bit Operands)</title>
+   <programlisting>DEST[127:0] := COMPARE_BYTES_GREATER(DEST[127:0],SRC[127:0])
+DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091815">VPCMPGTB (VEX.128 Encoded Version)</title>
+   <programlisting>DEST[127:0] := COMPARE_BYTES_GREATER(SRC1,SRC2)
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091819">VPCMPGTB (VEX.256 Encoded Version)</title>
+   <programlisting>DEST[127:0] := COMPARE_BYTES_GREATER(SRC1[127:0],SRC2[127:0])
+DEST[255:128] := COMPARE_BYTES_GREATER(SRC1[255:128],SRC2[255:128])
+DEST[MAXVL-1:256] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091824">VPCMPGTB (EVEX Encoded Versions)</title>
+   <programlisting>(KL, VL) = (16, 128), (32, 256), (64, 512)
+FOR j := 0 TO KL-1
+	i := j * 8
+	IF k2[j] OR *no writemask*
+		THEN
+			/* signed comparison */
+			CMP := SRC1[i+7:i] &gt; SRC2[i+7:i];
+			IF CMP = TRUE
+				THEN DEST[j] := 1;
+				ELSE DEST[j] := 0; FI;
+		ELSE 		DEST[j] := 0						; zeroing-masking only	FI;
+	FI;
+ENDFOR
+DEST[MAX_KL-1:KL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091840">PCMPGTW (With 64-bit Operands)</title>
+   <programlisting>IF DEST[15:0] &gt; SRC[15:0]
+		THEN DEST[15:0] := FFFFH;
+		ELSE DEST[15:0] := 0; FI;
+	(* Continue comparison of 2nd and 3rd words in DEST and SRC *)
+	IF DEST[63:48] &gt; SRC[63:48]
+		THEN DEST[63:48] := FFFFH;
+		ELSE DEST[63:48] := 0; FI;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091849">PCMPGTW (With 128-bit Operands)</title>
+   <programlisting>DEST[127:0] := COMPARE_WORDS_GREATER(DEST[127:0],SRC[127:0])
+DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091853">VPCMPGTW (VEX.128 Encoded Version)</title>
+   <programlisting>DEST[127:0] := COMPARE_WORDS_GREATER(SRC1,SRC2)
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091857">VPCMPGTW (VEX.256 Encoded Version)</title>
+   <programlisting>DEST[127:0] := COMPARE_WORDS_GREATER(SRC1[127:0],SRC2[127:0])
+DEST[255:128] := COMPARE_WORDS_GREATER(SRC1[255:128],SRC2[255:128])
+DEST[MAXVL-1:256] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091862">VPCMPGTW (EVEX Encoded Versions)</title>
+   <programlisting>(KL, VL) = (8, 128), (16, 256), (32, 512)
+FOR j := 0 TO KL-1
+	i := j * 16
+	IF k2[j] OR *no writemask*
+		THEN
+			/* signed comparison */
+			CMP := SRC1[i+15:i] &gt; SRC2[i+15:i];
+			IF CMP = TRUE
+				THEN DEST[j] := 1;
+				ELSE DEST[j] := 0; FI;
+		ELSE 		DEST[j] := 0						; zeroing-masking only	FI;
+	FI;
+ENDFOR
+DEST[MAX_KL-1:KL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091878">PCMPGTD (With 64-bit Operands)</title>
+   <programlisting>IF DEST[31:0] &gt; SRC[31:0]
+		THEN DEST[31:0] := FFFFFFFFH;
+		ELSE DEST[31:0] := 0; FI;
+	IF DEST[63:32] &gt; SRC[63:32]
+		THEN DEST[63:32] := FFFFFFFFH;
+		ELSE DEST[63:32] := 0; FI;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091886">PCMPGTD (With 128-bit Operands)</title>
+   <programlisting>DEST[127:0] := COMPARE_DWORDS_GREATER(DEST[127:0],SRC[127:0])
+DEST[MAXVL-1:128] (Unmodified)</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091890">VPCMPGTD (VEX.128 Encoded Version)</title>
+   <programlisting>DEST[127:0] := COMPARE_DWORDS_GREATER(SRC1,SRC2)
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091894">VPCMPGTD (VEX.256 Encoded Version)</title>
+   <programlisting>DEST[127:0] := COMPARE_DWORDS_GREATER(SRC1[127:0],SRC2[127:0])
+DEST[255:128] := COMPARE_DWORDS_GREATER(SRC1[255:128],SRC2[255:128])
+DEST[MAXVL-1:256] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091899">VPCMPGTD (EVEX Encoded Versions)</title>
+   <programlisting>(KL, VL) = (4, 128), (8, 256), (8, 512)
+FOR j := 0 TO KL-1
+	i := j * 32
+	IF k2[j] OR *no writemask*
+		THEN
+			/* signed comparison */
+			IF (EVEX.b = 1) AND (SRC2 *is memory*)
+				THEN CMP := SRC1[i+31:i] &gt; SRC2[31:0];
+				ELSE CMP := SRC1[i+31:i] &gt; SRC2[i+31:i];
+			FI;
+			IF CMP = TRUE
+				THEN DEST[j] := 1;
+				ELSE DEST[j] := 0; FI;
+		ELSE 		DEST[j] := 0						; zeroing-masking only
+	FI;
+ENDFOR
+DEST[MAX_KL-1:KL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalents">
-  <programlisting><string>VPCMPGTB __mmask64 _mm512_cmpgt_epi8_mask(__m512i a, __m512i b);</string><string>
-</string><string>VPCMPGTB __mmask64 _mm512_mask_cmpgt_epi8_mask(__mmask64 k, __m512i a, __m512i b);</string><string>
-</string><string>VPCMPGTB __mmask32 _mm256_cmpgt_epi8_mask(__m256i a, __m256i b);</string><string>
-</string><string>VPCMPGTB __mmask32 _mm256_mask_cmpgt_epi8_mask(__mmask32 k, __m256i a, __m256i b);</string><string>
-</string><string>VPCMPGTB __mmask16 _mm_cmpgt_epi8_mask(__m128i a, __m128i b);</string><string>
-</string><string>VPCMPGTB __mmask16 _mm_mask_cmpgt_epi8_mask(__mmask16 k, __m128i a, __m128i b);</string><string>
-</string><string>VPCMPGTD __mmask16 _mm512_cmpgt_epi32_mask(__m512i a, __m512i b);</string><string>
-</string><string>VPCMPGTD __mmask16 _mm512_mask_cmpgt_epi32_mask(__mmask16 k, __m512i a, __m512i b);</string><string>
-</string><string>VPCMPGTD __mmask8 _mm256_cmpgt_epi32_mask(__m256i a, __m256i b);</string><string>
-</string><string>VPCMPGTD __mmask8 _mm256_mask_cmpgt_epi32_mask(__mmask8 k, __m256i a, __m256i b);</string><string>
-</string><string>VPCMPGTD __mmask8 _mm_cmpgt_epi32_mask(__m128i a, __m128i b);</string><string>
-</string><string>VPCMPGTD __mmask8 _mm_mask_cmpgt_epi32_mask(__mmask8 k, __m128i a, __m128i b);</string><string>
-</string><string>VPCMPGTW __mmask32 _mm512_cmpgt_epi16_mask(__m512i a, __m512i b);</string><string>
-</string><string>VPCMPGTW __mmask32 _mm512_mask_cmpgt_epi16_mask(__mmask32 k, __m512i a, __m512i b);</string><string>
-</string><string>VPCMPGTW __mmask16 _mm256_cmpgt_epi16_mask(__m256i a, __m256i b);</string><string>
-</string><string>VPCMPGTW __mmask16 _mm256_mask_cmpgt_epi16_mask(__mmask16 k, __m256i a, __m256i b);</string><string>
-</string><string>VPCMPGTW __mmask8 _mm_cmpgt_epi16_mask(__m128i a, __m128i b);</string><string>
-</string><string>VPCMPGTW __mmask8 _mm_mask_cmpgt_epi16_mask(__mmask8 k, __m128i a, __m128i b);</string><string>
-</string><string>PCMPGTB 		__m64 _mm_cmpgt_pi8 (__m64 m1, __m64 m2)</string><string>
-</string><string>PCMPGTW 		__m64 _mm_cmpgt_pi16 (__m64 m1, __m64 m2)</string><string>
-</string><string>PCMPGTD 		__m64 _mm_cmpgt_pi32 (__m64 m1, __m64 m2)</string><string>
-</string><string>(V)PCMPGTB 		__m128i _mm_cmpgt_epi8 ( __m128i a, __m128i b)</string><string>
-</string><string>(V)PCMPGTW 		__m128i _mm_cmpgt_epi16 ( __m128i a, __m128i b)</string><string>
-</string><string>(V)DCMPGTD 		__m128i _mm_cmpgt_epi32 ( __m128i a, __m128i b)</string><string>
-</string><string>VPCMPGTB 		__m256i _mm256_cmpgt_epi8 ( __m256i a, __m256i b)</string><string>
-</string><string>VPCMPGTW 		__m256i _mm256_cmpgt_epi16 ( __m256i a, __m256i b)</string><string>
-</string><string>VPCMPGTD 		__m256i _mm256_cmpgt_epi32 ( __m256i a, __m256i b)</string><string>
-</string></programlisting>
+  <programlisting>VPCMPGTB __mmask64 _mm512_cmpgt_epi8_mask(__m512i a, __m512i b);
+VPCMPGTB __mmask64 _mm512_mask_cmpgt_epi8_mask(__mmask64 k, __m512i a, __m512i b);
+VPCMPGTB __mmask32 _mm256_cmpgt_epi8_mask(__m256i a, __m256i b);
+VPCMPGTB __mmask32 _mm256_mask_cmpgt_epi8_mask(__mmask32 k, __m256i a, __m256i b);
+VPCMPGTB __mmask16 _mm_cmpgt_epi8_mask(__m128i a, __m128i b);
+VPCMPGTB __mmask16 _mm_mask_cmpgt_epi8_mask(__mmask16 k, __m128i a, __m128i b);
+VPCMPGTD __mmask16 _mm512_cmpgt_epi32_mask(__m512i a, __m512i b);
+VPCMPGTD __mmask16 _mm512_mask_cmpgt_epi32_mask(__mmask16 k, __m512i a, __m512i b);
+VPCMPGTD __mmask8 _mm256_cmpgt_epi32_mask(__m256i a, __m256i b);
+VPCMPGTD __mmask8 _mm256_mask_cmpgt_epi32_mask(__mmask8 k, __m256i a, __m256i b);
+VPCMPGTD __mmask8 _mm_cmpgt_epi32_mask(__m128i a, __m128i b);
+VPCMPGTD __mmask8 _mm_mask_cmpgt_epi32_mask(__mmask8 k, __m128i a, __m128i b);
+VPCMPGTW __mmask32 _mm512_cmpgt_epi16_mask(__m512i a, __m512i b);
+VPCMPGTW __mmask32 _mm512_mask_cmpgt_epi16_mask(__mmask32 k, __m512i a, __m512i b);
+VPCMPGTW __mmask16 _mm256_cmpgt_epi16_mask(__m256i a, __m256i b);
+VPCMPGTW __mmask16 _mm256_mask_cmpgt_epi16_mask(__mmask16 k, __m256i a, __m256i b);
+VPCMPGTW __mmask8 _mm_cmpgt_epi16_mask(__m128i a, __m128i b);
+VPCMPGTW __mmask8 _mm_mask_cmpgt_epi16_mask(__mmask8 k, __m128i a, __m128i b);
+PCMPGTB 		__m64 _mm_cmpgt_pi8 (__m64 m1, __m64 m2)
+PCMPGTW 		__m64 _mm_cmpgt_pi16 (__m64 m1, __m64 m2)
+PCMPGTD 		__m64 _mm_cmpgt_pi32 (__m64 m1, __m64 m2)
+(V)PCMPGTB 		__m128i _mm_cmpgt_epi8 ( __m128i a, __m128i b)
+(V)PCMPGTW 		__m128i _mm_cmpgt_epi16 ( __m128i a, __m128i b)
+(V)DCMPGTD 		__m128i _mm_cmpgt_epi32 ( __m128i a, __m128i b)
+VPCMPGTB 		__m256i _mm256_cmpgt_epi8 ( __m256i a, __m256i b)
+VPCMPGTW 		__m256i _mm256_cmpgt_epi16 ( __m256i a, __m256i b)
+VPCMPGTD 		__m256i _mm256_cmpgt_epi32 ( __m256i a, __m256i b)</programlisting>
   </subsection>
  <subsection title="Flags Affected">
-  <para unique="1091946">
-   <string>None.</string></para>
+  <para unique="1091946">None.</para>
   </subsection>
  <subsection title="Numeric Exceptions">
-  <para unique="1091948">
-   <string>None.</string></para>
+  <para unique="1091948">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091953" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091957" format="xIndent1">
-   <string>EVEX-encoded VPCMPGTD, see </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091961" format="xIndent1">
-   <string>EVEX-encoded VPCMPGTB/W, see Exceptions Type E4.nb in </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091953" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1091951" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091957" format="xIndent1">EVEX-encoded VPCMPGTD, see <link unique="1091955" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091961" format="xIndent1">EVEX-encoded VPCMPGTB/W, see Exceptions Type E4.nb in <link unique="1091959" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

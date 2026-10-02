@@ -1,47 +1,131 @@
 <instruction name="WAIT/FWAIT">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Wait</shortdesc>
- <longdesc><para unique="1012604">
-   <string>Causes the processor to check for and handle pending, unmasked, floating-point exceptions before proceeding. (FWAIT is an alternate mnemonic for WAIT.)</string></para>
-  <para unique="1012605">
-   <string>This instruction is useful for synchronizing exceptions in critical sections of code. Coding a WAIT instruction after a floating-point instruction ensures that any unmasked floating-point exceptions the instruction may raise are handled before the processor can modify the instruction&#8217;s results. See the section titled &#8220;Floating-Point Exception Synchronization&#8221; in Chapter 8 of the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for more information on using the WAIT/FWAIT instruction.</string></para>
-  <para unique="1012606">
-   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
+ <encoding_table><table unique="1012543">
+   <thead><tr>
+     <th><para unique="1012545">Opcode</para>
+      </th>
+     <th><para unique="1012547">Instruction</para>
+      </th>
+     <th><para unique="1012549">Op/ En</para>
+      </th>
+     <th><para unique="1012551">64-Bit Mode</para>
+      </th>
+     <th><para unique="1012553">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1012555">Description</para>
+      </th>
+     </tr>
+    </thead><col width="97.90776000000001pt"/>
+   <col width="111.06576000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="182.15424000000002pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1012557">9B</para>
+      </td>
+     <td><para unique="1012559">WAIT</para>
+      </td>
+     <td><para unique="1012561">ZO</para>
+      </td>
+     <td><para unique="1012563">Valid</para>
+      </td>
+     <td><para unique="1012565">Valid</para>
+      </td>
+     <td><para unique="1012567">Check pending unmasked floating-point exceptions.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1012569">9B</para>
+      </td>
+     <td><para unique="1012571">FWAIT</para>
+      </td>
+     <td><para unique="1012573">ZO</para>
+      </td>
+     <td><para unique="1012575">Valid</para>
+      </td>
+     <td><para unique="1012577">Valid</para>
+      </td>
+     <td><para unique="1012579">Check pending unmasked floating-point exceptions.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1012581">
+   <col width="47.48472pt"/>
+   <col width="110.22048pt"/>
+   <col width="117.1836pt"/>
+   <col width="114.41951999999999pt"/>
+   <col width="122.66136pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1012583">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1012585">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1012587">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1012589">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1012591">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1012593">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1012595">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012597">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012599">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1012601">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1012602">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1012604">Causes the processor to check for and handle pending, unmasked, floating-point exceptions before proceeding. (FWAIT is an alternate mnemonic for WAIT.)</para>
+  <para unique="1012605">This instruction is useful for synchronizing exceptions in critical sections of code. Coding a WAIT instruction after a floating-point instruction ensures that any unmasked floating-point exceptions the instruction may raise are handled before the processor can modify the instruction&#8217;s results. See the section titled &#8220;Floating-Point Exception Synchronization&#8221; in Chapter 8 of the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1, for more information on using the WAIT/FWAIT instruction.</para>
+  <para unique="1012606">This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</para>
   </longdesc>
+ <operation>
+  <programlisting>CheckForPendingUnmaskedFloatingPointExceptions;</programlisting>
+  </operation>
  <subsection title="FPU Flags Affected">
-  <para unique="1012610">
-   <string>The C0, C1, C2, and C3 flags are undefined.</string></para>
+  <para unique="1012610">The C0, C1, C2, and C3 flags are undefined.</para>
   </subsection>
  <subsection title="Floating-Point Exceptions">
-  <para unique="1012612">
-   <string>None. </string></para>
+  <para unique="1012612">None. </para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#NM</string></term>
-    <listitem><string>If CR0.MP[bit 1] = 1 and CR0.TS[bit 3] = 1.</string></listitem>
+    <term>#NM</term>
+    <listitem><para unique="1012614">If CR0.MP[bit 1] = 1 and CR0.TS[bit 3] = 1.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1012615">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
-  <para unique="1012617" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1012617" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1012619" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1012619" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1012621" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1012621" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
-  <para unique="1012623" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1012623" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  </instruction>

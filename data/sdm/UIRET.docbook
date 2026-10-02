@@ -1,75 +1,183 @@
 <instruction name="UIRET">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>User-Interrupt Return</shortdesc>
- <longdesc><para unique="1091445">
-   <string>UIRET returns from the handling of a user interrupt. It can be executed regardless of CPL.</string></para>
-  <para unique="1091446">
-   <string>Execution of UIRET inside a transactional region causes a transactional abort; the abort loads EAX as it would have had it been due to an execution of IRET.</string></para>
-  <para unique="1091447">
-   <string>UIRET can be tracked by Architectural Last Branch Records (LBRs), Intel Processor Trace (Intel PT), and Perfor&#173;mance Monitoring. For both Intel PT and LBRs, UIRET is recorded in precisely the same manner as IRET. Hence for LBRs, UIRETs fall into the OTHER_BRANCH category, which implies that IA32_LBR_CTL.OTHER_BRANCH[bit 22] must be set to record user-interrupt delivery, and that the IA32_LBR_x_INFO.BR_TYPE field will indicate OTHER_BRANCH for any recorded user interrupt. For Intel PT, control flow tracing must be enabled by setting IA32_RTIT_CTL.BranchEn[bit 13].</string></para>
-  <para unique="1091448">
-   <string>UIRET will also increment performance counters for which counting BR_INST_RETIRED.FAR_BRANCH is enabled.</string></para>
+ <encoding_table><table unique="1091389">
+   <col width="62.346959999999996pt"/>
+   <col width="88.704pt"/>
+   <col width="26.70048pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="203.84928000000002pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091391">Opcode/</para>
+      <para unique="1091392">Instruction</para>
+      </th>
+     <th><para unique="1091396">Op/</para>
+      <para unique="1091397">En</para>
+      </th>
+     <th><para unique="1091399">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091401">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091403">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1091405">F3 0F 01 EC</para>
+      <para unique="1091406">UIRET </para>
+      </td>
+     <td><para unique="1091410">ZO</para>
+      </td>
+     <td><para unique="1091412">V/I</para>
+      </td>
+     <td><para unique="1091414">UINTR</para>
+      </td>
+     <td><para unique="1091416">Return from handling a user interrupt.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091418">
+   <col width="40.61376pt"/>
+   <col width="48.41352pt"/>
+   <col width="100.38816pt"/>
+   <col width="108.07848pt"/>
+   <col width="107.28504pt"/>
+   <col width="105.95232pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091420">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091422">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1091424">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091426">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091428">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091430">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091432">ZO</para>
+      </td>
+     <td valign="middle"><para unique="1091434">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091436">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091438">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091440">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091442">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091443">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091445">UIRET returns from the handling of a user interrupt. It can be executed regardless of CPL.</para>
+  <para unique="1091446">Execution of UIRET inside a transactional region causes a transactional abort; the abort loads EAX as it would have had it been due to an execution of IRET.</para>
+  <para unique="1091447">UIRET can be tracked by Architectural Last Branch Records (LBRs), Intel Processor Trace (Intel PT), and Perfor&#173;mance Monitoring. For both Intel PT and LBRs, UIRET is recorded in precisely the same manner as IRET. Hence for LBRs, UIRETs fall into the OTHER_BRANCH category, which implies that IA32_LBR_CTL.OTHER_BRANCH[bit 22] must be set to record user-interrupt delivery, and that the IA32_LBR_x_INFO.BR_TYPE field will indicate OTHER_BRANCH for any recorded user interrupt. For Intel PT, control flow tracing must be enabled by setting IA32_RTIT_CTL.BranchEn[bit 13].</para>
+  <para unique="1091448">UIRET will also increment performance counters for which counting BR_INST_RETIRED.FAR_BRANCH is enabled.</para>
   </longdesc>
+ <operation>
+  <programlisting>Pop tempRIP;
+	Pop tempRFLAGS;				// see below for how this is used to load RFLAGS
+	Pop tempRSP;
+	IF tempRIP is not canonical in current paging mode
+		THEN #GP(0);
+	FI;
+	IF ShadowStackEnabled(CPL)
+		THEN
+			PopShadowStack SSRIP;
+			IF SSRIP &#8800; tempRIP
+				THEN #CP (FAR-RET/IRET);
+			FI;
+	FI;
+	RIP := tempRIP;
+	// update in RFLAGS only CF, PF, AF, ZF, SF, TF, DF, OF, NT, RF, AC, and ID
+	RFLAGS := (RFLAGS &amp; ~254DD5H) | (tempRFLAGS &amp; 254DD5H);
+	RSP := tempRSP;
+	IF CPUID.07H.01H:EDX.UIRET_UIF[17]&#160;= 1
+		THEN UIF := tempRFLAGS[1];
+		ELSE UIF := 1;
+	FI;
+	Clear any cache-line monitoring established by MONITOR or UMONITOR;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1091470" format="xIndent1">
-   <string>See the Operation section.</string></para>
+  <para unique="1091470" format="xIndent1">See the Operation section.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The UIRET instruction is not recognized in protected mode.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091472">The UIRET instruction is not recognized in protected mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The UIRET instruction is not recognized in real-address mode.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091474">The UIRET instruction is not recognized in real-address mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>The UIRET instruction is not recognized in virtual-8086 mode.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091476">The UIRET instruction is not recognized in virtual-8086 mode.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1091478">
-   <string>#UD	The UIRET instruction is not recognized in compatibility mode.</string></para>
+  <para unique="1091478">#UD	The UIRET instruction is not recognized in compatibility mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0) </string></term>
-    <listitem><string>If the return instruction pointer is non-canonical.</string></listitem>
+    <term>#GP(0) </term>
+    <listitem><para unique="1091480">If the return instruction pointer is non-canonical.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#SS(0) </string></term>
-    <listitem><string>If an attempt to pop a value off the stack causes a non-canonical address to be referenced.</string></listitem>
+    <term>#SS(0) </term>
+    <listitem><para unique="1091481">If an attempt to pop a value off the stack causes a non-canonical address to be referenced.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#PF(fault-code) </string></term>
-    <listitem><string>If a page fault occurs.</string></listitem>
+    <term>#PF(fault-code) </term>
+    <listitem><para unique="1091482">If a page fault occurs.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#AC(0)</string></term>
-    <listitem><string>If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3. </string></listitem>
+    <term>#AC(0)</term>
+    <listitem><para unique="1091483">If alignment checking is enabled and an unaligned memory reference is made while the current privilege level is 3. </para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#CP</string></term>
-    <listitem><string>If return instruction pointer from stack and shadow stack do not match.</string></listitem>
+    <term>#CP</term>
+    <listitem><para unique="1091484">If return instruction pointer from stack and shadow stack do not match.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD</string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
-    <listitem><string>If executed inside an enclave.</string></listitem>
-    <listitem><string>If CR4.UINTR = 0.</string></listitem>
-    <listitem><string>If CPUID.07H.00H:EDX.UINTR[5] = 0.</string></listitem>
+    <term>#UD</term>
+    <listitem><para unique="1091485">If the LOCK prefix is used.</para>
+     </listitem>
+    <listitem><para unique="1091486">If executed inside an enclave.</para>
+     </listitem>
+    <listitem><para unique="1091487">If CR4.UINTR = 0.</para>
+     </listitem>
+    <listitem><para unique="1091488">If CPUID.07H.00H:EDX.UINTR[5] = 0.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

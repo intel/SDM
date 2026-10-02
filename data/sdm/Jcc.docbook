@@ -1,76 +1,1471 @@
 <instruction name="Jcc">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Jump if Condition Is Met</shortdesc>
- <longdesc><para unique="1262372">
-   <string>Checks the state of one or more of the </string><indexterm><primary>Status flags, EFLAGS register;EFLAGS register:status flags</primary></indexterm><string>status flags in the EFLAGS register (CF, OF, PF, SF, and ZF) and, if the flags are in the specified state (condition), performs a jump to the target instruction specified by the destination operand. A condition code (</string><italic><string>cc</string></italic><string>) is associated with each instruction to indicate the condition being tested for. If the condition is not satisfied, the jump is not performed and execution continues with the instruction following the J</string><italic><string>cc</string></italic><string> instruction. </string></para>
-  <para unique="1262373">
-   <string>The target instruction is specified with a relative offset (a signed offset relative to the current value of the instruc&#173;tion pointer in the EIP register). A relative offset (</string><italic><string>rel8</string></italic><string>, </string><italic><string>rel16,</string></italic><string> or </string><italic><string>rel32</string></italic><string>) is generally specified as a label in assembly code, but at the machine code level, it is encoded as a signed, 8-bit or 32-bit immediate value, which is added to the instruction pointer. Instruction coding is most efficient for offsets of &#8211;128 to </string><string>+127. If the operand-size attribute is 16, the upper two bytes of the EIP register are cleared, resulting in a maximum instruction pointer size of 16 bits. </string></para>
-  <para unique="1262374">
-   <string>The conditions for each J</string><italic><string>cc</string></italic><string> mnemonic are given in the &#8220;Description&#8221; column of the table on the preceding page. The terms &#8220;less&#8221; and &#8220;greater&#8221; are used for comparisons of signed integers and the terms &#8220;above&#8221; and &#8220;below&#8221; are used for unsigned integers.</string></para>
-  <para unique="1262375">
-   <string>Because a particular state of the status flags can sometimes be interpreted in two ways, two mnemonics are defined for some opcodes. For example, the JA (jump if above) instruction and the JNBE (jump if not below or equal) instruction are alternate mnemonics for the opcode 77H.</string></para>
-  <para unique="1262376">
-   <string>The J</string><italic><string>cc</string></italic><string> instruction does not support far jumps (jumps to other code segments). When the target for the conditional jump is in a different segment, use the opposite condition from the condition being tested for the J</string><italic><string>cc</string></italic><string> instruction, and then access the target with an unconditional far jump (JMP instruction) to the other segment. For example, the following conditional far jump is illegal:</string></para>
-  <programlisting><string>	JZ FARLABEL;</string><string>
-</string></programlisting>
-  <para unique="1262378">
-   <string>To accomplish this far jump, use the following two instructions:</string></para>
-  <programlisting><string>	JNZ BEYOND;</string><string>
-</string><string>	JMP FARLABEL;</string><string>
-</string><string>	BEYOND:</string><string>
-</string></programlisting>
-  <para unique="1262382">
-   <string>The JRCXZ, JECXZ, and JCXZ instructions differ from other J</string><italic><string>cc</string></italic><string> instructions because they do not check status flags. Instead, they check RCX, ECX or CX for 0. The register checked is determined by the address-size attribute. These instructions are useful when used at the beginning of a loop that terminates with a conditional loop instruction (such as LOOPNE). They can be used to prevent an instruction sequence from entering a loop when RCX, ECX or CX is 0. This would cause the loop to execute 2</string><superscript><string>64</string></superscript><string>, 2</string><superscript><string>32</string></superscript><string> or 64K times (not zero times).</string></para>
-  <para unique="1262383">
-   <string>All conditional jumps are converted to code fetches of one or two cache lines, regardless of jump address or cache&#173;ability.</string></para>
-  <para unique="1262384">
-   <string>In 64-bit mode, operand size is fixed at 64 bits. JMP Short is RIP = RIP + 8-bit offset sign extended to 64 bits. JMP Near is RIP = RIP + 32-bit offset sign extended to 64 bits.</string></para>
+ <encoding_table><table unique="1261194">
+   <col width="98.96256pt"/>
+   <col width="112.26168000000001pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="46.728pt"/>
+   <col width="181.404pt"/>
+   <thead><tr>
+     <th><para unique="1261196">Opcode</para>
+      </th>
+     <th><para unique="1261198">Instruction</para>
+      </th>
+     <th><para unique="1261200">Op/ En</para>
+      </th>
+     <th><para unique="1261202">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261204">Compat/&#8232;Leg Mode</para>
+      </th>
+     <th><para unique="1261206">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1261208">77 cb</para>
+      </td>
+     <td><para unique="1261210">JA rel8 </para>
+      </td>
+     <td><para unique="1261212">D</para>
+      </td>
+     <td><para unique="1261214">Valid</para>
+      </td>
+     <td><para unique="1261216">Valid</para>
+      </td>
+     <td><para unique="1261218">Jump short if above (CF=0 and ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261220">73 cb</para>
+      </td>
+     <td><para unique="1261222">JAE rel8</para>
+      </td>
+     <td><para unique="1261224">D</para>
+      </td>
+     <td><para unique="1261226">Valid</para>
+      </td>
+     <td><para unique="1261228">Valid</para>
+      </td>
+     <td><para unique="1261230">Jump short if above or equal (CF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261232">72 cb</para>
+      </td>
+     <td><para unique="1261234">JB rel8</para>
+      </td>
+     <td><para unique="1261236">D</para>
+      </td>
+     <td><para unique="1261238">Valid</para>
+      </td>
+     <td><para unique="1261240">Valid</para>
+      </td>
+     <td><para unique="1261242">Jump short if below (CF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261244">76 cb</para>
+      </td>
+     <td><para unique="1261246">JBE rel8</para>
+      </td>
+     <td><para unique="1261248">D</para>
+      </td>
+     <td><para unique="1261250">Valid</para>
+      </td>
+     <td><para unique="1261252">Valid</para>
+      </td>
+     <td><para unique="1261254">Jump short if below or equal (CF=1 or ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261256">72 cb</para>
+      </td>
+     <td><para unique="1261258">JC rel8</para>
+      </td>
+     <td><para unique="1261260">D</para>
+      </td>
+     <td><para unique="1261262">Valid</para>
+      </td>
+     <td><para unique="1261264">Valid</para>
+      </td>
+     <td><para unique="1261266">Jump short if carry (CF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261268">E3 cb</para>
+      </td>
+     <td><para unique="1261270">JCXZ rel8</para>
+      </td>
+     <td><para unique="1261272">D</para>
+      </td>
+     <td><para unique="1261274">N.E.</para>
+      </td>
+     <td><para unique="1261276">Valid</para>
+      </td>
+     <td><para unique="1261278">Jump short if CX register is 0.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261280">E3 cb</para>
+      </td>
+     <td><para unique="1261282">JECXZ rel8</para>
+      </td>
+     <td><para unique="1261284">D</para>
+      </td>
+     <td><para unique="1261286">Valid</para>
+      </td>
+     <td><para unique="1261288">Valid</para>
+      </td>
+     <td><para unique="1261290">Jump short if ECX register is 0.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261292">E3 cb</para>
+      </td>
+     <td><para unique="1261294">JRCXZ rel8</para>
+      </td>
+     <td><para unique="1261296">D</para>
+      </td>
+     <td><para unique="1261298">Valid</para>
+      </td>
+     <td><para unique="1261300">N.E.</para>
+      </td>
+     <td><para unique="1261302">Jump short if RCX register is 0.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261304">74 cb</para>
+      </td>
+     <td><para unique="1261306">JE rel8</para>
+      </td>
+     <td><para unique="1261308">D</para>
+      </td>
+     <td><para unique="1261310">Valid</para>
+      </td>
+     <td><para unique="1261312">Valid</para>
+      </td>
+     <td><para unique="1261314">Jump short if equal (ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261316">7F cb</para>
+      </td>
+     <td><para unique="1261318">JG rel8</para>
+      </td>
+     <td><para unique="1261320">D</para>
+      </td>
+     <td><para unique="1261322">Valid</para>
+      </td>
+     <td><para unique="1261324">Valid</para>
+      </td>
+     <td><para unique="1261326">Jump short if greater (ZF=0 and SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261328">7D cb</para>
+      </td>
+     <td><para unique="1261330">JGE rel8</para>
+      </td>
+     <td><para unique="1261332">D</para>
+      </td>
+     <td><para unique="1261334">Valid</para>
+      </td>
+     <td><para unique="1261336">Valid</para>
+      </td>
+     <td><para unique="1261338">Jump short if greater or equal (SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261340">7C cb</para>
+      </td>
+     <td><para unique="1261342">JL rel8</para>
+      </td>
+     <td><para unique="1261344">D</para>
+      </td>
+     <td><para unique="1261346">Valid</para>
+      </td>
+     <td><para unique="1261348">Valid</para>
+      </td>
+     <td><para unique="1261350">Jump short if less (SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261352">7E cb</para>
+      </td>
+     <td><para unique="1261354">JLE rel8</para>
+      </td>
+     <td><para unique="1261356">D</para>
+      </td>
+     <td><para unique="1261358">Valid</para>
+      </td>
+     <td><para unique="1261360">Valid</para>
+      </td>
+     <td><para unique="1261362">Jump short if less or equal (ZF=1 or SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261364">76 cb</para>
+      </td>
+     <td><para unique="1261366">JNA rel8</para>
+      </td>
+     <td><para unique="1261368">D</para>
+      </td>
+     <td><para unique="1261370">Valid</para>
+      </td>
+     <td><para unique="1261372">Valid</para>
+      </td>
+     <td><para unique="1261374">Jump short if not above (CF=1 or ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261376">72 cb</para>
+      </td>
+     <td><para unique="1261378">JNAE rel8</para>
+      </td>
+     <td><para unique="1261380">D</para>
+      </td>
+     <td><para unique="1261382">Valid</para>
+      </td>
+     <td><para unique="1261384">Valid</para>
+      </td>
+     <td><para unique="1261386">Jump short if not above or equal (CF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261388">73 cb</para>
+      </td>
+     <td><para unique="1261390">JNB rel8</para>
+      </td>
+     <td><para unique="1261392">D</para>
+      </td>
+     <td><para unique="1261394">Valid</para>
+      </td>
+     <td><para unique="1261396">Valid</para>
+      </td>
+     <td><para unique="1261398">Jump short if not below (CF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261400">77 cb</para>
+      </td>
+     <td><para unique="1261402">JNBE rel8</para>
+      </td>
+     <td><para unique="1261404">D</para>
+      </td>
+     <td><para unique="1261406">Valid</para>
+      </td>
+     <td><para unique="1261408">Valid</para>
+      </td>
+     <td><para unique="1261410">Jump short if not below or equal (CF=0 and ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261412">73 cb</para>
+      </td>
+     <td><para unique="1261414">JNC rel8</para>
+      </td>
+     <td><para unique="1261416">D</para>
+      </td>
+     <td><para unique="1261418">Valid</para>
+      </td>
+     <td><para unique="1261420">Valid</para>
+      </td>
+     <td><para unique="1261422">Jump short if not carry (CF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261424">75 cb</para>
+      </td>
+     <td><para unique="1261426">JNE rel8</para>
+      </td>
+     <td><para unique="1261428">D</para>
+      </td>
+     <td><para unique="1261430">Valid</para>
+      </td>
+     <td><para unique="1261432">Valid</para>
+      </td>
+     <td><para unique="1261434">Jump short if not equal (ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261436">7E cb</para>
+      </td>
+     <td><para unique="1261438">JNG rel8</para>
+      </td>
+     <td><para unique="1261440">D</para>
+      </td>
+     <td><para unique="1261442">Valid</para>
+      </td>
+     <td><para unique="1261444">Valid</para>
+      </td>
+     <td><para unique="1261446">Jump short if not greater (ZF=1 or SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261448">7C cb</para>
+      </td>
+     <td><para unique="1261450">JNGE rel8</para>
+      </td>
+     <td><para unique="1261452">D</para>
+      </td>
+     <td><para unique="1261454">Valid</para>
+      </td>
+     <td><para unique="1261456">Valid</para>
+      </td>
+     <td><para unique="1261458">Jump short if not greater or equal (SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261460">7D cb</para>
+      </td>
+     <td><para unique="1261462">JNL rel8</para>
+      </td>
+     <td><para unique="1261464">D</para>
+      </td>
+     <td><para unique="1261466">Valid</para>
+      </td>
+     <td><para unique="1261468">Valid</para>
+      </td>
+     <td><para unique="1261470">Jump short if not less (SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261472">7F cb</para>
+      </td>
+     <td><para unique="1261474">JNLE rel8</para>
+      </td>
+     <td><para unique="1261476">D</para>
+      </td>
+     <td><para unique="1261478">Valid</para>
+      </td>
+     <td><para unique="1261480">Valid</para>
+      </td>
+     <td><para unique="1261482">Jump short if not less or equal (ZF=0 and SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261484">71 cb</para>
+      </td>
+     <td><para unique="1261486">JNO rel8</para>
+      </td>
+     <td><para unique="1261488">D</para>
+      </td>
+     <td><para unique="1261490">Valid</para>
+      </td>
+     <td><para unique="1261492">Valid</para>
+      </td>
+     <td><para unique="1261494">Jump short if not overflow (OF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261496">7B cb</para>
+      </td>
+     <td><para unique="1261498">JNP rel8</para>
+      </td>
+     <td><para unique="1261500">D</para>
+      </td>
+     <td><para unique="1261502">Valid</para>
+      </td>
+     <td><para unique="1261504">Valid</para>
+      </td>
+     <td><para unique="1261506">Jump short if not parity (PF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261508">79 cb</para>
+      </td>
+     <td><para unique="1261510">JNS rel8</para>
+      </td>
+     <td><para unique="1261512">D</para>
+      </td>
+     <td><para unique="1261514">Valid</para>
+      </td>
+     <td><para unique="1261516">Valid</para>
+      </td>
+     <td><para unique="1261518">Jump short if not sign (SF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261520">75 cb</para>
+      </td>
+     <td><para unique="1261522">JNZ rel8</para>
+      </td>
+     <td><para unique="1261524">D</para>
+      </td>
+     <td><para unique="1261526">Valid</para>
+      </td>
+     <td><para unique="1261528">Valid</para>
+      </td>
+     <td><para unique="1261530">Jump short if not zero (ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261532">70 cb</para>
+      </td>
+     <td><para unique="1261534">JO rel8</para>
+      </td>
+     <td><para unique="1261536">D</para>
+      </td>
+     <td><para unique="1261538">Valid</para>
+      </td>
+     <td><para unique="1261540">Valid</para>
+      </td>
+     <td><para unique="1261542">Jump short if overflow (OF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261544">7A cb</para>
+      </td>
+     <td><para unique="1261546">JP rel8</para>
+      </td>
+     <td><para unique="1261548">D</para>
+      </td>
+     <td><para unique="1261550">Valid</para>
+      </td>
+     <td><para unique="1261552">Valid</para>
+      </td>
+     <td><para unique="1261554">Jump short if parity (PF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261556">7A cb</para>
+      </td>
+     <td><para unique="1261558">JPE rel8</para>
+      </td>
+     <td><para unique="1261560">D</para>
+      </td>
+     <td><para unique="1261562">Valid</para>
+      </td>
+     <td><para unique="1261564">Valid</para>
+      </td>
+     <td><para unique="1261566">Jump short if parity even (PF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261568">7B cb</para>
+      </td>
+     <td><para unique="1261570">JPO rel8</para>
+      </td>
+     <td><para unique="1261572">D</para>
+      </td>
+     <td><para unique="1261574">Valid</para>
+      </td>
+     <td><para unique="1261576">Valid</para>
+      </td>
+     <td><para unique="1261578">Jump short if parity odd (PF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261580">78 cb</para>
+      </td>
+     <td><para unique="1261582">JS rel8</para>
+      </td>
+     <td><para unique="1261584">D</para>
+      </td>
+     <td><para unique="1261586">Valid</para>
+      </td>
+     <td><para unique="1261588">Valid</para>
+      </td>
+     <td><para unique="1261590">Jump short if sign (SF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261592">74 cb</para>
+      </td>
+     <td><para unique="1261594">JZ rel8</para>
+      </td>
+     <td><para unique="1261596">D</para>
+      </td>
+     <td><para unique="1261598">Valid</para>
+      </td>
+     <td><para unique="1261600">Valid</para>
+      </td>
+     <td><para unique="1261602">Jump short if zero (ZF = 1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261604">0F 87 cw</para>
+      </td>
+     <td><para unique="1261606">JA rel16</para>
+      </td>
+     <td><para unique="1261608">D</para>
+      </td>
+     <td><para unique="1261610">N.S.</para>
+      </td>
+     <td><para unique="1261612">Valid</para>
+      </td>
+     <td><para unique="1261614">Jump near if above (CF=0 and ZF=0). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261616">0F 87 cd</para>
+      </td>
+     <td><para unique="1261618">JA rel32</para>
+      </td>
+     <td><para unique="1261620">D</para>
+      </td>
+     <td><para unique="1261622">Valid</para>
+      </td>
+     <td><para unique="1261624">Valid</para>
+      </td>
+     <td><para unique="1261626">Jump near if above (CF=0 and ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261628">0F 83 cw</para>
+      </td>
+     <td><para unique="1261630">JAE rel16</para>
+      </td>
+     <td><para unique="1261632">D</para>
+      </td>
+     <td><para unique="1261634">N.S.</para>
+      </td>
+     <td><para unique="1261636">Valid</para>
+      </td>
+     <td><para unique="1261638">Jump near if above or equal (CF=0). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261640">0F 83 cd</para>
+      </td>
+     <td><para unique="1261642">JAE rel32</para>
+      </td>
+     <td><para unique="1261644">D</para>
+      </td>
+     <td><para unique="1261646">Valid</para>
+      </td>
+     <td><para unique="1261648">Valid</para>
+      </td>
+     <td><para unique="1261650">Jump near if above or equal (CF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261652">0F 82 cw</para>
+      </td>
+     <td><para unique="1261654">JB rel16</para>
+      </td>
+     <td><para unique="1261656">D</para>
+      </td>
+     <td><para unique="1261658">N.S.</para>
+      </td>
+     <td><para unique="1261660">Valid</para>
+      </td>
+     <td><para unique="1261662">Jump near if below (CF=1). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261664">0F 82 cd</para>
+      </td>
+     <td><para unique="1261666">JB rel32</para>
+      </td>
+     <td><para unique="1261668">D</para>
+      </td>
+     <td><para unique="1261670">Valid</para>
+      </td>
+     <td><para unique="1261672">Valid</para>
+      </td>
+     <td><para unique="1261674">Jump near if below (CF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261676">0F 86 cw</para>
+      </td>
+     <td><para unique="1261678">JBE rel16</para>
+      </td>
+     <td><para unique="1261680">D</para>
+      </td>
+     <td><para unique="1261682">N.S.</para>
+      </td>
+     <td><para unique="1261684">Valid</para>
+      </td>
+     <td><para unique="1261686">Jump near if below or equal (CF=1 or ZF=1). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261688">0F 86 cd</para>
+      </td>
+     <td><para unique="1261690">JBE rel32</para>
+      </td>
+     <td><para unique="1261692">D</para>
+      </td>
+     <td><para unique="1261694">Valid</para>
+      </td>
+     <td><para unique="1261696">Valid</para>
+      </td>
+     <td><para unique="1261698">Jump near if below or equal (CF=1 or ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261700">0F 82 cw</para>
+      </td>
+     <td><para unique="1261702">JC rel16</para>
+      </td>
+     <td><para unique="1261704">D</para>
+      </td>
+     <td><para unique="1261706">N.S.</para>
+      </td>
+     <td><para unique="1261708">Valid</para>
+      </td>
+     <td><para unique="1261710">Jump near if carry (CF=1). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261712">0F 82 cd</para>
+      </td>
+     <td><para unique="1261714">JC rel32</para>
+      </td>
+     <td><para unique="1261716">D</para>
+      </td>
+     <td><para unique="1261718">Valid</para>
+      </td>
+     <td><para unique="1261720">Valid</para>
+      </td>
+     <td><para unique="1261722">Jump near if carry (CF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261724">0F 84 cw</para>
+      </td>
+     <td><para unique="1261726">JE rel16</para>
+      </td>
+     <td><para unique="1261728">D</para>
+      </td>
+     <td><para unique="1261730">N.S.</para>
+      </td>
+     <td><para unique="1261732">Valid</para>
+      </td>
+     <td><para unique="1261734">Jump near if equal (ZF=1). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261736">0F 84 cd</para>
+      </td>
+     <td><para unique="1261738">JE rel32</para>
+      </td>
+     <td><para unique="1261740">D</para>
+      </td>
+     <td><para unique="1261742">Valid</para>
+      </td>
+     <td><para unique="1261744">Valid</para>
+      </td>
+     <td><para unique="1261746">Jump near if equal (ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261748">0F 84 cw</para>
+      </td>
+     <td><para unique="1261750">JZ rel16</para>
+      </td>
+     <td><para unique="1261752">D</para>
+      </td>
+     <td><para unique="1261754">N.S.</para>
+      </td>
+     <td><para unique="1261756">Valid</para>
+      </td>
+     <td><para unique="1261758">Jump near if 0 (ZF=1). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261760">0F 84 cd</para>
+      </td>
+     <td><para unique="1261762">JZ rel32</para>
+      </td>
+     <td><para unique="1261764">D</para>
+      </td>
+     <td><para unique="1261766">Valid</para>
+      </td>
+     <td><para unique="1261768">Valid</para>
+      </td>
+     <td><para unique="1261770">Jump near if 0 (ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261772">0F 8F cw</para>
+      </td>
+     <td><para unique="1261774">JG rel16</para>
+      </td>
+     <td><para unique="1261776">D</para>
+      </td>
+     <td><para unique="1261778">N.S.</para>
+      </td>
+     <td><para unique="1261780">Valid</para>
+      </td>
+     <td><para unique="1261782">Jump near if greater (ZF=0 and SF=OF). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261784">0F 8F cd</para>
+      </td>
+     <td><para unique="1261786">JG rel32</para>
+      </td>
+     <td><para unique="1261788">D</para>
+      </td>
+     <td><para unique="1261790">Valid</para>
+      </td>
+     <td><para unique="1261792">Valid</para>
+      </td>
+     <td><para unique="1261794">Jump near if greater (ZF=0 and SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261796">0F 8D cw</para>
+      </td>
+     <td><para unique="1261798">JGE rel16</para>
+      </td>
+     <td><para unique="1261800">D</para>
+      </td>
+     <td><para unique="1261802">N.S.</para>
+      </td>
+     <td><para unique="1261804">Valid</para>
+      </td>
+     <td><para unique="1261806">Jump near if greater or equal (SF=OF). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261808">0F 8D cd</para>
+      </td>
+     <td><para unique="1261810">JGE rel32</para>
+      </td>
+     <td><para unique="1261812">D</para>
+      </td>
+     <td><para unique="1261814">Valid</para>
+      </td>
+     <td><para unique="1261816">Valid</para>
+      </td>
+     <td><para unique="1261818">Jump near if greater or equal (SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261820">0F 8C cw</para>
+      </td>
+     <td><para unique="1261822">JL rel16</para>
+      </td>
+     <td><para unique="1261824">D</para>
+      </td>
+     <td><para unique="1261826">N.S.</para>
+      </td>
+     <td><para unique="1261828">Valid</para>
+      </td>
+     <td><para unique="1261830">Jump near if less (SF&#8800; OF). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261832">0F 8C cd</para>
+      </td>
+     <td><para unique="1261834">JL rel32</para>
+      </td>
+     <td><para unique="1261836">D</para>
+      </td>
+     <td><para unique="1261838">Valid</para>
+      </td>
+     <td><para unique="1261840">Valid</para>
+      </td>
+     <td><para unique="1261842">Jump near if less (SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261844">0F 8E cw</para>
+      </td>
+     <td><para unique="1261846">JLE rel16</para>
+      </td>
+     <td><para unique="1261848">D</para>
+      </td>
+     <td><para unique="1261850">N.S.</para>
+      </td>
+     <td><para unique="1261852">Valid</para>
+      </td>
+     <td><para unique="1261854">Jump near if less or equal (ZF=1 or SF&#8800; OF). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261856">0F 8E cd</para>
+      </td>
+     <td><para unique="1261858">JLE rel32</para>
+      </td>
+     <td><para unique="1261860">D</para>
+      </td>
+     <td><para unique="1261862">Valid</para>
+      </td>
+     <td><para unique="1261864">Valid</para>
+      </td>
+     <td><para unique="1261866">Jump near if less or equal (ZF=1 or SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261868">0F 86 cw</para>
+      </td>
+     <td><para unique="1261870">JNA rel16</para>
+      </td>
+     <td><para unique="1261872">D</para>
+      </td>
+     <td><para unique="1261874">N.S.</para>
+      </td>
+     <td><para unique="1261876">Valid</para>
+      </td>
+     <td><para unique="1261878">Jump near if not above (CF=1 or ZF=1). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261880">0F 86 cd</para>
+      </td>
+     <td><para unique="1261882">JNA rel32</para>
+      </td>
+     <td><para unique="1261884">D</para>
+      </td>
+     <td><para unique="1261886">Valid</para>
+      </td>
+     <td><para unique="1261888">Valid</para>
+      </td>
+     <td><para unique="1261890">Jump near if not above (CF=1 or ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261892">0F 82 cw</para>
+      </td>
+     <td><para unique="1261894">JNAE rel16</para>
+      </td>
+     <td><para unique="1261896">D</para>
+      </td>
+     <td><para unique="1261898">N.S.</para>
+      </td>
+     <td><para unique="1261900">Valid</para>
+      </td>
+     <td><para unique="1261902">Jump near if not above or equal (CF=1). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261904">0F 82 cd</para>
+      </td>
+     <td><para unique="1261906">JNAE rel32</para>
+      </td>
+     <td><para unique="1261908">D</para>
+      </td>
+     <td><para unique="1261910">Valid</para>
+      </td>
+     <td><para unique="1261912">Valid</para>
+      </td>
+     <td><para unique="1261914">Jump near if not above or equal (CF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261916">0F 83 cw</para>
+      </td>
+     <td><para unique="1261918">JNB rel16</para>
+      </td>
+     <td><para unique="1261920">D</para>
+      </td>
+     <td><para unique="1261922">N.S.</para>
+      </td>
+     <td><para unique="1261924">Valid</para>
+      </td>
+     <td><para unique="1261926">Jump near if not below (CF=0). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261928">0F 83 cd</para>
+      </td>
+     <td><para unique="1261930">JNB rel32</para>
+      </td>
+     <td><para unique="1261932">D</para>
+      </td>
+     <td><para unique="1261934">Valid</para>
+      </td>
+     <td><para unique="1261936">Valid</para>
+      </td>
+     <td><para unique="1261938">Jump near if not below (CF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261940">0F 87 cw</para>
+      </td>
+     <td><para unique="1261942">JNBE rel16</para>
+      </td>
+     <td><para unique="1261944">D</para>
+      </td>
+     <td><para unique="1261946">N.S.</para>
+      </td>
+     <td><para unique="1261948">Valid</para>
+      </td>
+     <td><para unique="1261950">Jump near if not below or equal (CF=0 and ZF=0). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261952">0F 87 cd</para>
+      </td>
+     <td><para unique="1261954">JNBE rel32</para>
+      </td>
+     <td><para unique="1261956">D</para>
+      </td>
+     <td><para unique="1261958">Valid</para>
+      </td>
+     <td><para unique="1261960">Valid</para>
+      </td>
+     <td><para unique="1261962">Jump near if not below or equal (CF=0 and ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261964">0F 83 cw</para>
+      </td>
+     <td><para unique="1261966">JNC rel16</para>
+      </td>
+     <td><para unique="1261968">D</para>
+      </td>
+     <td><para unique="1261970">N.S.</para>
+      </td>
+     <td><para unique="1261972">Valid</para>
+      </td>
+     <td><para unique="1261974">Jump near if not carry (CF=0). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261976">0F 83 cd</para>
+      </td>
+     <td><para unique="1261978">JNC rel32</para>
+      </td>
+     <td><para unique="1261980">D</para>
+      </td>
+     <td><para unique="1261982">Valid</para>
+      </td>
+     <td><para unique="1261984">Valid</para>
+      </td>
+     <td><para unique="1261986">Jump near if not carry (CF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261988">0F 85 cw</para>
+      </td>
+     <td><para unique="1261990">JNE rel16</para>
+      </td>
+     <td><para unique="1261992">D</para>
+      </td>
+     <td><para unique="1261994">N.S.</para>
+      </td>
+     <td><para unique="1261996">Valid</para>
+      </td>
+     <td><para unique="1261998">Jump near if not equal (ZF=0). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262000">0F 85 cd</para>
+      </td>
+     <td><para unique="1262002">JNE rel32</para>
+      </td>
+     <td><para unique="1262004">D</para>
+      </td>
+     <td><para unique="1262006">Valid</para>
+      </td>
+     <td><para unique="1262008">Valid</para>
+      </td>
+     <td><para unique="1262010">Jump near if not equal (ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262012">0F 8E cw</para>
+      </td>
+     <td><para unique="1262014">JNG rel16</para>
+      </td>
+     <td><para unique="1262016">D</para>
+      </td>
+     <td><para unique="1262018">N.S.</para>
+      </td>
+     <td><para unique="1262020">Valid</para>
+      </td>
+     <td><para unique="1262022">Jump near if not greater (ZF=1 or SF&#8800; OF). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262024">0F 8E cd</para>
+      </td>
+     <td><para unique="1262026">JNG rel32</para>
+      </td>
+     <td><para unique="1262028">D</para>
+      </td>
+     <td><para unique="1262030">Valid</para>
+      </td>
+     <td><para unique="1262032">Valid</para>
+      </td>
+     <td><para unique="1262034">Jump near if not greater (ZF=1 or SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262036">0F 8C cw</para>
+      </td>
+     <td><para unique="1262038">JNGE rel16</para>
+      </td>
+     <td><para unique="1262040">D</para>
+      </td>
+     <td><para unique="1262042">N.S.</para>
+      </td>
+     <td><para unique="1262044">Valid</para>
+      </td>
+     <td><para unique="1262046">Jump near if not greater or equal (SF&#8800; OF). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262048">0F 8C cd</para>
+      </td>
+     <td><para unique="1262050">JNGE rel32</para>
+      </td>
+     <td><para unique="1262052">D</para>
+      </td>
+     <td><para unique="1262054">Valid</para>
+      </td>
+     <td><para unique="1262056">Valid</para>
+      </td>
+     <td><para unique="1262058">Jump near if not greater or equal (SF&#8800; OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262060">0F 8D cw</para>
+      </td>
+     <td><para unique="1262062">JNL rel16</para>
+      </td>
+     <td><para unique="1262064">D</para>
+      </td>
+     <td><para unique="1262066">N.S.</para>
+      </td>
+     <td><para unique="1262068">Valid</para>
+      </td>
+     <td><para unique="1262070">Jump near if not less (SF=OF). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262072">0F 8D cd</para>
+      </td>
+     <td><para unique="1262074">JNL rel32</para>
+      </td>
+     <td><para unique="1262076">D</para>
+      </td>
+     <td><para unique="1262078">Valid</para>
+      </td>
+     <td><para unique="1262080">Valid</para>
+      </td>
+     <td><para unique="1262082">Jump near if not less (SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262084">0F 8F cw</para>
+      </td>
+     <td><para unique="1262086">JNLE rel16</para>
+      </td>
+     <td><para unique="1262088">D</para>
+      </td>
+     <td><para unique="1262090">N.S.</para>
+      </td>
+     <td><para unique="1262092">Valid</para>
+      </td>
+     <td><para unique="1262094">Jump near if not less or equal (ZF=0 and SF=OF). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262096">0F 8F cd</para>
+      </td>
+     <td><para unique="1262098">JNLE rel32</para>
+      </td>
+     <td><para unique="1262100">D</para>
+      </td>
+     <td><para unique="1262102">Valid</para>
+      </td>
+     <td><para unique="1262104">Valid</para>
+      </td>
+     <td><para unique="1262106">Jump near if not less or equal (ZF=0 and SF=OF).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262108">0F 81 cw</para>
+      </td>
+     <td><para unique="1262110">JNO rel16</para>
+      </td>
+     <td><para unique="1262112">D</para>
+      </td>
+     <td><para unique="1262114">N.S.</para>
+      </td>
+     <td><para unique="1262116">Valid</para>
+      </td>
+     <td><para unique="1262118">Jump near if not overflow (OF=0). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262120">0F 81 cd</para>
+      </td>
+     <td><para unique="1262122">JNO rel32</para>
+      </td>
+     <td><para unique="1262124">D</para>
+      </td>
+     <td><para unique="1262126">Valid</para>
+      </td>
+     <td><para unique="1262128">Valid</para>
+      </td>
+     <td><para unique="1262130">Jump near if not overflow (OF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262132">0F 8B cw</para>
+      </td>
+     <td><para unique="1262134">JNP rel16</para>
+      </td>
+     <td><para unique="1262136">D</para>
+      </td>
+     <td><para unique="1262138">N.S.</para>
+      </td>
+     <td><para unique="1262140">Valid</para>
+      </td>
+     <td><para unique="1262142">Jump near if not parity (PF=0). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262144">0F 8B cd</para>
+      </td>
+     <td><para unique="1262146">JNP rel32</para>
+      </td>
+     <td><para unique="1262148">D</para>
+      </td>
+     <td><para unique="1262150">Valid</para>
+      </td>
+     <td><para unique="1262152">Valid</para>
+      </td>
+     <td><para unique="1262154">Jump near if not parity (PF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262156">0F 89 cw</para>
+      </td>
+     <td><para unique="1262158">JNS rel16</para>
+      </td>
+     <td><para unique="1262160">D</para>
+      </td>
+     <td><para unique="1262162">N.S.</para>
+      </td>
+     <td><para unique="1262164">Valid</para>
+      </td>
+     <td><para unique="1262166">Jump near if not sign (SF=0). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262168">0F 89 cd</para>
+      </td>
+     <td><para unique="1262170">JNS rel32</para>
+      </td>
+     <td><para unique="1262172">D</para>
+      </td>
+     <td><para unique="1262174">Valid</para>
+      </td>
+     <td><para unique="1262176">Valid</para>
+      </td>
+     <td><para unique="1262178">Jump near if not sign (SF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262180">0F 85 cw</para>
+      </td>
+     <td><para unique="1262182">JNZ rel16</para>
+      </td>
+     <td><para unique="1262184">D</para>
+      </td>
+     <td><para unique="1262186">N.S.</para>
+      </td>
+     <td><para unique="1262188">Valid</para>
+      </td>
+     <td><para unique="1262190">Jump near if not zero (ZF=0). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262192">0F 85 cd</para>
+      </td>
+     <td><para unique="1262194">JNZ rel32</para>
+      </td>
+     <td><para unique="1262196">D</para>
+      </td>
+     <td><para unique="1262198">Valid</para>
+      </td>
+     <td><para unique="1262200">Valid</para>
+      </td>
+     <td><para unique="1262202">Jump near if not zero (ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262204">0F 80 cw</para>
+      </td>
+     <td><para unique="1262206">JO rel16</para>
+      </td>
+     <td><para unique="1262208">D</para>
+      </td>
+     <td><para unique="1262210">N.S.</para>
+      </td>
+     <td><para unique="1262212">Valid</para>
+      </td>
+     <td><para unique="1262214">Jump near if overflow (OF=1). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262216">0F 80 cd</para>
+      </td>
+     <td><para unique="1262218">JO rel32</para>
+      </td>
+     <td><para unique="1262220">D</para>
+      </td>
+     <td><para unique="1262222">Valid</para>
+      </td>
+     <td><para unique="1262224">Valid</para>
+      </td>
+     <td><para unique="1262226">Jump near if overflow (OF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262228">0F 8A cw</para>
+      </td>
+     <td><para unique="1262230">JP rel16</para>
+      </td>
+     <td><para unique="1262232">D</para>
+      </td>
+     <td><para unique="1262234">N.S.</para>
+      </td>
+     <td><para unique="1262236">Valid</para>
+      </td>
+     <td><para unique="1262238">Jump near if parity (PF=1). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262240">0F 8A cd</para>
+      </td>
+     <td><para unique="1262242">JP rel32</para>
+      </td>
+     <td><para unique="1262244">D</para>
+      </td>
+     <td><para unique="1262246">Valid</para>
+      </td>
+     <td><para unique="1262248">Valid</para>
+      </td>
+     <td><para unique="1262250">Jump near if parity (PF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262252">0F 8A cw</para>
+      </td>
+     <td><para unique="1262254">JPE rel16</para>
+      </td>
+     <td><para unique="1262256">D</para>
+      </td>
+     <td><para unique="1262258">N.S.</para>
+      </td>
+     <td><para unique="1262260">Valid</para>
+      </td>
+     <td><para unique="1262262">Jump near if parity even (PF=1). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262264">0F 8A cd</para>
+      </td>
+     <td><para unique="1262266">JPE rel32</para>
+      </td>
+     <td><para unique="1262268">D</para>
+      </td>
+     <td><para unique="1262270">Valid</para>
+      </td>
+     <td><para unique="1262272">Valid</para>
+      </td>
+     <td><para unique="1262274">Jump near if parity even (PF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262276">0F 8B cw</para>
+      </td>
+     <td><para unique="1262278">JPO rel16</para>
+      </td>
+     <td><para unique="1262280">D</para>
+      </td>
+     <td><para unique="1262282">N.S.</para>
+      </td>
+     <td><para unique="1262284">Valid</para>
+      </td>
+     <td><para unique="1262286">Jump near if parity odd (PF=0). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262288">0F 8B cd</para>
+      </td>
+     <td><para unique="1262290">JPO rel32</para>
+      </td>
+     <td><para unique="1262292">D</para>
+      </td>
+     <td><para unique="1262294">Valid</para>
+      </td>
+     <td><para unique="1262296">Valid</para>
+      </td>
+     <td><para unique="1262298">Jump near if parity odd (PF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262300">0F 88 cw</para>
+      </td>
+     <td><para unique="1262302">JS rel16</para>
+      </td>
+     <td><para unique="1262304">D</para>
+      </td>
+     <td><para unique="1262306">N.S.</para>
+      </td>
+     <td><para unique="1262308">Valid</para>
+      </td>
+     <td><para unique="1262310">Jump near if sign (SF=1). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262312">0F 88 cd</para>
+      </td>
+     <td><para unique="1262314">JS rel32</para>
+      </td>
+     <td><para unique="1262316">D</para>
+      </td>
+     <td><para unique="1262318">Valid</para>
+      </td>
+     <td><para unique="1262320">Valid</para>
+      </td>
+     <td><para unique="1262322">Jump near if sign (SF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262324">0F 84 cw</para>
+      </td>
+     <td><para unique="1262326">JZ rel16</para>
+      </td>
+     <td><para unique="1262328">D</para>
+      </td>
+     <td><para unique="1262330">N.S.</para>
+      </td>
+     <td><para unique="1262332">Valid</para>
+      </td>
+     <td><para unique="1262334">Jump near if 0 (ZF=1). Not supported in 64-bit mode.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1262336">0F 84 cd</para>
+      </td>
+     <td><para unique="1262338">JZ rel32</para>
+      </td>
+     <td><para unique="1262340">D</para>
+      </td>
+     <td><para unique="1262342">Valid</para>
+      </td>
+     <td><para unique="1262344">Valid</para>
+      </td>
+     <td><para unique="1262346">Jump near if 0 (ZF=1).</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1262348">
+   <col width="49.302pt"/>
+   <col width="113.72112000000001pt"/>
+   <col width="111.2724pt"/>
+   <col width="119.05632pt"/>
+   <col width="118.61856pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1262350">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1262352">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1262354">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1262356">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1262358">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1262360">D</para>
+      </td>
+     <td valign="middle"><para unique="1262362">Offset</para>
+      </td>
+     <td valign="middle"><para unique="1262364">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1262366">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1262368">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1262369">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1262372">Checks the state of one or more of the <indexterm><primary>Status flags, EFLAGS register;EFLAGS register:status flags</primary></indexterm>status flags in the EFLAGS register (CF, OF, PF, SF, and ZF) and, if the flags are in the specified state (condition), performs a jump to the target instruction specified by the destination operand. A condition code (<italic>cc</italic>) is associated with each instruction to indicate the condition being tested for. If the condition is not satisfied, the jump is not performed and execution continues with the instruction following the J<italic>cc</italic> instruction. </para>
+  <para unique="1262373">The target instruction is specified with a relative offset (a signed offset relative to the current value of the instruc&#173;tion pointer in the EIP register). A relative offset (<italic>rel8</italic>, <italic>rel16,</italic> or <italic>rel32</italic>) is generally specified as a label in assembly code, but at the machine code level, it is encoded as a signed, 8-bit or 32-bit immediate value, which is added to the instruction pointer. Instruction coding is most efficient for offsets of &#8211;128 to +127. If the operand-size attribute is 16, the upper two bytes of the EIP register are cleared, resulting in a maximum instruction pointer size of 16 bits. </para>
+  <para unique="1262374">The conditions for each J<italic>cc</italic> mnemonic are given in the &#8220;Description&#8221; column of the table on the preceding page. The terms &#8220;less&#8221; and &#8220;greater&#8221; are used for comparisons of signed integers and the terms &#8220;above&#8221; and &#8220;below&#8221; are used for unsigned integers.</para>
+  <para unique="1262375">Because a particular state of the status flags can sometimes be interpreted in two ways, two mnemonics are defined for some opcodes. For example, the JA (jump if above) instruction and the JNBE (jump if not below or equal) instruction are alternate mnemonics for the opcode 77H.</para>
+  <para unique="1262376">The J<italic>cc</italic> instruction does not support far jumps (jumps to other code segments). When the target for the conditional jump is in a different segment, use the opposite condition from the condition being tested for the J<italic>cc</italic> instruction, and then access the target with an unconditional far jump (JMP instruction) to the other segment. For example, the following conditional far jump is illegal:</para>
+  <programlisting>JZ FARLABEL;
+To accomplish this far jump, use the following two instructions:
+	JNZ BEYOND;
+	JMP FARLABEL;
+	BEYOND:
+The JRCXZ, JECXZ, and JCXZ instructions differ from other Jcc instructions because they do not check status flags. Instead, they check RCX, ECX or CX for 0. The register checked is determined by the address-size attribute. These instructions are useful when used at the beginning of a loop that terminates with a conditional loop instruction (such as LOOPNE). They can be used to prevent an instruction sequence from entering a loop when RCX, ECX or CX is 0. This would cause the loop to execute 264, 232 or 64K times (not zero times).
+All conditional jumps are converted to code fetches of one or two cache lines, regardless of jump address or cache&#173;ability.
+In 64-bit mode, operand size is fixed at 64 bits. JMP Short is RIP = RIP + 8-bit offset sign extended to 64 bits. JMP Near is RIP = RIP + 32-bit offset sign extended to 64 bits.</programlisting>
   </longdesc>
+ <operation>
+  <programlisting>IF condition
+	THEN
+ 		tempEIP := EIP + SignExtend(DEST);
+ 		IF OperandSize = 16
+			THEN tempEIP := tempEIP AND 0000FFFFH;
+ 		FI;
+	IF tempEIP is not within code segment limit
+		THEN #GP(0);
+ 		ELSE EIP := tempEIP
+ 	FI;
+FI;</programlisting>
+  </operation>
  <subsection title="Flags Affected">
-  <para unique="1262398">
-   <string>None.</string></para>
+  <para unique="1262398">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the offset being jumped to is beyond the limits of the CS segment.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1262400">If the offset being jumped to is beyond the limits of the CS segment.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1262401">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP</string></term>
-    <listitem><string>If the offset being jumped to is beyond the limits of the CS segment or is outside of the effec&#173;tive address space from 0 to FFFFH. This condition can occur if a 32-bit address size override prefix is used.</string></listitem>
+    <term>#GP</term>
+    <listitem><para unique="1262403">If the offset being jumped to is beyond the limits of the CS segment or is outside of the effec&#173;tive address space from 0 to FFFFH. This condition can occur if a 32-bit address size override prefix is used.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1262404">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1262406">
-   <string>Same exceptions as in real address mode.</string></para>
+  <para unique="1262406">Same exceptions as in real address mode.</para>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1262408" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1262408" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#GP(0)</string></term>
-    <listitem><string>If the memory address is in a non-canonical form.</string></listitem>
+    <term>#GP(0)</term>
+    <listitem><para unique="1262410">If the memory address is in a non-canonical form.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1262411">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>

@@ -1,70 +1,185 @@
 <instruction name="FCMOVcc">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Floating-Point Conditional Move</shortdesc>
- <longdesc><para unique="1261290">
-   <string>Tests the status flags in the </string><indexterm><primary>Status flags, EFLAGS register;EFLAGS register:condition codes</primary></indexterm><string>EFLAGS register and moves the source operand (second operand) to the destination operand (first operand) if the given test condition is true. The condition for each mnemonic os given in the Descrip&#173;tion column above and in </string><link linkend="12935: H1Heading: Chapter 7 Numeric Programming Environment"><string>Chapter 8</string></link><string> in the Intel</string><string>&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1. The source operand is always in the ST(i) register and the destination operand is always ST(0).</string></para>
-  <para unique="1261294">
-   <string>The FCMOV</string><italic><string>cc</string></italic><string> instructions are useful for optimizing small IF constructions. They also help eliminate branching over&#173;head for IF operations and the possibility of branch mispredictions by the processor. </string></para>
-  <para unique="1261295">
-   <string>A processor may not support the FCMOV</string><italic><string>cc</string></italic><string> instructions. Software can check if the FCMOV</string><italic><string>cc</string></italic><string> instructions are supported by checking the processor&#8217;s feature information with the CPUID instruction (see </string><link linkend="93844: 05_Level: COMISS&#8212;Compare Scalar Ordered Single Precision Floating-Point Values and Set EFLAGS"><string>&#8220;COMISS&#8212;Compare Scalar Ordered Single Precision Floating-Point Values and Set EFLAGS&#8221;</string></link><string> in this chapter). If both the CMOV and FPU feature bits are set, the FCMOV</string><italic><string>cc</string></italic><string> instructions are supported.</string></para>
-  <para unique="1261299">
-   <string>This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</string></para>
-  <section level="7">
-   <title unique="1261300"><string>IA-32 Architecture Compatibility</string></title>
-   <para unique="1261301">
-    <string>The FCMOVcc instructions were introduced to the IA-32 Architecture in the P6 family processors and are not avail&#173;able in earlier IA-32 processors.</string></para>
-   </section>
+ <encoding_table><table unique="1261193">
+   <thead><tr>
+     <th><para unique="1261198">Opcode<footnote><para unique="1261197" format="TableFootnote">See IA-32 Architecture Compatibility section below.</para>
+        </footnote></para>
+      </th>
+     <th><para unique="1261200">Instruction</para>
+      </th>
+     <th><para unique="1261202">64-Bit Mode</para>
+      </th>
+     <th><para unique="1261204">Compat/&#8232;Leg Mode<superscript>1</superscript></para>
+      </th>
+     <th><para unique="1261206">Description</para>
+      </th>
+     </tr>
+    </thead><col width="71.44704pt"/>
+   <col width="147.35016000000002pt"/>
+   <col width="41.82768pt"/>
+   <col width="51.99984pt"/>
+   <col width="199.62576pt"/>
+   <tbody>
+    <tr>
+     <td><para unique="1261208">DA C0+i</para>
+      </td>
+     <td><para unique="1261210">FCMOVB ST(0), ST(i)</para>
+      </td>
+     <td><para unique="1261212">Valid</para>
+      </td>
+     <td><para unique="1261214">Valid</para>
+      </td>
+     <td><para unique="1261216">Move if below (CF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261218">DA C8+i</para>
+      </td>
+     <td><para unique="1261220">FCMOVE ST(0), ST(i)</para>
+      </td>
+     <td><para unique="1261222">Valid</para>
+      </td>
+     <td><para unique="1261224">Valid</para>
+      </td>
+     <td><para unique="1261226">Move if equal (ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261228">DA D0+i</para>
+      </td>
+     <td><para unique="1261230">FCMOVBE ST(0), ST(i)</para>
+      </td>
+     <td><para unique="1261232">Valid</para>
+      </td>
+     <td><para unique="1261234">Valid</para>
+      </td>
+     <td><para unique="1261236">Move if below or equal (CF=1 or ZF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261238">DA D8+i</para>
+      </td>
+     <td><para unique="1261240">FCMOVU ST(0), ST(i)</para>
+      </td>
+     <td><para unique="1261242">Valid</para>
+      </td>
+     <td><para unique="1261244">Valid</para>
+      </td>
+     <td><para unique="1261246">Move if unordered (PF=1).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261248">DB C0+i</para>
+      </td>
+     <td><para unique="1261250">FCMOVNB ST(0), ST(i)</para>
+      </td>
+     <td><para unique="1261252">Valid</para>
+      </td>
+     <td><para unique="1261254">Valid</para>
+      </td>
+     <td><para unique="1261256">Move if not below (CF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261258">DB C8+i</para>
+      </td>
+     <td><para unique="1261260">FCMOVNE ST(0), ST(i)</para>
+      </td>
+     <td><para unique="1261262">Valid</para>
+      </td>
+     <td><para unique="1261264">Valid</para>
+      </td>
+     <td><para unique="1261266">Move if not equal (ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261268">DB D0+i</para>
+      </td>
+     <td><para unique="1261270">FCMOVNBE ST(0), ST(i)</para>
+      </td>
+     <td><para unique="1261272">Valid</para>
+      </td>
+     <td><para unique="1261274">Valid</para>
+      </td>
+     <td><para unique="1261276">Move if not below or equal (CF=0 and ZF=0).</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1261278">DB D8+i</para>
+      </td>
+     <td><para unique="1261280">FCMOVNU ST(0), ST(i)</para>
+      </td>
+     <td><para unique="1261282">Valid</para>
+      </td>
+     <td><para unique="1261284">Valid</para>
+      </td>
+     <td><para unique="1261286">Move if not unordered (PF=0).</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <longdesc><para unique="1261290">Tests the status flags in the <indexterm><primary>Status flags, EFLAGS register;EFLAGS register:condition codes</primary></indexterm>EFLAGS register and moves the source operand (second operand) to the destination operand (first operand) if the given test condition is true. The condition for each mnemonic os given in the Descrip&#173;tion column above and in <link unique="1261292" linkend="&lt;c&gt;__sdm_vol1_ch08.fm#12935: H1Heading: Chapter 7 Numeric Programming Environment" xrefstyle="ChapterNum_CR">Chapter 8</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 1. The source operand is always in the ST(i) register and the destination operand is always ST(0).</para>
+  <para unique="1261294">The FCMOV<italic>cc</italic> instructions are useful for optimizing small IF constructions. They also help eliminate branching over&#173;head for IF operations and the possibility of branch mispredictions by the processor. </para>
+  <para unique="1261295">A processor may not support the FCMOV<italic>cc</italic> instructions. Software can check if the FCMOV<italic>cc</italic> instructions are supported by checking the processor&#8217;s feature information with the CPUID instruction (see <link unique="1261297" linkend="&lt;c&gt;COMISS-Compare-Scalar-Ordered-Single-Precision-Floating-Point-Values-and-Set-EFLAGS.fm#93844: 05_Level: COMISS&#8212;Compare Scalar Ordered Single Precision Floating-Point Values and Set EFLAGS" xrefstyle="SectionTitle">&#8220;COMISS&#8212;Compare Scalar Ordered Single Precision Floating-Point Values and Set EFLAGS&#8221;</link> in this chapter). If both the CMOV and FPU feature bits are set, the FCMOV<italic>cc</italic> instructions are supported.</para>
+  <para unique="1261299">This instruction&#8217;s operation is the same in non-64-bit modes and 64-bit mode.</para>
   </longdesc>
+ <operation>
+  <programlisting>IF condition TRUE
+	THEN ST(0) := ST(i);
+FI;</programlisting>
+  </operation>
  <subsection title="FPU Flags Affected">
   <variablelist>
    <variablelistentry>
-    <term><string>C1</string></term>
-    <listitem><string>Set to 0 if stack underflow occurred.</string></listitem>
+    <term>C1</term>
+    <listitem><para unique="1261307">Set to 0 if stack underflow occurred.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>C0, C2, C3 </string></term>
-    <listitem><string>Undefined.</string></listitem>
+    <term>C0, C2, C3 </term>
+    <listitem><para unique="1261308">Undefined.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Floating-Point Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#IS</string></term>
-    <listitem><string>Stack underflow occurred.</string></listitem>
+    <term>#IS</term>
+    <listitem><para unique="1261310">Stack underflow occurred.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Integer Flags Affected">
-  <para unique="1261312">
-   <string>None.</string></para>
+  <para unique="1261312">None.</para>
   </subsection>
  <subsection title="Protected Mode Exceptions">
   <variablelist>
    <variablelistentry>
-    <term><string>#NM</string></term>
-    <listitem><string>CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</string></listitem>
+    <term>#NM</term>
+    <listitem><para unique="1261314">CR0.EM[bit 2] or CR0.TS[bit 3] = 1.</para>
+     </listitem>
     </variablelistentry>
    <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>If the LOCK prefix is used.</string></listitem>
+    <term>#UD </term>
+    <listitem><para unique="1261315">If the LOCK prefix is used.</para>
+     </listitem>
     </variablelistentry>
    </variablelist>
   </subsection>
  <subsection title="Real-Address Mode Exceptions">
-  <para unique="1261317" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261317" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Virtual-8086 Mode Exceptions">
-  <para unique="1261319" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261319" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="Compatibility Mode Exceptions">
-  <para unique="1261321" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261321" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  <subsection title="64-Bit Mode Exceptions">
-  <para unique="1261323" format="xIndent1">
-   <string>Same exceptions as in protected mode.</string></para>
+  <para unique="1261323" format="xIndent1">Same exceptions as in protected mode.</para>
   </subsection>
  </instruction>

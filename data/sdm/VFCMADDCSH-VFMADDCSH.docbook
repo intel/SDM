@@ -1,63 +1,157 @@
 <instruction name="VFCMADDCSH/VFMADDCSH">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Complex Multiply and Accumulate Scalar FP16 Values</shortdesc>
- <longdesc><para unique="1045948">
-   <string>This instruction performs a complex multiply and accumulate operation. There are normal and complex conjugate forms of the operation.</string></para>
-  <para unique="1045949">
-   <string>The masking for this operation is done on 32-bit quantities representing a pair of FP16 values.</string></para>
-  <para unique="1045950">
-   <string>Bits 127:32 of the destination operand are copied from the corresponding bits of the first source operand. Bits MAXVL-1:128 of the destination operand are zeroed. The low FP16 element of the destination is updated according to the writemask.</string></para>
-  <para unique="1045951">
-   <string>Rounding is performed at every FMA (fused multiply and add) boundary. Execution occurs as if all MXCSR excep&#173;tions are masked. MXCSR status bits are updated to reflect exceptional conditions.</string></para>
+ <encoding_table><table unique="1045885">
+   <col width="153.5976pt"/>
+   <col width="29.90016pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="198.14976pt"/>
+   <thead><tr>
+     <th><para unique="1045887">Opcode/</para>
+      <para unique="1045888">Instruction</para>
+      </th>
+     <th><para unique="1045890">Op/</para>
+      <para unique="1045891">En</para>
+      </th>
+     <th><para unique="1045893">64/32 Bit Mode Support</para>
+      </th>
+     <th><para unique="1045895">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1045897">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td><para unique="1046319">EVEX.LLIG.F2.MAP6.W0 57 /r</para>
+      <para unique="1046320">VFCMADDCSH xmm1{k1}{z}, xmm2, xmm3/m32 {er}</para>
+      </td>
+     <td><para unique="1046322">A</para>
+      </td>
+     <td><para unique="1046324">V/V</para>
+      </td>
+     <td><para unique="1046326">AVX512_FP16 </para>
+      <para unique="1046330">OR AVX10.1<anchor id="+726394"/></para>
+      </td>
+     <td><para unique="1046332">Complex multiply a pair of FP16 values from xmm2 and xmm3/m32, add to xmm1 and store the result in xmm1 subject to writemask k1. Bits 127:32 of xmm2 are copied to xmm1[127:32].</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046307">EVEX.LLIG.F3.MAP6.W0 57 /r</para>
+      <para unique="1046308">VFMADDCSH xmm1{k1}{z}, xmm2, xmm3/m32 {er}</para>
+      </td>
+     <td><para unique="1046310">A</para>
+      </td>
+     <td><para unique="1046312">V/V</para>
+      </td>
+     <td><para unique="1046314">AVX512_FP16 </para>
+      <para unique="1046315">OR AVX10.1<anchor id="+240274"/></para>
+      </td>
+     <td><para unique="1046317">Complex multiply a pair of FP16 values from xmm2 and the complex conjugate of xmm3/m32, add to xmm1 and store the result in xmm1 subject to writemask k1. Bits 127:32 of xmm2 are copied to xmm1[127:32].</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1045921">
+   <col width="43.01352pt"/>
+   <col width="61.01352pt"/>
+   <col width="95.65272pt"/>
+   <col width="104.62608pt"/>
+   <col width="103.85784pt"/>
+   <col width="102.5676pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1045923">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1045925">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1045927">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1045929">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1045931">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1045933">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1045935">A</para>
+      </td>
+     <td valign="middle"><para unique="1045937">Scalar</para>
+      </td>
+     <td valign="middle"><para unique="1045939">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1045941">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045943">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1045945">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1045946">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1045948">This instruction performs a complex multiply and accumulate operation. There are normal and complex conjugate forms of the operation.</para>
+  <para unique="1045949">The masking for this operation is done on 32-bit quantities representing a pair of FP16 values.</para>
+  <para unique="1045950">Bits 127:32 of the destination operand are copied from the corresponding bits of the first source operand. Bits MAXVL-1:128 of the destination operand are zeroed. The low FP16 element of the destination is updated according to the writemask.</para>
+  <para unique="1045951">Rounding is performed at every FMA (fused multiply and add) boundary. Execution occurs as if all MXCSR excep&#173;tions are masked. MXCSR status bits are updated to reflect exceptional conditions.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1045953">VFCMADDCSH dest{k1}, src1, src2 (AVX512)</title>
+   <programlisting>IF k1[0] or *no writemask*:
+	tmp[0] := dest.fp16[0] + src1.fp16[0] * src2.fp16[0]
+	tmp[1] := dest.fp16[1] + src1.fp16[1] * src2.fp16[0]
+	// conjugate version subtracts odd final term
+	dest.fp16[0] := tmp[0] + src1.fp16[1] * src2.fp16[1]
+	dest.fp16[1] := tmp[1] - src1.fp16[0] * src2.fp16[1]
+ELSE IF *zeroing*:
+	dest.fp16[0] := 0
+	dest.fp16[1] := 0
+DEST[127:32] := src1[127:32] // copy upper part of src1
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1045968">VFMADDCSH dest{k1}, src1, src2 (AVX512)</title>
+   <programlisting>IF k1[0] or *no writemask*:
+	tmp[0] := dest.fp16[0] + src1.fp16[0] * src2.fp16[0]
+	tmp[1] := dest.fp16[1] + src1.fp16[1] * src2.fp16[0]
+	// non-conjugate version subtracts last even term
+	dest.fp16[0] := tmp[0] - src1.fp16[1] * src2.fp16[1]
+	dest.fp16[1] := tmp[1] + src1.fp16[0] * src2.fp16[1]
+ELSE IF *zeroing*:
+	dest.fp16[0] := 0
+	dest.fp16[1] := 0
+DEST[127:32] := src1[127:32] // copy upper part of src1
+DEST[MAXVL-1:128] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <para unique="1045983">
-   <string>VFCMADDCSH __m128h _mm_fcmadd_round_sch (__m128h a, __m128h b, __m128h c, const int rounding);</string></para>
-  <para unique="1045984">
-   <string>VFCMADDCSH __m128h _mm_mask_fcmadd_round_sch (__m128h a, __mmask8 k, __m128h b, __m128h c, const int rounding);</string></para>
-  <para unique="1045985">
-   <string>VFCMADDCSH __m128h _mm_mask3_fcmadd_round_sch (__m128h a, __m128h b, __m128h c, __mmask8 k, const int rounding);</string></para>
-  <para unique="1045986">
-   <string>VFCMADDCSH __m128h _mm_maskz_fcmadd_round_sch (__mmask8 k, __m128h a, __m128h b, __m128h c, const int rounding);</string></para>
-  <para unique="1045987">
-   <string>VFCMADDCSH __m128h _mm_fcmadd_sch (__m128h a, __m128h b, __m128h c);</string></para>
-  <para unique="1045988">
-   <string>VFCMADDCSH __m128h _mm_mask_fcmadd_sch (__m128h a, __mmask8 k, __m128h b, __m128h c);</string></para>
-  <para unique="1045989">
-   <string>VFCMADDCSH __m128h _mm_mask3_fcmadd_sch (__m128h a, __m128h b, __m128h c, __mmask8 k);</string></para>
-  <para unique="1045990">
-   <string>VFCMADDCSH __m128h _mm_maskz_fcmadd_sch (__mmask8 k, __m128h a, __m128h b, __m128h c);</string></para>
-  <para unique="1045992">
-   <string>VFMADDCSH __m128h _mm_fmadd_round_sch (__m128h a, __m128h b, __m128h c, const int rounding);</string></para>
-  <para unique="1045993">
-   <string>VFMADDCSH __m128h _mm_mask_fmadd_round_sch (__m128h a, __mmask8 k, __m128h b, __m128h c, const int rounding);</string></para>
-  <para unique="1045994">
-   <string>VFMADDCSH __m128h _mm_mask3_fmadd_round_sch (__m128h a, __m128h b, __m128h c, __mmask8 k, const int rounding);</string></para>
-  <para unique="1045995">
-   <string>VFMADDCSH __m128h _mm_maskz_fmadd_round_sch (__mmask8 k, __m128h a, __m128h b, __m128h c, const int rounding);</string></para>
-  <para unique="1045996">
-   <string>VFMADDCSH __m128h _mm_fmadd_sch (__m128h a, __m128h b, __m128h c);</string></para>
-  <para unique="1045997">
-   <string>VFMADDCSH __m128h _mm_mask_fmadd_sch (__m128h a, __mmask8 k, __m128h b, __m128h c);</string></para>
-  <para unique="1045998">
-   <string>VFMADDCSH __m128h _mm_mask3_fmadd_sch (__m128h a, __m128h b, __m128h c, __mmask8 k);</string></para>
-  <para unique="1045999">
-   <string>VFMADDCSH __m128h _mm_maskz_fmadd_sch (__mmask8 k, __m128h a, __m128h b, __m128h c);</string></para>
+  <para unique="1045983">VFCMADDCSH __m128h _mm_fcmadd_round_sch (__m128h a, __m128h b, __m128h c, const int rounding);</para>
+  <para unique="1045984">VFCMADDCSH __m128h _mm_mask_fcmadd_round_sch (__m128h a, __mmask8 k, __m128h b, __m128h c, const int rounding);</para>
+  <para unique="1045985">VFCMADDCSH __m128h _mm_mask3_fcmadd_round_sch (__m128h a, __m128h b, __m128h c, __mmask8 k, const int rounding);</para>
+  <para unique="1045986">VFCMADDCSH __m128h _mm_maskz_fcmadd_round_sch (__mmask8 k, __m128h a, __m128h b, __m128h c, const int rounding);</para>
+  <para unique="1045987">VFCMADDCSH __m128h _mm_fcmadd_sch (__m128h a, __m128h b, __m128h c);</para>
+  <para unique="1045988">VFCMADDCSH __m128h _mm_mask_fcmadd_sch (__m128h a, __mmask8 k, __m128h b, __m128h c);</para>
+  <para unique="1045989">VFCMADDCSH __m128h _mm_mask3_fcmadd_sch (__m128h a, __m128h b, __m128h c, __mmask8 k);</para>
+  <para unique="1045990">VFCMADDCSH __m128h _mm_maskz_fcmadd_sch (__mmask8 k, __m128h a, __m128h b, __m128h c);</para>
+  <para unique="1045992">VFMADDCSH __m128h _mm_fmadd_round_sch (__m128h a, __m128h b, __m128h c, const int rounding);</para>
+  <para unique="1045993">VFMADDCSH __m128h _mm_mask_fmadd_round_sch (__m128h a, __mmask8 k, __m128h b, __m128h c, const int rounding);</para>
+  <para unique="1045994">VFMADDCSH __m128h _mm_mask3_fmadd_round_sch (__m128h a, __m128h b, __m128h c, __mmask8 k, const int rounding);</para>
+  <para unique="1045995">VFMADDCSH __m128h _mm_maskz_fmadd_round_sch (__mmask8 k, __m128h a, __m128h b, __m128h c, const int rounding);</para>
+  <para unique="1045996">VFMADDCSH __m128h _mm_fmadd_sch (__m128h a, __m128h b, __m128h c);</para>
+  <para unique="1045997">VFMADDCSH __m128h _mm_mask_fmadd_sch (__m128h a, __mmask8 k, __m128h b, __m128h c);</para>
+  <para unique="1045998">VFMADDCSH __m128h _mm_mask3_fmadd_sch (__m128h a, __m128h b, __m128h c, __mmask8 k);</para>
+  <para unique="1045999">VFMADDCSH __m128h _mm_maskz_fmadd_sch (__mmask8 k, __m128h a, __m128h b, __m128h c);</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046001">
-   <string>Invalid, Underflow, Overflow, Precision, Denormal.</string></para>
+  <para unique="1046001">Invalid, Underflow, Overflow, Precision, Denormal.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046006" format="xIndent1">
-   <string>EVEX-encoded instructions, see </string><link linkend="31368: 06_Table: Table 2-58. Type E10 Class Exception Conditions"><string>Table&#160;2&#8209;60, &#8220;Type E10 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1046007" format="xIndent1">
-   <string>Additionally:</string></para>
-  <variablelist>
-   <variablelistentry>
-    <term><string>#UD </string></term>
-    <listitem><string>	If (dest_reg == src1_reg) or (dest_reg == src2_reg).</string></listitem>
-    </variablelistentry>
-   </variablelist>
+  <para unique="1046006" format="xIndent1">EVEX-encoded instructions, see <link unique="1046004" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#31368: 06_Table: Table 2-58. Type E10 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;60, &#8220;Type E10 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1046007" format="xIndent1">Additionally:</para>
+  <para unique="1046008" format="xIndent1">#UD 	If (dest_reg == src1_reg) or (dest_reg == src2_reg).</para>
   </subsection>
  </instruction>

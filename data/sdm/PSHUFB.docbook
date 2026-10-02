@@ -1,46 +1,631 @@
 <instruction name="PSHUFB">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Packed Shuffle Bytes</shortdesc>
- <longdesc><para unique="1092534">
-   <string>PSHUFB (with no VEX or EVEX prefix) performs an in-place shuffle of bytes in the destination operand (the first operand) according to the shuffle control mask in the source operand (the second operand). The instruction permutes the data in the destination operand, leaving the shuffle mask unaffected. If the most significant bit (bit[7]) of each byte of the shuffle control mask is set, then constant zero is written in the result byte. Each byte in the shuffle control mask forms an index to permute the corresponding byte in the destination operand. The value of each index is the least significant 3 bits (64-bit operation) or 4 bits (128-bit operation) of the shuffle control byte. See </string><link linkend="29116: 05_FigureFrame: Figure 4-15. PSHUFB with 64-Bit Operands"><string>Figure&#160;4&#8209;15</string></link><string> for an example for 64-bit operation.</string></para>
-  <para unique="1092549">
-   <string>The 128-bit forms of PSHUFB leave bits MAXVL&#8211;1:128 of the destination register unchanged. A 128-bit memory operand must be aligned on a 16-byte boundary or a general-protection exception (#GP) will be generated. In 64-bit mode, the REX prefix can be used to access XMM8-XMM15.</string></para>
-  <para unique="1092550">
-   <string>The following items apply to VPSHUFB, encoded with a VEX or EVEX prefix:</string></para>
-  <itemizedlist><listitem><para unique="1092551">
-     <string>Each of these forms uses shuffle control bytes in its second source operand to select which bytes in the first source operand to copy to the destination operand.</string></para>
+ <encoding_table><table unique="1091391">
+   <thead><tr>
+     <th colspan="2"><para unique="1091393">Opcode/</para>
+      <para unique="1091394">Instruction</para>
+      </th>
+     <th><para unique="1091398">Op/ En</para>
+      </th>
+     <th><para unique="1091400">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091402">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091404">Description</para>
+      </th>
+     </tr>
+    </thead><col width="84.43872pt"/>
+   <col width="95.78592pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="71.47800000000001pt"/>
+   <col width="186.65424000000002pt"/>
+   <tbody>
+    <tr>
+     <td colspan="2"><para unique="1091415">NP 0F 38 00 /r<superscript><footnote><para unique="1091411" format="TableFootnote">See note in <link unique="1091409" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#27214: 02_Level: 2.4 Instruction Exception Specification" xrefstyle="SectionNum&amp;Title(,)">Section 2.5, &#8220;Intel&#174; AVX and Intel&#174; SSE Instruction Exception Classification,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Soft&#173;ware Developer&#8217;s Manual, Volume 2A, and <link unique="1091413" linkend="&lt;c&gt;__sdm_vol3B_ch25.fm#65163: 03_Level: 19.25.3 Exception Conditions of Legacy SIMD Instruction Operating" xrefstyle="SectionNum&amp;Title(,)">Section 25.25.3, &#8220;Exception Conditions of Legacy SIMD Instructions Operating on MMX Registers,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B.</para>
+         </footnote> </superscript></para>
+      <para unique="1091416">PSHUFB mm1, mm2/m64</para>
+      </td>
+     <td><para unique="1091420">A</para>
+      </td>
+     <td><para unique="1091422">V/V</para>
+      </td>
+     <td><para unique="1091424">SSSE3</para>
+      </td>
+     <td><para unique="1091426">Shuffle bytes in mm1 according to contents of mm2/m64. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091428">66 0F 38 00 /r </para>
+      <para unique="1091429">PSHUFB xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091433">A</para>
+      </td>
+     <td><para unique="1091435">V/V</para>
+      </td>
+     <td><para unique="1091437">SSSE3</para>
+      </td>
+     <td><para unique="1091439">Shuffle bytes in xmm1 according to contents of xmm2/m128.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091441">VEX.128.66.0F38.WIG 00 /r</para>
+      <para unique="1091442">VPSHUFB xmm1, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1091446">B</para>
+      </td>
+     <td><para unique="1091448">V/V</para>
+      </td>
+     <td><para unique="1091450">AVX</para>
+      </td>
+     <td><para unique="1092522">Shuffle bytes from xmm2 into xmm1 according to contents of xmm3/m128.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091454">VEX.256.66.0F38.WIG 00 /r</para>
+      <para unique="1091455">VPSHUFB ymm1, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1091459">B</para>
+      </td>
+     <td><para unique="1091461">V/V</para>
+      </td>
+     <td><para unique="1091463">AVX2</para>
+      </td>
+     <td><para unique="1092524">Shuffle bytes from ymm2 into ymm1 according to contents of ymm3/m256.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092026">EVEX.128.66.0F38.WIG 00 /r</para>
+      <para unique="1092027">VPSHUFB xmm1 {k1}{z}, xmm2, xmm3/m128</para>
+      </td>
+     <td><para unique="1092031">C</para>
+      </td>
+     <td><para unique="1092033">V/V</para>
+      </td>
+     <td><para unique="1092035">(AVX512VL AND</para>
+      <para unique="1092036">AVX512BW) OR AVX10.1<anchor id="+211272"/></para>
+      </td>
+     <td><para unique="1092526">Shuffle bytes from xmm2 into xmm1 according to contents of xmm3/m128 under write mask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092012">EVEX.256.66.0F38.WIG 00 /r</para>
+      <para unique="1092013">VPSHUFB ymm1 {k1}{z}, ymm2, ymm3/m256</para>
+      </td>
+     <td><para unique="1092017">C</para>
+      </td>
+     <td><para unique="1092019">V/V</para>
+      </td>
+     <td><para unique="1092021">(AVX512VL AND</para>
+      <para unique="1092022">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092528">Shuffle bytes from ymm2 into ymm1 according to contents of ymm3/m256 under write mask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091998">EVEX.512.66.0F38.WIG 00 /r</para>
+      <para unique="1091999">VPSHUFB zmm1 {k1}{z}, zmm2, zmm3/m512</para>
+      </td>
+     <td><para unique="1092003">C</para>
+      </td>
+     <td><para unique="1092005">V/V</para>
+      </td>
+     <td><para unique="1092007">AVX512BW </para>
+      <para unique="1092008">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092530">Shuffle bytes from zmm2 into zmm1 according to contents of zmm3/m512 under write mask k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091508">
+   <col width="44.69112pt"/>
+   <col width="72.89064pt"/>
+   <col width="94.39416pt"/>
+   <col width="101.27592pt"/>
+   <col width="101.59416pt"/>
+   <col width="96.66576pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091510">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091512">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091514">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091516">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091518">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091520">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091522">A</para>
+      </td>
+     <td valign="middle"><para unique="1091524">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091526">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1091528">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091530">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091532">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091534">B</para>
+      </td>
+     <td valign="middle"><para unique="1091536">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091538">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091540">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091542">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091544">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091546">C</para>
+      </td>
+     <td valign="middle"><para unique="1091548">Full Mem</para>
+      </td>
+     <td valign="middle"><para unique="1091550">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091552">EVEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091554">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091556">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091557">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1092534">PSHUFB (with no VEX or EVEX prefix) performs an in-place shuffle of bytes in the destination operand (the first operand) according to the shuffle control mask in the source operand (the second operand). The instruction permutes the data in the destination operand, leaving the shuffle mask unaffected. If the most significant bit (bit[7]) of each byte of the shuffle control mask is set, then constant zero is written in the result byte. Each byte in the shuffle control mask forms an index to permute the corresponding byte in the destination operand. The value of each index is the least significant 3 bits (64-bit operation) or 4 bits (128-bit operation) of the shuffle control byte. See <link unique="1092536" linkend="#29116: 05_FigureFrame: Figure 4-15. PSHUFB with 64-Bit Operands" xrefstyle="Figure">Figure&#160;4&#8209;15</link> for an example for 64-bit operation.</para>
+  <para unique="1092549">The 128-bit forms of PSHUFB leave bits MAXVL&#8211;1:128 of the destination register unchanged. A 128-bit memory operand must be aligned on a 16-byte boundary or a general-protection exception (#GP) will be generated. In 64-bit mode, the REX prefix can be used to access XMM8-XMM15.</para>
+  <para unique="1092550">The following items apply to VPSHUFB, encoded with a VEX or EVEX prefix:</para>
+  <itemizedlist>
+   <listitem><para unique="1092551">Each of these forms uses shuffle control bytes in its second source operand to select which bytes in the first source operand to copy to the destination operand.</para>
     </listitem>
-   <listitem><para unique="1092552">
-     <string>These forms operate in one, two, or four 16-byte &#8220;lanes.&#8221; As with the 128-bit form of PSHUFB (above), the low 4 bits of each shuffle control byte determines which of 16 bytes in a source lane is copied to the appropriate byte in the corresponding destination lane.</string></para>
+   <listitem><para unique="1092552">These forms operate in one, two, or four 16-byte &#8220;lanes.&#8221; As with the 128-bit form of PSHUFB (above), the low 4 bits of each shuffle control byte determines which of 16 bytes in a source lane is copied to the appropriate byte in the corresponding destination lane.</para>
     </listitem>
-   <listitem><para unique="1092553">
-     <string>The 128-bit and 256-bit versions of these forms zero upper bits in the destination register beyond the instruction&#8217;s operand size.</string></para>
+   <listitem><para unique="1092553">The 128-bit and 256-bit versions of these forms zero upper bits in the destination register beyond the instruction&#8217;s operand size.</para>
     </listitem>
-   <listitem><para unique="1092554">
-     <string>The EVEX-encoded versions update their destination conditionally with writemask k1.</string></para>
+   <listitem><para unique="1092554">The EVEX-encoded versions update their destination conditionally with writemask k1.</para>
     </listitem>
-   </itemizedlist></longdesc>
+   </itemizedlist>
+  </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1092568">PSHUFB (with 64-bit MMX operands)</title>
+   <programlisting>TEMP := DEST
+FOR destpos := 0 TO 7
+	shufbyte := SRC.byte[destpos];
+	IF shufbyte &amp; 80H = 80H
+		THEN DEST.byte[destpos] := 0;
+		ELSE
+			srcpos := shufbyte &amp; 07H;
+			DEST.byte[destpos] := TEMP.byte[srcpos];
+	FI;
+PSHUFB (with 128-bit SSE operands)
+TEMP := DEST;
+FOR destpos := 0 TO 15
+	shufbyte := SRC.byte[destpos];
+	IF shufbyte &amp; 80H = 80H
+		THEN DEST.byte[destpos] := 0;
+		ELSE
+			srcpos := shufbyte &amp; 0FH;
+			DEST.byte[destpos] := TEMP.byte[srcpos];
+	FI;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1092590">VPSHUFB (VEX.128 encoded version)</title>
+   <programlisting>FOR destpos := 0 TO 15
+	shufbyte := SRC2.byte[destpos];
+	IF shufbyte &amp; 80H = 80H
+		THEN DEST.byte[destpos] := 0;
+		ELSE
+			srcpos := shufbyte &amp; 0FH;
+			DEST.byte[destpos] := SRC1.byte[srcpos];
+	FI;
+DEST[MAXVL&#8211;1:128] := 0;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1092600">VPSHUFB (VEX.256 encoded version)</title>
+   <programlisting>FOR lane := 0 to 1
+	FOR lanepos := 0 TO 15
+		destpos := 16 * lane + lanepos;
+		shufbyte := SRC2.byte[destpos];
+		IF shufbyte &amp; 80H = 80H
+			THEN DEST.byte[destpos] := 0;
+			ELSE
+				srcpos := 16 * lane + (shufbyte &amp; 0FH);
+				DEST.byte[destpos] := SRC1.byte[srcpos];
+		FI;
+DEST[MAXVL&#8211;1:256] := 0;</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1092613">VPSHUFB (EVEX encoded versions)</title>
+   <programlisting>// VL is 128, 256, or 512, depending on instruction encoding
+// no masking if EVEX.aaa = 0; zeroing if EVEX.z = 1
+FOR lane := 0 to VL/128 &#8211; 1
+	FOR lanepos := 0 TO 15
+		destpos := 16 * lane + lanepos;
+		IF no masking OR k[destpos] = 1								// using selected bit from k register
+			THEN
+				shufbyte := SRC2.byte[destpos];
+				IF shufbyte &amp; 80H = 80H
+					THEN DEST.byte[destpos] := 0;
+					ELSE
+						srcpos := 16 * lane + (shufbyte &amp; 0FH);
+						DEST.byte[destpos] := SRC1.byte[srcpos];
+				FI;
+			 ELSE IF zeroing							// if not zeroing, DEST.byte[destpos] is unchanged
+				THEN DEST.byte[destpos] := 0;
+		FI;
+DEST[MAXVL&#8211;1:VL] := 0;
+PSHUFB with 64-Bit Operands
+	
+
+	
+	
+		.st1 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st2 {fill:none;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
+		.st3 {fill:#000000;font-family:Arial;font-size:0.833336em}
+		.st4 {fill:none;marker-end:url(#mrkr1-146);stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st5 {fill:#000000;fill-opacity:1;stroke:#000000;stroke-opacity:1;stroke-width:0.08695652173913}
+		.st6 {marker-end:url(#mrkr13-153);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.2}
+		.st7 {fill:#000000;fill-opacity:1;stroke:#000000;stroke-opacity:1;stroke-width:0.32258064516129}
+		.st8 {marker-start:url(#mrkr13-159);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.2}
+		.st9 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.2}
+		.st10 {marker-end:url(#mrkr13-173);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st11 {fill:none;marker-start:url(#mrkr1-187);stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
+		.st12 {fill:#000000;fill-opacity:1;stroke:#000000;stroke-opacity:1;stroke-width:0.22222222222222}
+		.st13 {marker-start:url(#mrkr1-202);stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st14 {fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1;stroke-width:0.08695652173913}
+		.st15 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	
+	
+
+	
+		
+			
+		
+		
+			
+		
+		
+			
+		
+		
+			
+		
+		
+			
+		
+		
+			
+		
+		
+			
+		
+		
+			
+		
+	
+	
+		Page-1
+		
+		
+			Sheet.1
+			
+				
+			
+		
+		
+			Sheet.2
+			
+				
+			
+		
+		
+			Sheet.3
+			
+				
+			
+		
+		
+			Sheet.11
+			
+				
+			
+		
+		
+			Sheet.12
+			
+				
+			
+		
+		
+			Sheet.5
+			
+				
+			
+		
+		
+			Sheet.6
+			
+				
+			
+		
+		
+			Sheet.10
+			
+				
+			
+		
+		
+			Sheet.7
+			
+				
+			
+		
+		
+			Sheet.9
+			
+				
+			
+		
+		
+			Sheet.8
+			
+				
+			
+		
+		
+			Sheet.4
+			
+				
+			
+		
+		
+			Sheet.14
+			
+				
+			
+		
+		
+			Sheet.15
+			
+				
+			
+		
+		
+			Sheet.16
+			
+				
+			
+		
+		
+			Sheet.17
+			
+				
+			
+		
+		
+			Sheet.18
+			
+				
+			
+		
+		
+			Sheet.19
+			
+				
+			
+		
+		
+			Sheet.20
+			
+				
+			
+		
+		
+			Sheet.21
+			
+				
+			
+		
+		
+			Sheet.22
+			
+				
+			
+		
+		
+			Sheet.23
+			
+				
+			
+		
+		
+			Sheet.24
+			
+				
+			
+		
+		
+			Sheet.25
+			
+				
+			
+		
+		
+			Sheet.26
+			
+				
+			
+		
+		
+			Sheet.27
+			
+				
+			
+		
+		
+			Sheet.28
+			
+				
+			
+		
+		
+			Sheet.29
+			
+				
+			
+		
+		
+			Sheet.30
+			
+				
+			
+		
+		
+			Sheet.31
+			
+				
+			
+		
+		
+			Sheet.32
+			
+				
+			
+		
+		
+			Sheet.33
+			
+				
+			
+		
+		
+			Sheet.34
+			
+				
+			
+		
+		
+			Sheet.35
+			
+				
+			
+		
+		
+			Sheet.36
+			07H 07H FFH 80H 01H 00H 00H 00H
+			
+			
+			
+			07H         07H              FFH               80H               01H           00H               00H            00H		
+		
+			Sheet.37
+			04H 01H 07H 03H 02H 02H FFH 01H
+			
+			
+			
+			04H         01H              07H               03H               02H           02H               FFH            01H		
+		
+			Sheet.38
+			04H 04H 00H 00H FFH 01H 01H 01H
+			
+			
+			
+			04H         04H              00H               00H               FFH           01H               01H            01H		
+		
+			Sheet.39
+			
+		
+		
+			Sheet.40
+			
+		
+		
+			Sheet.41
+			
+		
+		
+			Sheet.42
+			
+		
+		
+			Sheet.43
+			
+		
+		
+			Sheet.44
+			
+		
+		
+			Sheet.45
+			
+		
+		
+			Sheet.46
+			MM2
+			
+			
+			
+			MM2		
+		
+			Sheet.47
+			MM1
+			
+			
+			
+			MM1		
+		
+			Sheet.48
+			MM1
+			
+			
+			
+			MM1		
+		
+			Sheet.13
+			
+		
+		
+			Sheet.49
+			
+		
+		
+			Sheet.50</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <programlisting><string>VPSHUFB __m512i _mm512_shuffle_epi8(__m512i a, __m512i b);</string><string>
-</string><string>VPSHUFB __m512i _mm512_mask_shuffle_epi8(__m512i s, __mmask64 k, __m512i a, __m512i b);</string><string>
-</string><string>VPSHUFB __m512i _mm512_maskz_shuffle_epi8( __mmask64 k, __m512i a, __m512i b);</string><string>
-</string><string>VPSHUFB __m256i _mm256_mask_shuffle_epi8(__m256i s, __mmask32 k, __m256i a, __m256i b);</string><string>
-</string><string>VPSHUFB __m256i _mm256_maskz_shuffle_epi8( __mmask32 k, __m256i a, __m256i b);</string><string>
-</string><string>VPSHUFB __m128i _mm_mask_shuffle_epi8(__m128i s, __mmask16 k, __m128i a, __m128i b);</string><string>
-</string><string>VPSHUFB __m128i _mm_maskz_shuffle_epi8( __mmask16 k, __m128i a, __m128i b);</string><string>
-</string><string>PSHUFB:	 __m64 _mm_shuffle_pi8 (__m64 a, __m64 b)</string><string>
-</string><string>(V)PSHUFB:	 __m128i _mm_shuffle_epi8 (__m128i a, __m128i b)</string><string>
-</string><string>VPSHUFB:	__m256i _mm256_shuffle_epi8(__m256i a, __m256i b)</string><string>
-</string></programlisting>
+  <programlisting>VPSHUFB __m512i _mm512_shuffle_epi8(__m512i a, __m512i b);
+VPSHUFB __m512i _mm512_mask_shuffle_epi8(__m512i s, __mmask64 k, __m512i a, __m512i b);
+VPSHUFB __m512i _mm512_maskz_shuffle_epi8( __mmask64 k, __m512i a, __m512i b);
+VPSHUFB __m256i _mm256_mask_shuffle_epi8(__m256i s, __mmask32 k, __m256i a, __m256i b);
+VPSHUFB __m256i _mm256_maskz_shuffle_epi8( __mmask32 k, __m256i a, __m256i b);
+VPSHUFB __m128i _mm_mask_shuffle_epi8(__m128i s, __mmask16 k, __m128i a, __m128i b);
+VPSHUFB __m128i _mm_maskz_shuffle_epi8( __mmask16 k, __m128i a, __m128i b);
+PSHUFB:	 __m64 _mm_shuffle_pi8 (__m64 a, __m64 b)
+(V)PSHUFB:	 __m128i _mm_shuffle_epi8 (__m128i a, __m128i b)
+VPSHUFB:	__m256i _mm256_shuffle_epi8(__m256i a, __m256i b)</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091650">
-   <string>None.</string></para>
+  <para unique="1091650">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091655" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091659" format="xIndent1">
-   <string>EVEX-encoded instruction, see Exceptions Type E4NF.nb in </string><link linkend="87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions"><string>Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091655" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1091653" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091659" format="xIndent1">EVEX-encoded instruction, see Exceptions Type E4NF.nb in <link unique="1091657" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#87496: 06_Table: Table 2-50. Type E4NF Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;52, &#8220;Type E4NF Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

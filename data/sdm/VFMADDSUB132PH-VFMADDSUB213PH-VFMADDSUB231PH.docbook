@@ -1,108 +1,372 @@
 <instruction name="VFMADDSUB132PH/VFMADDSUB213PH/VFMADDSUB231PH">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Fused Multiply-Alternating Add/Subtract of Packed FP16 Values</shortdesc>
- <longdesc><para unique="1046025">
-   <string>This instruction performs a packed multiply-add (odd elements) or multiply-subtract (even elements) computation on FP16 values using three source operands and writes the results in the destination operand. The destination operand is also the first source operand. The notation&#8217; &#8220;132&#8221;, &#8220;213&#8221; and &#8220;231&#8221; indicate the use of the operands in A * B &#177; C, where each digit corresponds to the operand number, with the destination being operand 1; see </string><link linkend="72673: 06_Table: Table 1-12. Odd and Even Elements"><string>Table 5&#8209;10</string></link><string>.</string></para>
-  <para unique="1046029">
-   <string>The destination elements are updated according to the writemask.</string></para>
-  <table>
-   <caption>Table 5-7.  VFMADDSUB[132,213,231]PH Notation for Odd and Even Elements</caption>
-   <colgroup><col width="88.04231999999999pt" align="left"/>
-    <col width="211.32648pt"/>
-    <col width="213.81336pt"/>
-    <col width="43.130880000000005pt"/>
-    <col width="44.6184pt"/>
-    </colgroup>
+ <encoding_table><table unique="1045886">
+   <col width="153.5976pt"/>
+   <col width="29.2752pt"/>
+   <col width="48.00024pt"/>
+   <col width="81.69984pt"/>
+   <col width="199.39968pt"/>
    <thead><tr>
-     <th><para unique="1046038" format="CellRowHeadC">
-       <string>Notation</string></para>
+     <th><para unique="1045888">Opcode/</para>
+      <para unique="1045889">Instruction</para>
       </th>
-     <th><para unique="1046040" format="CellRowHeadC">
-       <string>Odd Elements</string></para>
+     <th><para unique="1045891">Op/</para>
+      <para unique="1045892">En</para>
       </th>
-     <th><para unique="1046042" format="CellRowHeadC">
-       <string>Even Elements</string></para>
+     <th><para unique="1045894">64/32 Bit Mode Support</para>
+      </th>
+     <th><para unique="1045896">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1045898">Description</para>
       </th>
      </tr>
     </thead><tbody>
     <tr>
-     <td><para unique="1046044" format="CellBody">
-       <string>132</string></para>
+     <td><para unique="1046614">EVEX.128.66.MAP6.W0 96 /r</para>
+      <para unique="1046615">VFMADDSUB132PH xmm1{k1}{z}, xmm2, xmm3/m128/m16bcst</para>
       </td>
-     <td><para unique="1046046" format="CellBody">
-       <string>dest = dest*src3+src2</string></para>
+     <td><para unique="1046617">A</para>
       </td>
-     <td><para unique="1046048" format="CellBody">
-       <string>dest = dest*src3-src2</string></para>
+     <td><para unique="1046619">V/V</para>
       </td>
-     </tr>
-    <tr>
-     <td><para unique="1046050" format="CellBody">
-       <string>231</string></para>
+     <td><para unique="1046621">(AVX512_FP16 AND AVX512VL) OR AVX10.1<anchor id="+879449"/></para>
       </td>
-     <td><para unique="1046052" format="CellBody">
-       <string>dest = src2*src3+dest</string></para>
-      </td>
-     <td><para unique="1046054" format="CellBody">
-       <string>dest = src2*src3-dest</string></para>
+     <td><para unique="1046626">Multiply packed FP16 values from xmm1 and xmm3/m128/m16bcst, add/subtract elements in xmm2, and store the result in xmm1 subject to writemask k1.</para>
       </td>
      </tr>
     <tr>
-     <td><para unique="1046056" format="CellBody">
-       <string>213</string></para>
+     <td><para unique="1046603">EVEX.256.66.MAP6.W0 96 /r</para>
+      <para unique="1046604">VFMADDSUB132PH ymm1{k1}{z}, ymm2, ymm3/m256/m16bcst</para>
       </td>
-     <td><para unique="1046058" format="CellBody">
-       <string>dest = src2*dest+src3</string></para>
+     <td><para unique="1046606">A</para>
       </td>
-     <td><para unique="1046060" format="CellBody">
-       <string>dest = src2*dest-src3</string></para>
+     <td><para unique="1046608">V/V</para>
+      </td>
+     <td><para unique="1046610">(AVX512_FP16 AND AVX512VL) OR AVX10.1<anchor id="+857376"/></para>
+      </td>
+     <td><para unique="1046612">Multiply packed FP16 values from ymm1 and ymm3/m256/m16bcst, add/subtract elements in ymm2, and store the result in ymm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046591">EVEX.512.66.MAP6.W0 96 /r</para>
+      <para unique="1046592">VFMADDSUB132PH zmm1{k1}{z}, zmm2, zmm3/m512/m16bcst {er}</para>
+      </td>
+     <td><para unique="1046594">A</para>
+      </td>
+     <td><para unique="1046596">V/V</para>
+      </td>
+     <td><para unique="1046598">AVX512_FP16</para>
+      <para unique="1046599">OR AVX10.1<anchor id="+247339"/></para>
+      </td>
+     <td><para unique="1046601">Multiply packed FP16 values from zmm1 and zmm3/m512/m16bcst, add/subtract elements in zmm2, and store the result in zmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046580">EVEX.128.66.MAP6.W0 A6 /r</para>
+      <para unique="1046581">VFMADDSUB213PH xmm1{k1}{z}, xmm2, xmm3/m128/m16bcst</para>
+      </td>
+     <td><para unique="1046583">A</para>
+      </td>
+     <td><para unique="1046585">V/V</para>
+      </td>
+     <td><para unique="1046587">(AVX512_FP16 AND AVX512VL) OR AVX10.1<anchor id="+570466"/></para>
+      </td>
+     <td><para unique="1046589">Multiply packed FP16 values from xmm1 and xmm2, add/subtract elements in xmm3/m128/m16bcst, and store the result in xmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046569">EVEX.256.66.MAP6.W0 A6 /r</para>
+      <para unique="1046570">VFMADDSUB213PH ymm1{k1}{z}, ymm2, ymm3/m256/m16bcst</para>
+      </td>
+     <td><para unique="1046572">A</para>
+      </td>
+     <td><para unique="1046574">V/V</para>
+      </td>
+     <td><para unique="1046576">(AVX512_FP16 AND AVX512VL) OR AVX10.1<anchor id="+878769"/></para>
+      </td>
+     <td><para unique="1046578">Multiply packed FP16 values from ymm1 and ymm2, add/subtract elements in ymm3/m256/m16bcst, and store the result in ymm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046557">EVEX.512.66.MAP6.W0 A6 /r</para>
+      <para unique="1046558">VFMADDSUB213PH zmm1{k1}{z}, zmm2, zmm3/m512/m16bcst {er}</para>
+      </td>
+     <td><para unique="1046560">A</para>
+      </td>
+     <td><para unique="1046562">V/V</para>
+      </td>
+     <td><para unique="1046564">AVX512_FP16</para>
+      <para unique="1046565">OR AVX10.1<anchor id="+113364"/></para>
+      </td>
+     <td><para unique="1046567">Multiply packed FP16 values from zmm1 and zmm2, add/subtract elements in zmm3/m512/m16bcst, and store the result in zmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046546">EVEX.128.66.MAP6.W0 B6 /r</para>
+      <para unique="1046547">VFMADDSUB231PH xmm1{k1}{z}, xmm2, xmm3/m128/m16bcst</para>
+      </td>
+     <td><para unique="1046549">A</para>
+      </td>
+     <td><para unique="1046551">V/V</para>
+      </td>
+     <td><para unique="1046553">(AVX512_FP16 AND AVX512VL) OR AVX10.1<anchor id="+787388"/></para>
+      </td>
+     <td><para unique="1046555">Multiply packed FP16 values from xmm2 and xmm3/m128/m16bcst, add/subtract elements in xmm1, and store the result in xmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046535">EVEX.256.66.MAP6.W0 B6 /r</para>
+      <para unique="1046536">VFMADDSUB231PH ymm1{k1}{z}, ymm2, ymm3/m256/m16bcst</para>
+      </td>
+     <td><para unique="1046538">A</para>
+      </td>
+     <td><para unique="1046540">V/V</para>
+      </td>
+     <td><para unique="1046542">(AVX512_FP16 AND AVX512VL) OR AVX10.1<anchor id="+318064"/></para>
+      </td>
+     <td><para unique="1046544">Multiply packed FP16 values from ymm2 and ymm3/m256/m16bcst, add/subtract elements in ymm1, and store the result in ymm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td><para unique="1046523">EVEX.512.66.MAP6.W0 B6 /r</para>
+      <para unique="1046524">VFMADDSUB231PH zmm1{k1}{z}, zmm2, zmm3/m512/m16bcst {er}</para>
+      </td>
+     <td><para unique="1046526">A</para>
+      </td>
+     <td><para unique="1046528">V/V</para>
+      </td>
+     <td><para unique="1046530">AVX512_FP16</para>
+      <para unique="1046531">OR AVX10.1<anchor id="+479815"/></para>
+      </td>
+     <td><para unique="1046533">Multiply packed FP16 values from zmm2 and zmm3/m512/m16bcst, add/subtract elements in zmm1, and store the result in zmm1 subject to writemask k1.</para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1045998">
+   <col width="43.01352pt"/>
+   <col width="61.01352pt"/>
+   <col width="95.65272pt"/>
+   <col width="104.62608pt"/>
+   <col width="103.85784pt"/>
+   <col width="102.5676pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1046000">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1046002">Tuple</para>
+      </th>
+     <th valign="middle"><para unique="1046004">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1046006">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1046008">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1046010">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1046012">A</para>
+      </td>
+     <td valign="middle"><para unique="1046014">Full</para>
+      </td>
+     <td valign="middle"><para unique="1046016">ModRM:reg (r, w)</para>
+      </td>
+     <td valign="middle"><para unique="1046018">VEX.vvvv (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046020">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1046022">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1046023">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1046025">This instruction performs a packed multiply-add (odd elements) or multiply-subtract (even elements) computation on FP16 values using three source operands and writes the results in the destination operand. The destination operand is also the first source operand. The notation&#8217; &#8220;132&#8221;, &#8220;213&#8221; and &#8220;231&#8221; indicate the use of the operands in A * B &#177; C, where each digit corresponds to the operand number, with the destination being operand 1; see <link unique="1046027" linkend="&lt;c&gt;VFMSUBADD132PH-VFMSUBADD213PH-VFMSUBADD231PH-Fused-Multiply-Alternating-Subtract-Add-of-Packed-FP16-Values.fm#72673: 06_Table: Table 1-12. Odd and Even Elements" xrefstyle="TableNum">Table 5&#8209;10</link>.</para>
+  <para unique="1046029">The destination elements are updated according to the writemask.</para>
+  <table unique="1046030">
+   <caption>VFMADDSUB[132,213,231]PH Notation for Odd and Even Elements</caption>
+   <col width="88.04231999999999pt"/>
+   <col width="211.32648pt"/>
+   <col width="213.81336pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1046038">Notation</para>
+      </th>
+     <th valign="middle"><para unique="1046040">Odd Elements</para>
+      </th>
+     <th valign="middle"><para unique="1046042">Even Elements</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1046044">132</para>
+      </td>
+     <td valign="middle"><para unique="1046046">dest = dest*src3+src2</para>
+      </td>
+     <td valign="middle"><para unique="1046048">dest = dest*src3-src2</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1046050">231</para>
+      </td>
+     <td valign="middle"><para unique="1046052">dest = src2*src3+dest</para>
+      </td>
+     <td valign="middle"><para unique="1046054">dest = src2*src3-dest</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1046056">213</para>
+      </td>
+     <td valign="middle"><para unique="1046058">dest = src2*dest+src3</para>
+      </td>
+     <td valign="middle"><para unique="1046060">dest = src2*dest-src3</para>
       </td>
      </tr>
     </tbody>
    </table>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1046063">VFMADDSUB132PH DEST, SRC2, SRC3 (EVEX encoded versions) when src3 operand is a register </title>
+   <programlisting>VL = 128, 256 or 512
+KL := VL/16
+IF (VL = 512) AND (EVEX.b = 1):
+	SET_RM(EVEX.RC)
+ELSE
+	SET_RM(MXCSR.RC)
+FOR j := 0 TO KL-1:
+	IF k1[j] OR *no writemask*:
+		IF *j is even*:
+			DEST.fp16[j] := RoundFPControl(DEST.fp16[j] * SRC3.fp16[j] - SRC2.fp16[j])
+		ELSE:
+			DEST.fp16[j] := RoundFPControl(DEST.fp16[j] * SRC3.fp16[j] + SRC2.fp16[j])
+	ELSE IF *zeroing*:
+		DEST.fp16[j] := 0
+// else dest.fp16[j] remains unchanged
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046084">VFMADDSUB132PH DEST, SRC2, SRC3 (EVEX encoded versions) when src3 operand is a memory source </title>
+   <programlisting>VL = 128, 256 or 512
+KL := VL/16
+FOR j := 0 TO KL-1:
+	IF k1[j] OR *no writemask*:
+		IF EVEX.b = 1:
+			t3 := SRC3.fp16[0]
+		ELSE:
+			t3 := SRC3.fp16[j]
+		IF *j is even*:
+			DEST.fp16[j] := RoundFPControl(DEST.fp16[j] * t3 - SRC2.fp16[j])
+		ELSE:
+			DEST.fp16[j] := RoundFPControl(DEST.fp16[j] * t3 + SRC2.fp16[j])
+	ELSE IF *zeroing*:
+		DEST.fp16[j] := 0
+	// else dest.fp16[j] remains unchanged
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046104">VFMADDSUB213PH DEST, SRC2, SRC3 (EVEX encoded versions) when src3 operand is a register </title>
+   <programlisting>VL = 128, 256 or 512
+KL := VL/16
+IF (VL = 512) AND (EVEX.b = 1):
+	SET_RM(EVEX.RC)
+ELSE
+	SET_RM(MXCSR.RC)
+FOR j := 0 TO KL-1:
+	IF k1[j] OR *no writemask*:
+		IF *j is even*:
+			DEST.fp16[j] := RoundFPControl(SRC2.fp16[j]*DEST.fp16[j] - SRC3.fp16[j])
+		ELSE
+			DEST.fp16[j] := RoundFPControl(SRC2.fp16[j]*DEST.fp16[j] + SRC3.fp16[j])
+	ELSE IF *zeroing*:
+		DEST.fp16[j] := 0
+	// else dest.fp16[j] remains unchanged
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046125">VFMADDSUB213PH DEST, SRC2, SRC3 (EVEX encoded versions) when src3 operand is a memory source</title>
+   <programlisting>VL = 128, 256 or 512
+KL := VL/16
+FOR j := 0 TO KL-1:
+	IF k1[j] OR *no writemask*:
+		IF EVEX.b = 1:
+			t3 := SRC3.fp16[0]
+		ELSE:
+			t3 := SRC3.fp16[j]
+		IF *j is even*:
+			DEST.fp16[j] := RoundFPControl(SRC2.fp16[j] * DEST.fp16[j] - t3)
+		ELSE:
+			DEST.fp16[j] := RoundFPControl(SRC2.fp16[j] * DEST.fp16[j] + t3)
+	ELSE IF *zeroing*:
+		DEST.fp16[j] := 0
+	// else dest.fp16[j] remains unchanged
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046145">VFMADDSUB231PH DEST, SRC2, SRC3 (EVEX encoded versions) when src3 operand is a register</title>
+   <programlisting>VL = 128, 256 or 512
+KL := VL/16
+IF (VL = 512) AND (EVEX.b = 1):
+	SET_RM(EVEX.RC)
+ELSE
+	SET_RM(MXCSR.RC)
+FOR j := 0 TO KL-1:
+	IF k1[j] OR *no writemask*:
+		IF *j is even:
+			DEST.fp16[j] := RoundFPControl(SRC2.fp16[j] * SRC3.fp16[j] - DEST.fp16[j])
+		ELSE:
+			DEST.fp16[j] := RoundFPControl(SRC2.fp16[j] * SRC3.fp16[j] + DEST.fp16[j])
+	ELSE IF *zeroing*:
+		DEST.fp16[j] := 0
+	// else dest.fp16[j] remains unchanged
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1046166">VFMADDSUB231PH DEST, SRC2, SRC3 (EVEX encoded versions) when src3 operand is a memory source</title>
+   <programlisting>VL = 128, 256 or 512
+KL := VL/16
+FOR j := 0 TO KL-1:
+	IF k1[j] OR *no writemask*:
+		IF EVEX.b = 1:
+			t3 := SRC3.fp16[0]
+		ELSE:
+			t3 := SRC3.fp16[j]
+		IF *j is even*:
+			DEST.fp16[j] := RoundFPControl(SRC2.fp16[j] * t3 - DEST.fp16[j])
+		ELSE:
+			DEST.fp16[j] := RoundFPControl(SRC2.fp16[j] * t3 + DEST.fp16[j])
+	ELSE IF *zeroing*:
+		DEST.fp16[j] := 0
+	// else dest.fp16[j] remains unchanged
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalent">
-  <para unique="1046186">
-   <string>VFMADDSUB132PH, VFMADDSUB213PH, and VFMADDSUB231PH:</string></para>
-  <para unique="1046187">
-   <string>__m128h _mm_fmaddsub_ph (__m128h a, __m128h b, __m128h c);</string></para>
-  <para unique="1046188">
-   <string>__m128h _mm_mask_fmaddsub_ph (__m128h a, __mmask8 k, __m128h b, __m128h c);</string></para>
-  <para unique="1046189">
-   <string>__m128h _mm_mask3_fmaddsub_ph (__m128h a, __m128h b, __m128h c, __mmask8 k);</string></para>
-  <para unique="1046190">
-   <string>__m128h _mm_maskz_fmaddsub_ph (__mmask8 k, __m128h a, __m128h b, __m128h c);</string></para>
-  <para unique="1046191">
-   <string>__m256h _mm256_fmaddsub_ph (__m256h a, __m256h b, __m256h c);</string></para>
-  <para unique="1046192">
-   <string>__m256h _mm256_mask_fmaddsub_ph (__m256h a, __mmask16 k, __m256h b, __m256h c);</string></para>
-  <para unique="1046193">
-   <string>__m256h _mm256_mask3_fmaddsub_ph (__m256h a, __m256h b, __m256h c, __mmask16 k);</string></para>
-  <para unique="1046194">
-   <string>__m256h _mm256_maskz_fmaddsub_ph (__mmask16 k, __m256h a, __m256h b, __m256h c);</string></para>
-  <para unique="1046195">
-   <string>__m512h _mm512_fmaddsub_ph (__m512h a, __m512h b, __m512h c);</string></para>
-  <para unique="1046196">
-   <string>__m512h _mm512_mask_fmaddsub_ph (__m512h a, __mmask32 k, __m512h b, __m512h c);</string></para>
-  <para unique="1046197">
-   <string>__m512h _mm512_mask3_fmaddsub_ph (__m512h a, __m512h b, __m512h c, __mmask32 k);</string></para>
-  <para unique="1046198">
-   <string>__m512h _mm512_maskz_fmaddsub_ph (__mmask32 k, __m512h a, __m512h b, __m512h c);</string></para>
-  <para unique="1046199">
-   <string>__m512h _mm512_fmaddsub_round_ph (__m512h a, __m512h b, __m512h c, const int rounding);</string></para>
-  <para unique="1046200">
-   <string>__m512h _mm512_mask_fmaddsub_round_ph (__m512h a, __mmask32 k, __m512h b, __m512h c, const int rounding);</string></para>
-  <para unique="1046201">
-   <string>__m512h _mm512_mask3_fmaddsub_round_ph (__m512h a, __m512h b, __m512h c, __mmask32 k, const int rounding); </string></para>
-  <para unique="1046202">
-   <string>__m512h _mm512_maskz_fmaddsub_round_ph (__mmask32 k, __m512h a, __m512h b, __m512h c, const int rounding);</string></para>
+  <para unique="1046186">VFMADDSUB132PH, VFMADDSUB213PH, and VFMADDSUB231PH:</para>
+  <para unique="1046187">__m128h _mm_fmaddsub_ph (__m128h a, __m128h b, __m128h c);</para>
+  <para unique="1046188">__m128h _mm_mask_fmaddsub_ph (__m128h a, __mmask8 k, __m128h b, __m128h c);</para>
+  <para unique="1046189">__m128h _mm_mask3_fmaddsub_ph (__m128h a, __m128h b, __m128h c, __mmask8 k);</para>
+  <para unique="1046190">__m128h _mm_maskz_fmaddsub_ph (__mmask8 k, __m128h a, __m128h b, __m128h c);</para>
+  <para unique="1046191">__m256h _mm256_fmaddsub_ph (__m256h a, __m256h b, __m256h c);</para>
+  <para unique="1046192">__m256h _mm256_mask_fmaddsub_ph (__m256h a, __mmask16 k, __m256h b, __m256h c);</para>
+  <para unique="1046193">__m256h _mm256_mask3_fmaddsub_ph (__m256h a, __m256h b, __m256h c, __mmask16 k);</para>
+  <para unique="1046194">__m256h _mm256_maskz_fmaddsub_ph (__mmask16 k, __m256h a, __m256h b, __m256h c);</para>
+  <para unique="1046195">__m512h _mm512_fmaddsub_ph (__m512h a, __m512h b, __m512h c);</para>
+  <para unique="1046196">__m512h _mm512_mask_fmaddsub_ph (__m512h a, __mmask32 k, __m512h b, __m512h c);</para>
+  <para unique="1046197">__m512h _mm512_mask3_fmaddsub_ph (__m512h a, __m512h b, __m512h c, __mmask32 k);</para>
+  <para unique="1046198">__m512h _mm512_maskz_fmaddsub_ph (__mmask32 k, __m512h a, __m512h b, __m512h c);</para>
+  <para unique="1046199">__m512h _mm512_fmaddsub_round_ph (__m512h a, __m512h b, __m512h c, const int rounding);</para>
+  <para unique="1046200">__m512h _mm512_mask_fmaddsub_round_ph (__m512h a, __mmask32 k, __m512h b, __m512h c, const int rounding);</para>
+  <para unique="1046201">__m512h _mm512_mask3_fmaddsub_round_ph (__m512h a, __m512h b, __m512h c, __mmask32 k, const int rounding); </para>
+  <para unique="1046202">__m512h _mm512_maskz_fmaddsub_round_ph (__mmask32 k, __m512h a, __m512h b, __m512h c, const int rounding);</para>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1046204">
-   <string>Invalid, Underflow, Overflow, Precision, Denormal.</string></para>
+  <para unique="1046204">Invalid, Underflow, Overflow, Precision, Denormal.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1046209" format="xIndent1">
-   <string>EVEX-encoded instructions, see </string><link linkend="35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions"><string>Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1046209" format="xIndent1">EVEX-encoded instructions, see <link unique="1046207" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#35185: 06_Table: Table 2-46. Type E2 Class Exception Conditions" xrefstyle="Table All - no page with period">Table&#160;2&#8209;48, &#8220;Type E2 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>

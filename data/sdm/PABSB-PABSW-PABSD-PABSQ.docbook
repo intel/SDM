@@ -1,71 +1,618 @@
 <instruction name="PABSB/PABSW/PABSD/PABSQ">
  <copyright>Copyright (C) Intel Corporation. All Rights Reserved.</copyright>
  <shortdesc>Packed Absolute Value</shortdesc>
- <longdesc><para unique="1091804">
-   <string>PABSB/W/D computes the absolute value of each data element of the source operand (the second operand) and stores the UNSIGNED results in the destination operand (the first operand). PABSB operates on signed bytes, PABSW operates on signed 16-bit words, and PABSD operates on signed 32-bit integers. </string></para>
-  <para unique="1091805">
-   <string>EVEX encoded VPABSD/Q: The source operand is a ZMM/YMM/XMM register, a 512/256/128-bit memory location, or a 512/256/128-bit vector broadcasted from a 32/64-bit memory location. The destination operand is a ZMM/YMM/XMM register updated according to the writemask. </string></para>
-  <para unique="1091806">
-   <string>EVEX encoded VPABSB/W: The source operand is a ZMM/YMM/XMM register, or a 512/256/128-bit memory loca&#173;tion. The destination operand is a ZMM/YMM/XMM register updated according to the writemask. </string></para>
-  <para unique="1091807">
-   <string>VEX.256 encoded versions: The source operand is a YMM register or a 256-bit memory location. The destination operand is a YMM register. The upper bits (MAXVL-1:256) of the corresponding register destination are zeroed.</string></para>
-  <para unique="1091808">
-   <string>VEX.128 encoded versions: The source operand is an XMM register or 128-bit memory location. The destination operand is an XMM register. The upper bits (MAXVL-1:128) of the corresponding register destination are zeroed.</string></para>
-  <para unique="1091809">
-   <string>128-bit Legacy SSE version: The source operand can be an XMM register or an 128-bit memory location. The desti&#173;nation is an XMM register. The upper bits (VL_MAX-1:128) of the corresponding register destination are unmodi&#173;fied.</string></para>
-  <para unique="1091810">
-   <string>VEX.vvvv and EVEX.vvvv are reserved and must be 1111b otherwise instructions will #UD.</string></para>
+ <encoding_table><table unique="1091391">
+   <col width="79.87032pt"/>
+   <col width="90.60408pt"/>
+   <col width="24.767999999999997pt"/>
+   <col width="48.024pt"/>
+   <col width="72.22752pt"/>
+   <col width="197.6544pt"/>
+   <thead><tr>
+     <th colspan="2"><para unique="1091393">Opcode/</para>
+      <para unique="1091394">Instruction</para>
+      </th>
+     <th><para unique="1091398">Op/ En</para>
+      </th>
+     <th><para unique="1091400">64/32 bit Mode Support</para>
+      </th>
+     <th><para unique="1091402">CPUID Feature Flag</para>
+      </th>
+     <th><para unique="1091404">Description</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td colspan="2"><para unique="1091415">NP 0F 38 1C /r<superscript><footnote><para unique="1091411" format="TableFootnote">See note in <link unique="1093108" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#27214: 02_Level: 2.4 Instruction Exception Specification" xrefstyle="SectionNum&amp;Title(,)">Section 2.5, &#8220;Intel&#174; AVX and Intel&#174; SSE Instruction Exception Classification,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Soft&#173;ware Developer&#8217;s Manual, Volume 2A, and <link unique="1093112" linkend="&lt;c&gt;__sdm_vol3B_ch25.fm#65163: 03_Level: 19.25.3 Exception Conditions of Legacy SIMD Instruction Operating" xrefstyle="SectionNum&amp;Title(,)">Section 25.25.3, &#8220;Exception Conditions of Legacy SIMD Instructions Operating on MMX Reg&#173;isters,&#8221;</link> in the Intel&#174; 64 and IA&#8209;32 Architectures Software Developer&#8217;s Manual, Volume 3B.</para>
+         </footnote></superscript></para>
+      <para unique="1091416">PABSB mm1, mm2/m64 </para>
+      </td>
+     <td><para unique="1091420">A</para>
+      </td>
+     <td><para unique="1091422">V/V</para>
+      </td>
+     <td><para unique="1091424">SSSE3</para>
+      </td>
+     <td><para unique="1091426">Compute the absolute value of bytes in mm2/m64 and store UNSIGNED result in mm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091428">66 0F 38 1C /r </para>
+      <para unique="1091429">PABSB xmm1, xmm2/m128 </para>
+      </td>
+     <td><para unique="1091433">A</para>
+      </td>
+     <td><para unique="1091435">V/V</para>
+      </td>
+     <td><para unique="1091437">SSSE3</para>
+      </td>
+     <td><para unique="1091439">Compute the absolute value of bytes in xmm2/m128 and store UNSIGNED result in xmm1. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091441">NP 0F 38 1D /r<superscript>1</superscript></para>
+      <para unique="1091442">PABSW mm1, mm2/m64 </para>
+      </td>
+     <td><para unique="1091446">A</para>
+      </td>
+     <td><para unique="1091448">V/V</para>
+      </td>
+     <td><para unique="1091450">SSSE3</para>
+      </td>
+     <td><para unique="1091452">Compute the absolute value of 16-bit integers in mm2/m64 and store UNSIGNED result in mm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091454">66 0F 38 1D /r</para>
+      <para unique="1091455">PABSW xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091459">A</para>
+      </td>
+     <td><para unique="1091461">V/V</para>
+      </td>
+     <td><para unique="1091463">SSSE3</para>
+      </td>
+     <td><para unique="1091465">Compute the absolute value of 16-bit integers in xmm2/m128 and store UNSIGNED result in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091467">NP 0F 38 1E /r<superscript>1</superscript> </para>
+      <para unique="1091468">PABSD mm1, mm2/m64 </para>
+      </td>
+     <td><para unique="1091472">A</para>
+      </td>
+     <td><para unique="1091474">V/V</para>
+      </td>
+     <td><para unique="1091476">SSSE3</para>
+      </td>
+     <td><para unique="1091478">Compute the absolute value of 32-bit integers in mm2/m64 and store UNSIGNED result in mm1. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091480">66 0F 38 1E /r </para>
+      <para unique="1091481">PABSD xmm1, xmm2/m128 </para>
+      </td>
+     <td><para unique="1091485">A</para>
+      </td>
+     <td><para unique="1091487">V/V</para>
+      </td>
+     <td><para unique="1091489">SSSE3</para>
+      </td>
+     <td><para unique="1091491">Compute the absolute value of 32-bit integers in xmm2/m128 and store UNSIGNED result in xmm1. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091493">VEX.128.66.0F38.WIG 1C /r</para>
+      <para unique="1091494">VPABSB xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091498">A</para>
+      </td>
+     <td><para unique="1091500">V/V</para>
+      </td>
+     <td><para unique="1091502">AVX</para>
+      </td>
+     <td><para unique="1091504">Compute the absolute value of bytes in xmm2/m128 and store UNSIGNED result in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091506">VEX.128.66.0F38.WIG 1D /r</para>
+      <para unique="1091507">VPABSW xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091511">A</para>
+      </td>
+     <td><para unique="1091513">V/V</para>
+      </td>
+     <td><para unique="1091515">AVX</para>
+      </td>
+     <td><para unique="1091517">Compute the absolute value of 16- bit integers in xmm2/m128 and store UNSIGNED result in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091519">VEX.128.66.0F38.WIG 1E /r</para>
+      <para unique="1091520">VPABSD xmm1, xmm2/m128</para>
+      </td>
+     <td><para unique="1091524">A</para>
+      </td>
+     <td><para unique="1091526">V/V</para>
+      </td>
+     <td><para unique="1091528">AVX</para>
+      </td>
+     <td><para unique="1091530">Compute the absolute value of 32- bit integers in xmm2/m128 and store UNSIGNED result in xmm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091532">VEX.256.66.0F38.WIG 1C /r</para>
+      <para unique="1091533">VPABSB ymm1, ymm2/m256</para>
+      </td>
+     <td><para unique="1091537">A</para>
+      </td>
+     <td><para unique="1091539">V/V</para>
+      </td>
+     <td><para unique="1091541">AVX2</para>
+      </td>
+     <td><para unique="1091543">Compute the absolute value of bytes in ymm2/m256 and store UNSIGNED result in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091545">VEX.256.66.0F38.WIG 1D /r</para>
+      <para unique="1091546">VPABSW ymm1, ymm2/m256</para>
+      </td>
+     <td><para unique="1091550">A</para>
+      </td>
+     <td><para unique="1091552">V/V</para>
+      </td>
+     <td><para unique="1091554">AVX2</para>
+      </td>
+     <td><para unique="1091556">Compute the absolute value of 16-bit integers in ymm2/m256 and store UNSIGNED result in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1091558">VEX.256.66.0F38.WIG 1E /r</para>
+      <para unique="1091559">VPABSD ymm1, ymm2/m256</para>
+      </td>
+     <td><para unique="1091563">A</para>
+      </td>
+     <td><para unique="1091565">V/V</para>
+      </td>
+     <td><para unique="1091567">AVX2</para>
+      </td>
+     <td><para unique="1091569">Compute the absolute value of 32-bit integers in ymm2/m256 and store UNSIGNED result in ymm1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092594">EVEX.128.66.0F38.WIG 1C /r</para>
+      <para unique="1092595">VPABSB xmm1 {k1}{z}, xmm2/m128</para>
+      </td>
+     <td><para unique="1092599">B</para>
+      </td>
+     <td><para unique="1092601">V/V</para>
+      </td>
+     <td><para unique="1092603">(AVX512VL AND</para>
+      <para unique="1092604">AVX512BW) OR AVX10.1<anchor id="+803824"/></para>
+      </td>
+     <td><para unique="1092609">Compute the absolute value of bytes in xmm2/m128 and store UNSIGNED result in xmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092580">EVEX.256.66.0F38.WIG 1C /r</para>
+      <para unique="1092581">VPABSB ymm1 {k1}{z}, ymm2/m256</para>
+      </td>
+     <td><para unique="1092585">B</para>
+      </td>
+     <td><para unique="1092587">V/V</para>
+      </td>
+     <td><para unique="1092589">(AVX512VL AND</para>
+      <para unique="1092590">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092592">Compute the absolute value of bytes in ymm2/m256 and store UNSIGNED result in ymm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092567">EVEX.512.66.0F38.WIG 1C /r</para>
+      <para unique="1092568">VPABSB zmm1 {k1}{z}, zmm2/m512</para>
+      </td>
+     <td><para unique="1092572">B</para>
+      </td>
+     <td><para unique="1092574">V/V</para>
+      </td>
+     <td><para unique="1092576">AVX512BW OR AVX10.1</para>
+      </td>
+     <td><para unique="1092578">Compute the absolute value of bytes in zmm2/m512 and store UNSIGNED result in zmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092553">EVEX.128.66.0F38.WIG 1D /r </para>
+      <para unique="1092554">VPABSW xmm1 {k1}{z}, xmm2/m128</para>
+      </td>
+     <td><para unique="1092558">B</para>
+      </td>
+     <td><para unique="1092560">V/V</para>
+      </td>
+     <td><para unique="1092562">(AVX512VL AND</para>
+      <para unique="1092563">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092565">Compute the absolute value of 16-bit integers in xmm2/m128 and store UNSIGNED result in xmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092539">EVEX.256.66.0F38.WIG 1D /r </para>
+      <para unique="1092540">VPABSW ymm1 {k1}{z}, ymm2/m256 </para>
+      </td>
+     <td><para unique="1092544">B</para>
+      </td>
+     <td><para unique="1092546">V/V</para>
+      </td>
+     <td><para unique="1092548">(AVX512VL AND</para>
+      <para unique="1092549">AVX512BW) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092551">Compute the absolute value of 16-bit integers in ymm2/m256 and store UNSIGNED result in ymm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092526">EVEX.512.66.0F38.WIG 1D /r </para>
+      <para unique="1092527">VPABSW zmm1 {k1}{z}, zmm2/m512</para>
+      </td>
+     <td><para unique="1092531">B</para>
+      </td>
+     <td><para unique="1092533">V/V</para>
+      </td>
+     <td><para unique="1092535">AVX512BW OR AVX10.1</para>
+      </td>
+     <td><para unique="1092537">Compute the absolute value of 16-bit integers in zmm2/m512 and store UNSIGNED result in zmm1 using writemask k1.</para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092509">EVEX.128.66.0F38.W0 1E /r</para>
+      <para unique="1092510">VPABSD xmm1 {k1}{z}, xmm2/m128/m32bcst</para>
+      </td>
+     <td><para unique="1092514">C</para>
+      </td>
+     <td><para unique="1092516">V/V</para>
+      </td>
+     <td><para unique="1092518">(AVX512VL AND</para>
+      <para unique="1092522">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092524">Compute the absolute value of 32-bit integers in xmm2/m128/m32bcst and store UNSIGNED result in xmm1 using writemask k1. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092492">EVEX.256.66.0F38.W0 1E /r</para>
+      <para unique="1092493">VPABSD ymm1 {k1}{z}, ymm2/m256/m32bcst</para>
+      </td>
+     <td><para unique="1092497">C</para>
+      </td>
+     <td><para unique="1092499">V/V</para>
+      </td>
+     <td><para unique="1092501">(AVX512VL AND</para>
+      <para unique="1092505">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092507">Compute the absolute value of 32-bit integers in ymm2/m256/m32bcst and store UNSIGNED result in ymm1 using writemask k1. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092475">EVEX.512.66.0F38.W0 1E /r</para>
+      <para unique="1092476">VPABSD zmm1 {k1}{z}, zmm2/m512/m32bcst </para>
+      </td>
+     <td><para unique="1092480">C</para>
+      </td>
+     <td><para unique="1092482">V/V</para>
+      </td>
+     <td><para unique="1092487">AVX512F </para>
+      <para unique="1092488">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092490">Compute the absolute value of 32-bit integers in zmm2/m512/m32bcst and store UNSIGNED result in zmm1 using writemask k1. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092458">EVEX.128.66.0F38.W1 1F /r</para>
+      <para unique="1092459">VPABSQ xmm1 {k1}{z}, xmm2/m128/m64bcst</para>
+      </td>
+     <td><para unique="1092463">C</para>
+      </td>
+     <td><para unique="1092465">V/V</para>
+      </td>
+     <td><para unique="1092467">(AVX512VL AND</para>
+      <para unique="1092471">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092473">Compute the absolute value of 64-bit integers in xmm2/m128/m64bcst and store UNSIGNED result in xmm1 using writemask k1. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092441">EVEX.256.66.0F38.W1 1F /r</para>
+      <para unique="1092442">VPABSQ ymm1 {k1}{z}, ymm2/m256/m64bcst</para>
+      </td>
+     <td><para unique="1092446">C</para>
+      </td>
+     <td><para unique="1092448">V/V</para>
+      </td>
+     <td><para unique="1092450">(AVX512VL AND</para>
+      <para unique="1092454">AVX512F) OR AVX10.1</para>
+      </td>
+     <td><para unique="1092456">Compute the absolute value of 64-bit integers in ymm2/m256/m64bcst and store UNSIGNED result in ymm1 using writemask k1. </para>
+      </td>
+     </tr>
+    <tr>
+     <td colspan="2"><para unique="1092424">EVEX.512.66.0F38.W1 1F /r</para>
+      <para unique="1092425">VPABSQ zmm1 {k1}{z}, zmm2/m512/m64bcst </para>
+      </td>
+     <td><para unique="1092429">C</para>
+      </td>
+     <td><para unique="1092431">V/V</para>
+      </td>
+     <td><para unique="1092436">AVX512F </para>
+      <para unique="1092437">OR AVX10.1</para>
+      </td>
+     <td><para unique="1092439">Compute the absolute value of 64-bit integers in zmm2/m512/m64bcst and store UNSIGNED result in zmm1 using writemask k1. </para>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </encoding_table>
+ <operand_table><table unique="1091753">
+   <col width="48.78432pt"/>
+   <col width="71.58456pt"/>
+   <col width="96.19128pt"/>
+   <col width="101.41272pt"/>
+   <col width="93.60000000000001pt"/>
+   <col width="101.33279999999999pt"/>
+   <thead><tr>
+     <th valign="middle"><para unique="1091755">Op/En</para>
+      </th>
+     <th valign="middle"><para unique="1091757">Tuple Type</para>
+      </th>
+     <th valign="middle"><para unique="1091759">Operand 1</para>
+      </th>
+     <th valign="middle"><para unique="1091761">Operand 2</para>
+      </th>
+     <th valign="middle"><para unique="1091763">Operand 3</para>
+      </th>
+     <th valign="middle"><para unique="1091765">Operand 4</para>
+      </th>
+     </tr>
+    </thead><tbody>
+    <tr>
+     <td valign="middle"><para unique="1091767">A</para>
+      </td>
+     <td valign="middle"><para unique="1091769">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091771">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091773">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091775">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091777">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091779">B</para>
+      </td>
+     <td valign="middle"><para unique="1091781">Full Mem</para>
+      </td>
+     <td valign="middle"><para unique="1091783">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091785">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091787">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091789">N/A</para>
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"><para unique="1091791">C</para>
+      </td>
+     <td valign="middle"><para unique="1091793">Full</para>
+      </td>
+     <td valign="middle"><para unique="1091795">ModRM:reg (w)</para>
+      </td>
+     <td valign="middle"><para unique="1091797">ModRM:r/m (r)</para>
+      </td>
+     <td valign="middle"><para unique="1091799">N/A</para>
+      </td>
+     <td valign="middle"><para unique="1091801">N/A</para>
+      </td>
+     </tr>
+    </tbody>
+   <caption unique="1091802">Instruction Operand Encoding</caption>
+   </table>
+  </operand_table>
+ <longdesc><para unique="1091804">PABSB/W/D computes the absolute value of each data element of the source operand (the second operand) and stores the UNSIGNED results in the destination operand (the first operand). PABSB operates on signed bytes, PABSW operates on signed 16-bit words, and PABSD operates on signed 32-bit integers. </para>
+  <para unique="1091805">EVEX encoded VPABSD/Q: The source operand is a ZMM/YMM/XMM register, a 512/256/128-bit memory location, or a 512/256/128-bit vector broadcasted from a 32/64-bit memory location. The destination operand is a ZMM/YMM/XMM register updated according to the writemask. </para>
+  <para unique="1091806">EVEX encoded VPABSB/W: The source operand is a ZMM/YMM/XMM register, or a 512/256/128-bit memory loca&#173;tion. The destination operand is a ZMM/YMM/XMM register updated according to the writemask. </para>
+  <para unique="1091807">VEX.256 encoded versions: The source operand is a YMM register or a 256-bit memory location. The destination operand is a YMM register. The upper bits (MAXVL-1:256) of the corresponding register destination are zeroed.</para>
+  <para unique="1091808">VEX.128 encoded versions: The source operand is an XMM register or 128-bit memory location. The destination operand is an XMM register. The upper bits (MAXVL-1:128) of the corresponding register destination are zeroed.</para>
+  <para unique="1091809">128-bit Legacy SSE version: The source operand can be an XMM register or an 128-bit memory location. The desti&#173;nation is an XMM register. The upper bits (VL_MAX-1:128) of the corresponding register destination are unmodi&#173;fied.</para>
+  <para unique="1091810">VEX.vvvv and EVEX.vvvv are reserved and must be 1111b otherwise instructions will #UD.</para>
   </longdesc>
+ <operation>
+  <section level="7">
+   <title unique="1092085">PABSB With 64-bit Operands:</title>
+   <programlisting>Unsigned DEST[7:0] := ABS(SRC[7: 0])
+	Repeat operation for 2nd through 7th bytes
+	Unsigned DEST[63:56] := ABS(SRC[63:56])</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091812">PABSB With 128-bit Operands:</title>
+   <programlisting>Unsigned DEST[7:0] := ABS(SRC[7: 0])
+	Repeat operation for 2nd through 15th bytes
+	Unsigned DEST[127:120] := ABS(SRC[127:120])</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091817">VPABSB With 128-bit Operands:</title>
+   <programlisting>Unsigned DEST[7:0] := ABS(SRC[7: 0])
+	Repeat operation for 2nd through 15th bytes
+	Unsigned DEST[127:120] := ABS(SRC[127:120])</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091822">VPABSB With 256-bit Operands:</title>
+   <programlisting>Unsigned DEST[7:0] := ABS(SRC[7: 0])
+	Repeat operation for 2nd through 31st bytes
+	Unsigned DEST[255:248] := ABS(SRC[255:248])</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091827">VPABSB (EVEX Encoded Versions)</title>
+   <programlisting>(KL, VL) = (16, 128), (32, 256), (64, 512)
+FOR j := 0 TO KL-1
+	i := j * 8
+	IF k1[j] OR *no writemask*
+		THEN
+			Unsigned DEST[i+7:i] := ABS(SRC[i+7:i])
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+7:i] remains unchanged*
+				ELSE *zeroing-masking*								; zeroing-masking
+					DEST[i+7:i] := 0
+			FI
+	FI;
+ENDFOR;
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091845">PABSW With 128-bit Operands:</title>
+   <programlisting>Unsigned DEST[15:0] := ABS(SRC[15:0])
+	Repeat operation for 2nd through 7th 16-bit words
+	Unsigned DEST[127:112] := ABS(SRC[127:112])</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091850">VPABSW With 128-bit Operands:</title>
+   <programlisting>Unsigned DEST[15:0] := ABS(SRC[15:0])
+	Repeat operation for 2nd through 7th 16-bit words
+	Unsigned DEST[127:112] := ABS(SRC[127:112])</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091855">VPABSW With 256-bit Operands:</title>
+   <programlisting>Unsigned DEST[15:0] := ABS(SRC[15:0])
+	Repeat operation for 2nd through 15th 16-bit words
+	Unsigned DEST[255:240] := ABS(SRC[255:240])</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091860">VPABSW (EVEX Encoded Versions)</title>
+   <programlisting>(KL, VL) = (8, 128), (16, 256), (32, 512)
+FOR j := 0 TO KL-1
+	i := j * 16
+	IF k1[j] OR *no writemask*
+		THEN
+			Unsigned DEST[i+15:i] := ABS(SRC[i+15:i])
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+15:i] remains unchanged*
+				ELSE *zeroing-masking*								; zeroing-masking
+					DEST[i+15:i] := 0
+			FI
+	FI;
+ENDFOR;
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091878">PABSD With 128-bit Operands:</title>
+   <programlisting>Unsigned DEST[31:0] := ABS(SRC[31:0])
+	Repeat operation for 2nd through 3rd 32-bit double words
+	Unsigned DEST[127:96] := ABS(SRC[127:96])</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091883">VPABSD With 128-bit Operands:</title>
+   <programlisting>Unsigned DEST[31:0] := ABS(SRC[31:0])
+	Repeat operation for 2nd through 3rd 32-bit double words
+	Unsigned DEST[127:96] := ABS(SRC[127:96])</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091888">VPABSD With 256-bit Operands:</title>
+   <programlisting>Unsigned DEST[31:0] := ABS(SRC[31:0])
+	Repeat operation for 2nd through 7th 32-bit double words
+	Unsigned DEST[255:224] := ABS(SRC[255:224])</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091893">VPABSD (EVEX Encoded Versions)</title>
+   <programlisting>(KL, VL) = (4, 128), (8, 256), (16, 512)
+FOR j := 0 TO KL-1
+	i := j * 32
+	IF k1[j] OR *no writemask*
+		THEN
+			IF (EVEX.b = 1) AND (SRC *is memory*)
+				THEN
+					Unsigned DEST[i+31:i] := ABS(SRC[31:0])
+				ELSE
+					Unsigned DEST[i+31:i] := ABS(SRC[i+31:i])
+			FI;
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+31:i] remains unchanged*
+				ELSE *zeroing-masking*								; zeroing-masking
+					DEST[i+31:i] := 0
+			FI
+	FI;
+ENDFOR;
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  <section level="7">
+   <title unique="1091915">VPABSQ (EVEX Encoded Versions)</title>
+   <programlisting>(KL, VL) = (2, 128), (4, 256), (8, 512)
+FOR j := 0 TO KL-1
+	i := j * 64
+	IF k1[j] OR *no writemask*
+		THEN
+			IF (EVEX.b = 1) AND (SRC *is memory*)
+				THEN
+					Unsigned DEST[i+63:i] := ABS(SRC[63:0])
+				ELSE
+					Unsigned DEST[i+63:i] := ABS(SRC[i+63:i])
+			FI;
+		ELSE
+			IF *merging-masking*								; merging-masking
+				THEN *DEST[i+63:i] remains unchanged*
+				ELSE *zeroing-masking*								; zeroing-masking
+					DEST[i+63:i] := 0
+			FI
+	FI;
+ENDFOR;
+DEST[MAXVL-1:VL] := 0</programlisting>
+   </section>
+  </operation>
  <subsection title="Intel C/C++ Compiler Intrinsic Equivalents">
-  <programlisting><string>VPABSB	__m512i _mm512_abs_epi8 ( __m512i a)</string><string>
-</string><string>VPABSW	__m512i _mm512_abs_epi16 ( __m512i a)</string><string>
-</string><string>VPABSB	__m512i _mm512_mask_abs_epi8 ( __m512i s, __mmask64 m, __m512i a)</string><string>
-</string><string>VPABSW	__m512i _mm512_mask_abs_epi16 ( __m512i s, __mmask32 m, __m512i a)</string><string>
-</string><string>VPABSB	__m512i _mm512_maskz_abs_epi8 (__mmask64 m, __m512i a)</string><string>
-</string><string>VPABSW	__m512i _mm512_maskz_abs_epi16 (__mmask32 m, __m512i a)</string><string>
-</string><string>VPABSB	__m256i _mm256_mask_abs_epi8 (__m256i s, __mmask32 m, __m256i a)</string><string>
-</string><string>VPABSW	__m256i _mm256_mask_abs_epi16 (__m256i s, __mmask16 m, __m256i a)</string><string>
-</string><string>VPABSB	__m256i _mm256_maskz_abs_epi8 (__mmask32 m, __m256i a)</string><string>
-</string><string>VPABSW	__m256i _mm256_maskz_abs_epi16 (__mmask16 m, __m256i a)</string><string>
-</string><string>VPABSB	__m128i _mm_mask_abs_epi8 (__m128i s, __mmask16 m, __m128i a)</string><string>
-</string><string>VPABSW	__m128i _mm_mask_abs_epi16 (__m128i s, __mmask8 m, __m128i a)</string><string>
-</string><string>VPABSB	__m128i _mm_maskz_abs_epi8 (__mmask16 m, __m128i a)</string><string>
-</string><string>VPABSW	__m128i _mm_maskz_abs_epi16 (__mmask8 m, __m128i a)</string><string>
-</string><string>VPABSD __m256i _mm256_mask_abs_epi32(__m256i s, __mmask8 k, __m256i a);</string><string>
-</string><string>VPABSD __m256i _mm256_maskz_abs_epi32( __mmask8 k, __m256i a);</string><string>
-</string><string>VPABSD __m128i _mm_mask_abs_epi32(__m128i s, __mmask8 k, __m128i a);</string><string>
-</string><string>VPABSD __m128i _mm_maskz_abs_epi32( __mmask8 k, __m128i a);</string><string>
-</string><string>VPABSD 	 __m512i _mm512_abs_epi32( __m512i a);</string><string>
-</string><string>VPABSD 	 __m512i _mm512_mask_abs_epi32(__m512i s, __mmask16 k, __m512i a);</string><string>
-</string><string>VPABSD 	 __m512i _mm512_maskz_abs_epi32( __mmask16 k, __m512i a);</string><string>
-</string><string>VPABSQ __m512i _mm512_abs_epi64( __m512i a);</string><string>
-</string><string>VPABSQ __m512i _mm512_mask_abs_epi64(__m512i s, __mmask8 k, __m512i a);</string><string>
-</string><string>VPABSQ __m512i _mm512_maskz_abs_epi64( __mmask8 k, __m512i a);</string><string>
-</string><string>VPABSQ __m256i _mm256_mask_abs_epi64(__m256i s, __mmask8 k, __m256i a);</string><string>
-</string><string>VPABSQ __m256i _mm256_maskz_abs_epi64( __mmask8 k, __m256i a);</string><string>
-</string><string>VPABSQ __m128i _mm_mask_abs_epi64(__m128i s, __mmask8 k, __m128i a);</string><string>
-</string><string>VPABSQ __m128i _mm_maskz_abs_epi64( __mmask8 k, __m128i a);</string><string>
-</string><string>PABSB	 __m128i _mm_abs_epi8 (__m128i a)</string><string>
-</string><string>VPABSB	 __m128i _mm_abs_epi8 (__m128i a)</string><string>
-</string><string>VPABSB 	__m256i _mm256_abs_epi8 (__m256i a)</string><string>
-</string><string>PABSW	 __m128i _mm_abs_epi16 (__m128i a)</string><string>
-</string><string>VPABSW	 __m128i _mm_abs_epi16 (__m128i a)</string><string>
-</string><string>VPABSW	 __m256i _mm256_abs_epi16 (__m256i a)</string><string>
-</string><string>PABSD 	__m128i _mm_abs_epi32 (__m128i a)</string><string>
-</string><string>VPABSD 	__m128i _mm_abs_epi32 (__m128i a)</string><string>
-</string><string>VPABSD 	__m256i _mm256_abs_epi32 (__m256i a)</string><string>
-</string></programlisting>
+  <programlisting>VPABSB	__m512i _mm512_abs_epi8 ( __m512i a)
+VPABSW	__m512i _mm512_abs_epi16 ( __m512i a)
+VPABSB	__m512i _mm512_mask_abs_epi8 ( __m512i s, __mmask64 m, __m512i a)
+VPABSW	__m512i _mm512_mask_abs_epi16 ( __m512i s, __mmask32 m, __m512i a)
+VPABSB	__m512i _mm512_maskz_abs_epi8 (__mmask64 m, __m512i a)
+VPABSW	__m512i _mm512_maskz_abs_epi16 (__mmask32 m, __m512i a)
+VPABSB	__m256i _mm256_mask_abs_epi8 (__m256i s, __mmask32 m, __m256i a)
+VPABSW	__m256i _mm256_mask_abs_epi16 (__m256i s, __mmask16 m, __m256i a)
+VPABSB	__m256i _mm256_maskz_abs_epi8 (__mmask32 m, __m256i a)
+VPABSW	__m256i _mm256_maskz_abs_epi16 (__mmask16 m, __m256i a)
+VPABSB	__m128i _mm_mask_abs_epi8 (__m128i s, __mmask16 m, __m128i a)
+VPABSW	__m128i _mm_mask_abs_epi16 (__m128i s, __mmask8 m, __m128i a)
+VPABSB	__m128i _mm_maskz_abs_epi8 (__mmask16 m, __m128i a)
+VPABSW	__m128i _mm_maskz_abs_epi16 (__mmask8 m, __m128i a)
+VPABSD __m256i _mm256_mask_abs_epi32(__m256i s, __mmask8 k, __m256i a);
+VPABSD __m256i _mm256_maskz_abs_epi32( __mmask8 k, __m256i a);
+VPABSD __m128i _mm_mask_abs_epi32(__m128i s, __mmask8 k, __m128i a);
+VPABSD __m128i _mm_maskz_abs_epi32( __mmask8 k, __m128i a);
+VPABSD 	 __m512i _mm512_abs_epi32( __m512i a);
+VPABSD 	 __m512i _mm512_mask_abs_epi32(__m512i s, __mmask16 k, __m512i a);
+VPABSD 	 __m512i _mm512_maskz_abs_epi32( __mmask16 k, __m512i a);
+VPABSQ __m512i _mm512_abs_epi64( __m512i a);
+VPABSQ __m512i _mm512_mask_abs_epi64(__m512i s, __mmask8 k, __m512i a);
+VPABSQ __m512i _mm512_maskz_abs_epi64( __mmask8 k, __m512i a);
+VPABSQ __m256i _mm256_mask_abs_epi64(__m256i s, __mmask8 k, __m256i a);
+VPABSQ __m256i _mm256_maskz_abs_epi64( __mmask8 k, __m256i a);
+VPABSQ __m128i _mm_mask_abs_epi64(__m128i s, __mmask8 k, __m128i a);
+VPABSQ __m128i _mm_maskz_abs_epi64( __mmask8 k, __m128i a);
+PABSB	 __m128i _mm_abs_epi8 (__m128i a)
+VPABSB	 __m128i _mm_abs_epi8 (__m128i a)
+VPABSB 	__m256i _mm256_abs_epi8 (__m256i a)
+PABSW	 __m128i _mm_abs_epi16 (__m128i a)
+VPABSW	 __m128i _mm_abs_epi16 (__m128i a)
+VPABSW	 __m256i _mm256_abs_epi16 (__m256i a)
+PABSD 	__m128i _mm_abs_epi32 (__m128i a)
+VPABSD 	__m128i _mm_abs_epi32 (__m128i a)
+VPABSD 	__m256i _mm256_abs_epi32 (__m256i a)</programlisting>
   </subsection>
  <subsection title="SIMD Floating-Point Exceptions">
-  <para unique="1091975">
-   <string>None.</string></para>
+  <para unique="1091975">None.</para>
   </subsection>
  <subsection title="Other Exceptions">
-  <para unique="1091980" format="xIndent1">
-   <string>Non-EVEX-encoded instruction, see </string><link linkend="25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions"><string>Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091984" format="xIndent1">
-   <string>EVEX-encoded VPABSD/Q, see </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
-  <para unique="1091988" format="xIndent1">
-   <string>EVEX-encoded VPABSB/W, see Exceptions Type E4.nb in </string><link linkend="79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions"><string>Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</string></link></para>
+  <para unique="1091980" format="xIndent1">Non-EVEX-encoded instruction, see <link unique="1091978" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#25627: 06_Table: Table 2-21. Type 4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;21, &#8220;Type 4 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091984" format="xIndent1">EVEX-encoded VPABSD/Q, see <link unique="1091982" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</link></para>
+  <para unique="1091988" format="xIndent1">EVEX-encoded VPABSB/W, see Exceptions Type E4.nb in <link unique="1091986" linkend="&lt;c&gt;__sdm_vol2A_ch02.fm#79250: 06_Table: Table 2-49. Type E4 Class Exception Conditions" xrefstyle="Table All - no page-period">Table&#160;2&#8209;51, &#8220;Type E4 Class Exception Conditions.&#8221;</link></para>
   </subsection>
  </instruction>
